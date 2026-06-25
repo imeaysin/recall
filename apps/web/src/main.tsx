@@ -1,12 +1,16 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import "@workspace/ui/globals.css"
-import App from "./App"
+import { RouterProvider } from "react-router-dom"
+import { Providers } from "@/app/providers"
+import { router } from "@/app/router"
+import "@/index.css"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <div className="relative isolate min-h-svh">
-      <App />
+      <Providers>
+        <RouterProvider router={router} />
+      </Providers>
     </div>
   </StrictMode>
 )
