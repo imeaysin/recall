@@ -1,0 +1,36 @@
+import { defineConfig, type Options } from "tsup"
+
+export default defineConfig((options): Options => ({
+  entry: {
+    auth: "src/lib/auth.ts",
+    "auth-client": "src/lib/auth-client.ts",
+    "permissions/platform": "src/permissions/platform.ts",
+    "permissions/organization": "src/permissions/organization.ts",
+    "types/auth.types": "src/types/auth.types.ts",
+    "adapters/nestjs/index": "src/adapters/nestjs/index.ts",
+    "adapters/nextjs/index": "src/adapters/nextjs/index.ts",
+    "adapters/mobile/expo-client": "src/adapters/mobile/expo-client.ts",
+    "adapters/hono/bearer.middleware": "src/adapters/hono/bearer.middleware.ts",
+  },
+  format: ["esm", "cjs"],
+  dts: false,
+  clean: !options.watch,
+  splitting: false,
+  sourcemap: true,
+  minify: false,
+  onSuccess: "cp src/lib/auth.d.ts dist/auth.d.ts && cp src/lib/auth.d.ts dist/auth.d.cts",
+  external: [
+    "better-auth",
+    "@better-auth/passkey",
+    "@nestjs/common",
+    "@nestjs/core",
+    "@workspace/config",
+    "@workspace/db",
+    "@workspace/email",
+    "expo-secure-store",
+    "hono",
+    "jose",
+    "next/headers",
+    "react",
+  ],
+}))

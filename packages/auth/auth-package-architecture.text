@@ -1,144 +1,172 @@
 
 @repo/auth
-Architecture, Package Choice & Implementation Guide
-Evidence-based. Sourced from official docs. June 2026.
+Authentication Package
+Architecture & Implementation Guide
 
-better-auth v1.6.20  •  @thallesp/nestjs-better-auth  •  Turborepo  •  JWT+JWKS  •  Custom RBAC  •  EDA NestJS
+Turborepo  •  better-auth v1.6  •  JWT + JWKS (stateless)  •  Custom RBAC  •  Feature-first NestJS  •  June 2026
 
 better-auth
-1.6.20 (stable)	nestjs-better-auth
-community (official link)	Node.js
->=20	Updated
+1.6.20	NestJS Pattern
+Feature-first + CQRS	Token
+JWT + JWKS	Updated
 June 2026
 
-1. Should You Use better-auth? — Honest Evaluation
-Short answer: Yes, for your specific requirements in 2026, better-auth is the right choice. But here is the full evidence-based case so you can verify it yourself.
+1. Package Choice — better-auth v1.6
+better-auth is the right choice for this monorepo. Here is why, evaluated against your exact requirements:
 
-1.1 The auth landscape in June 2026
-Option	Model	Verdict for your stack
-better-auth v1.6	Open-source, self-hosted, TypeScript-native	✅ Recommended — full ownership, JWT+JWKS, RBAC, passkeys, Drizzle adapter, React/Expo client, works in Turborepo monorepo
-Clerk	Hosted SaaS, managed user DB	❌ Ruled out — user records live in Clerk's US servers. No data ownership. $0.02/MAU after 50K free. For your multi-app monorepo it adds unnecessary coupling.
-Auth.js v5 (NextAuth)	Open-source, self-hosted	❌ Ruled out — in security-patch-only maintenance mode since Sep 2025 (Better Auth team took over). No built-in RBAC, 2FA, passkeys. Own maintainers steer new projects to Better Auth.
-Supabase Auth	Bundled with Supabase platform	❌ Ruled out — only makes sense if you are all-in on Supabase. You have NestJS + Drizzle; adding Supabase Auth creates a duplicate identity layer.
-Roll your own	Passport.js + @nestjs/jwt	⚠️ Possible but not recommended — you would rebuild what better-auth already provides: PKCE, TOTP, passkeys, magic links, RBAC, Drizzle schema. Estimate 3–6 developer-months.
+Requirement	How better-auth satisfies it
+Serverless + stateless JWT	jwt() plugin issues JWKS-signed JWTs. Any service verifies locally via /api/auth/jwks — zero DB call on the hot path.
+Turborepo monorepo — shared package	Single lib/auth.ts (server) + lib/auth-client.ts (client). Importable anywhere via package.json exports.
+Feature-first NestJS (not Clean Arch)	@thallesp/nestjs-better-auth mounts all /api/auth/* routes inside NestJS. Your feature modules stay unaware of better-auth internals.
+React/Vite SPA	createAuthClient() ships React hooks (useSession, signIn, signOut) in the main package. No extra library.
+Next.js marketing site	toNextJsHandler(), getSessionCookie() for middleware, auth.api.getSession() for Server Components — all first-party.
+Expo mobile	bearer() plugin + expo-secure-store pattern. fetchOptions.auth injects the token on every request.
+Custom RBAC	createAccessControl() + admin plugin. Compile-time typed roles and permissions in a shared permissions.ts file.
+Social login (5 providers)	Built-in socialProviders config. No extra packages for Google, GitHub, Apple, Microsoft, Discord.
+Passkeys, TOTP, magic links, OTP	All first-party plugins. @better-auth/passkey is a separate package since v1.4.
+Data ownership	Your DB, your server, your keys. MIT license. Argon2id password hashing built in.
 
-1.2 Why better-auth fits YOUR architecture
-Your requirement	How better-auth meets it	Source
-Turborepo monorepo — shared auth package	Single auth instance exported as lib/auth.ts; client as lib/auth-client.ts. Both importable anywhere in the monorepo via package.json exports.	better-auth.com/docs/installation
-Serverless / stateless JWT	jwt() plugin issues JWKS-signed JWTs. /api/auth/jwks endpoint lets any service verify locally with no DB round-trip. Keys stored in DB, cached in services.	better-auth.com/docs/plugins/jwt
-NestJS event-driven API	@thallesp/nestjs-better-auth — officially linked by better-auth docs. Provides AuthModule, hooks via DI, @Session, @Roles, @AllowAnonymous. DI hooks let you publish domain events.	better-auth.com/docs/integrations/nestjs
-React/Vite SPA	createAuthClient() ships React hooks (useSession, signIn, signOut) in the main package. No separate library.	better-auth.com/docs/installation
-Next.js marketing	toNextJsHandler(), nextCookies() plugin, getSessionCookie() for edge middleware — all first-party.	better-auth.com/docs/integrations/next
-Expo mobile	bearer() plugin + SecureStore pattern. Client configured with fetchOptions.auth for token injection.	better-auth.com/docs/plugins/bearer
-Custom RBAC	createAccessControl() + admin plugin. Compile-time typed roles and permissions via shared permissions.ts file.	better-auth.com/docs/plugins/admin
-Social login (Google, GitHub, Apple, Microsoft, Discord)	Built-in socialProviders config. No extra packages.	better-auth.com/docs/concepts/oauth
-Passkeys	@better-auth/passkey — separate package since v1.4. First-class WebAuthn support.	better-auth.com/blog/1-4
-Magic links, OTP, TOTP	magicLink(), emailOtp(), twoFactor() — all first-party plugins.	better-auth.com/docs/plugins/
-Data ownership	Your DB, your server, your keys. MIT license.	github.com/better-auth/better-auth
+Why not the alternatives
+Auth.js v5 (NextAuth): maintenance-mode since Sep 2025 — security patches only. No built-in RBAC, passkeys, or TOTP. The maintainers now direct new projects to better-auth.
+Clerk: hosted SaaS. User records and signing keys live in Clerk servers. $0.02/MAU after 50K. Conflicts with data-ownership requirement.
+Roll your own (Passport.js + @nestjs/jwt): rebuilds everything better-auth provides. Estimated 3-6 developer-months.
 
 
-2. @thallesp/nestjs-better-auth — Honest Risk Assessment
-You asked specifically whether this package is the right choice. Here is the full picture:
+2. NestJS Integration — @thallesp/nestjs-better-auth
+This is the officially recommended NestJS integration, linked directly from better-auth.com/docs/integrations/nestjs. It is not a random third-party package.
 
-Facts about @thallesp/nestjs-better-auth
-STATUS: Officially linked from better-auth.com/docs/integrations/nestjs. It is the recommended integration.
-MAINTAINER: 1 open-source maintainer (confirmed by Socket.dev security analysis). This is a real supply-chain risk to acknowledge.
-ACTIVITY: Healthy release cadence. Last release April 9, 2026. Requires better-auth >= 1.3.8 (currently >= 1.5.0 recommended).
-ALTERNATIVES EXIST: underfisk/nestjs-better-auth (supports Fastify+Express v5), @cms-nestjs-libs/better-auth (adds rate limiting, trusted hosts). None are official.
-ESCAPE HATCH: better-auth itself exports toNodeHandler(auth) from better-auth/node. You can always mount it yourself in NestJS without any wrapper package — at the cost of writing guards, decorators, and DI hooks manually.
+Fact	Detail
+Status	Officially linked from better-auth.com/docs/integrations/nestjs
+Requires	better-auth >= 1.3.8. Use >= 1.6.x.
+Maintainer	1 open-source maintainer. Real risk to acknowledge.
+Last release	April 9, 2026. Actively maintained.
+bodyParser: false	REQUIRED in NestFactory.create(). The package re-adds parsers for non-auth routes automatically.
+Global AuthGuard	Registered globally by default. Use @AllowAnonymous() on public routes. For stateless JWT on business routes, add a separate JwksGuard.
+Escape hatch	If the package is ever abandoned: import toNodeHandler(auth) from better-auth/node and mount manually in a catch-all controller. Zero changes to @repo/auth needed.
 
-2.1 Decision: use it, but with an escape hatch strategy
-Scenario	Recommendation
-Building now, shipping in < 3 months	Use @thallesp/nestjs-better-auth. It saves 2–3 weeks of guard/decorator boilerplate. Lock the version in package.json.
-Package abandoned / breaking change	Fall back to toNodeHandler(auth) from better-auth/node and write your own JwksGuard + decorators. All the logic is in @repo/auth anyway — the escape is cheap.
-Need Fastify instead of Express	Use underfisk/nestjs-better-auth or mount toNodeHandler() directly. @thallesp has beta Fastify support.
 
-Manual mount (escape hatch — no wrapper package)
-// apps/api/src/auth/auth.controller.ts
-// If @thallesp/nestjs-better-auth is ever abandoned, use this instead.
-import { All, Controller, Req, Res } from '@nestjs/common';
-import { toNodeHandler }              from 'better-auth/node';
-import { auth }                       from '@repo/auth';
+3. How Stateless JWT Works — Exactly
+Official better-auth position (docs.better-auth.com/plugins/jwt)
+"This plugin is not meant as a replacement for the session. It is meant to be used for services that require JWT tokens."
+better-auth still issues an opaque session (stored in DB). The jwt() plugin adds a SECONDARY short-lived JWT that services verify locally — no DB call.
+The bearer() plugin lets services accept Authorization: Bearer <token>. Required because your NestJS API is cross-domain from the auth server.
+
+Step	What happens
+1. User signs in (any method)	better-auth creates a session in DB. Opaque session token returned in set-auth-token header.
+2. Client gets JWT	Client calls GET /api/auth/token. better-auth signs a 15-min JWT (ES256) using the JWKS key pair from the jwks DB table.
+3. API call	Client sends Authorization: Bearer <jwt> to apps/api.
+4. NestJS JwksGuard	Verifies JWT locally using createRemoteJWKSet(). No DB call. req.user set to { id, email, role, name }.
+5. RbacGuard	Checks permission using ac.hasPermission() from permissions.ts. No DB call.
+6. JWT expires (15 min)	Client calls /api/auth/token again using the opaque session token (separate, longer TTL). Gets a new JWT.
+7. Sign out	Client deletes local JWT + calls POST /api/auth/sign-out to invalidate the session in DB.
+
+
+4. Monorepo Structure
+apps/
+  api/          # NestJS — feature-first modules, CQRS where useful
+  web/          # React + Vite
+  marketing/    # Next.js
+  mobile/       # Expo
  
-const handler = toNodeHandler(auth);
- 
-@Controller()
-export class AuthController {
-  @All('/api/auth/*splat')
-  async handleAuth(@Req() req, @Res() res) {
-    // Disable body parsing for this controller only
-    await handler(req, res);
-  }
-}
- 
-// main.ts — do NOT set bodyParser: false globally when using this approach.
-// Only disable it for the /api/auth/* route via middleware.
-
-
-3. How Stateless JWT Works in better-auth — Exactly
-Official better-auth docs position on JWT (word-for-word)
-"This plugin is not meant as a replacement for the session. It's meant to be used for services that require JWT tokens."
-Source: better-auth.com/docs/plugins/jwt
-
-What this means for you: better-auth still issues a session (stored in DB). The jwt() plugin adds a SECONDARY token (JWKS-signed JWT) that your NestJS API can verify without a DB call. Both coexist.
-
-The complete flow for your architecture:
-
-Step	What happens	Who does it
-1. User signs in (any method)	better-auth creates a session in the DB and issues an opaque session token (set-auth-token header or cookie).	better-auth + bearer() plugin
-2. Client gets JWT	Client calls GET /api/auth/token. better-auth signs a short-lived JWT (15min, ES256) using the key pair from the jwks DB table.	jwt() plugin
-3. JWT stored client-side	Web SPA: sessionStorage. Mobile: expo-secure-store. Never localStorage. Never a cookie (it would go to auth server, not API).	Your client code
-4. API call made	Client sends: Authorization: Bearer <jwt> to apps/api (NestJS).	Client
-5. NestJS verifies JWT	JwksGuard fetches public key from /api/auth/jwks (cached via jose createRemoteJWKSet). Verifies signature, iss, aud, exp. No DB call.	JwksGuard in apps/api
-6. Request proceeds	req.user set to JWT payload (id, email, role). RbacGuard checks permissions from permissions.ts.	RbacGuard + @RequirePermission
-7. JWT expires (15 min)	Client calls /api/auth/token again using the opaque session token (still valid, stored separately). Gets new JWT.	Client refresh logic
-8. User signs out	Client deletes local JWT. Optionally calls POST /api/auth/sign-out to invalidate the session in DB (kills refresh too).	Client + better-auth
-
-
-4. Canonical Folder Structure
-better-auth CLI scans: auth.ts, lib/auth.ts, utils/auth.ts and their src/ equivalents. Use lib/auth.ts (server) and lib/auth-client.ts (client) — matches the convention used in all official better-auth docs and examples.
-
 packages/
-  auth/
-    package.json                     # name: @repo/auth
-    tsconfig.json
-    src/
-      lib/
-        auth.ts                      # ★ Server instance — CLI reads this automatically
-        auth-client.ts               # ★ Shared client — web + marketing
-      
-      permissions.ts                 # ★ SHARED — NO server-only imports
-        |                            #   createAccessControl() + all roles + ac
-        |                            #   Imported by BOTH lib/auth.ts AND lib/auth-client.ts
-      
-      types/
-        auth.types.ts                # JWTClaims, AuthUser, AppRole, Permission types
-      
-      adapters/
-        nextjs/
-          index.ts
-          server-session.ts          # getServerSession() wrapper for App Router
-        mobile/
-          expo-client.ts             # createAuthClient() with SecureStore
-        nestjs/
-          index.ts                   # Re-exports all guards + decorators
-          jwks.guard.ts              # Stateless JWKS verification — NO DB call
-          current-user.decorator.ts  # @CurrentUser() param decorator
-          rbac.guard.ts              # Permission guard using ac from permissions.ts
-          require-permission.decorator.ts
-          public.decorator.ts        # @Public() — skip auth guard
-        hono/
-          bearer.middleware.ts       # Future edge APIs
-      
-      plugins/
-        auth-events.plugin.ts        # better-auth hooks → domain event bus (EDA)
-      
-      db/
-        auth-schema.ts              # ⚠ AUTO-GENERATED — npx @better-auth/cli generate
-                                    #   Never edit by hand
+  auth/         # @repo/auth  ←  this document
+  db/           # @repo/db    Drizzle instance + schema
+  email/        # @repo/email Transactional email
+  contracts/    # @repo/contracts  Shared Zod schemas + TS types
+  config/       # @repo/config     Env var helpers
+  ui/           # @repo/ui    Shared React components
+  dates/        # @repo/dates
+  storage/      # @repo/storage
 
 
-5. package.json & Exports
+5. @repo/auth — Folder Structure
+The auth package is a plain shared library. It wraps better-auth and exports adapters for each app. The canonical file names lib/auth.ts and lib/auth-client.ts are required — the better-auth CLI and @thallesp/nestjs-better-auth search for them automatically.
+
+packages/auth/
+  package.json
+  tsconfig.json
+  src/
+    lib/
+      auth.ts              # ★ Server instance — CLI + NestJS module read this
+      auth-client.ts       # ★ Shared browser client — web + marketing
+    permissions.ts         # ★ SHARED — createAccessControl() + all roles
+                           #   NO server-only imports. Used by server AND client.
+    types/
+      auth.types.ts        # JWTClaims, AuthUser, AppRole interfaces
+    adapters/
+      nextjs/
+        index.ts
+        server-session.ts  # getServerSession() for App Router
+      mobile/
+        expo-client.ts     # createAuthClient() with SecureStore
+      nestjs/
+        index.ts           # Re-exports guards + decorators
+        jwks.guard.ts      # Stateless JWKS verification — no DB call
+        rbac.guard.ts      # Permission check using ac from permissions.ts
+        current-user.decorator.ts
+        require-permission.decorator.ts
+        public.decorator.ts
+      hono/
+        bearer.middleware.ts  # For future edge/Hono APIs
+    db/
+      auth-schema.ts       # AUTO-GENERATED — npx @better-auth/cli generate
+                           # Never edit by hand
+
+
+6. apps/api — Folder Structure (Feature-first + CQRS)
+Each feature owns everything it needs. Commands and handlers live together. Queries and handlers live together. No services/ unless it contains genuinely reusable domain logic. No application/domain/infrastructure layers.
+
+apps/api/src/
+  main.ts
+  app.module.ts
+ 
+  users/
+    commands/
+      ban-user.command.ts         # Command class + handler in same file
+      ban-user.handler.ts         # @CommandHandler(BanUserCommand)
+      change-role.command.ts
+      change-role.handler.ts
+    queries/
+      get-user.query.ts           # Query class + handler in same file
+      get-user.handler.ts         # @QueryHandler(GetUserQuery)
+      list-users.query.ts
+      list-users.handler.ts
+    dto/
+      ban-user.dto.ts
+      list-users.dto.ts
+      user.response.dto.ts
+    entities/
+      user.entity.ts              # Drizzle row type or plain class
+    repositories/
+      users.repository.ts         # Drizzle queries for users feature
+    users.controller.ts           # Thin — dispatches Commands/Queries only
+    users.module.ts               # Imports CqrsModule, registers handlers
+ 
+  projects/
+    commands/
+    queries/
+    dto/
+    entities/
+    repositories/
+    projects.controller.ts
+    projects.module.ts
+ 
+  shared/
+    guards/
+      jwks.guard.ts              # Imported from @repo/auth/nestjs
+      rbac.guard.ts              # Imported from @repo/auth/nestjs
+    decorators/
+      current-user.decorator.ts  # Imported from @repo/auth/nestjs
+      require-permission.decorator.ts
+      public.decorator.ts
+    filters/
+      http-exception.filter.ts
+    pipes/
+      zod-validation.pipe.ts
+
+
+7. package.json & Exports
+7.1 packages/auth/package.json
 {
   "name": "@repo/auth",
   "version": "1.0.0",
@@ -172,19 +200,18 @@ packages/
   }
 }
 
-Install in apps/api separately:
-
-# apps/api
-pnpm add @thallesp/nestjs-better-auth @repo/auth @nestjs/event-emitter
-# @thallesp/nestjs-better-auth requires better-auth >= 1.3.8 (use 1.6.x)
-
-
-6. Environment Variables
-# better-auth reads BETTER_AUTH_SECRET and BETTER_AUTH_URL automatically.
-# No manual wiring in betterAuth({}) config needed for these two.
+7.2 Install in apps/api
+# apps/api — install the NestJS integration package
+pnpm add @thallesp/nestjs-better-auth @nestjs/cqrs
  
-BETTER_AUTH_SECRET=<openssl rand -base64 32>   # min 32 bytes — never commit
-BETTER_AUTH_URL=https://api.yourdomain.com     # base URL of the auth server
+# @thallesp/nestjs-better-auth requires better-auth >= 1.3.8
+# Use ^1.6.20 to stay on latest stable
+
+
+8. Environment Variables
+# better-auth reads these two automatically from process.env
+BETTER_AUTH_SECRET=<openssl rand -base64 32>      # min 32 chars
+BETTER_AUTH_URL=https://api.yourdomain.com        # auth server base URL
 BETTER_AUTH_TRUSTED_ORIGINS=https://app.yourdomain.com,https://yourdomain.com
  
 # Social providers
@@ -192,17 +219,17 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
-APPLE_CLIENT_ID=           # Service ID (Bundle ID for native)
+APPLE_CLIENT_ID=
 APPLE_TEAM_ID=
 APPLE_KEY_ID=
-APPLE_PRIVATE_KEY=         # Full PEM — keep newlines as \n in .env
+APPLE_PRIVATE_KEY=        # Full PEM string
 MICROSOFT_CLIENT_ID=
 MICROSOFT_CLIENT_SECRET=
 DISCORD_CLIENT_ID=
 DISCORD_CLIENT_SECRET=
  
-# JWT plugin (keys stored in DB jwks table by default)
-AUTH_JWT_EXPIRATION=15m    # Keep short. 15 min is the better-auth default.
+# JWT (keys auto-managed in jwks DB table by jwt() plugin)
+AUTH_JWT_EXPIRATION=15m   # Keep short. 15 min recommended.
  
 # TOTP
 AUTH_TOTP_ISSUER=YourAppName
@@ -213,23 +240,17 @@ NEXT_PUBLIC_AUTH_URL=https://api.yourdomain.com
 EXPO_PUBLIC_AUTH_URL=https://api.yourdomain.com
 
 
-7. RBAC — permissions.ts (The Shared File)
-Critical rules for this file:
-    • No server-only imports. This file runs in the browser too.
-    • 
-    • Use as const on the statement object — TypeScript cannot infer literal types without it.
-    • Export the exact ac and roles objects — not re-exports from server files. TypeScript inference breaks otherwise.
+9. RBAC — src/permissions.ts
+This file has no server-only imports. It runs in the browser too. Import from 'better-auth/plugins/access' (not 'better-auth/plugins') — the docs explicitly warn this is required for client bundle size. Use as const — TypeScript cannot infer literal types without it.
 
 // src/permissions.ts
-// ⚠ NO server-only imports. Runs in browser too.
+// NO server-only imports. Runs in browser too.
+import { createAccessControl }          from 'better-auth/plugins/access';
+import { defaultStatements, adminAc }   from 'better-auth/plugins/admin/access';
  
-// Official docs import path (bundle-safe):
-import { createAccessControl } from 'better-auth/plugins/access';
-import { defaultStatements, adminAc } from 'better-auth/plugins/admin/access';
- 
-// 1. Define resources + actions with "as const" (required for TS inference)
+// 1. Define all resources + actions (as const is required)
 export const statement = {
-  ...defaultStatements,           // merges built-in admin plugin actions
+  ...defaultStatements,
   project:   ['create', 'read', 'update', 'delete', 'publish', 'archive'] as const,
   content:   ['create', 'read', 'update', 'delete', 'publish']            as const,
   billing:   ['read', 'manage']                                            as const,
@@ -240,15 +261,14 @@ export const statement = {
  
 export const ac = createAccessControl(statement);
  
-// 2. Roles — when overriding built-in roles, merge adminAc.statements
-//    to retain built-in admin plugin permissions (ban, impersonate, etc.)
+// 2. Define roles
 export const guestRole = ac.newRole({
-  project:  ['read'],
-  content:  ['read'],
+  project: ['read'],
+  content: ['read'],
 });
  
 export const userRole = ac.newRole({
-  ...adminAc.statements,          // inherit built-in admin plugin permissions
+  ...adminAc.statements,
   project:   ['create', 'read', 'update'],
   content:   ['create', 'read', 'update', 'delete'],
   analytics: ['read'],
@@ -264,7 +284,7 @@ export const managerRole = ac.newRole({
 });
  
 export const adminRole = ac.newRole({
-  ...adminAc.statements,          // full admin plugin permissions
+  ...adminAc.statements,
   project:   ['create', 'read', 'update', 'delete', 'publish', 'archive'],
   content:   ['create', 'read', 'update', 'delete', 'publish'],
   billing:   ['read', 'manage'],
@@ -273,28 +293,25 @@ export const adminRole = ac.newRole({
   team:      ['invite', 'remove', 'update-role'],
 });
  
-// 3. Exports used by both lib/auth.ts and lib/auth-client.ts
 export const roles = { guestRole, userRole, managerRole, adminRole };
-export type AppRole  = keyof typeof roles;
 export type RoleName = 'guest' | 'user' | 'manager' | 'admin';
 
 
-8. Server Instance — src/lib/auth.ts
+10. Server Instance — src/lib/auth.ts
+Export as auth — required by the better-auth CLI and @thallesp/nestjs-better-auth. The CLI finds lib/auth.ts automatically.
+
 // src/lib/auth.ts
-// Export as "auth" — required by CLI, @thallesp/nestjs-better-auth, Next.js adapter
- 
-import { betterAuth }           from 'better-auth';
-import { drizzleAdapter }        from 'better-auth/adapters/drizzle';
+import { betterAuth }              from 'better-auth';
+import { drizzleAdapter }           from 'better-auth/adapters/drizzle';
 import { admin, bearer, jwt,
          twoFactor, magicLink,
-         emailOtp }              from 'better-auth/plugins';
-import { passkey }               from '@better-auth/passkey';
-import { nextCookies }           from 'better-auth/next-js'; // for Next.js server actions
-import { db }                    from '@repo/db';
-import { sendEmail }             from '@repo/email';
+         emailOtp }                from 'better-auth/plugins';
+import { passkey }                 from '@better-auth/passkey';
+import { nextCookies }             from 'better-auth/next-js';
+import { db }                      from '@repo/db';
+import { sendEmail }               from '@repo/email';
 import { ac, adminRole, userRole,
-         managerRole, guestRole } from '../permissions';
-import { authEventEmitter }      from '../plugins/auth-events.plugin';
+         managerRole, guestRole }  from '../permissions';
  
 export const auth = betterAuth({
   // BETTER_AUTH_SECRET and BETTER_AUTH_URL auto-read from process.env
@@ -302,11 +319,10 @@ export const auth = betterAuth({
  
   database: drizzleAdapter(db, { provider: 'pg' }),
  
-  // ── Email + Password ─────────────────────────────────────
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    // Argon2id is built-in to better-auth — no custom hasher needed
+    // Argon2id hashing is built-in — no custom hasher needed
     sendResetPassword: async ({ user, url }) => {
       await sendEmail({ to: user.email, subject: 'Reset your password',
         template: 'reset-password', data: { url, name: user.name } });
@@ -321,7 +337,6 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
   },
  
-  // ── Social providers ─────────────────────────────────────
   socialProviders: {
     google:    { clientId: process.env.GOOGLE_CLIENT_ID!,    clientSecret: process.env.GOOGLE_CLIENT_SECRET! },
     github:    { clientId: process.env.GITHUB_CLIENT_ID!,    clientSecret: process.env.GITHUB_CLIENT_SECRET! },
@@ -332,17 +347,17 @@ export const auth = betterAuth({
   },
  
   plugins: [
-    // 1. JWT: issues JWKS-signed tokens + exposes /api/auth/jwks
-    //    Official docs: "not a replacement for session — for services needing JWT"
+    // 1. JWT — issues JWKS-signed tokens, exposes /api/auth/jwks
+    //    Per docs: 'not a replacement for session — for services needing JWT'
     jwt({
       jwks: {
         keyPairConfig:    { alg: 'ES256' },
-        rotationInterval: 60 * 60 * 24 * 30,   // 30 days
-        gracePeriod:      60 * 60 * 24 * 30,   // old key stays valid 30 days
+        rotationInterval: 60 * 60 * 24 * 30,  // 30 days
+        gracePeriod:      60 * 60 * 24 * 30,  // old key valid 30 days post-rotation
       },
       jwt: {
         expirationTime: process.env.AUTH_JWT_EXPIRATION ?? '15m',
-        definePayload: ({ user }) => ({          // only what services need
+        definePayload: ({ user }) => ({
           id:    user.id,
           email: user.email,
           role:  user.role,
@@ -351,25 +366,23 @@ export const auth = betterAuth({
       },
     }),
  
-    // 2. Bearer: allows Authorization: Bearer <token> instead of cookies.
-    //    Required for NestJS API (cross-domain, no cookies).
-    //    Official docs: "use cautiously — for APIs that don't support cookies"
+    // 2. Bearer — allows Authorization: Bearer <token>
+    //    Per docs: 'use cautiously — for APIs that don't support cookies'
     bearer(),
  
-    // 3. Admin + custom RBAC via shared permissions.ts
+    // 3. Admin + custom RBAC
     admin({
       ac,
       roles: { guest: guestRole, user: userRole, manager: managerRole, admin: adminRole },
-      // adminRoles option NOT needed when using custom ac + roles (per docs)
     }),
  
     // 4. Two-factor (TOTP + backup codes)
     twoFactor({ issuer: process.env.AUTH_TOTP_ISSUER ?? 'YourApp' }),
  
-    // 5. Passkeys (WebAuthn) — separate package since v1.4
+    // 5. Passkeys (separate package since v1.4)
     passkey(),
  
-    // 6. Magic link (passwordless email sign-in)
+    // 6. Magic link
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         await sendEmail({ to: email, subject: 'Your sign-in link',
@@ -381,46 +394,30 @@ export const auth = betterAuth({
     emailOtp({
       sendVerificationOTP: async ({ email, otp, type }) => {
         await sendEmail({ to: email,
-          subject: type === 'sign-in' ? 'Your sign-in code' : 'Your verification code',
+          subject: type === 'sign-in' ? 'Your sign-in code' : 'Verify your email',
           template: 'otp', data: { otp } });
       },
     }),
  
-    // 8. Next.js cookie helper — MUST be last in the plugins array
+    // 8. Next.js cookie helper — MUST be last in plugins array
     nextCookies(),
- 
-    // 9. Domain event emitter (EDA) — see Section 11
-    authEventEmitter(),
   ],
- 
-  user: {
-    additionalFields: {
-      // 'role' added automatically by admin plugin
-      // Add custom fields here, e.g.:
-      // onboardingCompleted: { type: 'boolean', defaultValue: false, input: false },
-    },
-  },
 });
  
 export type Auth = typeof auth;
 
 
-9. Client Instance — src/lib/auth-client.ts
-No separate @better-auth/react package needed
-better-auth ships React hooks (useSession, signIn, signOut etc.) inside the main package via createAuthClient(). The hooks are tree-shakeable and work in Vite, Next.js, and Expo.
+11. Client Instance — src/lib/auth-client.ts
+Shared by apps/web and apps/marketing. No separate @better-auth/react needed — React hooks ship inside createAuthClient(). Pass the exact ac and roles objects from permissions.ts — TypeScript inference breaks if you re-export through a server file.
 
 // src/lib/auth-client.ts
-// Import from 'better-auth/plugins/admin/client' for adminClient,
-// not from 'better-auth/plugins/admin' — the /client subpath is browser-safe.
- 
 import { createAuthClient }    from 'better-auth/client';
-import { jwtClient }           from 'better-auth/client/plugins';
-import { adminClient }         from 'better-auth/client/plugins';
-import { twoFactorClient }     from 'better-auth/client/plugins';
-import { passkeyClient }       from 'better-auth/client/plugins';
-import { magicLinkClient }     from 'better-auth/client/plugins';
-import { emailOtpClient }      from 'better-auth/client/plugins';
-// Import from the SHARED permissions.ts (no server-only imports):
+import { jwtClient,
+         adminClient,
+         twoFactorClient,
+         passkeyClient,
+         magicLinkClient,
+         emailOtpClient }      from 'better-auth/client/plugins';
 import { ac, roles }           from '../permissions';
  
 export const authClient = createAuthClient({
@@ -429,9 +426,7 @@ export const authClient = createAuthClient({
  
   plugins: [
     jwtClient(),
-    // Pass EXACT ac and roles objects from permissions.ts (not re-exports)
-    // TypeScript inference breaks if you pass generic AccessControl type
-    adminClient({ ac, roles }),
+    adminClient({ ac, roles }),   // pass exact objects, not re-exports
     twoFactorClient({ twoFactorPage: '/auth/two-factor' }),
     passkeyClient(),
     magicLinkClient(),
@@ -440,41 +435,29 @@ export const authClient = createAuthClient({
  
   fetchOptions: {
     onSuccess: (ctx) => {
-      // Opaque session token (session-length TTL)
-      const bearerToken = ctx.response.headers.get('set-auth-token');
-      // JWKS-signed JWT (15min TTL) — use for Authorization: Bearer on API calls
       const jwt = ctx.response.headers.get('set-auth-jwt');
-      if (bearerToken) sessionStorage.setItem('__ba_token', bearerToken);
-      if (jwt)         sessionStorage.setItem('__ba_jwt', jwt);
+      if (jwt) sessionStorage.setItem('__ba_jwt', jwt);
     },
   },
 });
  
 export type AuthClient = typeof authClient;
  
-// Usage in any component:
-// const { data: session, isPending } = authClient.useSession();
-// const { data: tokenData } = await authClient.token(); // → tokenData.token = JWT
+// Get JWT for Authorization: Bearer on apps/api calls:
+// const { data } = await authClient.token();
+// fetch("/api/users", { headers: { Authorization: `Bearer ${data.token}` } })
 
 
-10. NestJS Integration — @thallesp/nestjs-better-auth
-10.1 main.ts — bodyParser: false (mandatory)
-Why bodyParser: false is required
-better-auth must read the raw request body to parse its own auth requests.
-Without this, sign-in and sign-up will return "invalid body" errors.
-@thallesp/nestjs-better-auth re-adds Express body parsers for all non-auth routes automatically.
-Side effect: rawBody: true in NestFactory.create() no longer works. Use bodyParser.rawBody in AuthModule.forRoot() instead.
-
+12. NestJS Integration — apps/api
+12.1 main.ts
 // apps/api/src/main.ts
-import { NestFactory }     from '@nestjs/core';
-import { AppModule }       from './app.module';
-import { ValidationPipe }  from '@nestjs/common';
+import { NestFactory }      from '@nestjs/core';
+import { AppModule }        from './app.module';
  
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bodyParser: false,  // REQUIRED — @thallesp/nestjs-better-auth re-adds parsers
+    bodyParser: false,  // REQUIRED for @thallesp/nestjs-better-auth
   });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({
     origin:      process.env.BETTER_AUTH_TRUSTED_ORIGINS!.split(','),
     credentials: true,
@@ -483,49 +466,187 @@ async function bootstrap() {
 }
 bootstrap();
 
-10.2 app.module.ts
+12.2 app.module.ts
 // apps/api/src/app.module.ts
-import { Module }              from '@nestjs/common';
-import { EventEmitterModule }  from '@nestjs/event-emitter';
-import { AuthModule }          from '@thallesp/nestjs-better-auth';
-import { auth }                from '@repo/auth';
+import { Module }     from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { auth }       from '@repo/auth';
+import { UsersModule }    from './users/users.module';
+import { ProjectsModule } from './projects/projects.module';
  
 @Module({
   imports: [
-    EventEmitterModule.forRoot({ wildcard: true, delimiter: '.' }),
+    CqrsModule.forRoot(),
     AuthModule.forRoot({
       auth,
       bodyParser: {
         json:       { limit: '2mb' },
         urlencoded: { limit: '2mb', extended: true },
-        rawBody:    true,   // enables req.rawBody for webhooks
+        rawBody:    true,
       },
-      // disableGlobalAuthGuard: false  (default — AuthGuard is global)
-      // disableControllers: false       (default — mounts /api/auth/* routes)
     }),
+    UsersModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {}
 
-AuthGuard is global by default
-@thallesp/nestjs-better-auth registers an AuthGuard globally — ALL routes are protected by default.
-Use @AllowAnonymous() on controllers/routes that should be public.
-The guard validates sessions using better-auth's auth.api.getSession() — this DOES check the DB.
-For stateless JWT verification (no DB call), build a separate JwksGuard (see Section 10.3).
+12.3 Feature module — users.module.ts
+// apps/api/src/users/users.module.ts
+import { Module }            from '@nestjs/common';
+import { CqrsModule }        from '@nestjs/cqrs';
+import { UsersController }   from './users.controller';
+import { UsersRepository }   from './repositories/users.repository';
+import { BanUserHandler }    from './commands/ban-user.handler';
+import { ChangeRoleHandler } from './commands/change-role.handler';
+import { GetUserHandler }    from './queries/get-user.handler';
+import { ListUsersHandler }  from './queries/list-users.handler';
+ 
+@Module({
+  imports: [CqrsModule],
+  controllers: [UsersController],
+  providers: [
+    UsersRepository,
+    // Commands
+    BanUserHandler,
+    ChangeRoleHandler,
+    // Queries
+    GetUserHandler,
+    ListUsersHandler,
+  ],
+})
+export class UsersModule {}
 
-10.3 Stateless JWKS Guard (no DB call on hot path)
-The global AuthGuard from @thallesp validates opaque session tokens with a DB call. For your stateless requirement, add a separate JwksGuard that verifies the JWT locally. Use both: AuthGuard for auth-server routes, JwksGuard for your business API routes.
+12.4 Command + handler (together in same folder)
+// apps/api/src/users/commands/ban-user.command.ts
+export class BanUserCommand {
+  constructor(
+    public readonly targetUserId: string,
+    public readonly actorId:      string,
+    public readonly reason:       string,
+    public readonly expiresAt:    Date | null,
+  ) {}
+}
+ 
+// apps/api/src/users/commands/ban-user.handler.ts
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ForbiddenException }              from '@nestjs/common';
+import { BanUserCommand }                  from './ban-user.command';
+import { UsersRepository }                from '../repositories/users.repository';
+import { auth }                           from '@repo/auth';
+ 
+@CommandHandler(BanUserCommand)
+export class BanUserHandler implements ICommandHandler<BanUserCommand> {
+  constructor(private readonly users: UsersRepository) {}
+ 
+  async execute(command: BanUserCommand) {
+    const { targetUserId, reason, expiresAt } = command;
+ 
+    // Use better-auth admin API to ban the user
+    await auth.api.banUser({
+      body: { userId: targetUserId, reason, banExpiresIn: expiresAt
+        ? Math.floor((expiresAt.getTime() - Date.now()) / 1000)
+        : undefined,
+      },
+      headers: new Headers(),
+    });
+ 
+    return { success: true };
+  }
+}
 
+12.5 Query + handler (together in same folder)
+// apps/api/src/users/queries/get-user.query.ts
+export class GetUserQuery {
+  constructor(public readonly userId: string) {}
+}
+ 
+// apps/api/src/users/queries/get-user.handler.ts
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { NotFoundException }           from '@nestjs/common';
+import { GetUserQuery }                from './get-user.query';
+import { UsersRepository }             from '../repositories/users.repository';
+ 
+@QueryHandler(GetUserQuery)
+export class GetUserHandler implements IQueryHandler<GetUserQuery> {
+  constructor(private readonly users: UsersRepository) {}
+ 
+  async execute(query: GetUserQuery) {
+    const user = await this.users.findById(query.userId);
+    if (!user) throw new NotFoundException(`User ${query.userId} not found`);
+    return user;
+  }
+}
+
+12.6 Controller — thin, dispatches only
+// apps/api/src/users/users.controller.ts
+import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import { CommandBus, QueryBus }  from '@nestjs/cqrs';
+import { JwksGuard }             from '@repo/auth/nestjs';
+import { RbacGuard }             from '@repo/auth/nestjs';
+import { CurrentUser }           from '@repo/auth/nestjs';
+import { RequirePermission }     from '@repo/auth/nestjs';
+import { Public }                from '@repo/auth/nestjs';
+import { BanUserCommand }        from './commands/ban-user.command';
+import { ChangeRoleCommand }     from './commands/change-role.command';
+import { GetUserQuery }          from './queries/get-user.query';
+import { ListUsersQuery }        from './queries/list-users.query';
+import type { JWTClaims }        from '@repo/auth/types';
+ 
+@Controller('users')
+@UseGuards(JwksGuard, RbacGuard)
+export class UsersController {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus:   QueryBus,
+  ) {}
+ 
+  @Get(':id')
+  @RequirePermission('user', 'read')
+  getUser(@Param('id') id: string) {
+    return this.queryBus.execute(new GetUserQuery(id));
+  }
+ 
+  @Get()
+  @RequirePermission('team', 'invite')   // manager + admin
+  listUsers() {
+    return this.queryBus.execute(new ListUsersQuery());
+  }
+ 
+  @Post(':id/ban')
+  @RequirePermission('user', 'ban')      // admin only
+  banUser(
+    @Param('id') id: string,
+    @Body() body: BanUserDto,
+    @CurrentUser() actor: JWTClaims,
+  ) {
+    return this.commandBus.execute(
+      new BanUserCommand(id, actor.id, body.reason, body.expiresAt)
+    );
+  }
+ 
+  @Post(':id/role')
+  @RequirePermission('user', 'set-role')  // admin only
+  changeRole(
+    @Param('id') id: string,
+    @Body() body: ChangeRoleDto,
+  ) {
+    return this.commandBus.execute(new ChangeRoleCommand(id, body.role));
+  }
+}
+
+12.7 Stateless JWKS Guard
 // src/adapters/nestjs/jwks.guard.ts
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException }
        from '@nestjs/common';
 import { Reflector }               from '@nestjs/core';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
  
-// Cached in module scope — jose re-fetches automatically on kid mismatch.
+// Module-scope singleton — jose auto-refreshes on kid mismatch
 const JWKS = createRemoteJWKSet(
   new URL(`${process.env.BETTER_AUTH_URL}/api/auth/jwks`),
-  { cooldownDuration: 300_000 },  // min 5min between JWKS refetches on kid miss
+  { cooldownDuration: 300_000 },
 );
  
 @Injectable()
@@ -540,31 +661,29 @@ export class JwksGuard implements CanActivate {
  
     const req   = ctx.switchToHttp().getRequest();
     const token = req.headers.authorization?.replace('Bearer ', '')?.trim();
-    if (!token) throw new UnauthorizedException('No bearer token');
+    if (!token) throw new UnauthorizedException('Missing bearer token');
  
     try {
       const { payload } = await jwtVerify(token, JWKS, {
         issuer:   process.env.BETTER_AUTH_URL!,
         audience: process.env.BETTER_AUTH_URL!,
       });
-      req.user = payload;    // { id, email, role, name, iat, exp, ... }
+      req.user = payload;
       return true;
     } catch (err: any) {
       if (err?.code === 'ERR_JWT_EXPIRED')
-        throw new UnauthorizedException('Token expired — call /api/auth/token to refresh');
-      if (err?.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED')
-        throw new UnauthorizedException('Invalid token signature');
-      throw new UnauthorizedException('Token verification failed');
+        throw new UnauthorizedException('Token expired');
+      throw new UnauthorizedException('Invalid token');
     }
   }
 }
 
-10.4 RBAC Guard + Decorators
+12.8 RBAC Guard
 // src/adapters/nestjs/rbac.guard.ts
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException }
        from '@nestjs/common';
-import { Reflector }            from '@nestjs/core';
-import { ac, roles }            from '@repo/auth/permissions';
+import { Reflector }    from '@nestjs/core';
+import { ac, roles }   from '../../permissions';
  
 export const PERMISSION_KEY = 'required_permission';
  
@@ -583,261 +702,201 @@ export class RbacGuard implements CanActivate {
     const role     = roles[roleName];
     if (!role) throw new ForbiddenException(`Unknown role: ${user.role}`);
  
-    const allowed = ac.hasPermission(role, { [required.resource]: [required.action] });
-    if (!allowed) throw new ForbiddenException(
-      `Role '${user.role}' cannot '${required.action}' on '${required.resource}'`
-    );
+    const allowed = ac.hasPermission(role, {
+      [required.resource]: [required.action],
+    });
+    if (!allowed) throw new ForbiddenException('Insufficient permissions');
     return true;
   }
 }
- 
-// src/adapters/nestjs/decorators.ts
-import { SetMetadata, createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { PERMISSION_KEY } from './rbac.guard';
- 
-export const RequirePermission = (resource: string, action: string) =>
-  SetMetadata(PERMISSION_KEY, { resource, action });
- 
-export const Public = () => SetMetadata('isPublic', true);
- 
-export const CurrentUser = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext) => ctx.switchToHttp().getRequest().user
-);
- 
-// Usage in a controller:
-// @UseGuards(JwksGuard, RbacGuard)
-// @RequirePermission('project', 'publish')
-// async publish(@CurrentUser() user: JWTClaims) { ... }
-
-10.5 NestJS DI Hooks for EDA — @Hook decorator
-Use @thallesp/nestjs-better-auth's @Hook, @BeforeHook, @AfterHook decorators. They integrate with NestJS DI — so you can inject services and publish to EventEmitter2 directly.
-
-// apps/api/src/auth/hooks/user-registered.hook.ts
-import { Injectable }         from '@nestjs/common';
-import { EventEmitter2 }      from '@nestjs/event-emitter';
-import { Hook, AfterHook,
-         AuthHookContext }    from '@thallesp/nestjs-better-auth';
- 
-@Hook()
-@Injectable()
-export class UserRegisteredHook {
-  constructor(private readonly events: EventEmitter2) {}
- 
-  @AfterHook('/sign-up/email')
-  async onEmailSignUp(ctx: AuthHookContext) {
-    const user = ctx.context.newSession?.user;
-    if (!user) return;
-    this.events.emit('auth.user.registered', {
-      userId:    user.id,
-      email:     user.email,
-      provider:  'email',
-      timestamp: new Date().toISOString(),
-    });
-  }
- 
-  @AfterHook('/callback/:provider')
-  async onSocialLogin(ctx: AuthHookContext) {
-    const user     = ctx.context.newSession?.user;
-    const provider = ctx.path.split('/').pop();
-    if (!user) return;
-    this.events.emit('auth.user.social-login', {
-      userId: user.id, email: user.email, provider,
-      isNewUser: ctx.context.isNewUser ?? false,
-      timestamp: new Date().toISOString(),
-    });
-  }
-}
- 
-// app.module.ts — register as a provider alongside AuthModule:
-// providers: [UserRegisteredHook]
-
-Domain event	Trigger	EDA consumers
-auth.user.registered	Email sign-up	Welcome email, workspace provisioner, analytics
-auth.user.social-login	OAuth callback	Profile enrichment, last-login tracker
-auth.user.email-verified	Email verification click	Onboarding unlock, feature flags
-auth.user.password-reset	Password reset completion	Security audit log, notification
-auth.user.role-changed	Admin sets role	Permission cache bust, audit log
-auth.user.banned	Admin bans user	Session revocation, notification
 
 
-11. Client App Integration
-11.1 apps/web — React/Vite
-// apps/web/src/App.tsx
+13. Database Schema — CLI Generated
+Never hand-write the auth schema
+Run from packages/auth/ after any plugin change:
+  npx @better-auth/cli generate --output src/db/auth-schema.ts
+  pnpm turbo run db:migrate
+
+Table	Plugin	Key columns
+user	core	id, name, email, emailVerified, image, role (admin plugin), createdAt, updatedAt
+session	core	id, token (opaque), userId, expiresAt, ipAddress, userAgent
+account	core	id, userId, provider, providerAccountId, accessToken, refreshToken
+verification	core	id, identifier, value, expiresAt (email verify + password reset tokens)
+jwks	jwt	id, publicKey, privateKey (AES-256-GCM encrypted), createdAt, expiresAt
+twoFactor	twoFactor	userId, secret (encrypted), backupCodes (hashed)
+passkey	@better-auth/passkey	id, credentialId, publicKey, userId, counter, deviceType
+
+
+14. Client App Integration
+14.1 apps/web — React + Vite
 import { authClient } from '@repo/auth/client';
  
-// Sign up:
+// Sign up
 await authClient.signUp.email({ email, password, name, callbackURL: '/dashboard' });
  
-// Sign in:
+// Sign in
 await authClient.signIn.email({ email, password });
  
-// Social (redirects to provider):
+// Social (redirects)
 await authClient.signIn.social({ provider: 'google', callbackURL: '/dashboard' });
  
-// React hook (ships with createAuthClient — no separate package):
+// React hook
 const { data: session, isPending } = authClient.useSession();
  
-// Get JWT for NestJS API:
+// Get JWT for apps/api calls
 const { data } = await authClient.token();
-const jwt = data?.token;    // send as Authorization: Bearer <jwt>
- 
-// Client-side permission check (no server call):
-await authClient.admin.checkPermission({ permissions: { project: ['publish'] } });
+await fetch('/api/users', { headers: { Authorization: `Bearer ${data.token}` } });
 
-11.2 apps/marketing — Next.js (App Router)
-// apps/marketing/src/app/api/auth/[...all]/route.ts
-import { auth }             from '@repo/auth';
-import { toNextJsHandler }  from 'better-auth/next-js';
+14.2 apps/marketing — Next.js
+// src/app/api/auth/[...all]/route.ts
+import { auth }            from '@repo/auth';
+import { toNextJsHandler } from 'better-auth/next-js';
 export const { GET, POST } = toNextJsHandler(auth);
  
-// apps/marketing/src/middleware.ts
+// src/middleware.ts
 import { getSessionCookie } from 'better-auth/cookies';  // no DB call
 import { NextRequest, NextResponse } from 'next/server';
  
-export async function middleware(request: NextRequest) {
-  const session = await getSessionCookie(request);
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !session)
-    return NextResponse.redirect(new URL('/login', request.url));
+export async function middleware(req: NextRequest) {
+  const session = await getSessionCookie(req);
+  if (req.nextUrl.pathname.startsWith('/dashboard') && !session)
+    return NextResponse.redirect(new URL('/login', req.url));
   return NextResponse.next();
 }
-export const config = { matcher: ['/dashboard/:path*', '/account/:path*'] };
+export const config = { matcher: ['/dashboard/:path*'] };
  
-// Server Component (App Router):
-import { headers }   from 'next/headers';
-import { auth }      from '@repo/auth';
+// Server Component
+import { headers }  from 'next/headers';
+import { auth }     from '@repo/auth';
  
-export default async function DashboardPage() {
+export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect('/login');
   return <Dashboard user={session.user} />;
 }
 
-11.3 apps/mobile — Expo
+14.3 apps/mobile — Expo
 // src/adapters/mobile/expo-client.ts
-import { createAuthClient }   from 'better-auth/client';
-import { jwtClient }          from 'better-auth/client/plugins';
-import { adminClient }        from 'better-auth/client/plugins';
-import { twoFactorClient }    from 'better-auth/client/plugins';
-import * as SecureStore       from 'expo-secure-store';
-import { ac, roles }          from '@repo/auth/permissions';
+import { createAuthClient }  from 'better-auth/client';
+import { jwtClient,
+         adminClient,
+         twoFactorClient }   from 'better-auth/client/plugins';
+import * as SecureStore      from 'expo-secure-store';
+import { ac, roles }         from '@repo/auth/permissions';
  
 const TOKEN_KEY = '__ba_token';
  
 export const mobileAuthClient = createAuthClient({
   baseURL: process.env.EXPO_PUBLIC_AUTH_URL!,
-  plugins: [ jwtClient(), adminClient({ ac, roles }), twoFactorClient() ],
+  plugins: [jwtClient(), adminClient({ ac, roles }), twoFactorClient()],
   fetchOptions: {
     onSuccess: async (ctx) => {
       const token = ctx.response.headers.get('set-auth-token');
       if (token) await SecureStore.setItemAsync(TOKEN_KEY, token);
     },
-    auth: {
-      type:  'Bearer',
-      token: async () => (await SecureStore.getItemAsync(TOKEN_KEY)) ?? '',
-    },
+    auth: { type: 'Bearer',
+      token: async () => (await SecureStore.getItemAsync(TOKEN_KEY)) ?? '' },
   },
 });
 
 
-12. Database Schema
-Always CLI-generated — never hand-written
-Run from packages/auth/ after any plugin config change:
-npx @better-auth/cli generate --output src/db/auth-schema.ts
-Then run your Drizzle migration: pnpm turbo run db:migrate
+15. Auth Server Endpoints
+All routes served by better-auth under /api/auth, mounted by AuthModule.forRoot() inside NestJS.
 
-Table	Source plugin	Notable columns
-user	core	id, name, email, emailVerified, image, role (added by admin plugin)
-session	core	id, token (opaque), userId, expiresAt, ipAddress, userAgent
-account	core	id, userId, provider, providerAccountId, accessToken, refreshToken
-verification	core	Shared for email verify tokens, password reset tokens
-jwks	jwt plugin	publicKey, privateKey (AES-256-GCM encrypted), createdAt, expiresAt
-twoFactor	twoFactor	userId, secret (encrypted), backupCodes (hashed)
-passkey	@better-auth/passkey	credentialId, publicKey, userId, counter, deviceType
-
-
-13. All Auth Server Endpoints
 Endpoint	Method	Feature
-/api/auth/sign-up/email	POST	Email+password registration
-/api/auth/sign-in/email	POST	Email+password sign-in
+/api/auth/sign-up/email	POST	Email + password registration
+/api/auth/sign-in/email	POST	Email + password sign-in
 /api/auth/sign-out	POST	Invalidate session
-/api/auth/get-session	GET	Returns session; set-auth-jwt header = JWT
-/api/auth/token	GET	jwt plugin: returns { token: "<jwt>" }
-/api/auth/jwks	GET	jwt plugin: JWKS public key — cache indefinitely
-/api/auth/sign-in/social	POST	Initiate OAuth flow
-/api/auth/callback/:provider	GET	OAuth callback handler
+/api/auth/get-session	GET	Current session (set-auth-jwt header = JWT)
+/api/auth/token	GET	jwt plugin: { token: "<signed-jwt>" }
+/api/auth/jwks	GET	JWKS public key — cache indefinitely, refresh on kid miss
+/api/auth/sign-in/social	POST	Initiate OAuth (redirects to provider)
+/api/auth/callback/:provider	GET	OAuth callback — Google, GitHub, Apple, Microsoft, Discord
 /api/auth/verify-email	GET	Email verification link handler
 /api/auth/send-verification-email	POST	Re-send verification email
-/api/auth/forget-password	POST	Send password reset email (v1.4+ name)
-/api/auth/reset-password	POST	Set new password via reset token
-/api/auth/sign-in/magic-link	POST	Send magic link email
+/api/auth/forget-password	POST	Send password reset email
+/api/auth/reset-password	POST	Set new password
+/api/auth/sign-in/magic-link	POST	Send magic link
 /api/auth/magic-link/verify	GET	Verify magic link token
 /api/auth/email-otp/send-verification-otp	POST	Send 6-digit OTP
-/api/auth/email-otp/verify-email	POST	Verify OTP code
-/api/auth/two-factor/enable	POST	Enable TOTP, returns secret + QR URL
-/api/auth/two-factor/verify-totp	POST	Validate TOTP code at login
+/api/auth/email-otp/verify-email	POST	Verify OTP
+/api/auth/two-factor/enable	POST	Enable TOTP — returns secret + QR URL
+/api/auth/two-factor/verify-totp	POST	Validate TOTP at login
 /api/auth/two-factor/generate-backup-codes	POST	Regenerate backup codes
-/api/auth/passkey/add-passkey	POST	Begin WebAuthn registration
-/api/auth/passkey/authenticate	POST	Authenticate with passkey
-/api/auth/admin/set-role	POST	Set user role (any role from ac+roles)
-/api/auth/admin/ban-user	POST	Ban user (optional reason + expiry)
-/api/auth/admin/list-users	GET	Paginated user list with filters
+/api/auth/passkey/add-passkey	POST	WebAuthn registration
+/api/auth/passkey/authenticate	POST	WebAuthn authentication
+/api/auth/admin/set-role	POST	Set user role
+/api/auth/admin/ban-user	POST	Ban user (reason + optional expiry)
+/api/auth/admin/unban-user	POST	Unban user
+/api/auth/admin/list-users	GET	Paginated user list
 /api/auth/admin/impersonate-user	POST	Create impersonation session
-/api/auth/admin/check-permission	POST	Check role permission (client-safe)
 
 
-14. Security Checklist
+16. What @repo/auth Owns vs. apps/api
+@repo/auth owns	apps/api owns
+Token signing + JWKS key rotation	Business-level authorization (can user edit this invoice?)
+All OAuth 2.0 / OIDC flows	Feature modules (users, projects, billing...)
+PKCE code exchange (SPA + mobile)	CQRS commands + queries for business operations
+Magic link + email OTP flows	Repository implementations for business data
+TOTP (Google Authenticator / Authy)	DTOs and validation for business endpoints
+Passkeys / WebAuthn	Business entities and domain logic
+Email verification	API documentation (Swagger)
+Password hashing (Argon2id built-in)	Rate limiting on business endpoints
+Session issuance (opaque) + JWT issuance	Feature-level error handling
+RBAC role + permission definitions	Nothing auth-specific
+Admin plugin (ban, impersonate, list, set-role)	Nothing auth-specific
+Auth DB schema (user, account, session, jwks)	All other DB tables
+
+
+17. Security Checklist
 JWT & JWKS
-    • ES256 (ECDSA P-256) — asymmetric. Public key distributable with no risk.
+    • ES256 (ECDSA P-256) — asymmetric. Public key distributable safely to all services.
     • 15-minute TTL. Short TTL is the primary revocation mechanism for stateless tokens.
-    • JWKS auto-rotates every 30 days via jwt() plugin config. Grace period 30 days.
-    • Cache JWKS in services via jose createRemoteJWKSet — refetches on kid mismatch only.
-    • Validate iss and aud on every jwtVerify call.
-    • Immediate revocation (logout): call POST /api/auth/sign-out to kill the session. The JWT will still be valid until its 15-min TTL. For high-security operations, maintain a jti blocklist in Redis with TTL = JWT expiry.
+    • JWKS rotates every 30 days, 30-day grace period. Managed by jwt() plugin — nothing to configure manually.
+    • Cache JWKS via createRemoteJWKSet() — jose auto-refreshes on kid mismatch. Do not refetch on every request.
+    • Validate iss and aud on every jwtVerify call to prevent token reuse across services.
+    • Immediate revocation on logout: POST /api/auth/sign-out invalidates the session. The JWT still lives for up to 15 min. For high-security operations, maintain a jti denylist in Redis.
 
-Bearer token (mobile/SPA)
-    • Opaque token from set-auth-token: store in SecureStore (mobile) or sessionStorage (SPA). Never localStorage.
-    • JWT from set-auth-jwt: use for Authorization: Bearer on API calls. 15-min TTL. In memory or sessionStorage.
-    • Do NOT send the opaque bearer token to your NestJS business API — only to better-auth routes.
+Tokens in clients
+    • Opaque session token (set-auth-token): store in SecureStore (mobile) or sessionStorage (SPA). Never localStorage.
+    • JWT (set-auth-jwt): use for Authorization: Bearer on API calls. 15-min TTL. In memory or sessionStorage.
+    • Do not send the opaque session token to your NestJS business API — only to /api/auth/* routes.
 
-OAuth & PKCE
-    • PKCE required for all public clients (SPA, mobile). better-auth handles this natively.
-    • state param validated by better-auth on every callback.
-    • Apple: store user email on first sign-in — Apple provides it only once.
+OAuth
+    • PKCE required for all public clients. better-auth handles this natively.
+    • Apple: store user email on first sign-in — Apple only provides it once.
     • Microsoft Entra: use oid (not email) as the stable identity anchor.
 
 General
-    • Argon2id built into better-auth — no custom hasher needed, no config required.
-    • Email enumeration prevention: better-auth returns same 200 on sign-up and forgot-password when requireEmailVerification is enabled.
+    • Argon2id built into better-auth — no config needed.
+    • Email enumeration prevention: same 200 response for registered vs unregistered email on forgot-password when requireEmailVerification is enabled.
     • Rate limit /api/auth/* routes with @nestjs/throttler in front of AuthModule.
-    • Add helmet() to apps/api for X-Frame-Options, CSP, HSTS.
-    • CORS: trustedOrigins in better-auth config + enableCors() in NestJS must both be set.
+    • Add helmet() to apps/api for security headers.
 
 
-15. Adding a New App — Zero Changes to @repo/auth
-New API service (Hono, Lambda, tRPC, gRPC)
-    1. Import jose: npm add jose
-    2. Verify JWTs: jwtVerify(token, createRemoteJWKSet(new URL(BETTER_AUTH_URL + '/api/auth/jwks')))
-    3. Import ac and roles from @repo/auth/permissions for permission checks
-    4. Done. No changes to @repo/auth.
+18. Adding a New App — Zero Changes to @repo/auth
+New API service
+    1. Import jose. Verify JWTs with createRemoteJWKSet pointing to /api/auth/jwks.
+    2. Import ac and roles from @repo/auth/permissions for permission checks.
+    3. Done — no changes to @repo/auth.
 
 New client app
-    5. Import authClient from @repo/auth/client or create mobile variant
-    6. Add origin to BETTER_AUTH_TRUSTED_ORIGINS
-    7. Register redirect URI in each OAuth provider console
-    8. Done. No changes to @repo/auth.
+    4. Import authClient from @repo/auth/client or create a mobile variant.
+    5. Add the app origin to BETTER_AUTH_TRUSTED_ORIGINS.
+    6. Register the redirect URI in each OAuth provider console.
+    7. Done — no changes to @repo/auth.
 
 
-16. Implementation Plan
-Phase	Tasks	Effort
-1. Scaffold	Create package, tsconfig, exports. Install better-auth ^1.6.20. Write permissions.ts with all roles.	0.5 day
-2. Server instance	Write lib/auth.ts with email+password only. Run npx @better-auth/cli generate. Run Drizzle migration.	1 day
-3. JWT + Bearer	Add jwt() + bearer() plugins. Test /api/auth/token and /api/auth/jwks. Confirm ES256 key in jwks table.	0.5 day
-4. NestJS module	Install @thallesp/nestjs-better-auth. Set bodyParser: false. Wire AuthModule. Write JwksGuard + RbacGuard.	1 day
-5. Social providers	Add Google, GitHub, Apple, Microsoft, Discord. Test each OAuth callback end-to-end.	1–2 days
-6. Client SDKs	Wire auth-client.ts into apps/web (Vite) and apps/marketing (Next.js route handler + middleware).	1 day
-7. Advanced auth	Add twoFactor, @better-auth/passkey, magicLink, emailOtp. Wire email templates via @repo/email.	1–2 days
-8. Mobile	Expo mobileAuthClient with SecureStore. PKCE flow via expo-auth-session.	1 day
-9. EDA hooks	Implement @Hook-decorated services in apps/api. Wire to EventEmitter2. Build downstream consumers.	1 day
-10. Hardening	@nestjs/throttler rate limiting. helmet(). CORS audit. JWKS caching test. Security header review.	0.5 day
+19. Implementation Order
+Step	Task	Notes
+1	Create packages/auth. Write permissions.ts with all roles. Install better-auth ^1.6.20.	0.5 day
+2	Write lib/auth.ts with email+password only. Run npx @better-auth/cli generate. Run Drizzle migration.	1 day
+3	Add jwt() + bearer() plugins. Test /api/auth/token and /api/auth/jwks.	0.5 day
+4	Wire @thallesp/nestjs-better-auth in apps/api. Set bodyParser: false. Write JwksGuard + RbacGuard.	1 day
+5	Add all social providers. Test each OAuth callback end-to-end.	1-2 days
+6	Wire auth-client.ts into apps/web (Vite) and apps/marketing (Next.js route handler + middleware).	1 day
+7	Add twoFactor, passkey, magicLink, emailOtp plugins. Wire email templates via @repo/email.	1-2 days
+8	Build apps/mobile adapter with SecureStore. Test PKCE on iOS + Android.	1 day
+9	Rate limiting (@nestjs/throttler), helmet(), CORS audit.	0.5 day
 
-End of document — @repo/auth Architecture, Package Choice & Implementation Guide v4.0
+@repo/auth — Architecture & Implementation Guide — Final

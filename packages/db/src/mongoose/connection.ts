@@ -1,15 +1,20 @@
 import mongoose from "mongoose"
+import { databaseEnv } from "@workspace/config/database"
 
 let isConnected = false
 
 const RETRY_ATTEMPTS = 5
 const RETRY_DELAY_MS = 3000
 
-/**
- * @description Connect to MongoDB via Mongoose with retry logic.
- * Safe to call multiple times — only the first call establishes the connection.
- */
-export async function connectDb(uri: string): Promise<typeof mongoose> {
+export function getDb() {
+  const db = mongoose.connection.db
+  if (!db) {
+    throw new Error("MongoDB not connected. Call connectDb() first.")
+  }
+  return db
+}
+
+export async function connectDb(uri: string = databaseEnv.MONGODB_URI) {
   if (isConnected) return mongoose
 
   let lastError: unknown
@@ -36,19 +41,8 @@ export async function connectDb(uri: string): Promise<typeof mongoose> {
   throw lastError
 }
 
-/**
- * @description Gracefully close the MongoDB connection.
- */
-export async function disconnectDb(): Promise<void> {
+export async function disconnectDb() {
   if (!isConnected) return
   await mongoose.disconnect()
   isConnected = false
-}
-
-/**
- * @description Return the underlying Mongoose connection.
- * @returns {mongoose.Connection}
- */
-export function getMongooseConnection(): mongoose.Connection {
-  return mongoose.connection
 }

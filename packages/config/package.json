@@ -17,15 +17,25 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "import": "./dist/client.js",
-      "require": "./dist/client.cjs"
+    "./database": {
+      "types": "./dist/server/database.d.ts",
+      "import": "./dist/server/database.js",
+      "require": "./dist/server/database.cjs"
     },
-    "./app": {
-      "types": "./dist/app.d.ts",
-      "import": "./dist/app.js",
-      "require": "./dist/app.cjs"
+    "./email": {
+      "types": "./dist/server/email.d.ts",
+      "import": "./dist/server/email.js",
+      "require": "./dist/server/email.cjs"
+    },
+    "./storage": {
+      "types": "./dist/server/storage.d.ts",
+      "import": "./dist/server/storage.js",
+      "require": "./dist/server/storage.cjs"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js",
+      "require": "./dist/client/index.cjs"
     }
   },
   "scripts": {

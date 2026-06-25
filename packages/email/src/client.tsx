@@ -1,18 +1,21 @@
 import { Resend } from "resend"
-import { env } from "@workspace/config"
+import { emailEnv, getEmailFromAddress } from "@workspace/config/email"
 import { WelcomeEmail } from "./templates/welcome"
 import { VerificationEmail } from "./templates/verification-email"
 import { ResetPasswordEmail } from "./templates/reset-password"
+import { MagicLinkEmail } from "./templates/magic-link"
+import { OtpEmail } from "./templates/otp"
+import { OrganizationInvitationEmail } from "./templates/organization-invitation"
 
-export const resend = new Resend(env.RESEND_API_KEY)
+export const resend = new Resend(emailEnv.RESEND_API_KEY)
 
-const FROM_ADDRESS = `${env.APP_NAME} <no-reply@${new URL(env.CLIENT_URL).hostname}>`
+const FROM_ADDRESS = getEmailFromAddress()
 
 export async function sendWelcomeEmail(to: string, name: string) {
   return resend.emails.send({
     from: FROM_ADDRESS,
     to,
-    subject: `Welcome to ${env.APP_NAME}!`,
+    subject: `Welcome to ${emailEnv.APP_NAME}!`,
     react: <WelcomeEmail name={name} />,
   })
 }
@@ -32,5 +35,50 @@ export async function sendResetPasswordEmail(to: string, url: string) {
     to,
     subject: "Reset your password",
     react: <ResetPasswordEmail url={url} />,
+  })
+}
+
+export async function sendMagicLinkEmail(to: string, url: string) {
+  return resend.emails.send({
+    from: FROM_ADDRESS,
+    to,
+    subject: "Your sign-in link",
+    react: <MagicLinkEmail url={url} />,
+  })
+}
+
+export async function sendOtpEmail(
+  to: string,
+  otp: string,
+  type: "sign-in" | "email-verification" | "forget-password" | "change-email"
+) {
+  const subject =
+    type === "sign-in" ? "Your sign-in code" : "Verify your email"
+
+  return resend.emails.send({
+    from: FROM_ADDRESS,
+    to,
+    subject,
+    react: <OtpEmail otp={otp} />,
+  })
+}
+
+export async function sendOrganizationInvitationEmail(
+  to: string,
+  organizationName: string,
+  inviterName: string,
+  url: string
+) {
+  return resend.emails.send({
+    from: FROM_ADDRESS,
+    to,
+    subject: `Join ${organizationName}`,
+    react: (
+      <OrganizationInvitationEmail
+        organizationName={organizationName}
+        inviterName={inviterName}
+        url={url}
+      />
+    ),
   })
 }

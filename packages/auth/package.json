@@ -1,0 +1,97 @@
+{
+  "name": "@workspace/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/auth.cjs",
+  "module": "./dist/auth.js",
+  "types": "./dist/auth.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.js",
+      "require": "./dist/auth.cjs"
+    },
+    "./client": {
+      "types": "./src/lib/auth-client.ts",
+      "import": "./dist/auth-client.js",
+      "require": "./dist/auth-client.cjs"
+    },
+    "./permissions": {
+      "types": "./src/permissions/platform.ts",
+      "import": "./dist/permissions/platform.js",
+      "require": "./dist/permissions/platform.cjs"
+    },
+    "./permissions/organization": {
+      "types": "./src/permissions/organization.ts",
+      "import": "./dist/permissions/organization.js",
+      "require": "./dist/permissions/organization.cjs"
+    },
+    "./types": {
+      "types": "./src/types/auth.types.ts",
+      "import": "./dist/types/auth.types.js",
+      "require": "./dist/types/auth.types.cjs"
+    },
+    "./nextjs": {
+      "types": "./src/adapters/nextjs/index.ts",
+      "import": "./dist/adapters/nextjs/index.js",
+      "require": "./dist/adapters/nextjs/index.cjs"
+    },
+    "./mobile": {
+      "types": "./src/adapters/mobile/expo-client.ts",
+      "import": "./dist/adapters/mobile/expo-client.js",
+      "require": "./dist/adapters/mobile/expo-client.cjs"
+    },
+    "./nestjs": {
+      "types": "./src/adapters/nestjs/index.ts",
+      "import": "./dist/adapters/nestjs/index.js",
+      "require": "./dist/adapters/nestjs/index.cjs"
+    },
+    "./hono": {
+      "types": "./src/adapters/hono/bearer.middleware.ts",
+      "import": "./dist/adapters/hono/bearer.middleware.js",
+      "require": "./dist/adapters/hono/bearer.middleware.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "env SKIP_ENV_VALIDATION=true auth migrate --config ./src/lib/auth.cli.ts"
+  },
+  "dependencies": {
+    "@better-auth/passkey": "^1.6.20",
+    "@workspace/config": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "@workspace/email": "workspace:*",
+    "better-auth": "^1.6.20",
+    "jose": "^6.1.3",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "expo-secure-store": ">=14.0.0",
+    "hono": ">=4.0.0",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/common": { "optional": true },
+    "@nestjs/core": { "optional": true },
+    "expo-secure-store": { "optional": true },
+    "hono": { "optional": true },
+    "react": { "optional": true }
+  },
+  "devDependencies": {
+    "auth": "^1.6.20",
+    "next": "16.2.9",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "@types/node": "^25.9.1",
+    "eslint": "^9.17.0",
+    "tsup": "^8.5.1",
+    "typescript": "5.9.3"
+  }
+}

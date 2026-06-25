@@ -1,0 +1,195 @@
+import { betterAuth } from "better-auth"
+import { mongodbAdapter } from "better-auth/adapters/mongodb"
+import { admin } from "better-auth/plugins/admin"
+import { bearer } from "better-auth/plugins/bearer"
+import { jwt } from "better-auth/plugins/jwt"
+import { twoFactor } from "better-auth/plugins/two-factor"
+import { magicLink } from "better-auth/plugins/magic-link"
+import { emailOTP } from "better-auth/plugins/email-otp"
+import { organization } from "better-auth/plugins/organization"
+import { passkey } from "@better-auth/passkey"
+import { nextCookies } from "better-auth/next-js"
+import { getDb, connectDb } from "@workspace/db"
+import { env } from "@workspace/config"
+import {
+  sendVerificationEmail,
+  sendResetPasswordEmail,
+  sendMagicLinkEmail,
+  sendOtpEmail,
+  sendOrganizationInvitationEmail,
+} from "@workspace/email"
+import {
+  ac,
+  adminRole,
+  userRole,
+  managerRole,
+  guestRole,
+} from "../permissions/platform"
+import {
+  ac as orgAc,
+  roles as orgRoles,
+} from "../permissions/organization"
+
+function socialProviders() {
+  const providers: Record<string, Record<string, string>> = {}
+
+  if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+    providers.google = {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }
+  }
+  if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
+    providers.github = {
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
+    }
+  }
+  if (
+    env.APPLE_CLIENT_ID &&
+    env.APPLE_TEAM_ID &&
+    env.APPLE_KEY_ID &&
+    env.APPLE_PRIVATE_KEY
+  ) {
+    providers.apple = {
+      clientId: env.APPLE_CLIENT_ID,
+      teamId: env.APPLE_TEAM_ID,
+      keyId: env.APPLE_KEY_ID,
+      privateKey: env.APPLE_PRIVATE_KEY,
+    }
+  }
+  if (env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET) {
+    providers.microsoft = {
+      clientId: env.MICROSOFT_CLIENT_ID,
+      clientSecret: env.MICROSOFT_CLIENT_SECRET,
+    }
+  }
+  if (env.DISCORD_CLIENT_ID && env.DISCORD_CLIENT_SECRET) {
+    providers.discord = {
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+    }
+  }
+
+  return providers
+}
+
+export function createAuth() {
+  return betterAuth({
+  appName: env.APP_NAME,
+  trustedOrigins: env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()),
+
+  database: mongodbAdapter(getDb(), {
+    transaction: false,
+  }),
+
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail(user.email, url)
+    },
+  },
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmail(user.email, url)
+    },
+    autoSignInAfterVerification: true,
+  },
+
+  socialProviders: socialProviders(),
+
+  plugins: [
+    jwt({
+      jwks: {
+        keyPairConfig: { alg: "ES256" },
+        rotationInterval: 60 * 60 * 24 * 30,
+        gracePeriod: 60 * 60 * 24 * 30,
+      },
+      jwt: {
+        expirationTime: env.AUTH_JWT_EXPIRATION,
+        definePayload: ({ user, session }) => ({
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          name: user.name,
+          activeOrganizationId: session.activeOrganizationId ?? null,
+        }),
+      },
+    }),
+
+    bearer(),
+
+    admin({
+      ac,
+      roles: {
+        guest: guestRole,
+        user: userRole,
+        manager: managerRole,
+        admin: adminRole,
+      },
+    }),
+
+    twoFactor({ issuer: env.AUTH_TOTP_ISSUER }),
+
+    passkey({
+      rpID: new URL(env.BETTER_AUTH_URL).hostname,
+      rpName: env.APP_NAME,
+      origin: env.BETTER_AUTH_URL,
+    }),
+
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await sendMagicLinkEmail(email, url)
+      },
+    }),
+
+    emailOTP({
+      sendVerificationOTP: async ({ email, otp, type }) => {
+        await sendOtpEmail(email, otp, type)
+      },
+    }),
+
+    organization({
+      ac: orgAc,
+      roles: orgRoles,
+      allowUserToCreateOrganization: true,
+      organizationLimit: 10,
+      membershipLimit: 100,
+      invitationExpiresIn: 60 * 60 * 24 * 7,
+      dynamicAccessControl: {
+        enabled: true,
+        maximumRolesPerOrganization: 20,
+      },
+      sendInvitationEmail: async (data) => {
+        const url = `${env.CLIENT_URL}/accept-invitation?id=${data.id}`
+        await sendOrganizationInvitationEmail(
+          data.email,
+          data.organization.name,
+          data.inviter.user.name ?? "A team member",
+          url
+        )
+      },
+    }),
+
+    nextCookies(),
+  ],
+  })
+}
+
+let authInstance: ReturnType<typeof createAuth> | null = null
+
+/**
+ * Returns a singleton auth instance, connecting to MongoDB on first call.
+ * Use in Next.js routes and server code outside NestJS.
+ */
+export async function getAuth() {
+  if (!authInstance) {
+    await connectDb(env.MONGODB_URI)
+    authInstance = createAuth()
+  }
+  return authInstance
+}
+
+export type Auth = ReturnType<typeof createAuth>

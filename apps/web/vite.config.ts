@@ -17,4 +17,5 @@ export default defineConfig({
       allow: [path.join(rootDir, "../..")],
     },
   },
+  envDir: path.join(rootDir, "../.."),
 })

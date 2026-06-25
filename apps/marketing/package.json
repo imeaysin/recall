@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@workspace/auth": "workspace:*",
     "@workspace/ui": "workspace:*",
     "next": "16.2.9",
     "react": "catalog:",

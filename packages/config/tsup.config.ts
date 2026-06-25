@@ -1,7 +1,14 @@
 import { defineConfig } from "tsup"
 
 export default defineConfig((options) => ({
-  entry: ["src/index.ts", "src/env.ts", "src/client.ts", "src/app.ts"],
+  entry: {
+    index: "src/index.ts",
+    "server/index": "src/server/index.ts",
+    "server/database": "src/server/database.ts",
+    "server/email": "src/server/email.ts",
+    "server/storage": "src/server/storage.ts",
+    "client/index": "src/client/index.ts",
+  },
   format: ["esm", "cjs"],
   dts: true,
   clean: !options.watch,

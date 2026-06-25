@@ -1,32 +1,73 @@
-# @repo/config
+# @workspace/config
 
-Centralized environment variable validation and management for the monorepo.
+Type-safe environment configuration for the monorepo. Each export validates only what its consumer needs.
 
-## 🚀 Purpose
+## Structure
 
-This package ensures that all required environment variables are present and valid before the application starts. It uses **Zod** for schema validation and provides a type-safe `env` object that can be used across both backend and frontend (Next.js) environments.
-
-## 🛠️ Usage
-
-### Validation Schema
-
-The schema is defined in `src/env.ts`. It includes both required and optional variables for:
-
-- Database connectivity (MongoDB)
-- Authentication (Better-Auth)
-- External services (Resend, Google, GitHub)
-- App configuration
-
-### Accessing Env Vars
-
-```typescript
-import { env } from "@repo/config";
-
-console.log(env.NEXT_PUBLIC_API_URL);
+```
+src/
+  load-env.ts          # Loads workspace root `.env`
+  validate.ts          # Shared Zod validation helper
+  schemas/
+    server.ts          # Schema definitions grouped by concern
+  server/
+    index.ts           # Full server env
+    database.ts        # Database-only env
+    email.ts           # Email-only env
+    storage.ts         # Storage-only env
+  client/
+    index.ts           # Browser / Expo public env parsers
+  index.ts             # Re-exports full server env
 ```
 
-## 🏗️ Architecture
+## Who imports what
 
-- **Automatic Root Loading**: Automatically finds and loads the `.env` file from the workspace root using a recursive search.
-- **Build-time Defaults**: Provides safe defaults during the build phase to prevent CI/CD failures.
-- **Strict Parsing**: Throws a clear error if validation fails, preventing the app from starting in an inconsistent state.
+| Consumer | Import | Variables validated |
+|----------|--------|---------------------|
+| `apps/api` | `@workspace/config` | Full server env |
+| `@workspace/auth` | `@workspace/config` | Full server env |
+| `@workspace/db` | `@workspace/config/database` | `MONGODB_URI` |
+| `@workspace/email` | `@workspace/config/email` | `RESEND_API_KEY`, `APP_NAME`, `BETTER_AUTH_URL`, `EMAIL_FROM` |
+| `@workspace/storage` | `@workspace/config/storage` | `STORAGE_*` |
+| `apps/web` | `@workspace/config/client` | `parseWebEnv(import.meta.env)` |
+| `apps/marketing` | `@workspace/config/client` | `parseMarketingEnv(process.env)` |
+| `apps/mobile` | `@workspace/config/client` | `parseMobileEnv(process.env)` |
+| `@workspace/auth/client` | `@workspace/config/client` | `parseClientPublicEnv()` (shared) |
+
+## Usage
+
+### Server (API, auth)
+
+```typescript
+import { env } from "@workspace/config"
+
+console.log(env.MONGODB_URI, env.BETTER_AUTH_URL)
+```
+
+### Database package
+
+```typescript
+import { databaseEnv } from "@workspace/config/database"
+```
+
+### Email package
+
+```typescript
+import { emailEnv, getEmailFromAddress } from "@workspace/config/email"
+```
+
+### Web client (Vite)
+
+```typescript
+import { parseWebEnv } from "@workspace/config/client"
+
+const { apiUrl, authUrl, appName } = parseWebEnv(import.meta.env)
+```
+
+## Build phase
+
+Set `SKIP_ENV_VALIDATION=true` or run during `NEXT_PHASE=phase-production-build` to use safe defaults (CI builds without a full `.env`).
+
+## Root `.env`
+
+Place a single `.env` at the monorepo root. `loadRootEnvFile()` walks up from `cwd` and loads it automatically — no per-app `.env` duplication required.
