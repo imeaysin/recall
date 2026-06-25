@@ -26,6 +26,9 @@ async function bootstrap() {
 
 bootstrap().catch((error: unknown) => {
   const logger = new Logger("Bootstrap")
-  logger.error("Failed to start API", error instanceof Error ? error.stack : error)
+  logger.error(
+    "Failed to start API",
+    error instanceof Error ? error.stack : error
+  )
   process.exit(1)
 })

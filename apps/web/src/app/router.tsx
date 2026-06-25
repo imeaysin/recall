@@ -20,9 +20,7 @@ export const router = createBrowserRouter([
         path: "*",
         element: (
           <PageNotFound
-            action={
-              <Button render={<Link to={paths.home} />}>Go home</Button>
-            }
+            action={<Button render={<Link to={paths.home} />}>Go home</Button>}
           />
         ),
       },

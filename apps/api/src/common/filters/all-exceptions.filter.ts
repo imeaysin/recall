@@ -28,7 +28,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       this.logServerError(request, exception)
     }
 
-    response.status(status).json(this.buildErrorBody(status, message, request, exception))
+    response
+      .status(status)
+      .json(this.buildErrorBody(status, message, request, exception))
   }
 
   private logServerError(request: Request, exception: unknown) {

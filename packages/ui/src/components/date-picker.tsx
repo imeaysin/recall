@@ -40,7 +40,7 @@ export function DatePicker({
             className={cn(
               "w-full justify-start text-left font-normal",
               !value && "text-muted-foreground",
-              className,
+              className
             )}
             variant="outline"
           />

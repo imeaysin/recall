@@ -10,10 +10,7 @@ import {
 import { passkeyClient } from "@better-auth/passkey/client"
 import { parseClientPublicEnv } from "@workspace/config/client"
 import { ac, roles } from "../permissions/platform"
-import {
-  ac as orgAc,
-  roles as orgRoles,
-} from "../permissions/organization"
+import { ac as orgAc, roles as orgRoles } from "../permissions/organization"
 
 const viteEnv = import.meta as ImportMeta & {
   env?: { VITE_AUTH_URL?: string }

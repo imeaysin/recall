@@ -38,9 +38,7 @@ export function PageNotFound({
         <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        {action ?? (
-          <Button render={<a href={homeHref} />}>{homeLabel}</Button>
-        )}
+        {action ?? <Button render={<a href={homeHref} />}>{homeLabel}</Button>}
       </EmptyContent>
     </Empty>
   )

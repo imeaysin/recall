@@ -52,8 +52,7 @@ export async function sendOtpEmail(
   otp: string,
   type: "sign-in" | "email-verification" | "forget-password" | "change-email"
 ) {
-  const subject =
-    type === "sign-in" ? "Your sign-in code" : "Verify your email"
+  const subject = type === "sign-in" ? "Your sign-in code" : "Verify your email"
 
   return resend.emails.send({
     from: FROM_ADDRESS,

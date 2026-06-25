@@ -3,7 +3,14 @@ import { defaultStatements, adminAc } from "better-auth/plugins/admin/access"
 
 export const statement = {
   ...defaultStatements,
-  project: ["create", "read", "update", "delete", "publish", "archive"] as const,
+  project: [
+    "create",
+    "read",
+    "update",
+    "delete",
+    "publish",
+    "archive",
+  ] as const,
   content: ["create", "read", "update", "delete", "publish"] as const,
   billing: ["read", "manage"] as const,
   analytics: ["read", "export"] as const,

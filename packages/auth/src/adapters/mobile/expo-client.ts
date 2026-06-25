@@ -8,10 +8,7 @@ import {
 import * as SecureStore from "expo-secure-store"
 import { parseClientPublicEnv } from "@workspace/config/client"
 import { ac, roles } from "../../permissions/platform"
-import {
-  ac as orgAc,
-  roles as orgRoles,
-} from "../../permissions/organization"
+import { ac as orgAc, roles as orgRoles } from "../../permissions/organization"
 
 const TOKEN_KEY = "__ba_token"
 

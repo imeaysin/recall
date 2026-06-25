@@ -7,7 +7,10 @@ import { JwksGuard } from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
-import { DatabaseModule, DATABASE_READY } from "./infrastructure/database/database.module"
+import {
+  DatabaseModule,
+  DATABASE_READY,
+} from "./infrastructure/database/database.module"
 import { HealthModule } from "./modules/health/health.module"
 import { MeModule } from "./modules/me/me.module"
 

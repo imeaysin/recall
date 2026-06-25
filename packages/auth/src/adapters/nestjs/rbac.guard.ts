@@ -28,7 +28,8 @@ export class RbacGuard implements CanActivate {
     const result = role.authorize({
       [required.resource]: [required.action],
     })
-    if (!result.success) throw new ForbiddenException("Insufficient permissions")
+    if (!result.success)
+      throw new ForbiddenException("Insufficient permissions")
 
     return true
   }

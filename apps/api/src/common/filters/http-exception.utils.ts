@@ -17,7 +17,11 @@ export function resolveExceptionMessage(exception: unknown): string | string[] {
     return response
   }
 
-  if (typeof response === "object" && response !== null && "message" in response) {
+  if (
+    typeof response === "object" &&
+    response !== null &&
+    "message" in response
+  ) {
     const { message } = response as { message: string | string[] }
     return message
   }

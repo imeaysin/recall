@@ -8,7 +8,10 @@ const JWKS = createRemoteJWKSet(
 )
 
 export const bearerMiddleware = createMiddleware(async (c, next) => {
-  const token = c.req.header("authorization")?.replace(/^Bearer\s+/i, "")?.trim()
+  const token = c.req
+    .header("authorization")
+    ?.replace(/^Bearer\s+/i, "")
+    ?.trim()
   if (!token) {
     return c.json({ error: "Missing bearer token" }, 401)
   }

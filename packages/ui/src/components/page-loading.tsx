@@ -16,7 +16,7 @@ export function PageLoading({
       aria-live="polite"
       className={cn(
         "flex min-h-[50vh] flex-1 flex-col items-center justify-center gap-3",
-        className,
+        className
       )}
       role="status"
       {...props}

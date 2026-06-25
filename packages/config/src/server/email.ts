@@ -8,11 +8,7 @@ import {
 /** Email delivery — used by `@workspace/email`. */
 export const emailEnv = createEnv(
   emailEnvSchema,
-  pickServerDefaults([
-    "RESEND_API_KEY",
-    "APP_NAME",
-    "BETTER_AUTH_URL",
-  ])
+  pickServerDefaults(["RESEND_API_KEY", "APP_NAME", "BETTER_AUTH_URL"])
 )
 
 export function getEmailFromAddress(config: EmailEnv = emailEnv): string {

@@ -25,10 +25,7 @@ import {
   managerRole,
   guestRole,
 } from "../permissions/platform"
-import {
-  ac as orgAc,
-  roles as orgRoles,
-} from "../permissions/organization"
+import { ac as orgAc, roles as orgRoles } from "../permissions/organization"
 
 function socialProviders() {
   const providers: Record<string, Record<string, string>> = {}
@@ -79,105 +76,107 @@ const mongoDb = mongoClient.db()
 
 export function createAuth() {
   return betterAuth({
-  appName: env.APP_NAME,
-  baseURL: env.BETTER_AUTH_URL,
-  secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()),
+    appName: env.APP_NAME,
+    baseURL: env.BETTER_AUTH_URL,
+    secret: env.BETTER_AUTH_SECRET,
+    trustedOrigins: env.ALLOWED_ORIGINS.split(",").map((origin) =>
+      origin.trim()
+    ),
 
-  database: mongodbAdapter(mongoDb, { client: mongoClient }),
+    database: mongodbAdapter(mongoDb, { client: mongoClient }),
 
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: true,
-    sendResetPassword: async ({ user, url }) => {
-      await sendResetPasswordEmail(user.email, url)
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: true,
+      sendResetPassword: async ({ user, url }) => {
+        await sendResetPasswordEmail(user.email, url)
+      },
     },
-  },
 
-  emailVerification: {
-    sendVerificationEmail: async ({ user, url }) => {
-      await sendVerificationEmail(user.email, url)
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url }) => {
+        await sendVerificationEmail(user.email, url)
+      },
+      autoSignInAfterVerification: true,
     },
-    autoSignInAfterVerification: true,
-  },
 
-  socialProviders: socialProviders(),
+    socialProviders: socialProviders(),
 
-  plugins: [
-    jwt({
-      jwks: {
-        keyPairConfig: { alg: "ES256" },
-        rotationInterval: 60 * 60 * 24 * 30,
-        gracePeriod: 60 * 60 * 24 * 30,
-      },
-      jwt: {
-        expirationTime: env.AUTH_JWT_EXPIRATION,
-        definePayload: ({ user, session }) => ({
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          name: user.name,
-          activeOrganizationId: session.activeOrganizationId ?? null,
-        }),
-      },
-    }),
+    plugins: [
+      jwt({
+        jwks: {
+          keyPairConfig: { alg: "ES256" },
+          rotationInterval: 60 * 60 * 24 * 30,
+          gracePeriod: 60 * 60 * 24 * 30,
+        },
+        jwt: {
+          expirationTime: env.AUTH_JWT_EXPIRATION,
+          definePayload: ({ user, session }) => ({
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            name: user.name,
+            activeOrganizationId: session.activeOrganizationId ?? null,
+          }),
+        },
+      }),
 
-    bearer(),
+      bearer(),
 
-    admin({
-      ac,
-      roles: {
-        guest: guestRole,
-        user: userRole,
-        manager: managerRole,
-        admin: adminRole,
-      },
-    }),
+      admin({
+        ac,
+        roles: {
+          guest: guestRole,
+          user: userRole,
+          manager: managerRole,
+          admin: adminRole,
+        },
+      }),
 
-    twoFactor({ issuer: env.AUTH_TOTP_ISSUER }),
+      twoFactor({ issuer: env.AUTH_TOTP_ISSUER }),
 
-    passkey({
-      rpID: new URL(env.BETTER_AUTH_URL).hostname,
-      rpName: env.APP_NAME,
-      origin: env.BETTER_AUTH_URL,
-    }),
+      passkey({
+        rpID: new URL(env.BETTER_AUTH_URL).hostname,
+        rpName: env.APP_NAME,
+        origin: env.BETTER_AUTH_URL,
+      }),
 
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        await sendMagicLinkEmail(email, url)
-      },
-    }),
+      magicLink({
+        sendMagicLink: async ({ email, url }) => {
+          await sendMagicLinkEmail(email, url)
+        },
+      }),
 
-    emailOTP({
-      sendVerificationOTP: async ({ email, otp, type }) => {
-        await sendOtpEmail(email, otp, type)
-      },
-    }),
+      emailOTP({
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          await sendOtpEmail(email, otp, type)
+        },
+      }),
 
-    organization({
-      ac: orgAc,
-      roles: orgRoles,
-      allowUserToCreateOrganization: true,
-      organizationLimit: 10,
-      membershipLimit: 100,
-      invitationExpiresIn: 60 * 60 * 24 * 7,
-      dynamicAccessControl: {
-        enabled: true,
-        maximumRolesPerOrganization: 20,
-      },
-      sendInvitationEmail: async (data) => {
-        const url = `${env.CLIENT_URL}/accept-invitation?id=${data.id}`
-        await sendOrganizationInvitationEmail(
-          data.email,
-          data.organization.name,
-          data.inviter.user.name ?? "A team member",
-          url
-        )
-      },
-    }),
+      organization({
+        ac: orgAc,
+        roles: orgRoles,
+        allowUserToCreateOrganization: true,
+        organizationLimit: 10,
+        membershipLimit: 100,
+        invitationExpiresIn: 60 * 60 * 24 * 7,
+        dynamicAccessControl: {
+          enabled: true,
+          maximumRolesPerOrganization: 20,
+        },
+        sendInvitationEmail: async (data) => {
+          const url = `${env.CLIENT_URL}/accept-invitation?id=${data.id}`
+          await sendOrganizationInvitationEmail(
+            data.email,
+            data.organization.name,
+            data.inviter.user.name ?? "A team member",
+            url
+          )
+        },
+      }),
 
-    nextCookies(),
-  ],
+      nextCookies(),
+    ],
   })
 }
 
