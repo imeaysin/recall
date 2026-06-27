@@ -79,10 +79,9 @@ export function IntegrationDetailSection({
           ) : null}
 
           <Button
-            className="px-6"
             render={<a href={ctaHref} />}
             size="xl"
-            variant="inverse"
+            variant="default"
           >
             {ctaLabel}
           </Button>

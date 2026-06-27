@@ -39,10 +39,9 @@ export function PageNotFound({
       <PageStateActions>
         {action ?? (
           <Button
-            className="px-6"
             render={<a href={homeHref} />}
             size="xl"
-            variant="inverse"
+            variant="default"
           >
             {homeLabel}
           </Button>

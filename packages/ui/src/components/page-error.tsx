@@ -42,21 +42,11 @@ export function PageError({
       </div>
       <PageStateActions>
         {onRetry ? (
-          <Button
-            className="px-6"
-            onClick={onRetry}
-            size="xl"
-            variant="inverse"
-          >
+          <Button onClick={onRetry} size="xl" variant="default">
             {retryLabel}
           </Button>
         ) : null}
-        <Button
-          className="px-6"
-          render={<a href={homeHref} />}
-          size="xl"
-          variant="outline"
-        >
+        <Button render={<a href={homeHref} />} size="xl" variant="outline">
           {homeLabel}
         </Button>
       </PageStateActions>

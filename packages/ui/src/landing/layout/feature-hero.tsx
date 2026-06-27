@@ -24,10 +24,9 @@ export function FeatureHero({
     ctaHref ? (
       <div className="pt-2">
         <Button
-          className="px-6"
           render={<a href={ctaHref} />}
           size="xl"
-          variant="inverse"
+          variant="default"
         >
           {ctaLabel}
         </Button>

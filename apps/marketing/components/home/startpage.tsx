@@ -296,9 +296,8 @@ export function StartPage() {
 
               <div className="flex flex-col items-center gap-3 pt-2">
                 <Button
-                  variant="inverse"
                   size="xl"
-                  className="px-6 transition-colors"
+                  variant="default"
                   render={
                     <a
                       href={marketingEnv.appUrl}

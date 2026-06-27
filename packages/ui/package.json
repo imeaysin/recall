@@ -50,6 +50,7 @@
     "./components/animations/*": "./src/components/animations/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
     "./landing": "./src/landing/index.ts",
+    "./auth": "./src/auth/index.ts",
     "./providers/*": "./src/providers/*.tsx"
   }
 }

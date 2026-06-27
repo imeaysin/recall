@@ -44,7 +44,7 @@ export const buttonVariants = cva(
         secondary:
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/90 data-pressed:bg-secondary/90 *:data-[slot=button-loading-indicator]:text-secondary-foreground [:active,[data-pressed]]:bg-secondary/80",
         inverse:
-          "rounded-none border-transparent bg-foreground text-background shadow-none before:rounded-none hover:bg-foreground/90 data-pressed:bg-foreground/90 *:data-[slot=button-loading-indicator]:text-background [:disabled,:active,[data-pressed]]:shadow-none",
+          "border-transparent bg-foreground text-background shadow-xs shadow-foreground/24 not-disabled:inset-shadow-[0_1px_--theme(--color-white/16%)] hover:bg-foreground/90 data-pressed:bg-foreground/90 *:data-[slot=button-loading-indicator]:text-background [:active,[data-pressed]]:inset-shadow-[0_1px_--theme(--color-black/8%)] [:disabled,:active,[data-pressed]]:shadow-none",
       },
     },
   }

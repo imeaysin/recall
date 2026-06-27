@@ -35,9 +35,8 @@ export function CtaSection({
             ) : null}
           </div>
           <Button
-            variant="inverse"
             size="xl"
-            className="px-6"
+            variant="default"
             onClick={onClick}
             render={<a href={href} />}
           >
