@@ -1,12 +1,10 @@
 "use client"
 
 import { Button } from "@workspace/ui/components/button"
-import {
-  LandingContainer,
-} from "@workspace/ui/components/landing/layout/page-container"
-import { IntegrationLogo } from "@workspace/ui/components/landing/primitives/integration-logo"
+import { LandingContainer } from "../layout/page-container"
+import { IntegrationLogo } from "../primitives/integration-logo"
 
-export interface IntegrationDetailProps {
+export interface DetailPageProps {
   id: string
   name: string
   shortDescription: string
@@ -28,7 +26,7 @@ export function IntegrationDetailSection({
   ctaHref,
   ctaLabel = "Get started",
   backHref = "/integrations",
-}: IntegrationDetailProps) {
+}: DetailPageProps) {
   return (
     <div className="bg-background pb-24 pt-32">
       <LandingContainer>

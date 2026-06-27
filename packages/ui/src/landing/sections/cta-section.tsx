@@ -4,11 +4,14 @@ import { Button } from "@workspace/ui/components/button"
 import {
   LandingContainer,
   LandingSection,
-} from "@workspace/ui/components/landing/layout/page-container"
-import type { LandingCtaProps } from "@workspace/ui/components/landing/types"
+} from "../layout/page-container"
 
-interface CtaSectionProps extends LandingCtaProps {
-  className?: string
+export interface CtaSectionProps {
+  title: string
+  description?: string
+  href: string
+  label: string
+  onClick?: () => void
 }
 
 export function CtaSection({
@@ -18,7 +21,7 @@ export function CtaSection({
   label,
   onClick,
   className,
-}: CtaSectionProps) {
+}: CtaSectionProps & { className?: string }) {
   return (
     <LandingSection className={className}>
       <LandingContainer size="narrow">

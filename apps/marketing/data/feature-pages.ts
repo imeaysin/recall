@@ -1,4 +1,4 @@
-import type { LandingFeatureItem } from "@workspace/ui/components/landing"
+import type { FeatureItem } from "@workspace/ui/landing"
 
 export interface FeaturePageConfig {
   slug: string
@@ -137,7 +137,7 @@ export const featurePages: Record<string, FeaturePageConfig> = {
   },
 }
 
-export const defaultFeatureGridItems: LandingFeatureItem[] = [
+export const defaultFeatureGridItems: FeatureItem[] = [
   { href: "/invoicing", icon: "description", title: "Invoicing", description: "Invoice management" },
   { href: "/transactions", icon: "list_alt", title: "Transactions", description: "Money movement" },
   { href: "/inbox", icon: "inbox", title: "Inbox", description: "Receipt matching" },

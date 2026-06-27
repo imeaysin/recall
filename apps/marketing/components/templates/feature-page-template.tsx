@@ -14,7 +14,7 @@ import {
   FeatureHero,
   FeaturesGridSection,
   IntegrationsSection,
-} from "@workspace/ui/components/landing"
+} from "@workspace/ui/landing"
 
 interface FeaturePageTemplateProps {
   page: FeaturePageConfig

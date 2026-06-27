@@ -4,14 +4,18 @@ import { useState } from "react"
 import {
   LandingContainer,
   LandingSection,
-} from "@workspace/ui/components/landing/layout/page-container"
-import { SectionHeading } from "@workspace/ui/components/landing/layout/section-heading"
-import type { LandingFaqItem } from "@workspace/ui/components/landing/types"
+} from "../layout/page-container"
+import { SectionHeading } from "../layout/section-heading"
+
+export interface FaqItem {
+  question: string
+  answer: string
+}
 
 interface FaqSectionProps {
   title?: string
   subtitle?: string
-  items: LandingFaqItem[]
+  items: FaqItem[]
 }
 
 export function FaqSection({

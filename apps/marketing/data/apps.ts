@@ -1,4 +1,4 @@
-import type { LandingIntegrationItem } from "@workspace/ui/components/landing"
+import type { FilterTab, LogoLinkItem } from "@workspace/ui/landing"
 
 export interface WebsiteApp {
   id: string
@@ -16,7 +16,7 @@ export interface WebsiteApp {
 
 export function toLandingIntegrations(
   items: WebsiteApp[]
-): LandingIntegrationItem[] {
+): LogoLinkItem[] {
   return items.map((app) => ({
     id: app.id,
     name: app.name,
@@ -163,3 +163,14 @@ export function getCategoryName(categoryId: string): string {
 export const integrationCategorySlugs = integrationCategories
   .filter((category) => category.id !== "all")
   .map((category) => category.id) as Exclude<IntegrationCategoryId, "all">[]
+
+export function getIntegrationFilterTabs(): FilterTab[] {
+  return integrationCategories.map((category) => ({
+    id: category.id,
+    name: category.name,
+    href:
+      category.id === "all"
+        ? "/integrations"
+        : `/integrations/category/${category.id}`,
+  }))
+}

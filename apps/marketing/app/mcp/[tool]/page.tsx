@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site"
 import { marketingEnv } from "@/config/env"
 import { mcpTools, mcpToolSlugs } from "@/data/mcp-tools"
 import { createMarketingMetadata } from "@/lib/metadata"
-import { CtaSection, PlaceholderPage } from "@workspace/ui/components/landing"
+import { CtaSection, PlaceholderPage } from "@workspace/ui/landing"
 
 interface PageProps {
   params: Promise<{ tool: string }>

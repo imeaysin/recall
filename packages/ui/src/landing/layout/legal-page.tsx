@@ -1,7 +1,30 @@
 import type { ReactNode } from "react"
-import type { LegalBlock, LegalDocument, LegalSection } from "@workspace/ui/components/landing/types"
-import { LandingContainer } from "@workspace/ui/components/landing/layout/page-container"
+import { LandingContainer } from "./page-container"
 import { cn } from "@workspace/ui/lib/utils"
+
+export type LegalBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] }
+  | { type: "subsection"; title: string; blocks: LegalBlock[] }
+  | { type: "email"; address: string }
+
+export interface LegalSection {
+  title: string
+  blocks?: LegalBlock[]
+  content?: string
+  paragraphs?: string[]
+  subsections?: {
+    title?: string
+    content: string
+  }[]
+}
+
+export interface LegalDocument {
+  title: string
+  lastUpdated: string
+  intro?: string[]
+  sections: LegalSection[]
+}
 
 const paragraphClass = "text-muted-foreground leading-relaxed"
 const listClass = "list-disc list-inside space-y-2 text-muted-foreground ml-4"

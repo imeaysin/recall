@@ -5,7 +5,7 @@ import { FeaturePageTemplate } from "@/components/templates/feature-page-templat
 import { TestimonialsSection } from "@/components/sections/testimonials-section"
 import { siteConfig } from "@/config/site"
 import { marketingEnv } from "@/config/env"
-import { apps, integrationCategories } from "@/data/apps"
+import { apps, getIntegrationFilterTabs } from "@/data/apps"
 import { defaultFaqItems } from "@/data/faq"
 import { featurePages, featurePageSlugs } from "@/data/feature-pages"
 import { privacyDocument, termsDocument } from "@/data/legal"
@@ -21,11 +21,11 @@ import {
   CtaSection,
   IntegrationsGridSection,
   LegalPage,
-  McpHubSection,
+  HubSection,
   PlaceholderPage,
   ResourcePageShell,
   UpdatesListSection,
-} from "@workspace/ui/components/landing"
+} from "@workspace/ui/landing"
 
 interface PageMeta {
   title: string
@@ -87,8 +87,10 @@ function buildStaticPages(): Record<string, StaticPageEntry> {
       <>
         <IntegrationsGridSection
           activeCategory="all"
-          categories={[...integrationCategories]}
+          categories={getIntegrationFilterTabs()}
           items={integrationGridItems()}
+          subtitle="Connect the tools you already use to keep your business in sync."
+          title="Apps & integrations"
         />
         {ctaBlock("Connect your tools")}
       </>
@@ -188,11 +190,17 @@ function buildStaticPages(): Record<string, StaticPageEntry> {
     },
     render: () => (
       <>
-        <McpHubSection
-          capabilities={mcpCapabilities}
-          clients={mcpClients}
-          productName={siteConfig.name}
-          sampleQuestions={mcpSampleQuestions}
+        <HubSection
+          description={`Connect Claude, ChatGPT, Gemini, Cursor, Windsurf, Zed, and more to your ${siteConfig.name} account. Create invoices, export transactions, track time, and run your business from any AI tool.`}
+          eyebrow="AI Integrations"
+          features={mcpCapabilities}
+          featuresSubtitle="Everything your AI client needs to run your business."
+          featuresTitle="What you can do"
+          items={mcpClients}
+          prompts={mcpSampleQuestions}
+          promptsSubtitle="Just ask."
+          promptsTitle="Skip the dashboards"
+          title={`${siteConfig.name}, everywhere`}
         />
         {ctaBlock("Connect your AI tools")}
       </>

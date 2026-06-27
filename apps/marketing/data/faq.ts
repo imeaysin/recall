@@ -1,7 +1,7 @@
-import type { LandingFaqItem } from "@workspace/ui/components/landing"
+import type { FaqItem } from "@workspace/ui/landing"
 import { siteConfig } from "@/config/site"
 
-export const defaultFaqItems: LandingFaqItem[] = [
+export const defaultFaqItems: FaqItem[] = [
   {
     question: `What is ${siteConfig.name}?`,
     answer:

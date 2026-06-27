@@ -95,6 +95,8 @@ export const IconMap = {
   cloud: MdOutlineCloud,
 };
 
+export type MaterialIconName = keyof typeof IconMap;
+
 export function MaterialIcon({
   name,
   className,

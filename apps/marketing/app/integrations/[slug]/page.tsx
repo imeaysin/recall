@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { apps } from "@/data/apps"
 import { marketingEnv } from "@/config/env"
 import { createMarketingMetadata } from "@/lib/metadata"
-import { IntegrationDetailSection } from "@workspace/ui/components/landing"
+import { IntegrationDetailSection } from "@workspace/ui/landing"
 
 interface PageProps {
   params: Promise<{ slug: string }>

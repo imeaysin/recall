@@ -1,10 +1,10 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { LandingFaqItem } from "@workspace/ui/components/landing/types"
-import { CtaSection } from "@workspace/ui/components/landing/sections/cta-section"
-import { FaqSection } from "@workspace/ui/components/landing/sections/faq-section"
-import { PlaceholderPage } from "@workspace/ui/components/landing/layout/legal-page"
+import type { FaqItem } from "../sections/faq-section"
+import { CtaSection } from "../sections/cta-section"
+import { FaqSection } from "../sections/faq-section"
+import { PlaceholderPage } from "./legal-page"
 
 interface ResourcePageShellProps {
   title: string
@@ -13,7 +13,7 @@ interface ResourcePageShellProps {
   ctaHref: string
   ctaLabel?: string
   ctaDescription?: string
-  faqItems?: LandingFaqItem[]
+  faqItems?: FaqItem[]
   action?: ReactNode
   variant?: "default" | "story"
   children?: ReactNode

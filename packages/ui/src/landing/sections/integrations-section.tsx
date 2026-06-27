@@ -3,15 +3,21 @@
 import {
   LandingContainer,
   LandingSection,
-} from "@workspace/ui/components/landing/layout/page-container"
-import { SectionHeading } from "@workspace/ui/components/landing/layout/section-heading"
-import { IntegrationLogo } from "@workspace/ui/components/landing/primitives/integration-logo"
-import type { LandingIntegrationItem } from "@workspace/ui/components/landing/types"
+} from "../layout/page-container"
+import { SectionHeading } from "../layout/section-heading"
+import { IntegrationLogo } from "../primitives/integration-logo"
+
+export interface LogoLinkItem {
+  id: string
+  name: string
+  slug: string
+  logoUrl?: string
+}
 
 interface IntegrationsSectionProps {
   title?: string
   subtitle?: string
-  apps: LandingIntegrationItem[]
+  apps: LogoLinkItem[]
   integrationsHref?: string
   getIntegrationHref?: (slug: string) => string
 }
@@ -20,7 +26,7 @@ function IntegrationPill({
   app,
   href,
 }: {
-  app: LandingIntegrationItem
+  app: LogoLinkItem
   href: string
 }) {
   return (
@@ -41,7 +47,7 @@ function MarqueeRow({
   direction,
   getIntegrationHref,
 }: {
-  apps: LandingIntegrationItem[]
+  apps: LogoLinkItem[]
   direction: "left" | "right"
   getIntegrationHref: (slug: string) => string
 }) {

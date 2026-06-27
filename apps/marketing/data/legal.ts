@@ -1,4 +1,4 @@
-import type { LegalDocument } from "@workspace/ui/components/landing"
+import type { LegalDocument } from "@workspace/ui/landing"
 import { siteConfig } from "@/config/site"
 
 const { name, legalEntity, supportEmail, dmcaEmail } = siteConfig

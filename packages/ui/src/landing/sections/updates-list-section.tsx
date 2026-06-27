@@ -1,13 +1,11 @@
-import {
-  LandingContainer,
-} from "@workspace/ui/components/landing/layout/page-container"
+import { LandingContainer } from "../layout/page-container"
 
 export interface UpdateItem {
   slug: string
-  title: string
-  date: string
-  summary: string
   href: string
+  date: string
+  title: string
+  summary: string
 }
 
 interface UpdatesListSectionProps {

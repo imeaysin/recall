@@ -3,19 +3,29 @@
 import {
   LandingContainer,
   LandingSection,
-} from "@workspace/ui/components/landing/layout/page-container"
-import { SectionHeading } from "@workspace/ui/components/landing/layout/section-heading"
-import type { LandingFeatureItem } from "@workspace/ui/components/landing/types"
-import { MaterialIcon } from "@workspace/ui/components/material-icon"
+} from "../layout/page-container"
+import { SectionHeading } from "../layout/section-heading"
+import {
+  MaterialIcon,
+  type MaterialIconName,
+} from "@workspace/ui/components/material-icon"
 import { cn } from "@workspace/ui/lib/utils"
+
+export interface FeatureItem {
+  href: string
+  icon: MaterialIconName
+  title: string
+  description: string
+  className?: string
+}
 
 interface FeaturesGridSectionProps {
   title?: string
   subtitle?: string
-  features: LandingFeatureItem[]
+  features: FeatureItem[]
 }
 
-function FeatureTile({ feature }: { feature: LandingFeatureItem }) {
+function FeatureTile({ feature }: { feature: FeatureItem }) {
   const content = (
     <>
       <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-none border border-border bg-secondary transition-all duration-200 hover:border-muted-foreground">

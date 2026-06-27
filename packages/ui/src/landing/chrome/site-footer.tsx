@@ -1,12 +1,19 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type {
-  FooterLink,
-  FooterLinkGroup,
-} from "@workspace/ui/components/landing/types"
-import { FooterWordmark } from "@workspace/ui/components/landing/chrome/footer-wordmark"
+import { FooterWordmark } from "./footer-wordmark"
 import { cn } from "@workspace/ui/lib/utils"
+
+export interface FooterLink {
+  href: string
+  label: string
+  external?: boolean
+}
+
+export interface FooterLinkGroup {
+  title: string
+  links: FooterLink[]
+}
 
 interface SiteFooterProps {
   linkGroups: FooterLinkGroup[]

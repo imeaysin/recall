@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { CtaSection, IntegrationsGridSection } from "@workspace/ui/components/landing"
+import { CtaSection, IntegrationsGridSection } from "@workspace/ui/landing"
 import { marketingEnv } from "@/config/env"
 import {
   apps,
   getAppsByCategory,
   getCategoryName,
-  integrationCategories,
+  getIntegrationFilterTabs,
   integrationCategorySlugs,
 } from "@/data/apps"
 import { createMarketingMetadata } from "@/lib/metadata"
@@ -63,7 +63,7 @@ export default async function IntegrationCategoryPage({ params }: PageProps) {
     <>
       <IntegrationsGridSection
         activeCategory={category}
-        categories={[...integrationCategories]}
+        categories={getIntegrationFilterTabs()}
         items={toGridItems(categoryApps)}
         subtitle={`Connect Theo with ${categoryName.toLowerCase()} tools. Explore integrations to streamline your financial workflow.`}
         title={`${categoryName} integrations`}

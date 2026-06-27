@@ -49,12 +49,7 @@
     "./components/*": "./src/components/*.tsx",
     "./components/animations/*": "./src/components/animations/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
-    "./components/landing": "./src/components/landing/index.ts",
-    "./components/landing/types": "./src/components/landing/types.ts",
-    "./components/landing/sections/*": "./src/components/landing/sections/*.tsx",
-    "./components/landing/layout/*": "./src/components/landing/layout/*.tsx",
-    "./components/landing/primitives/*": "./src/components/landing/primitives/*.tsx",
-    "./components/landing/chrome/*": "./src/components/landing/chrome/*.tsx",
+    "./landing": "./src/landing/index.ts",
     "./providers/*": "./src/providers/*.tsx"
   }
 }

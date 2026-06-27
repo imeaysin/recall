@@ -1,6 +1,6 @@
 "use client"
 
-import { FeaturesGridSection, IntegrationsSection } from "@workspace/ui/components/landing"
+import { FeaturesGridSection, IntegrationsSection } from "@workspace/ui/landing"
 import { landingIntegrations } from "@/data/apps"
 import { defaultFeatureGridItems } from "@/data/feature-pages"
 

@@ -1,8 +1,8 @@
 "use client"
 
 import { Icons } from "@workspace/ui/components/icons"
-import { SiteFooter } from "@workspace/ui/components/landing"
-import type { FooterLinkGroup } from "@workspace/ui/components/landing"
+import { SiteFooter } from "@workspace/ui/landing"
+import type { FooterLinkGroup } from "@workspace/ui/landing"
 import { useTheme } from "@workspace/ui/components/theme-provider"
 import { useIsClient } from "@workspace/ui/hooks/use-is-client"
 import { footerNavigation, socialLinks } from "@/config/navigation"

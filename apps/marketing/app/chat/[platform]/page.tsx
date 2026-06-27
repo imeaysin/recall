@@ -1,15 +1,15 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { notFound } from "next/navigation"
-import { ChatPlatformSection } from "@workspace/ui/components/landing"
+import { GuideSection } from "@workspace/ui/landing"
 import { Icons } from "@workspace/ui/components/icons"
 import { siteConfig } from "@/config/site"
-import { marketingEnv } from "@/config/env"
 import {
   chatPlatformSlugs,
   chatPlatforms,
   type ChatPlatformSlug,
 } from "@/data/chat-platforms"
+import { toGuidePage } from "@/lib/chat-guide"
 import { createMarketingMetadata } from "@/lib/metadata"
 
 interface PageProps {
@@ -51,23 +51,8 @@ export default async function ChatPlatformPage({ params }: PageProps) {
   if (!config) notFound()
 
   return (
-    <ChatPlatformSection
-      config={{
-        ...config,
-        icon: platformIcons[platform as ChatPlatformSlug],
-        productName: siteConfig.name,
-        steps: config.steps.map((step) =>
-          step.href
-            ? step
-            : {
-                ...step,
-                href:
-                  platform === "whatsapp"
-                    ? `${marketingEnv.appUrl}/apps?app=whatsapp`
-                    : undefined,
-              }
-        ),
-      }}
+    <GuideSection
+      page={toGuidePage(config, platformIcons[platform as ChatPlatformSlug])}
     />
   )
 }

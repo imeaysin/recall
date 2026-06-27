@@ -1,5 +1,13 @@
-import type { LandingSectionHeadingProps } from "@workspace/ui/components/landing/types"
+import type { ReactNode } from "react"
 import { cn } from "@workspace/ui/lib/utils"
+
+export interface SectionHeadingProps {
+  title: string
+  subtitle?: string
+  className?: string
+  children?: ReactNode
+  variant?: "section" | "page"
+}
 
 const headingVariants = {
   section: {
@@ -22,7 +30,7 @@ export function SectionHeading({
   className,
   children,
   variant = "section",
-}: LandingSectionHeadingProps) {
+}: SectionHeadingProps) {
   const styles = headingVariants[variant]
   const HeadingTag = variant === "page" ? "h1" : "h2"
 
