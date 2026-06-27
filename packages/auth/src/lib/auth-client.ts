@@ -8,18 +8,14 @@ import {
   organizationClient,
 } from "better-auth/client/plugins"
 import { passkeyClient } from "@better-auth/passkey/client"
-import { parseClientPublicEnv } from "@workspace/config/client"
+import {
+  getClientPublicEnvSource,
+  parseClientPublicEnv,
+} from "@workspace/config/client"
 import { ac, roles } from "../permissions/platform"
 import { ac as orgAc, roles as orgRoles } from "../permissions/organization"
 
-const viteEnv = import.meta as ImportMeta & {
-  env?: { VITE_AUTH_URL?: string }
-}
-
-const { authUrl } = parseClientPublicEnv({
-  VITE_AUTH_URL: viteEnv.env?.VITE_AUTH_URL,
-  NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
-})
+const { authUrl } = parseClientPublicEnv(getClientPublicEnvSource())
 
 export const authClient = createAuthClient({
   baseURL: authUrl,

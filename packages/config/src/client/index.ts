@@ -84,3 +84,31 @@ export function parseClientPublicEnv(
 ): ClientPublicEnv {
   return resolveClientUrls(source)
 }
+
+/**
+ * Collect public env vars from the current runtime (Vite, Next.js, Expo).
+ * Safe in the browser — does not reference `process` when it is unavailable.
+ */
+export function getClientPublicEnvSource(): Record<string, string | undefined> {
+  const source: Record<string, string | undefined> = {}
+
+  const viteEnv = import.meta as ImportMeta & {
+    env?: Record<string, string | undefined>
+  }
+  if (viteEnv.env) {
+    source.VITE_API_URL = viteEnv.env.VITE_API_URL
+    source.VITE_AUTH_URL = viteEnv.env.VITE_AUTH_URL
+    source.VITE_APP_NAME = viteEnv.env.VITE_APP_NAME
+  }
+
+  if (typeof process !== "undefined") {
+    source.NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL
+    source.NEXT_PUBLIC_AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL
+    source.NEXT_PUBLIC_APP_NAME = process.env.NEXT_PUBLIC_APP_NAME
+    source.EXPO_PUBLIC_API_URL = process.env.EXPO_PUBLIC_API_URL
+    source.EXPO_PUBLIC_AUTH_URL = process.env.EXPO_PUBLIC_AUTH_URL
+    source.EXPO_PUBLIC_APP_NAME = process.env.EXPO_PUBLIC_APP_NAME
+  }
+
+  return source
+}
