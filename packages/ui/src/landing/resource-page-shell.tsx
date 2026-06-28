@@ -1,9 +1,9 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { FaqItem } from "../sections/faq-section"
-import { CtaSection } from "../sections/cta-section"
-import { FaqSection } from "../sections/faq-section"
+import type { FaqItem } from "./sections/faq-section"
+import { CtaSection } from "./sections/cta-section"
+import { FaqSection } from "./sections/faq-section"
 import { PlaceholderPage } from "./legal-page"
 
 interface ResourcePageShellProps {
@@ -42,7 +42,7 @@ export function ResourcePageShell({
       {children}
       {faqItems?.length ? <FaqSection items={faqItems} /> : null}
       <CtaSection
-        description={ctaDescription}
+        description={ctaDescription ?? description}
         href={ctaHref}
         label={ctaLabel}
         title={ctaTitle}

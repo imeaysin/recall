@@ -5,7 +5,6 @@ import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardPanel } from "@workspace/ui/components/card"
 import { Icons } from "@workspace/ui/components/icons"
-import { LandingLink } from "../primitives/landing-link"
 
 export interface GuideStep {
   title: string
@@ -82,14 +81,14 @@ export function GuideSection({ page }: { page: GuidePageData }) {
                           {step.linkHref ? (
                             <>
                               {" "}
-                              <LandingLink
+                              <Button
                                 className="inline h-auto p-0 text-foreground"
-                                href={step.linkHref}
+                                render={<a href={step.linkHref} />}
                                 size="sm"
                                 variant="link"
                               >
                                 {step.linkLabel ?? "Learn more"}
-                              </LandingLink>
+                              </Button>
                             </>
                           ) : null}
                         </p>

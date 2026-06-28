@@ -1,15 +1,15 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardPanel } from "@workspace/ui/components/card"
-import { LandingContainer, LandingSection } from "../layout/page-container"
+import { PageContainer } from "../layout"
+import { cn } from "@workspace/ui/lib/utils"
 
 export interface CtaSectionProps {
   title: string
-  description?: string
+  description: string
   href: string
   label: string
   onClick?: () => void
+  className?: string
 }
 
 export function CtaSection({
@@ -19,31 +19,28 @@ export function CtaSection({
   label,
   onClick,
   className,
-}: CtaSectionProps & { className?: string }) {
+}: CtaSectionProps) {
   return (
-    <LandingSection className={className}>
-      <LandingContainer size="narrow">
-        <Card className="rounded-none bg-secondary text-center shadow-none before:hidden">
-          <CardPanel className="space-y-6 p-8 sm:p-12">
-            <div className="space-y-3">
-              <h2 className="font-serif text-2xl text-foreground">{title}</h2>
-              {description ? (
-                <p className="text-base leading-relaxed text-muted-foreground">
-                  {description}
-                </p>
-              ) : null}
-            </div>
-            <Button
+    <section className={cn("pb-24 pt-24", className)}>
+      <PageContainer>
+        <div className="relative border border-border bg-background p-8 text-center lg:p-12 before:pointer-events-none before:absolute before:inset-0 before:bg-[repeating-linear-gradient(-60deg,rgba(219,219,219,0.4),rgba(219,219,219,0.4)_1px,transparent_1px,transparent_6px)] dark:before:bg-[repeating-linear-gradient(-60deg,rgba(44,44,44,0.4),rgba(44,44,44,0.4)_1px,transparent_1px,transparent_6px)]">
+          <div className="relative z-10">
+            <h2 className="mb-4 font-serif text-2xl text-foreground sm:text-2xl">
+              {title}
+            </h2>
+            <p className="mx-auto mb-6 max-w-lg text-base text-muted-foreground">
+              {description}
+            </p>
+            <a
+              className="inline-flex items-center justify-center bg-foreground px-6 py-3 text-sm text-background transition-opacity hover:opacity-90"
+              href={href}
               onClick={onClick}
-              render={<a href={href} />}
-              size="xl"
-              variant="default"
             >
               {label}
-            </Button>
-          </CardPanel>
-        </Card>
-      </LandingContainer>
-    </LandingSection>
+            </a>
+          </div>
+        </div>
+      </PageContainer>
+    </section>
   )
 }

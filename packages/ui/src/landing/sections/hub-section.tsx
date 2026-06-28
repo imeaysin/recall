@@ -3,10 +3,8 @@
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
 import { Icons } from "@workspace/ui/components/icons"
-import { LandingContainer } from "../layout/page-container"
-import { LandingLinkCard } from "../primitives/landing-link-card"
-import { LandingPageHero } from "../primitives/landing-page-hero"
-import { SectionHeading } from "../layout/section-heading"
+import { PageContainer, SectionHeading } from "../layout"
+import { LinkCard } from "../link-card"
 
 export interface HubCardItem {
   id: string
@@ -46,7 +44,7 @@ function ItemGrid({
   return (
     <div className={className}>
       {items.map((item) => (
-        <LandingLinkCard
+        <LinkCard
           key={item.id}
           className="group"
           href={item.href}
@@ -61,7 +59,7 @@ function ItemGrid({
           <p className="line-clamp-2 text-xs text-muted-foreground sm:text-xs">
             {item.description}
           </p>
-        </LandingLinkCard>
+        </LinkCard>
       ))}
     </div>
   )
@@ -88,11 +86,12 @@ export function HubSection({
 
         <div className="relative flex flex-col overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-20 md:pt-48 lg:hidden">
           <div className="z-20 flex flex-col items-center justify-start px-4 sm:px-6">
-            <LandingPageHero
+            <SectionHeading
               className="w-full max-w-xl"
-              description={description}
               eyebrow={eyebrow}
+              subtitle={description}
               title={title}
+              variant="hero"
             />
             <ItemGrid
               className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-5"
@@ -103,12 +102,13 @@ export function HubSection({
 
         <div className="relative hidden min-h-screen flex-col overflow-hidden pt-40 lg:flex">
           <div className="z-20 flex flex-1 flex-col items-center justify-center px-4 pb-32">
-            <LandingPageHero
+            <SectionHeading
               className="mb-16 w-full"
-              description={description}
               eyebrow={eyebrow}
+              subtitle={description}
               title={title}
               titleClassName="text-6xl xl:text-7xl 2xl:text-8xl"
+              variant="hero"
             />
             <ItemGrid
               className="grid max-w-5xl grid-cols-5 gap-5"
@@ -119,7 +119,7 @@ export function HubSection({
       </div>
 
       <section className="bg-background py-12 sm:py-16 lg:py-24">
-        <LandingContainer>
+        <PageContainer>
           <SectionHeading subtitle={promptsSubtitle} title={promptsTitle} />
           <div className="relative mx-auto max-w-5xl">
             <div className="relative z-0 flex flex-wrap justify-center gap-x-1.5 gap-y-1.5 sm:gap-x-2 sm:gap-y-2">
@@ -147,11 +147,11 @@ export function HubSection({
               })}
             </div>
           </div>
-        </LandingContainer>
+        </PageContainer>
       </section>
 
       <section className="bg-background py-12 sm:py-16 lg:py-24">
-        <LandingContainer>
+        <PageContainer>
           <SectionHeading subtitle={featuresSubtitle} title={featuresTitle} />
           <ul className="mx-auto max-w-3xl space-y-3">
             {features.map((item) => (
@@ -164,7 +164,7 @@ export function HubSection({
               </li>
             ))}
           </ul>
-        </LandingContainer>
+        </PageContainer>
       </section>
     </div>
   )

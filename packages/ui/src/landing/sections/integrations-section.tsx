@@ -1,10 +1,10 @@
 "use client"
 
-import { LandingContainer, LandingSection } from "../layout/page-container"
-import { LandingIntegrationPill } from "../primitives/landing-tiles"
-import { LandingLink } from "../primitives/landing-link"
-import { SectionHeading } from "../layout/section-heading"
-import { IntegrationLogo } from "../primitives/integration-logo"
+import type { ReactNode } from "react"
+import { Button } from "@workspace/ui/components/button"
+import { PageContainer, PageSection, SectionHeading } from "../layout"
+import { IntegrationLogo } from "../integration-logo"
+import { cn } from "@workspace/ui/lib/utils"
 
 export interface LogoLinkItem {
   id: string
@@ -19,6 +19,33 @@ interface IntegrationsSectionProps {
   apps: LogoLinkItem[]
   integrationsHref?: string
   getIntegrationHref?: (slug: string) => string
+}
+
+function IntegrationPill({
+  href,
+  logo,
+  label,
+  className,
+}: {
+  href: string
+  logo: ReactNode
+  label: string
+  className?: string
+}) {
+  return (
+    <a
+      className={cn(
+        "flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-sm whitespace-nowrap transition-colors hover:border-foreground/20",
+        className
+      )}
+      href={href}
+    >
+      <span className="flex size-4 shrink-0 items-center justify-center [&_img]:size-full [&_img]:object-contain [&_svg]:size-full">
+        {logo}
+      </span>
+      <span className="text-foreground">{label}</span>
+    </a>
+  )
 }
 
 function MarqueeRow({
@@ -44,7 +71,7 @@ function MarqueeRow({
           className="flex shrink-0 gap-2 pr-2"
         >
           {apps.map((app) => (
-            <LandingIntegrationPill
+            <IntegrationPill
               key={`${copy}-${app.id}`}
               href={getIntegrationHref(app.slug)}
               label={app.name}
@@ -69,8 +96,8 @@ export function IntegrationsSection({
   const row2Apps = apps.slice(midpoint)
 
   return (
-    <LandingSection>
-      <LandingContainer>
+    <PageSection>
+      <PageContainer>
         <SectionHeading title={title} subtitle={subtitle} />
 
         <div className="group/integrations relative overflow-hidden">
@@ -92,11 +119,11 @@ export function IntegrationsSection({
         </div>
 
         <div className="mt-8 text-center">
-          <LandingLink href={integrationsHref} size="sm">
+          <Button render={<a href={integrationsHref} />} size="sm" variant="link">
             View all integrations
-          </LandingLink>
+          </Button>
         </div>
-      </LandingContainer>
-    </LandingSection>
+      </PageContainer>
+    </PageSection>
   )
 }

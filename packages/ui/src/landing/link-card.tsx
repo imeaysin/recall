@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 import { Card, CardPanel } from "@workspace/ui/components/card"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface LandingLinkCardProps {
+interface LinkCardProps {
   href: string
   children: ReactNode
   className?: string
@@ -10,13 +10,13 @@ export interface LandingLinkCardProps {
   external?: boolean
 }
 
-export function LandingLinkCard({
+export function LinkCard({
   href,
   children,
   className,
   panelClassName,
   external = false,
-}: LandingLinkCardProps) {
+}: LinkCardProps) {
   return (
     <Card
       className={cn(

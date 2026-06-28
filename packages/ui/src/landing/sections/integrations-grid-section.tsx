@@ -1,11 +1,7 @@
 "use client"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { LandingContainer } from "../layout/page-container"
-import { LandingLinkCard } from "../primitives/landing-link-card"
-import { SectionHeading } from "../layout/section-heading"
-import { IntegrationLogo } from "../primitives/integration-logo"
+import { PageContainer, SectionHeading } from "../layout"
+import { IntegrationLogo } from "../integration-logo"
 import { cn } from "@workspace/ui/lib/utils"
 
 export interface FilterTab {
@@ -22,6 +18,8 @@ export interface CatalogItem {
   logoUrl?: string
   href: string
   beta?: boolean
+  active?: boolean
+  category?: string
 }
 
 interface IntegrationsGridSectionProps {
@@ -41,56 +39,67 @@ export function IntegrationsGridSection({
 }: IntegrationsGridSectionProps) {
   return (
     <div className="bg-background pt-32 pb-24">
-      <LandingContainer>
+      <PageContainer>
         <SectionHeading title={title} subtitle={subtitle} variant="page" />
 
         {categories?.length ? (
           <div className="mb-12 flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
-              <Button
+              <a
                 key={category.id}
+                href={category.href}
                 className={cn(
-                  activeCategory === category.id &&
-                    "border-foreground bg-foreground text-background hover:bg-foreground/90"
+                  "border px-4 py-2 text-sm transition-colors",
+                  activeCategory === category.id
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground"
                 )}
-                render={<a href={category.href} />}
-                size="sm"
-                variant="outline"
               >
                 {category.name}
-              </Button>
+              </a>
             ))}
           </div>
         ) : null}
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <LandingLinkCard
+            <a
               key={item.slug}
-              className="group"
               href={item.href}
-              panelClassName="flex items-start gap-4 p-5"
+              className="group flex flex-col border border-border p-6 transition-all duration-200 hover:border-foreground/20"
             >
-              <div className="size-10 shrink-0 border border-border bg-secondary p-2">
-                <IntegrationLogo id={item.id} logoUrl={item.logoUrl} />
-              </div>
-              <div className="min-w-0 space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm text-foreground">{item.name}</h3>
+              <div className="mb-4 flex items-start justify-between">
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg">
+                  <IntegrationLogo id={item.id} logoUrl={item.logoUrl} />
+                </div>
+                <div className="flex gap-1">
                   {item.beta ? (
-                    <Badge size="sm" variant="secondary">
+                    <span className="bg-muted px-2 py-1 text-xs text-primary">
                       Beta
-                    </Badge>
+                    </span>
+                  ) : null}
+                  {item.active === false ? (
+                    <span className="bg-muted px-2 py-1 text-xs text-muted-foreground">
+                      Coming soon
+                    </span>
                   ) : null}
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {item.shortDescription}
-                </p>
               </div>
-            </LandingLinkCard>
+              <h3 className="mb-2 text-lg text-foreground">{item.name}</h3>
+              <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+                {item.shortDescription}
+              </p>
+              {item.category ? (
+                <div className="mt-4 border-t border-border pt-4">
+                  <span className="text-xs text-muted-foreground">
+                    {item.category}
+                  </span>
+                </div>
+              ) : null}
+            </a>
           ))}
         </div>
-      </LandingContainer>
+      </PageContainer>
     </div>
   )
 }

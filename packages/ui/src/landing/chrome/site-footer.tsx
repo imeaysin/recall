@@ -1,10 +1,10 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
 import { FooterWordmark } from "./footer-wordmark"
-import { LandingContainer } from "../layout/page-container"
-import { LandingLink } from "../primitives/landing-link"
+import { PageContainer } from "../layout"
 import { cn } from "@workspace/ui/lib/utils"
 
 export interface FooterLink {
@@ -30,15 +30,20 @@ interface SiteFooterProps {
 
 function FooterLinkItem({ link }: { link: FooterLink }) {
   return (
-    <LandingLink
+    <Button
       className="h-auto justify-start p-0 text-sm text-muted-foreground hover:text-foreground"
-      external={link.external}
-      href={link.href}
+      render={
+        <a
+          href={link.href}
+          rel={link.external ? "noopener noreferrer" : undefined}
+          target={link.external ? "_blank" : undefined}
+        />
+      }
       size="sm"
       variant="link"
     >
       {link.label}
-    </LandingLink>
+    </Button>
   )
 }
 
@@ -48,10 +53,15 @@ function StatusIndicator({
   status: FooterLink & { value: string }
 }) {
   return (
-    <LandingLink
+    <Button
       className="inline-flex h-auto items-center gap-2 p-0 no-underline hover:opacity-80 hover:no-underline"
-      external
-      href={status.href}
+      render={
+        <a
+          href={status.href}
+          rel="noopener noreferrer"
+          target="_blank"
+        />
+      }
       variant="ghost"
     >
       <span className="text-sm text-muted-foreground">{status.label}</span>
@@ -60,7 +70,7 @@ function StatusIndicator({
         <span className="relative z-10 block size-2 rounded-full bg-success" />
         <span className="absolute inset-0 animate-pulse-glow rounded-full bg-success" />
       </span>
-    </LandingLink>
+    </Button>
   )
 }
 
@@ -77,7 +87,7 @@ export function SiteFooter({
     <footer className={cn("relative overflow-hidden bg-background", className)}>
       <Separator />
 
-      <LandingContainer className="py-16 sm:pb-80">
+      <PageContainer className="py-16 sm:pb-80">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-16">
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-12 md:grid-cols-5 lg:col-span-1">
             {linkGroups.map((group) => (
@@ -110,7 +120,7 @@ export function SiteFooter({
           ) : null}
           <p className="text-sm text-muted-foreground">{copyright}</p>
         </div>
-      </LandingContainer>
+      </PageContainer>
 
       <FooterWordmark text={wordmark} />
     </footer>

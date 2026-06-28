@@ -1,42 +1,24 @@
-export { LandingContainer, LandingSection } from "./layout/page-container"
-export { SectionHeading } from "./layout/section-heading"
-export type { SectionHeadingProps } from "./layout/section-heading"
-export { FeatureHero } from "./layout/feature-hero"
-export type { FeatureHeroProps } from "./layout/feature-hero"
-export { LegalPage, PlaceholderPage } from "./layout/legal-page"
+// Layout — wrap sections and set page width
+export { PageContainer, PageSection, SectionHeading } from "./layout"
+export type { SectionHeadingProps } from "./layout"
+
+// Page shells — full-page starters
+export { FeatureHero } from "./feature-hero"
+export type { FeatureHeroProps } from "./feature-hero"
+export { LegalPage, PlaceholderPage } from "./legal-page"
 export type {
   LegalBlock,
   LegalDocument,
   LegalSection,
-} from "./layout/legal-page"
-export { ResourcePageShell } from "./layout/resource-page-shell"
+} from "./legal-page"
+export { ResourcePageShell } from "./resource-page-shell"
 
-export { IntegrationLogo } from "./primitives/integration-logo"
-export { LandingLink } from "./primitives/landing-link"
-export type { LandingLinkProps } from "./primitives/landing-link"
-export { LandingLinkCard } from "./primitives/landing-link-card"
-export type { LandingLinkCardProps } from "./primitives/landing-link-card"
-export { LandingPageHero } from "./primitives/landing-page-hero"
-export type { LandingPageHeroProps } from "./primitives/landing-page-hero"
-export {
-  LandingFeatureTile,
-  LandingIntegrationPill,
-} from "./primitives/landing-tiles"
-export type {
-  LandingFeatureTileProps,
-  LandingIntegrationPillProps,
-} from "./primitives/landing-tiles"
-
+// Chrome
 export { FooterWordmark } from "./chrome/footer-wordmark"
 export { SiteFooter } from "./chrome/site-footer"
 export type { FooterLink, FooterLinkGroup } from "./chrome/site-footer"
-export {
-  NavbarBrand,
-  NavbarDropdownOverlay,
-  NavbarMenuButton,
-  SiteNavbar,
-} from "./chrome/site-navbar"
 
+// Sections — compose a landing page from these blocks
 export { FeaturesGridSection } from "./sections/features-grid-section"
 export type { FeatureItem } from "./sections/features-grid-section"
 export { IntegrationsSection } from "./sections/integrations-section"

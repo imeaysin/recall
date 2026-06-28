@@ -6,8 +6,7 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@workspace/ui/components/accordion"
-import { LandingContainer, LandingSection } from "../layout/page-container"
-import { SectionHeading } from "../layout/section-heading"
+import { PageContainer, PageSection, SectionHeading } from "../layout"
 
 export interface FaqItem {
   question: string
@@ -28,8 +27,8 @@ export function FaqSection({
   const defaultValue = items[0] ? [items[0].question] : []
 
   return (
-    <LandingSection>
-      <LandingContainer>
+    <PageSection>
+      <PageContainer>
         <SectionHeading title={title} subtitle={subtitle} />
         <Accordion
           className="mx-auto max-w-3xl border border-border"
@@ -46,7 +45,7 @@ export function FaqSection({
             </AccordionItem>
           ))}
         </Accordion>
-      </LandingContainer>
-    </LandingSection>
+      </PageContainer>
+    </PageSection>
   )
 }

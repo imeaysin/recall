@@ -2,9 +2,8 @@
 
 import type { ReactNode } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { LandingContainer } from "../layout/page-container"
-import { LandingLinkCard } from "../primitives/landing-link-card"
-import { LandingPageHero } from "../primitives/landing-page-hero"
+import { PageContainer, SectionHeading } from "../layout"
+import { LinkCard } from "../link-card"
 
 export interface DirectoryItem {
   href: string
@@ -29,19 +28,23 @@ export function DirectorySection({
 }: DirectorySectionProps) {
   return (
     <div className="min-h-screen bg-background">
-      <LandingContainer className="pt-32 pb-16 sm:pt-40 sm:pb-20 md:pt-48">
-        <LandingPageHero
+      <PageContainer className="pt-32 pb-16 sm:pt-40 sm:pb-20 md:pt-48">
+        <SectionHeading
           className="mx-auto max-w-3xl space-y-6"
-          description={description}
           eyebrow={eyebrow}
+          subtitle={description}
           title={title}
+          variant="hero"
         >
           <div className="flex items-center justify-center gap-3 pt-4">
             <div className="flex items-center gap-2.5">
               {items.map((item) => (
                 <Button
                   key={item.href}
-                  className={item.iconClassName ?? "text-muted-foreground/40 hover:text-foreground"}
+                  className={
+                    item.iconClassName ??
+                    "text-muted-foreground/40 hover:text-foreground"
+                  }
                   render={<a href={item.href} />}
                   size="icon-lg"
                   variant="ghost"
@@ -51,11 +54,11 @@ export function DirectorySection({
               ))}
             </div>
           </div>
-        </LandingPageHero>
+        </SectionHeading>
 
         <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((item) => (
-            <LandingLinkCard
+            <LinkCard
               key={item.href}
               className="group"
               href={item.href}
@@ -72,10 +75,10 @@ export function DirectorySection({
                   </p>
                 ) : null}
               </div>
-            </LandingLinkCard>
+            </LinkCard>
           ))}
         </div>
-      </LandingContainer>
+      </PageContainer>
     </div>
   )
 }

@@ -2,8 +2,8 @@
 
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardPanel } from "@workspace/ui/components/card"
-import { LandingContainer } from "../layout/page-container"
-import { IntegrationLogo } from "../primitives/integration-logo"
+import { PageContainer } from "../layout"
+import { IntegrationLogo } from "../integration-logo"
 
 export interface DetailPageProps {
   id: string
@@ -30,7 +30,7 @@ export function IntegrationDetailSection({
 }: DetailPageProps) {
   return (
     <div className="bg-background pt-32 pb-24">
-      <LandingContainer>
+      <PageContainer>
         <nav className="mb-8">
           <Button
             className="h-auto p-0 text-sm text-muted-foreground"
@@ -86,7 +86,7 @@ export function IntegrationDetailSection({
             {ctaLabel}
           </Button>
         </div>
-      </LandingContainer>
+      </PageContainer>
     </div>
   )
 }

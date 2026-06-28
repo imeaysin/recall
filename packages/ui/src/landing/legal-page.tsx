@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { LandingContainer } from "./page-container"
+import { PageContainer } from "./layout"
 import { cn } from "@workspace/ui/lib/utils"
 
 export type LegalBlock =
@@ -114,7 +114,7 @@ export function LegalPage({ document, children }: LegalPageProps) {
     <div className="min-h-screen">
       <div className="pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-20">
         <div className="pt-12 sm:pt-16 lg:pt-24">
-          <LandingContainer size="legal">
+          <PageContainer size="legal">
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="3xl:text-4xl font-serif text-2xl leading-tight text-foreground sm:text-3xl lg:text-3xl lg:leading-tight xl:text-3xl xl:leading-snug 2xl:text-3xl">
@@ -139,7 +139,7 @@ export function LegalPage({ document, children }: LegalPageProps) {
                 {children}
               </div>
             </div>
-          </LandingContainer>
+          </PageContainer>
         </div>
       </div>
     </div>
@@ -169,7 +169,7 @@ export function PlaceholderPage({
 }: PlaceholderPageProps) {
   return (
     <div className={cn("min-h-[60vh] pt-12 pb-16 sm:pt-16", className)}>
-      <LandingContainer size="narrow">
+      <PageContainer size="narrow">
         <div className="space-y-4 pt-12 text-center sm:pt-16">
           <h1 className={placeholderTitleVariants[variant]}>{title}</h1>
           <p className="text-base leading-relaxed text-muted-foreground">
@@ -177,7 +177,7 @@ export function PlaceholderPage({
           </p>
           {action ? <div className="pt-4">{action}</div> : null}
         </div>
-      </LandingContainer>
+      </PageContainer>
     </div>
   )
 }
