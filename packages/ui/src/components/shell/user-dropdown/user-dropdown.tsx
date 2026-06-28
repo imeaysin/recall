@@ -117,7 +117,7 @@ export function UserDropdown({
           </Avatar>
           <span
             className={cn(
-              "absolute rounded-full border border-sidebar-border bg-green-500",
+              "absolute rounded-full border border-sidebar-border bg-success",
               statusDotClass
             )}
           />

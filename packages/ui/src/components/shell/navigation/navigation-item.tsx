@@ -1,19 +1,25 @@
 "use client"
 
 import {
-  ArrowRightIcon,
   ChevronDownIcon,
+  ChevronRightIcon,
   ChevronUpIcon,
   RotateCwIcon,
 } from "lucide-react"
 import type React from "react"
 import { Fragment, useState } from "react"
-import { cn } from "@workspace/ui/lib/utils"
+import {
+  Drawer,
+  DrawerPopup,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@workspace/ui/components/drawer"
 import {
   Tooltip,
   TooltipPopup,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
+import { cn } from "@workspace/ui/lib/utils"
 import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
 
@@ -213,20 +219,21 @@ export const NavigationItem: React.FC<{
 export const MobileNavigationItem: React.FC<{
   item: NavigationItemType
   isChild?: boolean
+  /** When provided, the item renders as a button (used by the "More" trigger). */
+  onClick?: () => void
+  isActive?: boolean
 }> = (props) => {
-  const { item, isChild } = props
+  const { item, isChild, onClick, isActive } = props
   const { t, pathname, Link } = useShell()
   const isCurrent = item.isCurrent ?? defaultIsCurrent
-  const current = isCurrent({ isChild: !!isChild, item, pathname })
+  const current = isActive ?? isCurrent({ isChild: !!isChild, item, pathname })
   const Icon = item.icon
 
-  return (
-    <Link
-      aria-current={current ? "page" : undefined}
-      className="relative my-2 min-w-0 flex-1 overflow-hidden rounded-md bg-transparent! p-1 text-center text-xs font-medium text-muted-foreground hover:text-foreground focus:z-10 sm:text-sm [&[aria-current='page']]:text-foreground"
-      href={item.href}
-      target={item.target}
-    >
+  const className =
+    "relative my-2 min-w-0 flex-1 overflow-hidden rounded-md bg-transparent! p-1 text-center text-xs font-medium text-muted-foreground hover:text-foreground focus:z-10 sm:text-sm [&[aria-current='page']]:text-foreground"
+
+  const content = (
+    <>
       {item.badge ? (
         <div className="absolute top-1 right-1">{item.badge}</div>
       ) : null}
@@ -237,102 +244,124 @@ export const MobileNavigationItem: React.FC<{
         />
       ) : null}
       <span className="block truncate">{t(item.name)}</span>
+    </>
+  )
+
+  if (onClick) {
+    return (
+      <button
+        aria-current={current ? "page" : undefined}
+        className={className}
+        onClick={onClick}
+        type="button"
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <Link
+      aria-current={current ? "page" : undefined}
+      className={className}
+      href={item.href}
+      target={item.target}
+    >
+      {content}
     </Link>
   )
 }
 
 export const MobileNavigationMoreItem: React.FC<{
   item: NavigationItemType
+  /** Called after navigating/acting so the parent can close an open drawer. */
+  onNavigate?: () => void
 }> = (props) => {
-  const { item } = props
+  const { item, onNavigate } = props
   const { t, Link } = useShell()
-  const [isExpanded, setIsExpanded] = usePersistedExpansionState(item.name)
 
   const Icon = item.icon
   const hasChildren = !!item.child && item.child.length > 0
   const isActionItem = !item.href && item.onClick
 
-  const itemContent = (
+  const rowClassName = cn(
+    "group flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-sm font-medium text-sidebar-foreground transition",
+    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+    "[&[aria-current='page']]:bg-sidebar-accent [&[aria-current='page']]:text-sidebar-accent-foreground"
+  )
+
+  const label = (
     <>
-      <span className="flex items-center font-semibold text-foreground">
-        {Icon ? (
-          <Icon aria-hidden="true" className="mr-3 size-5 shrink-0" />
-        ) : null}
-        {t(item.name)}
-      </span>
-      {!isActionItem ? (
-        <ArrowRightIcon className="size-5 text-muted-foreground" />
-      ) : null}
+      {Icon ? <Icon aria-hidden="true" className="size-4 shrink-0" /> : null}
+      <span className="truncate">{t(item.name)}</span>
     </>
   )
 
-  return (
-    <li className="border-b border-border last:border-b-0">
-      {hasChildren ? (
-        <>
-          <button
-            className="flex w-full items-center justify-between p-5 text-left transition hover:bg-accent"
-            onClick={() => setIsExpanded(!isExpanded)}
-            type="button"
-          >
-            <span className="flex items-center font-semibold text-foreground">
-              {Icon ? (
-                <Icon aria-hidden="true" className="mr-3 size-5 shrink-0" />
-              ) : null}
-              {t(item.name)}
-            </span>
-            {isExpanded ? (
-              <ChevronUpIcon className="size-5 text-muted-foreground" />
-            ) : (
-              <ChevronDownIcon className="size-5 text-muted-foreground" />
-            )}
-          </button>
-          <div
-            className={cn(
-              "grid transition-all duration-300 ease-in-out",
-              isExpanded
-                ? "visible grid-rows-[1fr] opacity-100"
-                : "invisible grid-rows-[0fr] opacity-0"
-            )}
-          >
-            <div className="overflow-hidden">
-              {item.child ? (
-                <ul className="bg-muted">
-                  {item.child.map((childItem) => (
-                    <li className="border-t border-border" key={childItem.name}>
-                      <Link
-                        className="flex items-center p-4 pl-12 transition hover:bg-sidebar-accent"
-                        href={childItem.href}
-                        target={childItem.target}
-                      >
-                        <span className="font-medium text-foreground">
-                          {t(childItem.name)}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
+  if (hasChildren) {
+    return (
+      <Drawer>
+        <DrawerTrigger
+          render={<button className={rowClassName} type="button" />}
+        >
+          {label}
+          <ChevronRightIcon className="ml-auto size-4 shrink-0 text-muted-foreground" />
+        </DrawerTrigger>
+        <DrawerPopup className="md:hidden" showBar>
+          <div className="px-5 pt-4 pb-2">
+            <DrawerTitle>{t(item.name)}</DrawerTitle>
           </div>
-        </>
-      ) : isActionItem ? (
-        <button
-          className="flex w-full items-center justify-between p-5 text-left transition hover:bg-accent"
-          onClick={item.onClick}
-          type="button"
-        >
-          {itemContent}
-        </button>
-      ) : (
-        <Link
-          className="flex items-center justify-between p-5 transition hover:bg-accent"
-          href={item.href}
-          target={item.target}
-        >
-          {itemContent}
-        </Link>
-      )}
-    </li>
+          <div className="max-h-[70vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+            <nav className="flex flex-col gap-0.5 px-2 pb-4">
+              {item.child?.map((childItem) => {
+                const ChildIcon = childItem.icon
+                return (
+                  <Link
+                    className={rowClassName}
+                    href={childItem.href}
+                    key={childItem.name}
+                    onClick={onNavigate}
+                    target={childItem.target}
+                  >
+                    {ChildIcon ? (
+                      <ChildIcon
+                        aria-hidden="true"
+                        className="size-4 shrink-0"
+                      />
+                    ) : null}
+                    <span className="truncate">{t(childItem.name)}</span>
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
+        </DrawerPopup>
+      </Drawer>
+    )
+  }
+
+  if (isActionItem) {
+    return (
+      <button
+        className={rowClassName}
+        onClick={(event) => {
+          item.onClick?.(event)
+          onNavigate?.()
+        }}
+        type="button"
+      >
+        {label}
+      </button>
+    )
+  }
+
+  return (
+    <Link
+      className={rowClassName}
+      href={item.href}
+      onClick={onNavigate}
+      target={item.target}
+    >
+      {label}
+    </Link>
   )
 }

@@ -14,8 +14,6 @@ import { paths } from "@/config/paths"
 
 const dashboardBase = paths.dashboard
 
-export const dashboardMorePath = `${dashboardBase}/more`
-
 export const dashboardMainNavigation: NavigationItemType[] = [
   {
     name: "Event types",
@@ -90,10 +88,8 @@ export const dashboardMainNavigation: NavigationItemType[] = [
   },
   {
     name: MORE_SEPARATOR_NAME,
-    href: dashboardMorePath,
+    href: "",
     icon: EllipsisIcon,
-    isCurrent: ({ pathname }) =>
-      pathname?.startsWith(dashboardMorePath) ?? false,
   },
 ]
 

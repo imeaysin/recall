@@ -269,7 +269,10 @@ export function Shell({
                   <ShellMain {...mainProps}>{children}</ShellMain>
                 )}
                 {!mainProps.backPath && (
-                  <MobileNavigation items={navigation} />
+                  <MobileNavigation
+                    bottomNavItems={bottomNavItems}
+                    items={navigation}
+                  />
                 )}
               </div>
             </main>

@@ -1,9 +1,15 @@
 "use client"
 
 import type React from "react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import {
+  Drawer,
+  DrawerPopup,
+  DrawerTitle,
+} from "@workspace/ui/components/drawer"
 import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "../command-palette"
+import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
 import {
   MobileNavigationItem,
@@ -59,10 +65,14 @@ export function Navigation({
 
 export function MobileNavigation({
   items,
+  bottomNavItems = [],
 }: {
   items: NavigationItemType[]
+  bottomNavItems?: NavigationItemType[]
 }): React.ReactElement {
+  const { t } = useShell()
   const { mobileNavigationBottomItems } = useNavigationItems(items)
+  const [moreOpen, setMoreOpen] = useState(false)
 
   return (
     <>
@@ -71,11 +81,37 @@ export function MobileNavigation({
           "fixed bottom-0 left-0 z-30 flex w-full border-t border-border bg-sidebar/40 px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] shadow backdrop-blur-md md:hidden"
         )}
       >
-        {mobileNavigationBottomItems.map((item) => (
-          <MobileNavigationItem item={item} key={item.name} />
-        ))}
+        {mobileNavigationBottomItems.map((item) =>
+          item.name === MORE_SEPARATOR_NAME ? (
+            <MobileNavigationItem
+              isActive={moreOpen}
+              item={item}
+              key={item.name}
+              onClick={() => setMoreOpen(true)}
+            />
+          ) : (
+            <MobileNavigationItem item={item} key={item.name} />
+          )
+        )}
       </nav>
       <div className="block pt-12 md:hidden" />
+
+      <Drawer onOpenChange={setMoreOpen} open={moreOpen}>
+        <DrawerPopup className="md:hidden" showBar>
+          <div className="px-5 pt-4 pb-2">
+            <DrawerTitle className="capitalize">
+              {t(MORE_SEPARATOR_NAME)}
+            </DrawerTitle>
+          </div>
+          <div className="max-h-[70vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+            <MobileNavigationMoreItems
+              bottomNavItems={bottomNavItems}
+              items={items}
+              onNavigate={() => setMoreOpen(false)}
+            />
+          </div>
+        </DrawerPopup>
+      </Drawer>
     </>
   )
 }
@@ -83,9 +119,11 @@ export function MobileNavigation({
 export function MobileNavigationMoreItems({
   items,
   bottomNavItems = [],
+  onNavigate,
 }: {
   items: NavigationItemType[]
   bottomNavItems?: NavigationItemType[]
+  onNavigate?: () => void
 }): React.ReactElement {
   const { mobileNavigationMoreItems } = useNavigationItems(items)
 
@@ -96,10 +134,14 @@ export function MobileNavigationMoreItems({
   const allItems = [...mobileNavigationMoreItems, ...mobileMoreBottomItems]
 
   return (
-    <ul className="mt-2 rounded-md border border-border">
+    <nav className="flex flex-col gap-0.5 px-2 pb-4">
       {allItems.map((item) => (
-        <MobileNavigationMoreItem item={item} key={item.name} />
+        <MobileNavigationMoreItem
+          item={item}
+          key={item.name}
+          onNavigate={onNavigate}
+        />
       ))}
-    </ul>
+    </nav>
   )
 }
