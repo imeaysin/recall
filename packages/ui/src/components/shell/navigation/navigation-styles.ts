@@ -2,8 +2,8 @@ import { cn } from "@workspace/ui/lib/utils"
 import type { NavigationItemType } from "../types"
 
 export const sidebarNavItemClassName = cn(
-  "mt-0.5 flex w-full items-center rounded-md px-2 py-1.5 text-sm font-medium text-sidebar-foreground transition",
-  "md:justify-center lg:justify-start",
+  "mt-0.5 flex w-full items-center rounded-lg px-2 py-1.5 text-sm font-medium text-sidebar-foreground ring-sidebar-ring transition outline-none",
+  "md:size-9 md:shrink-0 md:justify-center md:px-0 lg:size-auto lg:justify-start lg:px-2",
   "[&[aria-current='page']]:bg-sidebar-accent [&[aria-current='page']]:text-sidebar-accent-foreground",
   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
 )

@@ -52,7 +52,7 @@ export function Navigation({
   const { desktopNavigationItems } = useNavigationItems(items)
 
   return (
-    <nav className="mt-2 flex-1 md:px-2 lg:mt-4 lg:px-0">
+    <nav className="mt-2 flex flex-col gap-0.5 md:items-center lg:mt-4 lg:items-stretch">
       {desktopNavigationItems.map((item) => (
         <NavigationItem item={item} key={item.name} />
       ))}

@@ -3,7 +3,18 @@
 import { ChevronDownIcon, ChevronUpIcon, RotateCwIcon } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import type React from "react"
+import {
+  Menu,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuLinkItem,
+  MenuPopup,
+  MenuTrigger,
+} from "@workspace/ui/components/menu"
 import { cn } from "@workspace/ui/lib/utils"
+import { useShell } from "../shell-context"
+import type { NavigationItemType } from "../types"
+import { defaultIsCurrent, sidebarNavItemClassName } from "./navigation-styles"
 
 const navIconClassName = "size-4 shrink-0 lg:mr-2"
 
@@ -59,11 +70,70 @@ export function NavigationChildPanel({
 }
 
 export function getSidebarChildClassName(index?: number): string {
-  const base = "hidden h-8 pl-16 lg:flex lg:pl-11"
+  const base = "hidden h-8 pl-11 lg:flex"
 
   if (index === 0) {
     return cn(base, "mt-0")
   }
 
   return cn(base, "mt-1 hover:mt-1 [&[aria-current='page']]:mt-1")
+}
+
+/** Icon-only sidebar (md–lg): flyout menu for parents, matching shadcn collapsible=icon. */
+export function SidebarIconParentNavItem({
+  item,
+  hasActiveChild,
+}: {
+  item: NavigationItemType
+  hasActiveChild: boolean
+}): React.ReactElement {
+  const { t, pathname, Link } = useShell()
+  const isCurrent = item.isCurrent ?? defaultIsCurrent
+
+  return (
+    <Menu>
+      <MenuTrigger
+        render={
+          <button
+            aria-haspopup="menu"
+            aria-label={t(item.name)}
+            className={cn(
+              sidebarNavItemClassName,
+              hasActiveChild &&
+                "bg-sidebar-accent text-sidebar-accent-foreground"
+            )}
+            type="button"
+          />
+        }
+      >
+        <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
+      </MenuTrigger>
+      <MenuPopup align="start" className="min-w-44" side="right" sideOffset={8}>
+        <MenuGroup>
+          <MenuGroupLabel>{t(item.name)}</MenuGroupLabel>
+          {item.child?.map((child) => {
+            const ChildIcon = child.icon
+            const childCurrent = isCurrent({
+              isChild: true,
+              item: child,
+              pathname,
+            })
+
+            return (
+              <MenuLinkItem
+                aria-current={childCurrent ? "page" : undefined}
+                key={child.name}
+                render={<Link href={child.href} target={child.target} />}
+              >
+                {ChildIcon ? (
+                  <ChildIcon aria-hidden="true" className="size-4 shrink-0" />
+                ) : null}
+                {t(child.name)}
+              </MenuLinkItem>
+            )
+          })}
+        </MenuGroup>
+      </MenuPopup>
+    </Menu>
+  )
 }

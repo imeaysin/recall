@@ -15,6 +15,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
+import { useMediaQuery } from "@workspace/ui/hooks/use-media-query"
 import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
 import {
@@ -22,6 +23,7 @@ import {
   getSidebarChildClassName,
   NavItemIcon,
   NavigationChildPanel,
+  SidebarIconParentNavItem,
 } from "./navigation-parts"
 import {
   contentNavItemClassName,
@@ -72,7 +74,7 @@ export const NavigationItem: React.FC<{
   const isCurrent = item.isCurrent ?? defaultIsCurrent
   const current = isCurrent({ isChild: !!isChild, item, pathname })
   const [isExpanded, setIsExpanded] = usePersistedExpansionState(item.name)
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false)
+  const isIconSidebar = useMediaQuery({ min: 768, max: 1024 })
 
   const hasChildren = !!item.child && item.child.length > 0
   const hasActiveChild =
@@ -86,52 +88,34 @@ export const NavigationItem: React.FC<{
   const isParentNavigationItem = hasChildren && !isChild
 
   if (isParentNavigationItem) {
+    if (isIconSidebar) {
+      return <SidebarIconParentNavItem hasActiveChild={!!hasActiveChild} item={item} />
+    }
+
     return (
       <Fragment>
-        <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
-          <TooltipTrigger
-            render={
-              <button
-                aria-current={current ? "page" : undefined}
-                aria-expanded={isExpanded}
-                aria-label={t(item.name)}
-                className={cn(
-                  sidebarNavItemClassName,
-                  "relative md:justify-center lg:justify-start"
-                )}
-                onClick={() => setIsExpanded(!isExpanded)}
-                type="button"
-              />
-            }
-          >
-            {item.icon || item.isLoading ? (
-              <div className="relative">
-                <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
-                {shouldShowChevron ? (
-                  <span className="absolute -right-0.5 -bottom-0.5 rounded-full bg-sidebar-accent p-0.5 lg:hidden">
-                    <ExpansionChevron
-                      className="size-2.5"
-                      expanded={isExpanded}
-                    />
-                  </span>
-                ) : null}
-              </div>
-            ) : null}
-            <span className="hidden w-full justify-between truncate lg:flex">
-              {t(item.name)}
-              {item.badge}
-            </span>
-            {shouldShowChevron ? (
-              <ExpansionChevron
-                className="ml-auto hidden size-4 lg:block"
-                expanded={isExpanded}
-              />
-            ) : null}
-          </TooltipTrigger>
-          <TooltipPopup className="lg:hidden" side="right">
+        <button
+          aria-current={current ? "page" : undefined}
+          aria-expanded={isExpanded}
+          aria-label={t(item.name)}
+          className={sidebarNavItemClassName}
+          onClick={() => setIsExpanded(!isExpanded)}
+          type="button"
+        >
+          {item.icon || item.isLoading ? (
+            <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
+          ) : null}
+          <span className="flex w-full items-center justify-between truncate">
             {t(item.name)}
-          </TooltipPopup>
-        </Tooltip>
+            {item.badge}
+          </span>
+          {shouldShowChevron ? (
+            <ExpansionChevron
+              className="ml-auto size-4 shrink-0 text-sidebar-foreground/60"
+              expanded={isExpanded}
+            />
+          ) : null}
+        </button>
         {hasChildren ? (
           <NavigationChildPanel open={shouldShowChildren}>
             {item.child?.map((child, index) => (
@@ -157,9 +141,7 @@ export const NavigationItem: React.FC<{
             aria-label={t(item.name)}
             className={cn(
               sidebarNavItemClassName,
-              isChild
-                ? getSidebarChildClassName(props.index)
-                : "md:justify-center lg:justify-start"
+              isChild ? getSidebarChildClassName(props.index) : undefined
             )}
             data-testid={item.name}
             href={item.href}
@@ -168,10 +150,8 @@ export const NavigationItem: React.FC<{
         }
       >
         <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
-        <span className="hidden w-full justify-between truncate lg:flex">
-          {t(item.name)}
-          {item.badge}
-        </span>
+        <span className="hidden truncate lg:block">{t(item.name)}</span>
+        {item.badge ? <span className="hidden lg:inline">{item.badge}</span> : null}
       </TooltipTrigger>
       <TooltipPopup className="lg:hidden" side="right">
         {t(item.name)}
