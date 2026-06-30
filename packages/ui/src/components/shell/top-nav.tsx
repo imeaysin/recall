@@ -4,29 +4,17 @@ import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "./command-palette"
 import { useShell } from "./shell-context"
-import type { ShellUser, UserMenuItem } from "./types"
-import { UserDropdown } from "./user-dropdown/user-dropdown"
 
 export interface TopNavProps {
-  user?: ShellUser | null
-  userLoading?: boolean
   logo?: React.ReactNode
   brandLabel?: string
   homeHref?: string
-  onSignOut?: () => void
-  userMenuItems?: UserMenuItem[]
-  signOutLabel?: string
 }
 
 export function TopNav({
-  user,
-  userLoading,
   logo,
   brandLabel,
   homeHref = "/",
-  onSignOut,
-  userMenuItems,
-  signOutLabel,
 }: TopNavProps): React.ReactElement {
   const { Link } = useShell()
 
@@ -48,18 +36,7 @@ export function TopNav({
         {brandLabel ? <span className="truncate">{brandLabel}</span> : null}
       </Link>
 
-      <div className="flex shrink-0 items-center gap-1">
-        <CommandTrigger variant="topnav" />
-        <UserDropdown
-          loading={userLoading}
-          menuItems={userMenuItems}
-          onSignOut={onSignOut}
-          placement="topnav"
-          signOutLabel={signOutLabel}
-          small
-          user={user}
-        />
-      </div>
+      <CommandTrigger variant="topnav" />
     </nav>
   )
 }

@@ -9,6 +9,7 @@ import {
 } from "@workspace/ui/components/drawer"
 import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "../command-palette"
+import { useShellSidebar } from "../shell-sidebar-context"
 import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
 import {
@@ -50,15 +51,19 @@ export function Navigation({
   items: NavigationItemType[]
 }): React.ReactElement {
   const { desktopNavigationItems } = useNavigationItems(items)
+  const { isIconSidebar } = useShellSidebar()
 
   return (
-    <nav className="mt-2 flex w-full flex-col gap-0.5 md:items-center lg:mt-4 lg:items-stretch">
+    <nav
+      className={cn(
+        "flex w-full flex-col gap-1",
+        isIconSidebar ? "items-center" : "items-stretch"
+      )}
+    >
       {desktopNavigationItems.map((item) => (
         <NavigationItem item={item} key={item.name} />
       ))}
-      <div className="mt-0.5 text-muted-foreground lg:hidden">
-        <CommandTrigger />
-      </div>
+      {isIconSidebar ? <CommandTrigger /> : null}
     </nav>
   )
 }

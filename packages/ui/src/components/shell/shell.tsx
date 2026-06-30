@@ -7,6 +7,7 @@ import { BannerContainer } from "./banners/layout-banner"
 import { CommandPalette, useCommandPaletteShortcut } from "./command-palette"
 import { MobileNavigation } from "./navigation/navigation"
 import { ShellProvider } from "./shell-context"
+import { ShellSidebarProvider } from "./shell-sidebar-context"
 import { ShellBackButton } from "./shell-back-button"
 import { getShellCtaClassName } from "./shell-layout"
 import { SideBar } from "./sidebar"
@@ -198,7 +199,8 @@ export function Shell({
       pathname={pathname}
       t={t}
     >
-      <div className="flex min-h-screen flex-col bg-sidebar">
+      <ShellSidebarProvider>
+        <div className="flex min-h-screen flex-col bg-sidebar">
         {banners && <BannerContainer>{banners}</BannerContainer>}
 
         <div className="flex flex-1" data-testid="dashboard-shell">
@@ -208,11 +210,6 @@ export function Shell({
             logo={logoIcon ?? logo}
             homeHref={homeHref}
             navigation={navigation}
-            onSignOut={onSignOut}
-            signOutLabel={signOutLabel}
-            user={user}
-            userLoading={userLoading}
-            userMenuItems={userMenuItems}
           />
 
           <main
@@ -224,11 +221,6 @@ export function Shell({
               brandLabel={brandLabel}
               homeHref={homeHref}
               logo={logo}
-              onSignOut={onSignOut}
-              signOutLabel={signOutLabel}
-              user={user}
-              userLoading={userLoading}
-              userMenuItems={userMenuItems}
             />
             <div className="max-w-full flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6">
               {withoutMain ? (
@@ -245,17 +237,18 @@ export function Shell({
             </div>
           </main>
         </div>
-      </div>
+        </div>
 
-      {isCommandPaletteEnabled && (
-        <CommandPalette
-          actions={commandActions}
-          onOpenChange={setCommandOpen}
-          onSelectAction={onSelectCommandAction}
-          open={commandOpen}
-          placeholder={commandPlaceholder}
-        />
-      )}
+        {isCommandPaletteEnabled && (
+          <CommandPalette
+            actions={commandActions}
+            onOpenChange={setCommandOpen}
+            onSelectAction={onSelectCommandAction}
+            open={commandOpen}
+            placeholder={commandPlaceholder}
+          />
+        )}
+      </ShellSidebarProvider>
     </ShellProvider>
   )
 }
@@ -264,6 +257,12 @@ export const AppShell = Shell
 
 export { ShellProvider, useShell } from "./shell-context"
 export type { ShellContextValue } from "./shell-context"
+export {
+  ShellSidebarProvider,
+  useShellSidebar,
+} from "./shell-sidebar-context"
+export { ShellSidebarBrand } from "./shell-sidebar-brand"
+export { ShellSidebarTrigger } from "./shell-sidebar-trigger"
 export {
   CommandPalette,
   CommandTrigger,

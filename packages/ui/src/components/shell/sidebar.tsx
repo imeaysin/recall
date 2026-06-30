@@ -2,106 +2,111 @@
 
 import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
-import { CommandTrigger } from "./command-palette"
 import { Navigation } from "./navigation/navigation"
 import { NavigationItem } from "./navigation/navigation-item"
+import { ShellSidebarBrand } from "./shell-sidebar-brand"
+import { useShellSidebar } from "./shell-sidebar-context"
+import { ShellSidebarTrigger } from "./shell-sidebar-trigger"
+import { CommandTrigger } from "./command-palette"
 import { useShell } from "./shell-context"
-import type { NavigationItemType, ShellUser, UserMenuItem } from "./types"
-import { UserDropdown } from "./user-dropdown/user-dropdown"
+import type { NavigationItemType } from "./types"
 
 export interface SideBarProps {
-  user?: ShellUser | null
-  userLoading?: boolean
   navigation: NavigationItemType[]
   bottomNavItems?: NavigationItemType[]
   logo?: React.ReactNode
   brandLabel?: string
   homeHref?: string
-  onSignOut?: () => void
-  userMenuItems?: UserMenuItem[]
-  signOutLabel?: string
   bannersHeight?: number
 }
 
+function SidebarLogoMark({ logo }: { logo: React.ReactNode }): React.ReactElement {
+  return (
+    <span className="flex size-4 shrink-0 items-center justify-center [&>svg]:size-full">
+      {logo}
+    </span>
+  )
+}
+
 export function SideBar({
-  user,
-  userLoading,
   navigation,
   bottomNavItems = [],
   logo,
   brandLabel,
   homeHref = "/",
-  onSignOut,
-  userMenuItems,
-  signOutLabel,
   bannersHeight = 0,
 }: SideBarProps): React.ReactElement {
   const { Link } = useShell()
+  const { isIconSidebar } = useShellSidebar()
 
   return (
     <div className="relative">
       <aside
         className={cn(
-          "fixed left-0 hidden h-full max-h-screen w-(--sidebar-width-icon) min-w-(--sidebar-width-icon) flex-col overflow-x-hidden overflow-y-auto bg-sidebar font-sans text-sidebar-foreground md:sticky md:flex lg:w-(--sidebar-width) lg:min-w-(--sidebar-width) lg:px-3"
+          "fixed left-0 hidden h-full max-h-screen flex-col overflow-x-hidden overflow-y-auto bg-sidebar p-2 font-sans text-sidebar-foreground transition-[width,min-width] duration-200 ease-linear md:sticky md:flex",
+          isIconSidebar
+            ? "w-(--sidebar-width-icon) min-w-(--sidebar-width-icon)"
+            : "w-(--sidebar-width) min-w-(--sidebar-width)"
         )}
+        data-collapsed={isIconSidebar ? "" : undefined}
         style={
           {
             "--sidebar-width": "18rem",
-            "--sidebar-width-icon": "3.5rem",
+            "--sidebar-width-icon": "3rem",
             maxHeight: `calc(100vh - ${bannersHeight}px)`,
             top: `${bannersHeight}px`,
           } as React.CSSProperties
         }
       >
-        <div className="flex h-full flex-col items-center justify-between py-3 lg:items-stretch lg:pt-4">
-          <div className="flex w-full flex-col items-center lg:items-stretch">
-            <header className="mb-3 hidden items-center justify-between lg:flex">
-              <Link
-                className="flex min-w-0 items-center gap-2 px-1.5 font-heading text-sm tracking-wide text-sidebar-foreground"
-                href={homeHref}
-              >
-                {logo}
-                {brandLabel ? (
-                  <span className="truncate">{brandLabel}</span>
-                ) : null}
-              </Link>
-              <div className="flex shrink-0 items-center gap-0.5">
-                <CommandTrigger className="px-2 py-1.5" />
-                <UserDropdown
-                  loading={userLoading}
-                  menuItems={userMenuItems}
-                  onSignOut={onSignOut}
-                  placement="sidebar"
-                  signOutLabel={signOutLabel}
-                  small
-                  user={user}
-                />
-              </div>
-            </header>
-
-            {logo ? (
-              <Link
-                className="mb-2 flex size-9 shrink-0 items-center justify-center self-center rounded-lg transition hover:bg-sidebar-accent lg:hidden"
-                href={homeHref}
-              >
-                <span className="flex size-5 items-center justify-center [&>svg]:size-full">
-                  {logo}
-                </span>
-              </Link>
-            ) : null}
+        <div className="flex h-full flex-col gap-1">
+          <div
+            className={cn(
+              "flex min-h-0 flex-1 flex-col gap-1",
+              isIconSidebar ? "items-center" : "items-stretch"
+            )}
+          >
+            <div
+              className={cn(
+                "flex h-8 w-full shrink-0 items-center",
+                isIconSidebar ? "justify-center" : "justify-between gap-2"
+              )}
+            >
+              {isIconSidebar ? (
+                <ShellSidebarBrand homeHref={homeHref} logo={logo} />
+              ) : (
+                <>
+                  <Link
+                    className="flex h-8 min-w-0 items-center gap-2 rounded-lg px-1.5 font-heading text-sm tracking-wide text-sidebar-foreground outline-none transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    href={homeHref}
+                  >
+                    {logo ? <SidebarLogoMark logo={logo} /> : null}
+                    {brandLabel ? (
+                      <span className="truncate">{brandLabel}</span>
+                    ) : null}
+                  </Link>
+                  <div className="flex shrink-0 items-center gap-0.5">
+                    <CommandTrigger />
+                    <ShellSidebarTrigger />
+                  </div>
+                </>
+              )}
+            </div>
 
             <Navigation items={navigation} />
           </div>
 
-          {bottomNavItems.length > 0 && (
-            <div className="flex flex-col items-center gap-0.5 pb-4 lg:items-stretch lg:p-0">
-              {bottomNavItems.map((item, index) => (
-                <div className={cn(index === 0 && "mt-3")} key={item.name}>
-                  <NavigationItem item={item} />
-                </div>
+          {bottomNavItems.length > 0 ? (
+            <div
+              className={cn(
+                "mt-auto flex flex-col gap-1",
+                isIconSidebar ? "items-center" : "items-stretch"
+              )}
+            >
+              {bottomNavItems.map((item) => (
+                <NavigationItem item={item} key={item.name} />
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       </aside>
     </div>

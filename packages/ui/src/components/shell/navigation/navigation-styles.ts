@@ -1,12 +1,24 @@
 import { cn } from "@workspace/ui/lib/utils"
 import type { NavigationItemType } from "../types"
 
-export const sidebarNavItemClassName = cn(
-  "mt-0.5 flex w-full items-center rounded-lg px-2 py-1.5 text-sm font-medium text-sidebar-foreground ring-sidebar-ring transition outline-none",
-  "md:size-9 md:shrink-0 md:justify-center md:px-0 lg:size-auto lg:justify-start lg:px-2",
-  "[&[aria-current='page']]:bg-sidebar-accent [&[aria-current='page']]:text-sidebar-accent-foreground",
-  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+/** Shared 32px icon control — matches shadcn SidebarMenuButton collapsible=icon. */
+export const sidebarIconButtonClassName = cn(
+  "flex size-8 shrink-0 items-center justify-center rounded-lg p-2 text-sidebar-foreground ring-sidebar-ring outline-none transition",
+  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+  "focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground",
+  "[&_svg]:size-4 [&_svg]:shrink-0"
 )
+
+export const sidebarNavItemClassName = cn(
+  "flex h-8 w-full items-center gap-2 rounded-lg px-2 text-sm font-medium text-sidebar-foreground ring-sidebar-ring outline-none transition",
+  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+  "focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground",
+  "[&_svg]:size-4 [&_svg]:shrink-0",
+  "in-data-[collapsed]:size-8 in-data-[collapsed]:w-8 in-data-[collapsed]:shrink-0 in-data-[collapsed]:justify-center in-data-[collapsed]:gap-0 in-data-[collapsed]:p-2",
+  "[&[aria-current='page']]:bg-sidebar-accent [&[aria-current='page']]:text-sidebar-accent-foreground"
+)
+
+export const sidebarHeaderActionClassName = sidebarIconButtonClassName
 
 export const contentNavItemClassName = cn(
   "flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-sm font-medium text-foreground transition",

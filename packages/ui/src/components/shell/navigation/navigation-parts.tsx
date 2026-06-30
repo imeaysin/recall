@@ -16,7 +16,7 @@ import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
 import { defaultIsCurrent, sidebarNavItemClassName } from "./navigation-styles"
 
-const navIconClassName = "size-4 shrink-0 lg:mr-2"
+const navIconClassName = "size-4 shrink-0"
 
 export function NavItemIcon({
   icon: Icon,
@@ -70,7 +70,7 @@ export function NavigationChildPanel({
 }
 
 export function getSidebarChildClassName(index?: number): string {
-  const base = "hidden h-8 pl-11 lg:flex"
+  const base = "flex h-8 pl-11"
 
   if (index === 0) {
     return cn(base, "mt-0")

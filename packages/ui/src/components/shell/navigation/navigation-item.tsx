@@ -15,8 +15,8 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
-import { useMediaQuery } from "@workspace/ui/hooks/use-media-query"
 import { useShell } from "../shell-context"
+import { useShellSidebar } from "../shell-sidebar-context"
 import type { NavigationItemType } from "../types"
 import {
   ExpansionChevron,
@@ -74,7 +74,7 @@ export const NavigationItem: React.FC<{
   const isCurrent = item.isCurrent ?? defaultIsCurrent
   const current = isCurrent({ isChild: !!isChild, item, pathname })
   const [isExpanded, setIsExpanded] = usePersistedExpansionState(item.name)
-  const isIconSidebar = useMediaQuery({ min: 768, max: 1024 })
+  const { isIconSidebar } = useShellSidebar()
 
   const hasChildren = !!item.child && item.child.length > 0
   const hasActiveChild =
@@ -116,7 +116,7 @@ export const NavigationItem: React.FC<{
             />
           ) : null}
         </button>
-        {hasChildren ? (
+        {hasChildren && !isIconSidebar ? (
           <NavigationChildPanel open={shouldShowChildren}>
             {item.child?.map((child, index) => (
               <NavigationItem
@@ -132,31 +132,58 @@ export const NavigationItem: React.FC<{
     )
   }
 
-  return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <Link
-            aria-current={current ? "page" : undefined}
-            aria-label={t(item.name)}
-            className={cn(
-              sidebarNavItemClassName,
-              isChild ? getSidebarChildClassName(props.index) : undefined
-            )}
-            data-testid={item.name}
-            href={item.href}
-            target={item.target}
-          />
-        }
+  if (isChild) {
+    return (
+      <Link
+        aria-current={current ? "page" : undefined}
+        aria-label={t(item.name)}
+        className={cn(sidebarNavItemClassName, getSidebarChildClassName(props.index))}
+        data-testid={item.name}
+        href={item.href}
+        target={item.target}
       >
         <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
-        <span className="hidden truncate lg:block">{t(item.name)}</span>
-        {item.badge ? <span className="hidden lg:inline">{item.badge}</span> : null}
-      </TooltipTrigger>
-      <TooltipPopup className="lg:hidden" side="right">
-        {t(item.name)}
-      </TooltipPopup>
-    </Tooltip>
+        <span className="truncate">{t(item.name)}</span>
+        {item.badge}
+      </Link>
+    )
+  }
+
+  if (isIconSidebar) {
+    return (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Link
+              aria-current={current ? "page" : undefined}
+              aria-label={t(item.name)}
+              className={sidebarNavItemClassName}
+              data-testid={item.name}
+              href={item.href}
+              target={item.target}
+            />
+          }
+        >
+          <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
+        </TooltipTrigger>
+        <TooltipPopup side="right">{t(item.name)}</TooltipPopup>
+      </Tooltip>
+    )
+  }
+
+  return (
+    <Link
+      aria-current={current ? "page" : undefined}
+      aria-label={t(item.name)}
+      className={sidebarNavItemClassName}
+      data-testid={item.name}
+      href={item.href}
+      target={item.target}
+    >
+      <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
+      <span className="truncate">{t(item.name)}</span>
+      {item.badge}
+    </Link>
   )
 }
 

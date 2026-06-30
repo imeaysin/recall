@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { useShell } from "./shell-context"
+import { sidebarNavItemClassName } from "./navigation/navigation-styles"
 import type { CommandAction } from "./types"
 
 interface CommandGroupModel {
@@ -192,10 +193,9 @@ export function CommandTrigger({
           <button
             aria-label="Search"
             className={cn(
-              "flex shrink-0 items-center justify-center transition",
               variant === "topnav"
-                ? "rounded-full p-2 text-foreground hover:bg-accent"
-                : "rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent lg:px-2 lg:hover:text-sidebar-accent-foreground",
+                ? "flex shrink-0 items-center justify-center rounded-full p-2 text-foreground transition hover:bg-accent"
+                : cn(sidebarNavItemClassName, "in-data-collapsed:mt-0"),
               className
             )}
             onClick={openCommandPalette}

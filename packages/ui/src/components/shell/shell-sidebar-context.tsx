@@ -1,0 +1,100 @@
+"use client"
+
+import type React from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
+import { useMediaQuery } from "@workspace/ui/hooks/use-media-query"
+
+const SIDEBAR_STORAGE_KEY = "shell_sidebar_collapsed"
+const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+function readCollapsedPreference(): boolean {
+  if (typeof window === "undefined") return false
+  try {
+    return localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true"
+  } catch {
+    return false
+  }
+}
+
+export interface ShellSidebarContextValue {
+  collapsed: boolean
+  isIconSidebar: boolean
+  isTabletIconOnly: boolean
+  toggleSidebar: () => void
+  setCollapsed: (collapsed: boolean) => void
+}
+
+const ShellSidebarContext = createContext<ShellSidebarContextValue | null>(null)
+
+export function useShellSidebar(): ShellSidebarContextValue {
+  const ctx = useContext(ShellSidebarContext)
+  if (!ctx) {
+    throw new Error("useShellSidebar must be used within <ShellSidebarProvider>")
+  }
+  return ctx
+}
+
+export function ShellSidebarProvider({
+  children,
+}: {
+  children: React.ReactNode
+}): React.ReactElement {
+  const isTabletIconOnly = useMediaQuery({ min: 768, max: 1024 })
+  const [collapsed, setCollapsedState] = useState(readCollapsedPreference)
+
+  const setCollapsed = useCallback((value: boolean) => {
+    setCollapsedState(value)
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, String(value))
+    } catch {
+      // ignore storage failures
+    }
+  }, [])
+
+  const toggleSidebar = useCallback(() => {
+    if (isTabletIconOnly) return
+    setCollapsed(!collapsed)
+  }, [collapsed, isTabletIconOnly, setCollapsed])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (isTabletIconOnly) return
+      if (
+        event.key.toLowerCase() === SIDEBAR_KEYBOARD_SHORTCUT &&
+        (event.metaKey || event.ctrlKey)
+      ) {
+        event.preventDefault()
+        toggleSidebar()
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [isTabletIconOnly, toggleSidebar])
+
+  const isIconSidebar = isTabletIconOnly || collapsed
+
+  const value = useMemo<ShellSidebarContextValue>(
+    () => ({
+      collapsed,
+      isIconSidebar,
+      isTabletIconOnly,
+      setCollapsed,
+      toggleSidebar,
+    }),
+    [collapsed, isIconSidebar, isTabletIconOnly, setCollapsed, toggleSidebar]
+  )
+
+  return (
+    <ShellSidebarContext.Provider value={value}>
+      {children}
+    </ShellSidebarContext.Provider>
+  )
+}
