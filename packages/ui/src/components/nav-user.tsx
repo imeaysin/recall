@@ -20,10 +20,7 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar"
 import type { ShellLinkProps, UserMenuItem } from "./shell/types"
-import {
-  getUserInitials,
-  UserMenuItemsList,
-} from "./shell/user-menu-content"
+import { getUserInitials, UserMenuItemsList } from "./shell/user-menu-content"
 
 function UserIdentityBlock({
   user,
