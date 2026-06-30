@@ -9,12 +9,14 @@ export interface TopNavProps {
   logo?: React.ReactNode
   brandLabel?: string
   homeHref?: string
+  userControl?: React.ReactNode
 }
 
 export function TopNav({
   logo,
   brandLabel,
   homeHref = "/",
+  userControl,
 }: TopNavProps): React.ReactElement {
   const { Link } = useShell()
 
@@ -25,7 +27,7 @@ export function TopNav({
       )}
     >
       <Link
-        className="flex min-w-0 items-center gap-2 font-heading text-base tracking-wide text-foreground"
+        className="flex min-w-0 flex-1 items-center gap-2 font-heading text-base tracking-wide text-foreground"
         href={homeHref}
       >
         {logo ? (
@@ -36,7 +38,10 @@ export function TopNav({
         {brandLabel ? <span className="truncate">{brandLabel}</span> : null}
       </Link>
 
-      <CommandTrigger variant="topnav" />
+      <div className="flex shrink-0 items-center gap-2">
+        <CommandTrigger variant="topnav" />
+        {userControl}
+      </div>
     </nav>
   )
 }

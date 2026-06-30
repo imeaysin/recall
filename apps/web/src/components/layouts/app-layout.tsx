@@ -5,6 +5,7 @@ import type {
   ShellLinkProps,
 } from "@workspace/ui/components/shell"
 import { Logo } from "@workspace/ui/components/logo"
+import { AppUserButton } from "@/features/auth/components/app-user-button"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 
 const ShellLink: ShellLinkComponent = ({
@@ -33,6 +34,7 @@ export function AppLayout() {
       userLoading={shell.userLoading}
       withoutMain
       user={shell.user}
+      userControl={<AppUserButton />}
       userMenuItems={shell.userMenuItems}
     >
       <Outlet />

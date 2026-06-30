@@ -41,6 +41,12 @@ export type {
 export { AuthUserView } from "./auth-user-view"
 export type { AuthUserViewProps } from "./auth-user-view"
 
+export { AuthUserButton } from "./auth-user-button"
+export type {
+  AuthUserButtonMenuItem,
+  AuthUserButtonProps,
+} from "./auth-user-button"
+
 export { VerifyEmail } from "./verify-email"
 export type { VerifyEmailProps } from "./verify-email"
 
