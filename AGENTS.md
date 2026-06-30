@@ -38,8 +38,9 @@ Set `SKIP_ENV_VALIDATION=true` when env is incomplete locally.
 
 - **Pattern:** controller → `CommandBus` / `QueryBus` → handler → repository (or storage repository).
 - **Reference module:** `src/modules/notes/` (commands, queries, dto, entities, repositories).
-- **Validation & OpenAPI:** Zod schemas in `@workspace/contracts` (with `.meta()` / `.describe()`). API uses `nestjs-zod` (`createZodDto`, global `ZodValidationPipe`, `cleanupOpenApiDoc` for `/docs`).
-- **Responses:** wrapped in `{ data }` by `TransformResponseInterceptor` — document with `apiDataResponse()` envelope schemas in contracts.
+- **Validation & OpenAPI:** Zod schemas in `@workspace/contracts` (with `.meta()` / `.describe()`). API uses `nestjs-zod` (`createZodDto`, global `ZodValidationPipe`, `cleanupOpenApiDoc` for `/docs`). Request bodies use `.strict()` (reject unknown keys).
+- **Responses:** success envelope `{ success, statusCode, message, data, timestamp }` via `TransformResponseInterceptor`; errors `{ success, statusCode, code, message, errors, path, timestamp }` via `AllExceptionsFilter`. Document success with `apiSuccessResponse()` in contracts; use `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()` on controllers.
+- **Domain errors:** `apiNotFound(..., DomainErrorCode.NOTE_NOT_FOUND)` — codes live in `@workspace/contracts` (`HttpErrorCode`, `DomainErrorCode`).
 - **Auth:** JWT from Better Auth; guards in `app.module.ts`; decorators in `common/decorators`.
 - **Tests:** `test/unit/*.spec.ts` (Jest), `test/e2e/*.e2e-spec.ts` (`pnpm test:e2e` in api).
 - **Logging:** `@workspace/logger` (pino v10). Dev: `pino-pretty` via transport (`LOG_PRETTY=true|false`). Production: JSON + ISO timestamps. Nest route noise at `debug` — set `LOG_LEVEL=debug` to show.
@@ -47,7 +48,7 @@ Set `SKIP_ENV_VALIDATION=true` when env is incomplete locally.
 ### Web (`apps/web`)
 
 - **Pattern:** route → page → TanStack Query hooks → `lib/api.ts`.
-- **`apiFetch`** unwraps `{ data }` and attaches bearer token.
+- **`apiFetch`** unwraps the success envelope (`data`) and attaches bearer token; throws `ApiError` with `code` on failures.
 - **Tests:** `test/**/*.test.ts` with `@/` alias (see `vitest.config.ts`).
 
 ### Shared packages

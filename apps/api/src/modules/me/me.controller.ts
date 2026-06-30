@@ -7,11 +7,13 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import { CurrentUser } from "../../common/decorators"
+import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import type { JWTClaims } from "@workspace/auth/types"
 import { MeApiResponseDto } from "./me.dto"
 import { GetMeQuery } from "./queries/get-me.query"
 
 @ApiTags("account")
+@ApiAuthErrorResponses()
 @Controller({ path: "me", version: "1" })
 export class MeController {
   constructor(private readonly queryBus: QueryBus) {}

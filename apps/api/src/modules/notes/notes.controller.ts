@@ -21,6 +21,7 @@ import {
 import type { JWTClaims } from "@workspace/auth/types"
 import { NotesListResponseSchema } from "@workspace/contracts"
 import { CurrentUser } from "../../common/decorators"
+import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import { BulkDeleteNotesCommand } from "./commands/bulk-delete-notes.command"
 import { CreateNoteCommand } from "./commands/create-note.command"
 import { DeleteNoteCommand } from "./commands/delete-note.command"
@@ -36,6 +37,7 @@ import {
 import { ListNotesQuery } from "./queries/list-notes.query"
 
 @ApiTags("notes")
+@ApiAuthErrorResponses()
 @Controller({ path: "notes", version: "1" })
 export class NotesController {
   constructor(

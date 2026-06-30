@@ -110,7 +110,7 @@ describe("Swagger (e2e)", () => {
     })
   })
 
-  it("documents notes responses with the { data } envelope", () => {
+  it("documents notes responses with the success envelope", () => {
     const listNotes = document.paths["/v1/notes"]?.get
     const response200 = listNotes?.responses?.["200"]
     expect(response200 && "content" in response200).toBe(true)
@@ -123,9 +123,20 @@ describe("Swagger (e2e)", () => {
     expect(envelopeSchema).toMatchObject({
       description: "Standard API envelope containing the notes list.",
       properties: expect.objectContaining({
+        success: expect.any(Object),
+        statusCode: expect.any(Object),
+        message: expect.any(Object),
         data: expect.any(Object),
+        timestamp: expect.any(Object),
       }),
     })
+  })
+
+  it("documents standard error responses on notes routes", () => {
+    const listNotes = document.paths["/v1/notes"]?.get
+    expect(listNotes?.responses?.["400"]).toBeDefined()
+    expect(listNotes?.responses?.["401"]).toBeDefined()
+    expect(listNotes?.responses?.["500"]).toBeDefined()
   })
 
   it("documents delete note as 204 without a body", () => {

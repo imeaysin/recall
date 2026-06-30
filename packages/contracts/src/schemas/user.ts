@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { apiDataResponse } from "./http"
+import { apiSuccessResponse } from "../api/envelopes"
 
 const roleNameSchema = z
   .enum(["guest", "user", "manager", "admin"])
@@ -28,7 +28,7 @@ export const MeResponseSchema = z
     description: "JWT claims for the authenticated user.",
   })
 
-export const MeApiResponseSchema = apiDataResponse(MeResponseSchema, {
+export const MeApiResponseSchema = apiSuccessResponse(MeResponseSchema, {
   id: "MeApiResponseDto",
   title: "Current user response",
   description: "Standard API envelope containing the current user.",

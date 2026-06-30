@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { apiDataResponse } from "./http"
+import { apiSuccessResponse } from "../api/envelopes"
 
 export const NoteResponseSchema = z
   .object({
@@ -37,6 +37,7 @@ export const CreateNoteSchema = z
         examples: ["Follow up with design review."],
       }),
   })
+  .strict()
   .meta({
     id: "CreateNoteDto",
     title: "Create note",
@@ -67,6 +68,7 @@ export const UpdateNoteSchema = z
   .refine((data) => data.title !== undefined || data.body !== undefined, {
     message: "At least one field is required",
   })
+  .strict()
   .meta({
     id: "UpdateNoteDto",
     title: "Update note",
@@ -84,6 +86,7 @@ export const BulkDeleteNotesSchema = z
         examples: [["507f1f77bcf86cd799439011", "507f191e810c19729de860ea"]],
       }),
   })
+  .strict()
   .meta({
     id: "BulkDeleteNotesDto",
     title: "Bulk delete notes",
@@ -123,13 +126,13 @@ export type BulkDeleteNotesResponse = z.infer<
 >
 export type NotesListResponse = z.infer<typeof NotesListResponseSchema>
 
-export const NoteApiResponseSchema = apiDataResponse(NoteResponseSchema, {
+export const NoteApiResponseSchema = apiSuccessResponse(NoteResponseSchema, {
   id: "NoteApiResponseDto",
   title: "Note response",
   description: "Standard API envelope containing a single note.",
 })
 
-export const NotesListApiResponseSchema = apiDataResponse(
+export const NotesListApiResponseSchema = apiSuccessResponse(
   NotesListResponseSchema,
   {
     id: "NotesListApiResponseDto",
@@ -138,7 +141,7 @@ export const NotesListApiResponseSchema = apiDataResponse(
   }
 )
 
-export const BulkDeleteNotesApiResponseSchema = apiDataResponse(
+export const BulkDeleteNotesApiResponseSchema = apiSuccessResponse(
   BulkDeleteNotesResponseSchema,
   {
     id: "BulkDeleteNotesApiResponseDto",

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { apiDataResponse } from "./http"
+import { apiSuccessResponse } from "../api/envelopes"
 
 export const ApiRootResponseSchema = z
   .object({
@@ -18,10 +18,13 @@ export const ApiRootResponseSchema = z
     description: "Entry-point metadata for the REST API.",
   })
 
-export const ApiRootApiResponseSchema = apiDataResponse(ApiRootResponseSchema, {
-  id: "ApiRootApiResponseDto",
-  title: "API root response",
-  description: "Standard API envelope containing API metadata.",
-})
+export const ApiRootApiResponseSchema = apiSuccessResponse(
+  ApiRootResponseSchema,
+  {
+    id: "ApiRootApiResponseDto",
+    title: "API root response",
+    description: "Standard API envelope containing API metadata.",
+  }
+)
 
 export type ApiRootResponse = z.infer<typeof ApiRootResponseSchema>

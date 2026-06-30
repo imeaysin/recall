@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from "@nestjs/common"
+import { Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common"
 import { CommandBus } from "@nestjs/cqrs"
 import { FileInterceptor } from "@nestjs/platform-express"
 import {
@@ -16,13 +10,17 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import type { JWTClaims } from "@workspace/auth/types"
+import { DomainErrorCode } from "@workspace/contracts"
 import { CurrentUser } from "../../common/decorators"
+import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
+import { apiBadRequest } from "../../common/exceptions/api.exception"
 import { UploadFileCommand } from "./commands/upload-file.command"
 import { UploadApiResponseDto } from "./uploads.dto"
 
 const MAX_BYTES = 5 * 1024 * 1024
 
 @ApiTags("uploads")
+@ApiAuthErrorResponses()
 @Controller({ path: "uploads", version: "1" })
 export class UploadsController {
   constructor(private readonly commandBus: CommandBus) {}
@@ -62,10 +60,11 @@ export class UploadsController {
       size: number
     }
   ) {
-    if (!file?.buffer?.length) {
-      throw new BadRequestException("File is required")
+    const uploaded = file?.buffer?.length ? file : undefined
+    if (!uploaded) {
+      apiBadRequest("File is required", DomainErrorCode.FILE_REQUIRED)
     }
 
-    return this.commandBus.execute(new UploadFileCommand(user.id, file))
+    return this.commandBus.execute(new UploadFileCommand(user.id, uploaded))
   }
 }

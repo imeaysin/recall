@@ -4,9 +4,9 @@ End-to-end example: **Notes** (already in the template).
 
 ## 1. Contracts
 
-`packages/contracts/src/notes.ts` — Zod schemas + inferred types.
+`packages/contracts/src/schemas/notes.ts` — Zod schemas + inferred types.
 
-**Swagger docs:** add OpenAPI metadata on schemas with `.meta()` / `.describe()`. Use `apiDataResponse()` from `http.ts` for `{ data: T }` response envelopes. The API uses `nestjs-zod` + `cleanupOpenApiDoc`, so metadata appears in `/docs`.
+**Swagger docs:** add OpenAPI metadata on schemas with `.meta()` / `.describe()`. Use `apiSuccessResponse()` from `src/api/envelopes.ts` for success envelopes. Request bodies should chain `.strict()` to reject unknown keys. The API uses `nestjs-zod` + `cleanupOpenApiDoc`, so metadata appears in `/docs`.
 
 ```ts
 z.string().meta({
@@ -20,12 +20,18 @@ z.object({ ... }).meta({
   description: "Payload to create a new note.",
 })
 
-// Response envelope (matches TransformResponseInterceptor)
-apiDataResponse(NoteResponseSchema, {
+// Success envelope (matches TransformResponseInterceptor)
+apiSuccessResponse(NoteResponseSchema, {
   id: "NoteApiResponseDto",
   title: "Note response",
   description: "Standard API envelope containing a single note.",
 })
+
+// Domain error code — add to packages/contracts/src/api/errors.ts
+DomainErrorCode.NOTE_NOT_FOUND
+
+// Request body — reject unknown keys (Zod equivalent of whitelist + forbidNonWhitelisted)
+z.object({ ... }).strict().meta({ id: "CreateNoteDto", ... })
 ```
 
 Export from `packages/contracts/src/index.ts`.

@@ -43,7 +43,7 @@ function applySwagger(app: INestApplication) {
   const swaggerConfig = new DocumentBuilder()
     .setTitle(`${env.APP_NAME} API`)
     .setDescription(
-      "Business REST API. Auth routes are served at /api/auth. Successful JSON responses are wrapped as `{ data: ... }`."
+      "Business REST API. Auth routes are served at /api/auth. Successful JSON responses use the `{ success, statusCode, message, data, timestamp }` envelope; failures return `{ success, statusCode, code, message, errors, path, timestamp }`."
     )
     .setVersion("1.0")
     .addBearerAuth(

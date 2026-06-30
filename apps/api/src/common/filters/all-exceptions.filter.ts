@@ -6,11 +6,7 @@ import {
 } from "@nestjs/common"
 import { createLogger } from "@workspace/logger"
 import type { Request, Response } from "express"
-import { env } from "@workspace/config"
-import {
-  resolveExceptionMessage,
-  resolveHttpStatus,
-} from "./http-exception.utils"
+import { buildErrorEnvelope, resolveHttpStatus } from "./http-exception.utils"
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -22,15 +18,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
 
     const status = resolveHttpStatus(exception)
-    const message = resolveExceptionMessage(exception)
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logServerError(request, exception)
     }
 
-    response
-      .status(status)
-      .json(this.buildErrorBody(status, message, request, exception))
+    response.status(status).json(buildErrorEnvelope(exception, status, request))
   }
 
   private logServerError(request: Request, exception: unknown) {
@@ -45,25 +38,5 @@ export class AllExceptionsFilter implements ExceptionFilter {
       },
       "unhandled server error"
     )
-  }
-
-  private buildErrorBody(
-    status: number,
-    message: string | string[],
-    request: Request,
-    exception: unknown
-  ) {
-    const body: Record<string, unknown> = {
-      statusCode: status,
-      message,
-      path: request.url,
-      timestamp: new Date().toISOString(),
-    }
-
-    if (env.NODE_ENV === "development" && exception instanceof Error) {
-      body.error = exception.name
-    }
-
-    return body
   }
 }

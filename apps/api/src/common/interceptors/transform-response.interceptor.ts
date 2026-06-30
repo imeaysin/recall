@@ -4,19 +4,18 @@ import {
   Injectable,
   NestInterceptor,
 } from "@nestjs/common"
+import type { ApiSuccessResponse } from "@workspace/contracts"
 import type { Response } from "express"
 import { Observable, map } from "rxjs"
 
-export interface ApiResponse<T = unknown> {
-  data: T
-}
+const DEFAULT_SUCCESS_MESSAGE = "Operation completed successfully"
 
 @Injectable()
 export class TransformResponseInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler
-  ): Observable<ApiResponse | undefined> {
+  ): Observable<ApiSuccessResponse<unknown> | undefined> {
     if (context.getType() !== "http") return next.handle()
 
     const response = context.switchToHttp().getResponse<Response>()
@@ -24,7 +23,14 @@ export class TransformResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (response.statusCode === 204) return undefined
-        return { data }
+
+        return {
+          success: true as const,
+          statusCode: response.statusCode,
+          message: DEFAULT_SUCCESS_MESSAGE,
+          data,
+          timestamp: new Date().toISOString(),
+        }
       })
     )
   }

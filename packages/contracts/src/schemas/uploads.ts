@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { apiDataResponse } from "./http"
+import { apiSuccessResponse } from "../api/envelopes"
 
 export const UploadResponseSchema = z
   .object({
@@ -23,10 +23,13 @@ export const UploadResponseSchema = z
     description: "Metadata returned after a successful file upload.",
   })
 
-export const UploadApiResponseSchema = apiDataResponse(UploadResponseSchema, {
-  id: "UploadApiResponseDto",
-  title: "Upload response",
-  description: "Standard API envelope containing upload metadata.",
-})
+export const UploadApiResponseSchema = apiSuccessResponse(
+  UploadResponseSchema,
+  {
+    id: "UploadApiResponseDto",
+    title: "Upload response",
+    description: "Standard API envelope containing upload metadata.",
+  }
+)
 
 export type UploadResponse = z.infer<typeof UploadResponseSchema>

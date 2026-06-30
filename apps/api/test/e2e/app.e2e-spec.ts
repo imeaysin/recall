@@ -66,12 +66,16 @@ describe("AppController (e2e)", () => {
       .expect(200)
       .expect((res) => {
         expect(res.body).toMatchObject({
+          success: true,
+          statusCode: 200,
+          message: "Operation completed successfully",
           data: {
             status: "ok",
             auth: "/api/auth",
             health: "/v1/health",
           },
         })
+        expect(res.body.timestamp).toEqual(expect.any(String))
       })
   })
 
@@ -81,6 +85,8 @@ describe("AppController (e2e)", () => {
       .expect(200)
       .expect((res) => {
         expect(res.body).toMatchObject({
+          success: true,
+          statusCode: 200,
           data: { status: "ok", db: "up" },
         })
       })

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { apiDataResponse } from "./http"
+import { apiSuccessResponse } from "../api/envelopes"
 
 export const HealthResponseSchema = z
   .object({
@@ -14,10 +14,13 @@ export const HealthResponseSchema = z
     description: "Liveness and dependency status.",
   })
 
-export const HealthApiResponseSchema = apiDataResponse(HealthResponseSchema, {
-  id: "HealthApiResponseDto",
-  title: "Health check response",
-  description: "Standard API envelope containing health status.",
-})
+export const HealthApiResponseSchema = apiSuccessResponse(
+  HealthResponseSchema,
+  {
+    id: "HealthApiResponseDto",
+    title: "Health check response",
+    description: "Standard API envelope containing health status.",
+  }
+)
 
 export type HealthResponse = z.infer<typeof HealthResponseSchema>
