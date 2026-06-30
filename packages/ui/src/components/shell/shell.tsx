@@ -160,11 +160,11 @@ export function Shell({
   t,
   navigation,
   bottomNavItems,
-  user: _user,
-  userLoading: _userLoading,
-  onSignOut: _onSignOut,
-  userMenuItems: _userMenuItems,
-  signOutLabel: _signOutLabel,
+  user,
+  userLoading,
+  onSignOut,
+  userMenuItems,
+  signOutLabel,
   logo,
   logoIcon,
   brandLabel,
@@ -212,6 +212,11 @@ export function Shell({
               homeHref={homeHref}
               logo={logoIcon ?? logo}
               navigation={navigation}
+              onSignOut={onSignOut}
+              signOutLabel={signOutLabel}
+              user={user}
+              userLoading={userLoading}
+              userMenuItems={userMenuItems}
             />
 
             <main

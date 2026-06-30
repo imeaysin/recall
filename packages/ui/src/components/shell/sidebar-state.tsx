@@ -24,6 +24,7 @@ function readCollapsedPreference(): boolean {
 }
 
 interface SidebarStateValue {
+  state: "expanded" | "collapsed"
   collapsed: boolean
   isIconSidebar: boolean
   isTabletIconOnly: boolean
@@ -83,6 +84,7 @@ export function SidebarStateProvider({
 
   const value = useMemo<SidebarStateValue>(
     () => ({
+      state: isIconSidebar ? "collapsed" : "expanded",
       collapsed,
       isIconSidebar,
       isTabletIconOnly,

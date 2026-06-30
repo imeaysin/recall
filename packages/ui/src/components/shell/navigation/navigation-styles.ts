@@ -11,7 +11,7 @@ export const sidebarIconButtonClassName = cn(
 
 /** Primary sidebar nav row — shadcn SidebarMenuButton default. */
 export const sidebarNavItemClassName = cn(
-  "flex h-8 w-full min-w-0 items-center gap-2 overflow-hidden rounded-lg px-2 text-sm font-medium text-sidebar-foreground ring-sidebar-ring outline-none transition",
+  "flex h-8 w-full min-w-0 items-center gap-2 overflow-hidden rounded-lg px-2 text-sm font-medium text-sidebar-foreground ring-sidebar-ring outline-none transition-[width,height,padding] duration-200 ease-linear",
   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
   "focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground",
   "[&_svg]:size-4 [&_svg]:shrink-0",

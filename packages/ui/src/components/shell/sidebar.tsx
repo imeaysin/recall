@@ -1,6 +1,6 @@
 "use client"
 
-import { PanelLeftCloseIcon, PanelLeftIcon } from "lucide-react"
+import { PanelLeftIcon } from "lucide-react"
 import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "./command-palette"
@@ -9,7 +9,8 @@ import { ShellNavItem } from "./navigation/navigation-item"
 import { sidebarBrandLinkClassName, sidebarIconButtonClassName } from "./navigation/navigation-styles"
 import { useShell } from "./shell-context"
 import { useSidebarState } from "./sidebar-state"
-import type { NavItem } from "./types"
+import { UserDropdown } from "./user-dropdown/user-dropdown"
+import type { NavItem, ShellUser, UserMenuItem } from "./types"
 
 const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
@@ -43,7 +44,7 @@ function SidebarBrand({
           slotClassName,
           "transition-opacity",
           !isTabletIconOnly &&
-            "group-hover/brand:pointer-events-none group-hover/brand:opacity-0"
+          "group-hover/brand:pointer-events-none group-hover/brand:opacity-0"
         )}
         href={homeHref}
       >
@@ -66,7 +67,7 @@ function SidebarBrand({
   )
 }
 
-function SidebarCollapseButton({
+function SidebarTrigger({
   className,
   ...props
 }: React.ComponentProps<"button">): React.ReactElement | null {
@@ -76,13 +77,13 @@ function SidebarCollapseButton({
 
   return (
     <button
-      aria-label="Collapse sidebar"
+      aria-label="Toggle sidebar"
       className={cn(sidebarIconButtonClassName, className)}
       onClick={toggleSidebar}
       type="button"
       {...props}
     >
-      <PanelLeftCloseIcon aria-hidden="true" />
+      <PanelLeftIcon aria-hidden="true" />
     </button>
   )
 }
@@ -94,6 +95,11 @@ export interface ShellSidebarProps {
   brandLabel?: string
   homeHref?: string
   bannersHeight?: number
+  user?: ShellUser | null
+  userLoading?: boolean
+  onSignOut?: () => void
+  userMenuItems?: UserMenuItem[]
+  signOutLabel?: string
 }
 
 export function ShellSidebar({
@@ -103,6 +109,11 @@ export function ShellSidebar({
   brandLabel,
   homeHref = "/",
   bannersHeight = 0,
+  user,
+  userLoading,
+  onSignOut,
+  userMenuItems = [],
+  signOutLabel,
 }: ShellSidebarProps): React.ReactElement {
   const { Link } = useShell()
   const { isIconSidebar } = useSidebarState()
@@ -151,7 +162,7 @@ export function ShellSidebar({
                   </Link>
                   <div className="flex shrink-0 items-center gap-1">
                     <CommandTrigger compact />
-                    <SidebarCollapseButton />
+                    <SidebarTrigger />
                   </div>
                 </>
               )}
@@ -163,13 +174,32 @@ export function ShellSidebar({
           {bottomNavItems.length > 0 ? (
             <div
               className={cn(
-                "mt-auto flex flex-col gap-1",
+                "flex flex-col gap-1",
                 isIconSidebar ? "items-center" : "items-stretch"
               )}
             >
               {bottomNavItems.map((item) => (
                 <ShellNavItem item={item} key={item.name} />
               ))}
+            </div>
+          ) : null}
+
+          {user || userLoading ? (
+            <div
+              className={cn(
+                "shrink-0",
+                isIconSidebar ? "flex justify-center" : "w-full"
+              )}
+            >
+              <UserDropdown
+                loading={userLoading}
+                menuItems={userMenuItems}
+                onSignOut={onSignOut}
+                placement="sidebar"
+                signOutLabel={signOutLabel}
+                small={isIconSidebar}
+                user={user}
+              />
             </div>
           ) : null}
         </div>

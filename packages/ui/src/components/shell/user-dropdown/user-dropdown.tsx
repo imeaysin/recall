@@ -95,9 +95,9 @@ export function UserDropdown({
         render={
           <button
             className={cn(
-              "mx-0 flex cursor-pointer appearance-none items-center rounded-full text-left transition outline-none focus:ring-0 focus:outline-none md:rounded-none lg:rounded",
+              "mx-0 flex cursor-pointer appearance-none items-center rounded-lg text-left transition outline-none focus:ring-0 focus:outline-none",
               styles.triggerHover,
-              small ? "shrink-0 p-2" : "w-full px-2 py-1.5"
+              small ? "size-8 shrink-0 justify-center p-0" : "w-full px-2 py-1.5"
             )}
             data-testid="user-dropdown-trigger-button"
             type="button"
