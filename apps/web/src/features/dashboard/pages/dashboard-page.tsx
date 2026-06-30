@@ -11,9 +11,9 @@ export function DashboardPage() {
         session?.user.name ? `, ${session.user.name}` : ""
       }.`}
     >
-      <div>
-        <h1>Dashboard</h1>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Your scheduling dashboard will appear here.
+      </p>
     </ShellMain>
   )
 }

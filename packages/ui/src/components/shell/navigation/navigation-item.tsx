@@ -35,6 +35,7 @@ import type { NavItem } from "../types"
 import {
   contentNavItemClassName,
   mobileBottomNavItemClassName,
+  shellMobileDrawerPortalProps,
   sidebarChevronClassName,
   sidebarMenuSubClassName,
   sidebarNavItemClassName,
@@ -342,7 +343,11 @@ export function ShellMobileNavMoreItem({
           {label}
           <ChevronRightIcon className="ml-auto size-4 shrink-0 text-muted-foreground" />
         </DrawerTrigger>
-        <DrawerPopup className="md:hidden" showBar>
+        <DrawerPopup
+          className="md:hidden"
+          portalProps={shellMobileDrawerPortalProps}
+          showBar
+        >
           <div className="px-5 pt-4 pb-2">
             <DrawerTitle>{t(item.name)}</DrawerTitle>
           </div>

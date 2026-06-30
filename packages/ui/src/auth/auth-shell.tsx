@@ -9,8 +9,6 @@ import { AuthTermsFooter } from "./auth-terms-footer"
 export interface AuthShellProps {
   homeHref: string
   children: ReactNode
-  showSunsetBanner?: boolean
-  sunsetBanner?: ReactNode
   termsHref?: string
   privacyHref?: string
   renderHomeLink?: (props: {

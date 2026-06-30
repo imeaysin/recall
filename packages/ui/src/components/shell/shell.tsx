@@ -41,7 +41,6 @@ export interface ShellMainProps {
   large?: boolean
   backPath?: string | boolean
   onBack?: () => void
-  disableSticky?: boolean
   flexChildrenContainer?: boolean
   children: React.ReactNode
 }
@@ -58,7 +57,6 @@ export function ShellMain({
   large,
   backPath,
   onBack,
-  disableSticky: _disableSticky,
   flexChildrenContainer,
   children,
 }: ShellMainProps): React.ReactElement {
@@ -143,7 +141,6 @@ export interface ShellProps extends ShellMainProps {
   logoIcon?: React.ReactNode
   brandLabel?: string
   homeHref?: string
-  settingsHref?: string
 
   commandActions?: CommandAction[]
   onSelectCommandAction?: (action: CommandAction) => void
@@ -169,7 +166,6 @@ export function Shell({
   logoIcon,
   brandLabel,
   homeHref = "/",
-  settingsHref: _settingsHref,
   commandActions = [],
   onSelectCommandAction,
   commandPlaceholder,

@@ -12,11 +12,13 @@ import {
 } from "lucide-react"
 import { MORE_SEPARATOR_NAME } from "@workspace/ui/components/shell"
 import type { NavItem } from "@workspace/ui/components/shell"
-import { toastManager } from "@workspace/ui/components/toast"
 import { paths } from "@/config/paths"
 
 /** App sidebar entry — extend with `roles` when RBAC is wired up. */
 export type AppNavItem = NavItem & { roles?: string[] }
+
+/** Sentinel href for mobile "copy public page link" actions (wired in app shell). */
+export const COPY_PUBLIC_PAGE_LINK_HREF = "__copy_public_page_link__"
 
 const dashboardBase = paths.dashboard
 
@@ -98,6 +100,19 @@ const appNavigationItems: AppNavItem[] = [
   },
 ]
 
+/** Dashboard sub-routes registered in the router (excludes the root overview). */
+export const dashboardSectionPaths = [
+  "bookings",
+  "availability",
+  "routing-forms",
+  "workflows",
+  "insights",
+  "insights/bookings",
+  "insights/routing",
+  "apps",
+  "apps/installed",
+] as const
+
 function filterByRole(items: AppNavItem[], role?: string | null): NavItem[] {
   return items
     .filter(
@@ -122,14 +137,8 @@ export function getAppMobileMoreItems(publicPageUrl: string): NavItem[] {
     },
     {
       name: "Copy public page link",
-      href: "",
+      href: COPY_PUBLIC_PAGE_LINK_HREF,
       icon: CopyIcon,
-      onClick: (event) => {
-        event.preventDefault()
-        void navigator.clipboard.writeText(publicPageUrl).then(() => {
-          toastManager.add({ title: "Link copied", type: "success" })
-        })
-      },
     },
   ]
 }

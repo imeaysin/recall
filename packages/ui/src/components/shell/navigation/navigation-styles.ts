@@ -61,6 +61,12 @@ export const mobileBottomNavItemClassName = cn(
   "[&[aria-current='page']]:text-foreground"
 )
 
+/** Mobile nav drawers sit on the bottom bar — dim/blur reads wrong; override via portal. */
+export const shellMobileDrawerPortalProps = {
+  className:
+    "[&_[data-slot=drawer-backdrop]]:bg-transparent [&_[data-slot=drawer-backdrop]]:backdrop-blur-none",
+}
+
 export function defaultIsCurrent({
   isChild,
   item,

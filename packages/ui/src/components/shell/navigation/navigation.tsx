@@ -17,6 +17,7 @@ import {
   ShellMobileNavMoreItem,
   ShellNavItem,
 } from "./navigation-item"
+import { shellMobileDrawerPortalProps } from "./navigation-styles"
 
 export const MORE_SEPARATOR_NAME = "more"
 
@@ -94,7 +95,11 @@ export function ShellMobileNav({
       <div className="block pt-12 md:hidden" />
 
       <Drawer onOpenChange={setMoreOpen} open={moreOpen}>
-        <DrawerPopup className="md:hidden" showBar>
+        <DrawerPopup
+          className="md:hidden"
+          portalProps={shellMobileDrawerPortalProps}
+          showBar
+        >
           <div className="px-5 pt-4 pb-2">
             <DrawerTitle className="capitalize">
               {t(MORE_SEPARATOR_NAME)}

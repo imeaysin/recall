@@ -4,38 +4,42 @@ import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
 import { PageLoading } from "@workspace/ui/components/page-loading"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useSendVerificationEmailMutation } from "@/features/auth/hooks/use-auth-mutations"
-import { authClient } from "@/lib/auth"
+import {
+  useSendVerificationEmailMutation,
+  useVerifyEmailMutation,
+} from "@/features/auth/hooks/use-auth-mutations"
 import { paths } from "@/config/paths"
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams()
   const email = searchParams.get("email") ?? ""
   const token = searchParams.get("token")
-  const [verifying, setVerifying] = useState(!!token)
   const [verified, setVerified] = useState(false)
   const sendVerification = useSendVerificationEmailMutation()
+  const verifyEmail = useVerifyEmailMutation()
 
   useEffect(() => {
     if (!token) return
 
-    void authClient.verifyEmail({ query: { token } }).then(({ error }) => {
-      setVerifying(false)
-      if (error) {
+    verifyEmail.mutate(token, {
+      onSuccess: () => {
+        setVerified(true)
+        toastManager.add({
+          title: "Email verified",
+          description: "Your account is ready. You can sign in now.",
+          type: "success",
+        })
+      },
+      onError: () => {
         toastManager.add({
           title: "Verification failed",
           description: "This link is invalid or has expired.",
           type: "error",
         })
-        return
-      }
-      setVerified(true)
-      toastManager.add({
-        title: "Email verified",
-        description: "Your account is ready. You can sign in now.",
-        type: "success",
-      })
+      },
     })
+    // Token is the only intentional dependency — run once per verification link.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token])
 
   async function resendEmail() {
@@ -64,7 +68,7 @@ export function VerifyEmailPage() {
     }
   }
 
-  if (verifying) {
+  if (token && verifyEmail.isPending) {
     return <PageLoading message="Verifying your email…" />
   }
 
