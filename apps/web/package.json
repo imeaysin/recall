@@ -14,15 +14,15 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@fontsource-variable/geist-mono": "^5.2.8",
-    "@fontsource/cal-sans": "^5.2.3",
+    "@fontsource-variable/geist-mono": "catalog:",
+    "@fontsource/cal-sans": "catalog:",
     "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-query": "^5.101.1",
     "@workspace/auth": "workspace:*",
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "lucide-react": "^1.17.0",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "^7.80.0",

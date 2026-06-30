@@ -1,5 +1,5 @@
 
-@repo/auth
+@workspace/auth
 Authentication Package
 Architecture & Implementation Guide
 
@@ -42,7 +42,7 @@ Maintainer	1 open-source maintainer. Real risk to acknowledge.
 Last release	April 9, 2026. Actively maintained.
 bodyParser: false	REQUIRED in NestFactory.create(). The package re-adds parsers for non-auth routes automatically.
 Global AuthGuard	Registered globally by default. Use @AllowAnonymous() on public routes. For stateless JWT on business routes, add a separate JwksGuard.
-Escape hatch	If the package is ever abandoned: import toNodeHandler(auth) from better-auth/node and mount manually in a catch-all controller. Zero changes to @repo/auth needed.
+Escape hatch	If the package is ever abandoned: import toNodeHandler(auth) from better-auth/node and mount manually in a catch-all controller. Zero changes to @workspace/auth needed.
 
 
 3. How Stateless JWT Works — Exactly
@@ -69,17 +69,17 @@ apps/
   mobile/       # Expo
  
 packages/
-  auth/         # @repo/auth  ←  this document
-  db/           # @repo/db    Drizzle instance + schema
-  email/        # @repo/email Transactional email
-  contracts/    # @repo/contracts  Shared Zod schemas + TS types
-  config/       # @repo/config     Env var helpers
-  ui/           # @repo/ui    Shared React components
-  dates/        # @repo/dates
-  storage/      # @repo/storage
+  auth/         # @workspace/auth  ←  this document
+  db/           # @workspace/db    Mongoose connection + Better Auth adapter
+  email/        # @workspace/email Transactional email
+  contracts/    # @workspace/contracts  Shared Zod schemas + TS types
+  config/       # @workspace/config     Env var helpers
+  ui/           # @workspace/ui    Shared React components
+  dates/        # @workspace/dates
+  storage/      # @workspace/storage
 
 
-5. @repo/auth — Folder Structure
+5. @workspace/auth — Folder Structure
 The auth package is a plain shared library. It wraps better-auth and exports adapters for each app. The canonical file names lib/auth.ts and lib/auth-client.ts are required — the better-auth CLI and @thallesp/nestjs-better-auth search for them automatically.
 
 packages/auth/
@@ -153,10 +153,10 @@ apps/api/src/
  
   shared/
     guards/
-      jwks.guard.ts              # Imported from @repo/auth/nestjs
-      rbac.guard.ts              # Imported from @repo/auth/nestjs
+      jwks.guard.ts              # Imported from @workspace/auth/nestjs
+      rbac.guard.ts              # Imported from @workspace/auth/nestjs
     decorators/
-      current-user.decorator.ts  # Imported from @repo/auth/nestjs
+      current-user.decorator.ts  # Imported from @workspace/auth/nestjs
       require-permission.decorator.ts
       public.decorator.ts
     filters/
@@ -168,7 +168,7 @@ apps/api/src/
 7. package.json & Exports
 7.1 packages/auth/package.json
 {
-  "name": "@repo/auth",
+  "name": "@workspace/auth",
   "version": "1.0.0",
   "private": true,
   "exports": {
@@ -187,10 +187,10 @@ apps/api/src/
     "@better-auth/passkey": "^1.6.20",
     "jose":                 "^5.0.0",
     "zod":                  "^3.23.0",
-    "@repo/db":             "workspace:*",
-    "@repo/email":          "workspace:*",
-    "@repo/contracts":      "workspace:*",
-    "@repo/config":         "workspace:*"
+    "@workspace/db":             "workspace:*",
+    "@workspace/email":          "workspace:*",
+    "@workspace/contracts":      "workspace:*",
+    "@workspace/config":         "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -308,8 +308,8 @@ import { admin, bearer, jwt,
          emailOtp }                from 'better-auth/plugins';
 import { passkey }                 from '@better-auth/passkey';
 import { nextCookies }             from 'better-auth/next-js';
-import { db }                      from '@repo/db';
-import { sendEmail }               from '@repo/email';
+import { db }                      from '@workspace/db';
+import { sendEmail }               from '@workspace/email';
 import { ac, adminRole, userRole,
          managerRole, guestRole }  from '../permissions';
  
@@ -471,7 +471,7 @@ bootstrap();
 import { Module }     from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { auth }       from '@repo/auth';
+import { auth }       from '@workspace/auth';
 import { UsersModule }    from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
  
@@ -534,7 +534,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException }              from '@nestjs/common';
 import { BanUserCommand }                  from './ban-user.command';
 import { UsersRepository }                from '../repositories/users.repository';
-import { auth }                           from '@repo/auth';
+import { auth }                           from '@workspace/auth';
  
 @CommandHandler(BanUserCommand)
 export class BanUserHandler implements ICommandHandler<BanUserCommand> {
@@ -583,16 +583,16 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
 // apps/api/src/users/users.controller.ts
 import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus }  from '@nestjs/cqrs';
-import { JwksGuard }             from '@repo/auth/nestjs';
-import { RbacGuard }             from '@repo/auth/nestjs';
-import { CurrentUser }           from '@repo/auth/nestjs';
-import { RequirePermission }     from '@repo/auth/nestjs';
-import { Public }                from '@repo/auth/nestjs';
+import { JwksGuard }             from '@workspace/auth/nestjs';
+import { RbacGuard }             from '@workspace/auth/nestjs';
+import { CurrentUser }           from '@workspace/auth/nestjs';
+import { RequirePermission }     from '@workspace/auth/nestjs';
+import { Public }                from '@workspace/auth/nestjs';
 import { BanUserCommand }        from './commands/ban-user.command';
 import { ChangeRoleCommand }     from './commands/change-role.command';
 import { GetUserQuery }          from './queries/get-user.query';
 import { ListUsersQuery }        from './queries/list-users.query';
-import type { JWTClaims }        from '@repo/auth/types';
+import type { JWTClaims }        from '@workspace/auth/types';
  
 @Controller('users')
 @UseGuards(JwksGuard, RbacGuard)
@@ -729,7 +729,7 @@ passkey	@better-auth/passkey	id, credentialId, publicKey, userId, counter, devic
 
 14. Client App Integration
 14.1 apps/web — React + Vite
-import { authClient } from '@repo/auth/client';
+import { authClient } from '@workspace/auth/client';
  
 // Sign up
 await authClient.signUp.email({ email, password, name, callbackURL: '/dashboard' });
@@ -749,7 +749,7 @@ await fetch('/api/users', { headers: { Authorization: `Bearer ${data.token}` } }
 
 14.2 apps/marketing — Next.js
 // src/app/api/auth/[...all]/route.ts
-import { auth }            from '@repo/auth';
+import { auth }            from '@workspace/auth';
 import { toNextJsHandler } from 'better-auth/next-js';
 export const { GET, POST } = toNextJsHandler(auth);
  
@@ -767,7 +767,7 @@ export const config = { matcher: ['/dashboard/:path*'] };
  
 // Server Component
 import { headers }  from 'next/headers';
-import { auth }     from '@repo/auth';
+import { auth }     from '@workspace/auth';
  
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -782,7 +782,7 @@ import { jwtClient,
          adminClient,
          twoFactorClient }   from 'better-auth/client/plugins';
 import * as SecureStore      from 'expo-secure-store';
-import { ac, roles }         from '@repo/auth/permissions';
+import { ac, roles }         from '@workspace/auth/permissions';
  
 const TOKEN_KEY = '__ba_token';
  
@@ -832,8 +832,8 @@ Endpoint	Method	Feature
 /api/auth/admin/impersonate-user	POST	Create impersonation session
 
 
-16. What @repo/auth Owns vs. apps/api
-@repo/auth owns	apps/api owns
+16. What @workspace/auth Owns vs. apps/api
+@workspace/auth owns	apps/api owns
 Token signing + JWKS key rotation	Business-level authorization (can user edit this invoice?)
 All OAuth 2.0 / OIDC flows	Feature modules (users, projects, billing...)
 PKCE code exchange (SPA + mobile)	CQRS commands + queries for business operations
@@ -874,17 +874,17 @@ General
     • Add helmet() to apps/api for security headers.
 
 
-18. Adding a New App — Zero Changes to @repo/auth
+18. Adding a New App — Zero Changes to @workspace/auth
 New API service
     1. Import jose. Verify JWTs with createRemoteJWKSet pointing to /api/auth/jwks.
-    2. Import ac and roles from @repo/auth/permissions for permission checks.
-    3. Done — no changes to @repo/auth.
+    2. Import ac and roles from @workspace/auth/permissions for permission checks.
+    3. Done — no changes to @workspace/auth.
 
 New client app
-    4. Import authClient from @repo/auth/client or create a mobile variant.
+    4. Import authClient from @workspace/auth/client or create a mobile variant.
     5. Add the app origin to BETTER_AUTH_TRUSTED_ORIGINS.
     6. Register the redirect URI in each OAuth provider console.
-    7. Done — no changes to @repo/auth.
+    7. Done — no changes to @workspace/auth.
 
 
 19. Implementation Order
@@ -895,8 +895,8 @@ Step	Task	Notes
 4	Wire @thallesp/nestjs-better-auth in apps/api. Set bodyParser: false. Write JwksGuard + RbacGuard.	1 day
 5	Add all social providers. Test each OAuth callback end-to-end.	1-2 days
 6	Wire auth-client.ts into apps/web (Vite) and apps/marketing (Next.js route handler + middleware).	1 day
-7	Add twoFactor, passkey, magicLink, emailOtp plugins. Wire email templates via @repo/email.	1-2 days
+7	Add twoFactor, passkey, magicLink, emailOtp plugins. Wire email templates via @workspace/email.	1-2 days
 8	Build apps/mobile adapter with SecureStore. Test PKCE on iOS + Android.	1 day
 9	Rate limiting (@nestjs/throttler), helmet(), CORS audit.	0.5 day
 
-@repo/auth — Architecture & Implementation Guide — Final
+@workspace/auth — Architecture & Implementation Guide — Final

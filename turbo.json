@@ -2,12 +2,14 @@
   "$schema": "https://v2-10-0.turborepo.dev/schema.json",
   "ui": "tui",
   "concurrency": "15",
+  "globalDependencies": [".npmrc", "pnpm-workspace.yaml", "tsconfig.json"],
   "globalEnv": [
     "MONGODB_URI",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "RESEND_API_KEY",
     "CLIENT_URL",
+    "GITHUB_REPO_URL",
     "MARKETING_URL",
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_AUTH_URL",
@@ -15,6 +17,7 @@
     "VITE_API_URL",
     "VITE_AUTH_URL",
     "VITE_APP_NAME",
+    "VITE_MARKETING_URL",
     "EXPO_PUBLIC_API_URL",
     "EXPO_PUBLIC_AUTH_URL",
     "EXPO_PUBLIC_APP_NAME",
@@ -64,10 +67,10 @@
       "dependsOn": []
     },
     "typecheck": {
-      "dependsOn": []
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": []
+      "dependsOn": ["^build"]
     },
     "dev": {
       "cache": false,

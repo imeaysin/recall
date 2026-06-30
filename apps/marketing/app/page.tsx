@@ -38,19 +38,21 @@ export default function HomePage() {
           <Button size="lg" render={<Link href={`${site.clientUrl}/sign-up`} />}>
             Start building
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            render={
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-            }
-          >
-            View on GitHub
-          </Button>
+          {site.githubUrl ? (
+            <Button
+              size="lg"
+              variant="outline"
+              render={
+                <a
+                  href={site.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              }
+            >
+              View on GitHub
+            </Button>
+          ) : null}
         </div>
 
         <dl className="grid gap-6 pt-8 sm:grid-cols-3">

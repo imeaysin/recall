@@ -1,7 +1,5 @@
-# @repo/email
+# @workspace/email
 
-Email templates and distribution logic for **theo**.
+Email templates and distribution logic for **Theo**.
 
----
-
-Part of the [theo](https://github.com/your-username/theo) starter template.
+Part of the Theo monorepo template.

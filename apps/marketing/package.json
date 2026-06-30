@@ -13,8 +13,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@fontsource-variable/geist-mono": "^5.2.8",
-    "@fontsource/cal-sans": "^5.2.3",
+    "@fontsource-variable/geist-mono": "catalog:",
+    "@fontsource/cal-sans": "catalog:",
     "@workspace/config": "workspace:*",
     "@workspace/ui": "workspace:*",
     "next": "catalog:",

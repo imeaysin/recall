@@ -1,7 +1,5 @@
-# @repo/eslint-config
+# @workspace/eslint-config
 
-Standardized ESLint configurations for **theo**.
+Standardized ESLint configurations for **Theo**.
 
----
-
-Part of the [theo](https://github.com/your-username/theo) starter template.
+Part of the Theo monorepo template.

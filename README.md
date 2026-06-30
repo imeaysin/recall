@@ -100,6 +100,60 @@ tooling/
   vitest-config/
 ```
 
+## Architecture & conventions
+
+This template follows official patterns for each layer of the stack.
+
+### Turborepo + pnpm
+
+| Pattern | Where |
+|---------|--------|
+| Apps in `apps/`, libraries in `packages/`, shared tooling in `tooling/` | [Turborepo structure](https://turbo.build/repo/docs/crafting-your-repository/structuring-a-repository) |
+| Task pipeline: `build` → `^build`, `typecheck`/`test` wait on upstream builds | `turbo.json` |
+| Shared versions via pnpm `catalog:` | `pnpm-workspace.yaml` |
+| `globalDependencies` invalidate cache when workspace config changes | `turbo.json` |
+| Hoisted linker for Next.js + pnpm | `.npmrc` |
+
+### NestJS (`apps/api`)
+
+| Pattern | Where |
+|---------|--------|
+| Feature modules under `src/modules/` | `app.module.ts` |
+| URI versioning (`/v1/...`) | `configure-app.ts` |
+| Global `ValidationPipe` (whitelist, transform) | `configure-app.ts` |
+| Swagger in non-production | `configure-app.ts` |
+| `bodyParser: false` for Better Auth (required by nestjs-better-auth) | `main.ts` |
+| Shared env via `@workspace/config` (Zod) instead of duplicating `.env` per app | Monorepo convention |
+
+### Next.js (`apps/marketing`)
+
+| Pattern | Where |
+|---------|--------|
+| `transpilePackages` for internal UI package | `next.config.ts` |
+| `outputFileTracingRoot` pointing at monorepo root (deploy from workspace) | `next.config.ts` |
+| Root `.env` loaded via `@next/env` | `next.config.ts` |
+| `@workspace/eslint-config/next-js` | `eslint.config.mjs` |
+
+### React (`apps/web`)
+
+| Pattern | Where |
+|---------|--------|
+| Vite SPA for authenticated product (client-side routing) | `apps/web` |
+| `StrictMode`, error boundary, TanStack Query | `main.tsx`, `providers.tsx` |
+| Root `.env` via Vite `envDir` | `vite.config.ts` |
+| Shared UI from `@workspace/ui` (source, no duplicate components) | imports |
+
+**Why Vite for web and Next for marketing?** The product app is a SPA behind auth (React Router). Marketing is SSR/static-friendly public pages — each framework fits its job.
+
+### Shared packages
+
+| Package | Role |
+|---------|------|
+| `@workspace/config` | Single root `.env`, Zod validation, dev URL constants |
+| `@workspace/contracts` | Zod schemas shared by API + clients |
+| `@workspace/auth` | Better Auth config + Nest/Next/Expo adapters |
+| `@workspace/ui` | Components consumed as source (`transpilePackages` in Next, direct import in Vite) |
+
 ## CI
 
 GitHub Actions runs lint, typecheck, test, and build on every push/PR. Set `SKIP_ENV_VALIDATION=true` in CI — no real `.env` required for builds.

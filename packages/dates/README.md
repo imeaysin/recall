@@ -1,32 +1,20 @@
-# @repo/dates
+# @workspace/dates
 
-Centralized date utility library for **theo**, powered by **date-fns**.
+Centralized date utilities for **Theo**, powered by **date-fns**.
 
-## 🚀 Features
-
-- **Standard Formatting**: Predefined date formats for consistency across apps.
-- **Relative Time**: Easy human-readable time strings (e.g., "5 minutes ago").
-- **Type-Safe**: Built with TypeScript and re-exports core `date-fns` utilities.
-
-## 🛠 Usage
-
-### Formatting
+## Usage
 
 ```typescript
-import { formatDate, DATE_FORMATS } from "@repo/dates";
+import { formatDate, DATE_FORMATS } from "@workspace/dates"
 
-const full = formatDate(new Date()); // "May 15th, 2026"
-const iso = formatDate(new Date(), DATE_FORMATS.ISO); // "2026-05-15"
+const full = formatDate(new Date())
+const iso = formatDate(new Date(), DATE_FORMATS.ISO)
 ```
-
-### Relative Time
 
 ```typescript
-import { relativeTime } from "@repo/dates";
+import { relativeTime } from "@workspace/dates"
 
-const text = relativeTime("2026-05-10"); // "5 days ago"
+const text = relativeTime("2026-05-10")
 ```
 
----
-
-Part of the [theo](https://github.com/your-username/theo) starter template.
+Part of the Theo monorepo template.

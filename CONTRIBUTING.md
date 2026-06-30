@@ -41,3 +41,5 @@ CI runs the same checks. Set `SKIP_ENV_VALIDATION=true` locally if you do not ha
 - Prettier + ESLint — run `pnpm format` and `pnpm lint`.
 - Shared UI goes in `packages/ui`, not duplicated per app.
 - API request/response shapes go in `packages/contracts`.
+- Shared dependency versions live in `pnpm-workspace.yaml` under `catalog:` — use `"package": "catalog:"` in `package.json`, not hardcoded versions.
+- Dev URL defaults (ports, app name) live in `packages/config/src/constants.ts`.

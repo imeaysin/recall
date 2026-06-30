@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { clientDefaults } from "../constants"
 
 const webClientSchema = z.object({
   VITE_API_URL: z.string().url().optional(),
@@ -19,9 +20,9 @@ const mobileClientSchema = z.object({
   EXPO_PUBLIC_APP_NAME: z.string().min(1).optional(),
 })
 
-const defaultApiUrl = "http://localhost:4000"
-const defaultAppName = "Theo"
-const defaultMarketingUrl = "http://localhost:3000"
+const defaultApiUrl = clientDefaults.apiUrl
+const defaultAppName = clientDefaults.appName
+const defaultMarketingUrl = clientDefaults.marketingUrl
 
 export interface ClientPublicEnv {
   apiUrl: string
@@ -63,6 +64,8 @@ export function parseWebEnv(
   webClientSchema.parse(source)
   return resolveClientUrls(source)
 }
+
+export { clientDefaults, DEFAULT_APP_NAME, DEV_URLS } from "../constants"
 
 /** `apps/marketing` (Next.js) — pass `process.env`. */
 export function parseMarketingEnv(

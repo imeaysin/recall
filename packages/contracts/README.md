@@ -1,12 +1,10 @@
-# @repo/contracts
+# @workspace/contracts
 
-Shared API contracts and schemas for **theo**, powered by **Zod**.
+Shared API contracts and schemas for **Theo**, powered by **Zod**.
 
-## 🚀 Features
+## Features
 
-- **Single Source of Truth**: Define your DTOs and validation logic once.
-- **Type Sharing**: Automatically share types between `web` and `api` to ensure runtime safety.
+- **Single source of truth**: Define DTOs and validation logic once.
+- **Type sharing**: Share types between `web` and `api` for runtime safety.
 
----
-
-Part of the [theo](https://github.com/your-username/theo) starter template.
+Part of the Theo monorepo template.

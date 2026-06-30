@@ -28,7 +28,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "date-fns": "^4.1.0"
+    "date-fns": "catalog:"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
