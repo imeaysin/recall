@@ -6,6 +6,28 @@ End-to-end example: **Notes** (already in the template).
 
 `packages/contracts/src/notes.ts` — Zod schemas + inferred types.
 
+**Swagger docs:** add OpenAPI metadata on schemas with `.meta()` / `.describe()`. Use `apiDataResponse()` from `http.ts` for `{ data: T }` response envelopes. The API uses `nestjs-zod` + `cleanupOpenApiDoc`, so metadata appears in `/docs`.
+
+```ts
+z.string().meta({
+  description: "Short title for the note",
+  examples: ["Ship the dashboard"],
+})
+
+z.object({ ... }).meta({
+  id: "CreateNoteDto",
+  title: "Create note",
+  description: "Payload to create a new note.",
+})
+
+// Response envelope (matches TransformResponseInterceptor)
+apiDataResponse(NoteResponseSchema, {
+  id: "NoteApiResponseDto",
+  title: "Note response",
+  description: "Standard API envelope containing a single note.",
+})
+```
+
 Export from `packages/contracts/src/index.ts`.
 
 ## 2. API module
@@ -14,7 +36,7 @@ Export from `packages/contracts/src/index.ts`.
 apps/api/src/modules/notes/
   commands/     create-note, delete-note
   queries/      list-notes
-  dto/          Swagger shapes
+  notes.dto.ts       createZodDto wrappers from @workspace/contracts
   entities/     domain types
   repositories/ MongoDB access
   notes.controller.ts

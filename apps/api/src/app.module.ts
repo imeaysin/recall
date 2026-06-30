@@ -1,5 +1,12 @@
 import { Module } from "@nestjs/common"
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, Reflector } from "@nestjs/core"
+import {
+  APP_FILTER,
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  APP_PIPE,
+  Reflector,
+} from "@nestjs/core"
+import { ZodValidationPipe } from "nestjs-zod"
 import { CqrsModule } from "@nestjs/cqrs"
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
 import { AuthModule } from "@thallesp/nestjs-better-auth"
@@ -79,6 +86,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
       useFactory: (reflector: Reflector) => new RolesGuard(reflector),
       inject: [Reflector],
     },
+    { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_INTERCEPTOR, useClass: TransformResponseInterceptor },

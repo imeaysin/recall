@@ -8,7 +8,7 @@ NestJS 11 REST API with Better Auth, MongoDB, and CQRS feature modules.
 modules/<feature>/
   commands/           *.command.ts + *.handler.ts
   queries/            *.query.ts + *.handler.ts  (when reads are non-trivial)
-  dto/                Swagger DTOs only — validation lives in @workspace/contracts
+  notes.dto.ts       createZodDto wrappers (request + `{ data }` response envelopes)
   entities/           Domain types / DB document shape
   repositories/       Data access (Mongo, storage, etc.)
   <feature>.controller.ts   CommandBus / QueryBus only
@@ -19,14 +19,13 @@ modules/<feature>/
 
 ## Cross-cutting (`src/common/`)
 
-| Path                           | Role                                                               |
-| ------------------------------ | ------------------------------------------------------------------ |
-| `configure-app.ts`             | CORS, helmet, versioning, validation pipe, swagger, static uploads |
-| `interceptors/`                | HTTP logging (`@workspace/logger`), `{ data }` transform           |
-| `filters/`                     | Global exception handler                                           |
-| `pipes/zod-validation.pipe.ts` | Zod body validation                                                |
-| `decorators/`                  | Re-exports auth decorators + `@Roles`                              |
-| `storage/storage.module.ts`    | `STORAGE` provider from `@workspace/storage`                       |
+| Path                        | Role                                                                    |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `configure-app.ts`          | CORS, helmet, versioning, swagger (`cleanupOpenApiDoc`), static uploads |
+| `interceptors/`             | HTTP logging (`@workspace/logger`), `{ data }` transform                |
+| `filters/`                  | Global exception handler                                                |
+| `decorators/`               | Re-exports auth decorators + `@Roles`                                   |
+| `storage/storage.module.ts` | `STORAGE` provider from `@workspace/storage`                            |
 
 ## Testing
 
@@ -36,9 +35,10 @@ modules/<feature>/
 
 ## Adding an endpoint
 
-1. Add Zod schema to `packages/contracts`.
-2. Create command/query + handler + repository method.
-3. Wire handler in module `providers`.
-4. Expose via controller with appropriate guards/decorators.
+1. Add Zod schema (+ `.meta()` / `.describe()` for Swagger) to `packages/contracts`.
+2. Add `createZodDto` wrapper in the module (e.g. `notes.dto.ts`).
+3. Create command/query + handler + repository method.
+4. Wire handler in module `providers`.
+5. Expose via controller — `@Body() MyDto` documents and validates request bodies automatically.
 
 Do not call repositories or storage directly from controllers.

@@ -1,6 +1,7 @@
-import { ValidationPipe, VersioningType } from "@nestjs/common"
+import { VersioningType } from "@nestjs/common"
 import type { INestApplication } from "@nestjs/common"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
+import { cleanupOpenApiDoc } from "nestjs-zod"
 import { createLogger } from "@workspace/logger"
 import { storageEnv } from "@workspace/config/storage"
 import compression from "compression"
@@ -30,17 +31,6 @@ function applyVersioning(app: INestApplication) {
   })
 }
 
-function applyValidation(app: INestApplication) {
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    })
-  )
-}
-
 function applyTrustProxy(app: INestApplication) {
   if (env.NODE_ENV !== "production") return
 
@@ -52,7 +42,9 @@ function applySwagger(app: INestApplication) {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle(`${env.APP_NAME} API`)
-    .setDescription("Business API — auth routes are served at /api/auth")
+    .setDescription(
+      "Business REST API. Auth routes are served at /api/auth. Successful JSON responses are wrapped as `{ data: ... }`."
+    )
     .setVersion("1.0")
     .addBearerAuth(
       { type: "http", scheme: "bearer", bearerFormat: "JWT" },
@@ -61,7 +53,7 @@ function applySwagger(app: INestApplication) {
     .build()
 
   const document = SwaggerModule.createDocument(app, swaggerConfig)
-  SwaggerModule.setup("docs", app, document)
+  SwaggerModule.setup("docs", app, cleanupOpenApiDoc(document))
 
   createLogger("ConfigureApp").info("Swagger available at /docs")
 }
@@ -77,7 +69,6 @@ export function configureApp(app: INestApplication) {
   applySecurity(app)
   applyCors(app)
   applyVersioning(app)
-  applyValidation(app)
   applyTrustProxy(app)
   applyLocalUploads(app)
   applySwagger(app)

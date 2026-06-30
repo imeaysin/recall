@@ -1,7 +1,8 @@
 import { Controller, Get, VERSION_NEUTRAL } from "@nestjs/common"
-import { ApiOperation, ApiTags } from "@nestjs/swagger"
+import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger"
 import { Public } from "./common/decorators"
 import { AppService } from "./app.service"
+import { ApiRootApiResponseDto } from "./app.dto"
 
 @ApiTags("root")
 @Controller({ version: VERSION_NEUTRAL })
@@ -10,7 +11,11 @@ export class AppController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: "API metadata" })
+  @ApiOperation({
+    summary: "API metadata",
+    description: "Entry point with links to auth, health, and Swagger docs.",
+  })
+  @ApiOkResponse({ type: ApiRootApiResponseDto })
   getRoot() {
     return this.appService.getRoot()
   }

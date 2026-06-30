@@ -1,4 +1,7 @@
 export * from "./auth"
+export * from "./api-root"
+export * from "./health"
+export * from "./http"
 export * from "./notes"
 export * from "./uploads"
 export * from "./user"

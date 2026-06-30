@@ -1,8 +1,14 @@
 import { Controller, Get } from "@nestjs/common"
 import { QueryBus } from "@nestjs/cqrs"
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger"
 import { CurrentUser } from "../../common/decorators"
 import type { JWTClaims } from "@workspace/auth/types"
+import { MeApiResponseDto } from "./me.dto"
 import { GetMeQuery } from "./queries/get-me.query"
 
 @ApiTags("account")
@@ -12,7 +18,11 @@ export class MeController {
 
   @Get()
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Current user from JWT bearer token" })
+  @ApiOperation({
+    summary: "Current user",
+    description: "Returns JWT claims for the bearer token.",
+  })
+  @ApiOkResponse({ type: MeApiResponseDto })
   getMe(@CurrentUser() user: JWTClaims) {
     return this.queryBus.execute(new GetMeQuery(user))
   }

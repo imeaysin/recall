@@ -38,8 +38,8 @@ Set `SKIP_ENV_VALIDATION=true` when env is incomplete locally.
 
 - **Pattern:** controller → `CommandBus` / `QueryBus` → handler → repository (or storage repository).
 - **Reference module:** `src/modules/notes/` (commands, queries, dto, entities, repositories).
-- **Validation:** Zod via `@workspace/contracts` + `ZodValidationPipe` for request bodies.
-- **Responses:** wrapped in `{ data }` by `TransformResponseInterceptor`.
+- **Validation & OpenAPI:** Zod schemas in `@workspace/contracts` (with `.meta()` / `.describe()`). API uses `nestjs-zod` (`createZodDto`, global `ZodValidationPipe`, `cleanupOpenApiDoc` for `/docs`).
+- **Responses:** wrapped in `{ data }` by `TransformResponseInterceptor` — document with `apiDataResponse()` envelope schemas in contracts.
 - **Auth:** JWT from Better Auth; guards in `app.module.ts`; decorators in `common/decorators`.
 - **Tests:** `test/unit/*.spec.ts` (Jest), `test/e2e/*.e2e-spec.ts` (`pnpm test:e2e` in api).
 - **Logging:** `@workspace/logger` (`createLogger`) — not Nest `Logger` for HTTP/errors.

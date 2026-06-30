@@ -18,7 +18,7 @@ import {
 import type { JWTClaims } from "@workspace/auth/types"
 import { CurrentUser } from "../../common/decorators"
 import { UploadFileCommand } from "./commands/upload-file.command"
-import { UploadResponseDto } from "./dto/upload-response.dto"
+import { UploadApiResponseDto } from "./uploads.dto"
 
 const MAX_BYTES = 5 * 1024 * 1024
 
@@ -29,16 +29,26 @@ export class UploadsController {
 
   @Post()
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Upload a file (max 5 MB)" })
+  @ApiOperation({
+    summary: "Upload a file",
+    description: "Uploads a single file (max 5 MB) for the authenticated user.",
+  })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
+    description: "Multipart upload with a single `file` field.",
     schema: {
       type: "object",
-      properties: { file: { type: "string", format: "binary" } },
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+          description: "File to upload (max 5 MB)",
+        },
+      },
       required: ["file"],
     },
   })
-  @ApiCreatedResponse({ type: UploadResponseDto })
+  @ApiCreatedResponse({ type: UploadApiResponseDto })
   @UseInterceptors(
     FileInterceptor("file", { limits: { fileSize: MAX_BYTES, files: 1 } })
   )

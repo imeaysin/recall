@@ -11,31 +11,28 @@ import {
 import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from "@nestjs/swagger"
 import type { JWTClaims } from "@workspace/auth/types"
-import {
-  BulkDeleteNotesSchema,
-  CreateNoteSchema,
-  NotesListResponseSchema,
-  UpdateNoteSchema,
-  type BulkDeleteNotesInput,
-  type CreateNoteInput,
-  type UpdateNoteInput,
-} from "@workspace/contracts"
+import { NotesListResponseSchema } from "@workspace/contracts"
 import { CurrentUser } from "../../common/decorators"
-import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe"
 import { BulkDeleteNotesCommand } from "./commands/bulk-delete-notes.command"
 import { CreateNoteCommand } from "./commands/create-note.command"
 import { DeleteNoteCommand } from "./commands/delete-note.command"
 import { UpdateNoteCommand } from "./commands/update-note.command"
-import { BulkDeleteNotesDto } from "./dto/bulk-delete-notes.dto"
-import { CreateNoteDto } from "./dto/create-note.dto"
-import { UpdateNoteDto } from "./dto/update-note.dto"
+import {
+  BulkDeleteNotesApiResponseDto,
+  BulkDeleteNotesDto,
+  CreateNoteDto,
+  NoteApiResponseDto,
+  NotesListApiResponseDto,
+  UpdateNoteDto,
+} from "./notes.dto"
 import { ListNotesQuery } from "./queries/list-notes.query"
 
 @ApiTags("notes")
@@ -48,8 +45,11 @@ export class NotesController {
 
   @Get()
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "List notes for the current user" })
-  @ApiOkResponse({ description: "User notes" })
+  @ApiOperation({
+    summary: "List notes",
+    description: "Returns all notes owned by the authenticated user.",
+  })
+  @ApiOkResponse({ type: NotesListApiResponseDto })
   async list(@CurrentUser() user: JWTClaims) {
     const items = await this.queryBus.execute(new ListNotesQuery(user.id))
     return NotesListResponseSchema.parse({ items })
@@ -57,38 +57,42 @@ export class NotesController {
 
   @Post()
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Create a note" })
-  @ApiCreatedResponse({ description: "Created note" })
-  @ApiBody({ type: CreateNoteDto })
-  create(
-    @CurrentUser() user: JWTClaims,
-    @Body(new ZodValidationPipe(CreateNoteSchema)) body: CreateNoteInput
-  ) {
+  @ApiOperation({
+    summary: "Create a note",
+    description: "Creates a new note for the authenticated user.",
+  })
+  @ApiCreatedResponse({ type: NoteApiResponseDto })
+  create(@CurrentUser() user: JWTClaims, @Body() body: CreateNoteDto) {
     return this.commandBus.execute(new CreateNoteCommand(user.id, body))
   }
 
   @Post("bulk-delete")
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Delete multiple notes" })
-  @ApiOkResponse({ description: "Bulk delete result" })
-  @ApiBody({ type: BulkDeleteNotesDto })
-  bulkDelete(
-    @CurrentUser() user: JWTClaims,
-    @Body(new ZodValidationPipe(BulkDeleteNotesSchema))
-    body: BulkDeleteNotesInput
-  ) {
+  @ApiOperation({
+    summary: "Bulk delete notes",
+    description: "Deletes up to 100 notes by id. Only owned notes are removed.",
+  })
+  @ApiOkResponse({ type: BulkDeleteNotesApiResponseDto })
+  bulkDelete(@CurrentUser() user: JWTClaims, @Body() body: BulkDeleteNotesDto) {
     return this.commandBus.execute(new BulkDeleteNotesCommand(user.id, body))
   }
 
   @Patch(":id")
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Update a note" })
-  @ApiOkResponse({ description: "Updated note" })
-  @ApiBody({ type: UpdateNoteDto })
+  @ApiOperation({
+    summary: "Update a note",
+    description: "Updates title and/or body of an owned note.",
+  })
+  @ApiParam({
+    name: "id",
+    description: "Note id",
+    example: "507f1f77bcf86cd799439011",
+  })
+  @ApiOkResponse({ type: NoteApiResponseDto })
   update(
     @CurrentUser() user: JWTClaims,
     @Param("id") id: string,
-    @Body(new ZodValidationPipe(UpdateNoteSchema)) body: UpdateNoteInput
+    @Body() body: UpdateNoteDto
   ) {
     return this.commandBus.execute(new UpdateNoteCommand(user.id, id, body))
   }
@@ -96,7 +100,16 @@ export class NotesController {
   @Delete(":id")
   @HttpCode(204)
   @ApiBearerAuth("bearer")
-  @ApiOperation({ summary: "Delete a note" })
+  @ApiOperation({
+    summary: "Delete a note",
+    description: "Permanently deletes an owned note.",
+  })
+  @ApiParam({
+    name: "id",
+    description: "Note id",
+    example: "507f1f77bcf86cd799439011",
+  })
+  @ApiNoContentResponse({ description: "Note deleted" })
   remove(@CurrentUser() user: JWTClaims, @Param("id") id: string) {
     return this.commandBus.execute(new DeleteNoteCommand(user.id, id))
   }
