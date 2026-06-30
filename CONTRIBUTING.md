@@ -20,7 +20,9 @@ pnpm test
 pnpm build
 ```
 
-CI runs the same checks. Set `SKIP_ENV_VALIDATION=true` locally if you do not have a full `.env`.
+Pre-commit (husky) runs **prettier** on staged files. ESLint runs via `pnpm lint` — same as CI.
+
+Set `SKIP_ENV_VALIDATION=true` locally if you do not have a full `.env`.
 
 ## Adding a package
 
