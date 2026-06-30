@@ -52,6 +52,30 @@ export class NotesRepository {
     return record ? toNoteEntity(record) : null
   }
 
+  async updateByIdForUser(
+    id: string,
+    userId: string,
+    data: Partial<Pick<NoteEntity, "title" | "body">>
+  ): Promise<NoteEntity | null> {
+    if (!ObjectId.isValid(id)) return null
+
+    const now = new Date()
+    const result = await getDb()
+      .collection<NoteRecord>(COLLECTION)
+      .findOneAndUpdate(
+        { _id: new ObjectId(id), userId },
+        {
+          $set: {
+            ...data,
+            updatedAt: now,
+          },
+        },
+        { returnDocument: "after" }
+      )
+
+    return result ? toNoteEntity(result) : null
+  }
+
   async deleteByIdForUser(id: string, userId: string): Promise<boolean> {
     if (!ObjectId.isValid(id)) return false
 
@@ -60,5 +84,19 @@ export class NotesRepository {
       .deleteOne({ _id: new ObjectId(id), userId })
 
     return result.deletedCount > 0
+  }
+
+  async deleteManyByIdsForUser(ids: string[], userId: string): Promise<number> {
+    const objectIds = ids
+      .filter((id) => ObjectId.isValid(id))
+      .map((id) => new ObjectId(id))
+
+    if (objectIds.length === 0) return 0
+
+    const result = await getDb()
+      .collection<NoteRecord>(COLLECTION)
+      .deleteMany({ _id: { $in: objectIds }, userId })
+
+    return result.deletedCount
   }
 }

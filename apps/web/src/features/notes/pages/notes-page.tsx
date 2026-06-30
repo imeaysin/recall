@@ -1,98 +1,384 @@
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { ShellMain } from "@workspace/ui/components/shell"
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { relativeTime } from "@workspace/dates"
-import { Trash2Icon } from "lucide-react"
-import { useState } from "react"
+import type { NoteResponse } from "@workspace/contracts"
 import {
-  useCreateNoteMutation,
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert"
+import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@workspace/ui/components/empty"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@workspace/ui/components/input-group"
+import {
+  Select,
+  SelectButton,
+  SelectItem,
+  SelectPopup,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { ShellMain } from "@workspace/ui/components/shell"
+import { ConfirmDialog } from "@workspace/ui/components/confirm-dialog"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { useDebouncedValue } from "@workspace/ui/hooks/use-debounced-value"
+import {
+  CircleAlertIcon,
+  FileTextIcon,
+  PlusIcon,
+  SearchIcon,
+  Trash2Icon,
+} from "lucide-react"
+import { useMemo, useState } from "react"
+import { NoteFormSheet } from "@/features/notes/components/note-form-sheet"
+import { NotesListItem } from "@/features/notes/components/notes-list-item"
+import {
+  useBulkDeleteNotesMutation,
   useDeleteNoteMutation,
   useNotesQuery,
 } from "@/features/notes/hooks/use-notes"
 
+type SortOption = "newest" | "oldest" | "title-asc" | "title-desc"
+
+const sortOptions: { value: SortOption; label: string }[] = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+  { value: "title-asc", label: "Title A–Z" },
+  { value: "title-desc", label: "Title Z–A" },
+]
+
+function sortNotes(items: NoteResponse[], sort: SortOption) {
+  const sorted = [...items]
+  switch (sort) {
+    case "oldest":
+      return sorted.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      )
+    case "title-asc":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title))
+    case "title-desc":
+      return sorted.sort((a, b) => b.title.localeCompare(a.title))
+    case "newest":
+    default:
+      return sorted.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+  }
+}
+
 export function NotesPage() {
   const { data, isLoading, isError, error } = useNotesQuery()
-  const createNote = useCreateNoteMutation()
   const deleteNote = useDeleteNoteMutation()
-  const [title, setTitle] = useState("")
+  const bulkDeleteNotes = useBulkDeleteNotesMutation()
 
-  async function handleCreate(event: React.FormEvent) {
-    event.preventDefault()
-    const trimmed = title.trim()
-    if (!trimmed) return
-    await createNote.mutateAsync({ title: trimmed, body: "" })
-    setTitle("")
+  const [search, setSearch] = useState("")
+  const debouncedSearch = useDebouncedValue(search)
+  const [sort, setSort] = useState<SortOption>("newest")
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [editingNote, setEditingNote] = useState<NoteResponse | null>(null)
+
+  const [deleteTarget, setDeleteTarget] = useState<
+    | { type: "single"; id: string; title: string }
+    | { type: "bulk"; count: number }
+    | null
+  >(null)
+
+  const filteredNotes = useMemo(() => {
+    const items = data?.items ?? []
+    const query = debouncedSearch.trim().toLowerCase()
+    const filtered = query
+      ? items.filter(
+          (note) =>
+            note.title.toLowerCase().includes(query) ||
+            note.body.toLowerCase().includes(query)
+        )
+      : items
+    return sortNotes(filtered, sort)
+  }, [data?.items, debouncedSearch, sort])
+
+  const visibleIds = filteredNotes.map((note) => note.id)
+  const selectedVisibleCount = visibleIds.filter((id) =>
+    selectedIds.has(id)
+  ).length
+  const allVisibleSelected =
+    visibleIds.length > 0 && selectedVisibleCount === visibleIds.length
+  const someVisibleSelected =
+    selectedVisibleCount > 0 && selectedVisibleCount < visibleIds.length
+
+  const isMutating = deleteNote.isPending || bulkDeleteNotes.isPending
+
+  function openCreateSheet() {
+    setEditingNote(null)
+    setSheetOpen(true)
   }
 
+  function openEditSheet(note: NoteResponse) {
+    setEditingNote(note)
+    setSheetOpen(true)
+  }
+
+  function toggleSelection(noteId: string, checked: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current)
+      if (checked) next.add(noteId)
+      else next.delete(noteId)
+      return next
+    })
+  }
+
+  function toggleSelectAll(checked: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current)
+      if (checked) {
+        for (const id of visibleIds) next.add(id)
+      } else {
+        for (const id of visibleIds) next.delete(id)
+      }
+      return next
+    })
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return
+
+    if (deleteTarget.type === "single") {
+      await deleteNote.mutateAsync(deleteTarget.id)
+    } else {
+      const ids = [...selectedIds]
+      await bulkDeleteNotes.mutateAsync({ ids })
+      setSelectedIds(new Set())
+    }
+
+    setDeleteTarget(null)
+  }
+
+  const hasNotes = (data?.items.length ?? 0) > 0
+  const hasSearch = debouncedSearch.trim().length > 0
+  const showEmptySearch =
+    !isLoading && !isError && hasNotes && filteredNotes.length === 0
+  const showEmptyInitial = !isLoading && !isError && !hasNotes
+
+  const deleteDialogDescription = (() => {
+    if (deleteTarget?.type === "bulk") {
+      return `This permanently deletes ${deleteTarget.count} selected notes. This action cannot be undone.`
+    }
+    if (deleteTarget?.type === "single") {
+      return `“${deleteTarget.title}” will be permanently deleted. This action cannot be undone.`
+    }
+    return ""
+  })()
+
   return (
-    <ShellMain
-      heading="Notes"
-      subtitle="Example CRUD feature — calls the NestJS API with your JWT."
-    >
-      <form
-        onSubmit={handleCreate}
-        className="mb-8 flex max-w-lg flex-col gap-3 sm:flex-row"
+    <>
+      <ShellMain
+        CTA={
+          <Button onClick={openCreateSheet}>
+            <PlusIcon className="size-4" />
+            New note
+          </Button>
+        }
+        heading="Notes"
+        subtitle="Create, search, edit, and manage notes synced with the NestJS API."
       >
-        <Input
-          nativeInput
-          placeholder="New note title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          disabled={createNote.isPending}
-        />
-        <Button type="submit" disabled={createNote.isPending || !title.trim()}>
-          Add note
-        </Button>
-      </form>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <InputGroup className="max-w-md flex-1">
+            <InputGroupAddon align="inline-start">
+              <SearchIcon className="size-4 text-muted-foreground" />
+            </InputGroupAddon>
+            <InputGroupInput
+              aria-label="Search notes"
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search notes…"
+              value={search}
+            />
+          </InputGroup>
 
-      {isLoading ? (
-        <div className="space-y-3">
-          <Skeleton className="h-16 w-full max-w-xl" />
-          <Skeleton className="h-16 w-full max-w-xl" />
-        </div>
-      ) : null}
-
-      {isError ? (
-        <p className="text-sm text-destructive">
-          {error instanceof Error ? error.message : "Failed to load notes"}
-        </p>
-      ) : null}
-
-      {!isLoading && !isError && data?.items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No notes yet. Create one above or run{" "}
-          <code className="rounded bg-muted px-1">pnpm --filter api seed</code>.
-        </p>
-      ) : null}
-
-      <ul className="max-w-xl divide-y divide-border">
-        {data?.items.map((note) => (
-          <li
-            key={note.id}
-            className="flex items-start justify-between gap-4 py-4"
+          <Select
+            onValueChange={(value) => {
+              if (value) setSort(value as SortOption)
+            }}
+            value={sort}
           >
-            <div className="min-w-0 space-y-1">
-              <p className="font-medium">{note.title}</p>
-              {note.body ? (
-                <p className="text-sm text-muted-foreground">{note.body}</p>
-              ) : null}
-              <p className="text-xs text-muted-foreground">
-                {relativeTime(note.createdAt)}
-              </p>
-            </div>
+            <SelectButton className="w-full sm:w-44">
+              <SelectValue />
+            </SelectButton>
+            <SelectPopup>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectPopup>
+          </Select>
+        </div>
+
+        {selectedIds.size > 0 ? (
+          <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3">
+            <p className="text-sm font-medium">{selectedIds.size} selected</p>
             <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Delete note"
-              disabled={deleteNote.isPending}
-              onClick={() => deleteNote.mutate(note.id)}
+              disabled={isMutating}
+              onClick={() =>
+                setDeleteTarget({ type: "bulk", count: selectedIds.size })
+              }
+              size="sm"
+              variant="destructive"
             >
               <Trash2Icon className="size-4" />
+              Delete selected
             </Button>
-          </li>
-        ))}
-      </ul>
-    </ShellMain>
+            <Button
+              disabled={isMutating}
+              onClick={() => setSelectedIds(new Set())}
+              size="sm"
+              variant="ghost"
+            >
+              Clear selection
+            </Button>
+          </div>
+        ) : null}
+
+        {isLoading ? (
+          <div className="overflow-hidden rounded-lg border">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                className="flex items-center gap-3 border-b px-4 py-4 last:border-b-0"
+                key={index}
+              >
+                <Skeleton className="size-4 rounded-sm" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-48" />
+                  <Skeleton className="h-3 w-full max-w-md" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {isError ? (
+          <Alert variant="error">
+            <CircleAlertIcon />
+            <AlertTitle>Could not load notes</AlertTitle>
+            <AlertDescription>
+              {error instanceof Error ? error.message : "Something went wrong."}
+            </AlertDescription>
+          </Alert>
+        ) : null}
+
+        {showEmptyInitial ? (
+          <Empty className="rounded-lg border border-dashed">
+            <EmptyContent>
+              <EmptyMedia variant="icon">
+                <FileTextIcon />
+              </EmptyMedia>
+              <EmptyTitle>No notes yet</EmptyTitle>
+              <EmptyDescription>
+                Create your first note or seed sample data with{" "}
+                <code className="rounded bg-muted px-1 py-0.5 text-xs">
+                  pnpm --filter api seed
+                </code>
+                .
+              </EmptyDescription>
+              <Button onClick={openCreateSheet}>
+                <PlusIcon className="size-4" />
+                Create note
+              </Button>
+            </EmptyContent>
+          </Empty>
+        ) : null}
+
+        {showEmptySearch ? (
+          <Empty className="rounded-lg border border-dashed">
+            <EmptyContent>
+              <EmptyMedia variant="icon">
+                <SearchIcon />
+              </EmptyMedia>
+              <EmptyTitle>No matching notes</EmptyTitle>
+              <EmptyDescription>
+                Nothing matches &ldquo;{debouncedSearch.trim()}&rdquo;. Try a
+                different search term.
+              </EmptyDescription>
+            </EmptyContent>
+          </Empty>
+        ) : null}
+
+        {!isLoading && !isError && filteredNotes.length > 0 ? (
+          <div className="overflow-hidden rounded-lg border">
+            <div className="flex items-center gap-3 border-b bg-muted/30 px-4 py-3">
+              <Checkbox
+                aria-label="Select all visible notes"
+                checked={allVisibleSelected}
+                disabled={isMutating}
+                indeterminate={someVisibleSelected}
+                onCheckedChange={(checked) => toggleSelectAll(checked === true)}
+              />
+              <p className="text-sm text-muted-foreground">
+                {filteredNotes.length} note
+                {filteredNotes.length === 1 ? "" : "s"}
+                {hasSearch ? " matching your search" : ""}
+              </p>
+            </div>
+
+            <ul className="divide-y divide-border">
+              {filteredNotes.map((note) => (
+                <NotesListItem
+                  disabled={isMutating}
+                  key={note.id}
+                  note={note}
+                  onDelete={() =>
+                    setDeleteTarget({
+                      type: "single",
+                      id: note.id,
+                      title: note.title,
+                    })
+                  }
+                  onEdit={() => openEditSheet(note)}
+                  onSelect={(checked) => toggleSelection(note.id, checked)}
+                  selected={selectedIds.has(note.id)}
+                />
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </ShellMain>
+
+      <NoteFormSheet
+        note={editingNote}
+        onOpenChange={setSheetOpen}
+        open={sheetOpen}
+      />
+
+      <ConfirmDialog
+        confirmLabel={
+          deleteTarget?.type === "bulk"
+            ? `Delete ${deleteTarget.count} notes`
+            : "Delete note"
+        }
+        description={deleteDialogDescription}
+        onConfirm={confirmDelete}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
+        open={deleteTarget !== null}
+        pending={isMutating}
+        title={
+          deleteTarget?.type === "bulk"
+            ? "Delete selected notes?"
+            : "Delete note?"
+        }
+        variant="destructive"
+      />
+    </>
   )
 }

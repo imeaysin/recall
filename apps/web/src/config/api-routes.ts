@@ -9,6 +9,7 @@ export const apiRoutes = {
   health: apiPath("health"),
   me: apiPath("me"),
   notes: apiPath("notes"),
+  notesBulkDelete: apiPath("notes/bulk-delete"),
   note: (id: string) => apiPath(`notes/${id}`),
   uploads: apiPath("uploads"),
 } as const

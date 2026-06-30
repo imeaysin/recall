@@ -14,10 +14,32 @@ export const CreateNoteSchema = z.object({
   body: z.string().max(5000).optional().default(""),
 })
 
+export const UpdateNoteSchema = z
+  .object({
+    title: z.string().trim().min(1).max(200).optional(),
+    body: z.string().max(5000).optional(),
+  })
+  .refine((data) => data.title !== undefined || data.body !== undefined, {
+    message: "At least one field is required",
+  })
+
+export const BulkDeleteNotesSchema = z.object({
+  ids: z.array(z.string().min(1)).min(1).max(100),
+})
+
+export const BulkDeleteNotesResponseSchema = z.object({
+  deletedCount: z.number().int().nonnegative(),
+})
+
 export const NotesListResponseSchema = z.object({
   items: z.array(NoteResponseSchema),
 })
 
 export type NoteResponse = z.infer<typeof NoteResponseSchema>
 export type CreateNoteInput = z.infer<typeof CreateNoteSchema>
+export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>
+export type BulkDeleteNotesInput = z.infer<typeof BulkDeleteNotesSchema>
+export type BulkDeleteNotesResponse = z.infer<
+  typeof BulkDeleteNotesResponseSchema
+>
 export type NotesListResponse = z.infer<typeof NotesListResponseSchema>
