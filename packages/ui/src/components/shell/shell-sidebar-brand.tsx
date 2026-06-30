@@ -3,17 +3,10 @@
 import { PanelLeftIcon } from "lucide-react"
 import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
-import { sidebarNavItemClassName } from "./navigation/navigation-styles"
+import { SidebarLogoMark } from "./navigation/sidebar-logo-mark"
+import { sidebarIconButtonClassName } from "./navigation/navigation-styles"
 import { useShell } from "./shell-context"
 import { useShellSidebar } from "./shell-sidebar-context"
-
-function SidebarLogoMark({ logo }: { logo: React.ReactNode }): React.ReactElement {
-  return (
-    <span className="flex size-4 items-center justify-center [&>svg]:size-full">
-      {logo}
-    </span>
-  )
-}
 
 export function ShellSidebarBrand({
   logo,
@@ -29,7 +22,7 @@ export function ShellSidebarBrand({
 
   if (!logo) return null
 
-  const slotClassName = cn(sidebarNavItemClassName, "absolute inset-0")
+  const slotClassName = cn(sidebarIconButtonClassName, "absolute inset-0")
 
   return (
     <div

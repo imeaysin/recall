@@ -14,13 +14,11 @@ import {
   TooltipPopup,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { cn } from "@workspace/ui/lib/utils"
 import { useShell } from "../shell-context"
 import { useShellSidebar } from "../shell-sidebar-context"
 import type { NavigationItemType } from "../types"
 import {
   ExpansionChevron,
-  getSidebarChildClassName,
   NavItemIcon,
   NavigationChildPanel,
   SidebarIconParentNavItem,
@@ -30,6 +28,7 @@ import {
   defaultIsCurrent,
   mobileBottomNavItemClassName,
   sidebarNavItemClassName,
+  sidebarNavSubItemClassName,
 } from "./navigation-styles"
 
 function readStoredExpansion(itemName: string): boolean | null {
@@ -65,7 +64,6 @@ const usePersistedExpansionState = (itemName: string) => {
 }
 
 export const NavigationItem: React.FC<{
-  index?: number
   item: NavigationItemType
   isChild?: boolean
 }> = (props) => {
@@ -99,6 +97,7 @@ export const NavigationItem: React.FC<{
           aria-expanded={isExpanded}
           aria-label={t(item.name)}
           className={sidebarNavItemClassName}
+          data-active={hasActiveChild ? true : undefined}
           onClick={() => setIsExpanded(!isExpanded)}
           type="button"
         >
@@ -110,21 +109,15 @@ export const NavigationItem: React.FC<{
             {item.badge}
           </span>
           {shouldShowChevron ? (
-            <ExpansionChevron
-              className="ml-auto size-4 shrink-0 text-sidebar-foreground/60"
-              expanded={isExpanded}
-            />
+            <ExpansionChevron expanded={isExpanded} />
           ) : null}
         </button>
         {hasChildren && !isIconSidebar ? (
           <NavigationChildPanel open={shouldShowChildren}>
-            {item.child?.map((child, index) => (
-              <NavigationItem
-                index={index}
-                isChild
-                item={child}
-                key={child.name}
-              />
+            {item.child?.map((child) => (
+              <li key={child.name}>
+                <NavigationItem isChild item={child} />
+              </li>
             ))}
           </NavigationChildPanel>
         ) : null}
@@ -137,7 +130,7 @@ export const NavigationItem: React.FC<{
       <Link
         aria-current={current ? "page" : undefined}
         aria-label={t(item.name)}
-        className={cn(sidebarNavItemClassName, getSidebarChildClassName(props.index))}
+        className={sidebarNavSubItemClassName}
         data-testid={item.name}
         href={item.href}
         target={item.target}

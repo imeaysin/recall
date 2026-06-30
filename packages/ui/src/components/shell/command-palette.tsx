@@ -32,7 +32,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 import { useShell } from "./shell-context"
-import { sidebarNavItemClassName } from "./navigation/navigation-styles"
+import { sidebarHeaderActionClassName, sidebarNavItemClassName } from "./navigation/navigation-styles"
 import type { CommandAction } from "./types"
 
 interface CommandGroupModel {
@@ -178,9 +178,12 @@ export function useCommandPaletteShortcut(toggle: () => void): void {
 export function CommandTrigger({
   className,
   variant = "sidebar",
+  compact = false,
 }: {
   className?: string
   variant?: "sidebar" | "topnav"
+  /** Icon-only header action when sidebar is expanded. */
+  compact?: boolean
 }): React.ReactElement | null {
   const { openCommandPalette, isCommandPaletteEnabled } = useShell()
 
@@ -194,14 +197,16 @@ export function CommandTrigger({
             aria-label="Search"
             className={cn(
               variant === "topnav"
-                ? "flex shrink-0 items-center justify-center rounded-full p-2 text-foreground transition hover:bg-accent"
-                : cn(sidebarNavItemClassName, "in-data-collapsed:mt-0"),
+                ? "flex size-8 shrink-0 items-center justify-center rounded-lg text-foreground transition hover:bg-accent"
+                : compact
+                  ? sidebarHeaderActionClassName
+                  : sidebarNavItemClassName,
               className
             )}
             onClick={openCommandPalette}
             type="button"
           >
-            <SearchIcon className="size-4 shrink-0 text-inherit" />
+            <SearchIcon aria-hidden="true" />
           </button>
         }
       />

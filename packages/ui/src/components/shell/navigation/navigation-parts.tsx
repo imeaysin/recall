@@ -14,7 +14,12 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import { useShell } from "../shell-context"
 import type { NavigationItemType } from "../types"
-import { defaultIsCurrent, sidebarNavItemClassName } from "./navigation-styles"
+import {
+  defaultIsCurrent,
+  sidebarChevronClassName,
+  sidebarMenuSubClassName,
+  sidebarNavItemClassName,
+} from "./navigation-styles"
 
 const navIconClassName = "size-4 shrink-0"
 
@@ -38,13 +43,13 @@ export function NavItemIcon({
 
 export function ExpansionChevron({
   expanded,
-  className,
+  className = sidebarChevronClassName,
 }: {
   expanded: boolean
   className?: string
 }): React.ReactElement {
   const Icon = expanded ? ChevronUpIcon : ChevronDownIcon
-  return <Icon className={className} />
+  return <Icon aria-hidden="true" className={className} />
 }
 
 export function NavigationChildPanel({
@@ -64,19 +69,11 @@ export function NavigationChildPanel({
           : "invisible grid-rows-[0fr] opacity-0"
       )}
     >
-      <div className="overflow-hidden">{children}</div>
+      <div className="overflow-hidden">
+        <ul className={sidebarMenuSubClassName}>{children}</ul>
+      </div>
     </div>
   )
-}
-
-export function getSidebarChildClassName(index?: number): string {
-  const base = "flex h-8 pl-11"
-
-  if (index === 0) {
-    return cn(base, "mt-0")
-  }
-
-  return cn(base, "mt-1 hover:mt-1 [&[aria-current='page']]:mt-1")
 }
 
 /** Icon-only sidebar (md–lg): flyout menu for parents, matching shadcn collapsible=icon. */
@@ -97,11 +94,8 @@ export function SidebarIconParentNavItem({
           <button
             aria-haspopup="menu"
             aria-label={t(item.name)}
-            className={cn(
-              sidebarNavItemClassName,
-              hasActiveChild &&
-                "bg-sidebar-accent text-sidebar-accent-foreground"
-            )}
+            className={sidebarNavItemClassName}
+            data-active={hasActiveChild ? true : undefined}
             type="button"
           />
         }

@@ -4,12 +4,17 @@ import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Navigation } from "./navigation/navigation"
 import { NavigationItem } from "./navigation/navigation-item"
+import { SidebarLogoMark } from "./navigation/sidebar-logo-mark"
+import { sidebarBrandLinkClassName } from "./navigation/navigation-styles"
 import { ShellSidebarBrand } from "./shell-sidebar-brand"
 import { useShellSidebar } from "./shell-sidebar-context"
 import { ShellSidebarTrigger } from "./shell-sidebar-trigger"
 import { CommandTrigger } from "./command-palette"
 import { useShell } from "./shell-context"
 import type { NavigationItemType } from "./types"
+
+const SIDEBAR_WIDTH = "18rem"
+const SIDEBAR_WIDTH_ICON = "3rem"
 
 export interface SideBarProps {
   navigation: NavigationItemType[]
@@ -18,14 +23,6 @@ export interface SideBarProps {
   brandLabel?: string
   homeHref?: string
   bannersHeight?: number
-}
-
-function SidebarLogoMark({ logo }: { logo: React.ReactNode }): React.ReactElement {
-  return (
-    <span className="flex size-4 shrink-0 items-center justify-center [&>svg]:size-full">
-      {logo}
-    </span>
-  )
 }
 
 export function SideBar({
@@ -51,8 +48,8 @@ export function SideBar({
         data-collapsed={isIconSidebar ? "" : undefined}
         style={
           {
-            "--sidebar-width": "18rem",
-            "--sidebar-width-icon": "3rem",
+            "--sidebar-width": SIDEBAR_WIDTH,
+            "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
             maxHeight: `calc(100vh - ${bannersHeight}px)`,
             top: `${bannersHeight}px`,
           } as React.CSSProperties
@@ -68,24 +65,21 @@ export function SideBar({
             <div
               className={cn(
                 "flex h-8 w-full shrink-0 items-center",
-                isIconSidebar ? "justify-center" : "justify-between gap-2"
+                isIconSidebar ? "justify-center" : "justify-between gap-1"
               )}
             >
               {isIconSidebar ? (
                 <ShellSidebarBrand homeHref={homeHref} logo={logo} />
               ) : (
                 <>
-                  <Link
-                    className="flex h-8 min-w-0 items-center gap-2 rounded-lg px-1.5 font-heading text-sm tracking-wide text-sidebar-foreground outline-none transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    href={homeHref}
-                  >
+                  <Link className={sidebarBrandLinkClassName} href={homeHref}>
                     {logo ? <SidebarLogoMark logo={logo} /> : null}
                     {brandLabel ? (
                       <span className="truncate">{brandLabel}</span>
                     ) : null}
                   </Link>
-                  <div className="flex shrink-0 items-center gap-0.5">
-                    <CommandTrigger />
+                  <div className="flex shrink-0 items-center gap-1">
+                    <CommandTrigger compact />
                     <ShellSidebarTrigger />
                   </div>
                 </>
