@@ -8,6 +8,7 @@ import {
   LayoutGridIcon,
   Link2Icon,
   RouteIcon,
+  StickyNoteIcon,
   WorkflowIcon,
 } from "lucide-react"
 import { MORE_SEPARATOR_NAME } from "@workspace/ui/components/shell"
@@ -21,6 +22,13 @@ export const COPY_PUBLIC_PAGE_LINK_HREF = "__copy_public_page_link__"
 const dashboardBase = paths.dashboard
 
 const appNavigationItems: AppNavItem[] = [
+  {
+    name: "Notes",
+    href: `${dashboardBase}/notes`,
+    icon: StickyNoteIcon,
+    isCurrent: ({ pathname }) =>
+      pathname?.startsWith(`${dashboardBase}/notes`) ?? false,
+  },
   {
     name: "Event types",
     href: dashboardBase,

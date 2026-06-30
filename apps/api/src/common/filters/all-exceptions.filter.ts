@@ -3,8 +3,8 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
-  Logger,
 } from "@nestjs/common"
+import { createLogger } from "@workspace/logger"
 import type { Request, Response } from "express"
 import { env } from "@workspace/config"
 import {
@@ -14,7 +14,7 @@ import {
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionsFilter.name)
+  private readonly logger = createLogger("Exceptions")
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
@@ -34,10 +34,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   private logServerError(request: Request, exception: unknown) {
-    const detail =
-      exception instanceof Error ? exception.stack : String(exception)
-
-    this.logger.error(`${request.method} ${request.url}`, detail)
+    this.logger.error(
+      {
+        method: request.method,
+        url: request.url,
+        err:
+          exception instanceof Error
+            ? exception
+            : { message: String(exception) },
+      },
+      "unhandled server error"
+    )
   }
 
   private buildErrorBody(

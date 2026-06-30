@@ -1,4 +1,5 @@
 export * from "./auth"
 export * from "./notes"
+export * from "./uploads"
 export * from "./user"
 export * from "./profile"

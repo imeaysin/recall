@@ -1,8 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs"
-import {
-  ForbiddenException,
-  NotFoundException,
-} from "@nestjs/common"
+import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { NotesRepository } from "../repositories/notes.repository"
 import { DeleteNoteCommand } from "./delete-note.command"
 

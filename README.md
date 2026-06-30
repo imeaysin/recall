@@ -4,12 +4,12 @@ Full-stack monorepo template: NestJS API, Vite web app, Next.js marketing site, 
 
 ## Stack
 
-| App | Path | Tech | Port |
-|-----|------|------|------|
-| API | `apps/api` | NestJS 11, Better Auth, MongoDB | 4000 |
-| Web | `apps/web` | Vite, React Router, TanStack Query | 5173 |
-| Marketing | `apps/marketing` | Next.js 16 | 3000 |
-| Mobile | `apps/mobile` | Expo 56, Expo Router | 8081 |
+| App       | Path             | Tech                               | Port |
+| --------- | ---------------- | ---------------------------------- | ---- |
+| API       | `apps/api`       | NestJS 11, Better Auth, MongoDB    | 4000 |
+| Web       | `apps/web`       | Vite, React Router, TanStack Query | 5173 |
+| Marketing | `apps/marketing` | Next.js 16                         | 3000 |
+| Mobile    | `apps/mobile`    | Expo 56, Expo Router               | 8081 |
 
 Shared packages live in `packages/` (`auth`, `config`, `contracts`, `db`, `email`, `ui`, …). Tooling presets are in `tooling/`.
 
@@ -48,18 +48,37 @@ Set `BETTER_AUTH_SECRET` to the output. OAuth providers are optional — leave b
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start all apps |
-| `pnpm dev:api` | API only |
-| `pnpm dev:web` | Web app only |
-| `pnpm dev:marketing` | Marketing site only |
-| `pnpm db:up` | Start MongoDB via Docker Compose |
-| `pnpm db:down` | Stop MongoDB |
-| `pnpm build` | Production build (all workspaces) |
-| `pnpm lint` | ESLint |
-| `pnpm typecheck` | TypeScript |
-| `pnpm test` | Tests |
+| Command                  | Description                                 |
+| ------------------------ | ------------------------------------------- |
+| `pnpm dev`               | Start all apps                              |
+| `pnpm dev:api`           | API only                                    |
+| `pnpm dev:web`           | Web app only                                |
+| `pnpm dev:marketing`     | Marketing site only                         |
+| `pnpm db:up`             | Start MongoDB via Docker Compose            |
+| `pnpm db:down`           | Stop MongoDB                                |
+| `pnpm build`             | Production build (all workspaces)           |
+| `pnpm lint`              | ESLint                                      |
+| `pnpm typecheck`         | TypeScript                                  |
+| `pnpm test`              | Tests                                       |
+| `pnpm setup`             | Copy `.env.example`, install, start MongoDB |
+| `pnpm --filter api seed` | Demo notes for first user (after sign-up)   |
+
+## Documentation
+
+| Doc                                                    | Topic                 |
+| ------------------------------------------------------ | --------------------- |
+| [docs/getting-started.md](./docs/getting-started.md)   | Clone, env, run       |
+| [docs/architecture.md](./docs/architecture.md)         | System diagram        |
+| [docs/adding-a-feature.md](./docs/adding-a-feature.md) | Contracts → API → web |
+| [docs/deployment.md](./docs/deployment.md)             | Docker, static deploy |
+| [docs/env-reference.md](./docs/env-reference.md)       | Every env var         |
+| [packages/auth/README.md](./packages/auth/README.md)   | Roles & authorization |
+
+**Use as a GitHub template:** enable _Template repository_ in repo Settings → General.
+
+## Example feature: Notes
+
+Sign in → **Dashboard → Notes** to list/create/delete notes via the API. Or run `pnpm --filter api seed` after sign-up.
 
 ## Adding UI components
 
@@ -106,53 +125,53 @@ This template follows official patterns for each layer of the stack.
 
 ### Turborepo + pnpm
 
-| Pattern | Where |
-|---------|--------|
-| Apps in `apps/`, libraries in `packages/`, shared tooling in `tooling/` | [Turborepo structure](https://turbo.build/repo/docs/crafting-your-repository/structuring-a-repository) |
-| Task pipeline: `build` → `^build`, `typecheck`/`test` wait on upstream builds | `turbo.json` |
-| Shared versions via pnpm `catalog:` | `pnpm-workspace.yaml` |
-| `globalDependencies` invalidate cache when workspace config changes | `turbo.json` |
-| Hoisted linker for Next.js + pnpm | `.npmrc` |
+| Pattern                                                                       | Where                                                                                                  |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Apps in `apps/`, libraries in `packages/`, shared tooling in `tooling/`       | [Turborepo structure](https://turbo.build/repo/docs/crafting-your-repository/structuring-a-repository) |
+| Task pipeline: `build` → `^build`, `typecheck`/`test` wait on upstream builds | `turbo.json`                                                                                           |
+| Shared versions via pnpm `catalog:`                                           | `pnpm-workspace.yaml`                                                                                  |
+| `globalDependencies` invalidate cache when workspace config changes           | `turbo.json`                                                                                           |
+| Hoisted linker for Next.js + pnpm                                             | `.npmrc`                                                                                               |
 
 ### NestJS (`apps/api`)
 
-| Pattern | Where |
-|---------|--------|
-| Feature modules under `src/modules/` | `app.module.ts` |
-| URI versioning (`/v1/...`) | `configure-app.ts` |
-| Global `ValidationPipe` (whitelist, transform) | `configure-app.ts` |
-| Swagger in non-production | `configure-app.ts` |
-| `bodyParser: false` for Better Auth (required by nestjs-better-auth) | `main.ts` |
+| Pattern                                                                        | Where               |
+| ------------------------------------------------------------------------------ | ------------------- |
+| Feature modules under `src/modules/`                                           | `app.module.ts`     |
+| URI versioning (`/v1/...`)                                                     | `configure-app.ts`  |
+| Global `ValidationPipe` (whitelist, transform)                                 | `configure-app.ts`  |
+| Swagger in non-production                                                      | `configure-app.ts`  |
+| `bodyParser: false` for Better Auth (required by nestjs-better-auth)           | `main.ts`           |
 | Shared env via `@workspace/config` (Zod) instead of duplicating `.env` per app | Monorepo convention |
 
 ### Next.js (`apps/marketing`)
 
-| Pattern | Where |
-|---------|--------|
-| `transpilePackages` for internal UI package | `next.config.ts` |
-| `outputFileTracingRoot` pointing at monorepo root (deploy from workspace) | `next.config.ts` |
-| Root `.env` loaded via `@next/env` | `next.config.ts` |
-| `@workspace/eslint-config/next-js` | `eslint.config.mjs` |
+| Pattern                                                                   | Where               |
+| ------------------------------------------------------------------------- | ------------------- |
+| `transpilePackages` for internal UI package                               | `next.config.ts`    |
+| `outputFileTracingRoot` pointing at monorepo root (deploy from workspace) | `next.config.ts`    |
+| Root `.env` loaded via `@next/env`                                        | `next.config.ts`    |
+| `@workspace/eslint-config/next-js`                                        | `eslint.config.mjs` |
 
 ### React (`apps/web`)
 
-| Pattern | Where |
-|---------|--------|
-| Vite SPA for authenticated product (client-side routing) | `apps/web` |
-| `StrictMode`, error boundary, TanStack Query | `main.tsx`, `providers.tsx` |
-| Root `.env` via Vite `envDir` | `vite.config.ts` |
-| Shared UI from `@workspace/ui` (source, no duplicate components) | imports |
+| Pattern                                                          | Where                       |
+| ---------------------------------------------------------------- | --------------------------- |
+| Vite SPA for authenticated product (client-side routing)         | `apps/web`                  |
+| `StrictMode`, error boundary, TanStack Query                     | `main.tsx`, `providers.tsx` |
+| Root `.env` via Vite `envDir`                                    | `vite.config.ts`            |
+| Shared UI from `@workspace/ui` (source, no duplicate components) | imports                     |
 
 **Why Vite for web and Next for marketing?** The product app is a SPA behind auth (React Router). Marketing is SSR/static-friendly public pages — each framework fits its job.
 
 ### Shared packages
 
-| Package | Role |
-|---------|------|
-| `@workspace/config` | Single root `.env`, Zod validation, dev URL constants |
-| `@workspace/contracts` | Zod schemas shared by API + clients |
-| `@workspace/auth` | Better Auth config + Nest/Next/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
-| `@workspace/ui` | Components consumed as source (`transpilePackages` in Next, direct import in Vite) |
+| Package                | Role                                                                                               |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| `@workspace/config`    | Single root `.env`, Zod validation, dev URL constants                                              |
+| `@workspace/contracts` | Zod schemas shared by API + clients                                                                |
+| `@workspace/auth`      | Better Auth config + Nest/Next/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
+| `@workspace/ui`        | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                 |
 
 ## CI
 

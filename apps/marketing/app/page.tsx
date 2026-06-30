@@ -9,7 +9,10 @@ export default function HomePage() {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <span className="font-semibold tracking-tight">{site.name}</span>
           <nav className="flex items-center gap-3">
-            <Button variant="ghost" render={<Link href={`${site.clientUrl}/sign-in`} />}>
+            <Button
+              variant="ghost"
+              render={<Link href={`${site.clientUrl}/sign-in`} />}
+            >
               Sign in
             </Button>
             <Button render={<Link href={`${site.clientUrl}/sign-up`} />}>
@@ -21,21 +24,24 @@ export default function HomePage() {
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center gap-8 px-6 py-24">
         <div className="max-w-2xl space-y-4">
-          <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+          <p className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
             Full-stack template
           </p>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             Ship faster with {site.name}
           </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed">
+          <p className="text-lg leading-relaxed text-muted-foreground">
             {site.description} Clone the repo, configure one{" "}
-            <code className="bg-muted rounded px-1.5 py-0.5 text-sm">.env</code>
+            <code className="rounded bg-muted px-1.5 py-0.5 text-sm">.env</code>
             , and run API, web, marketing, and mobile from a single workspace.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Button size="lg" render={<Link href={`${site.clientUrl}/sign-up`} />}>
+          <Button
+            size="lg"
+            render={<Link href={`${site.clientUrl}/sign-up`} />}
+          >
             Start building
           </Button>
           {site.githubUrl ? (
@@ -62,7 +68,7 @@ export default function HomePage() {
             { label: "Mobile", value: "Expo + Expo Router" },
           ].map((item) => (
             <div key={item.label} className="space-y-1">
-              <dt className="text-muted-foreground text-sm">{item.label}</dt>
+              <dt className="text-sm text-muted-foreground">{item.label}</dt>
               <dd className="font-medium">{item.value}</dd>
             </div>
           ))}
@@ -70,9 +76,16 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t">
-        <div className="text-muted-foreground mx-auto max-w-5xl px-6 py-8 text-sm">
-          © {new Date().getFullYear()} {site.name}. Built with the Theo monorepo
-          template.
+        <div className="mx-auto flex max-w-5xl flex-wrap gap-4 px-6 py-8 text-sm text-muted-foreground">
+          <span>
+            © {new Date().getFullYear()} {site.name}
+          </span>
+          <Link href="/policy" className="hover:underline">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:underline">
+            Terms
+          </Link>
         </div>
       </footer>
     </div>

@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:auth-flow": "bash ./scripts/auth-flow-test.sh"
+    "test:auth-flow": "bash ./scripts/auth-flow-test.sh",
+    "seed": "SKIP_ENV_VALIDATION=true ts-node --transpile-only scripts/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "catalog:",
@@ -33,6 +34,8 @@
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/db": "workspace:*",
+    "@workspace/logger": "workspace:*",
+    "@workspace/storage": "workspace:*",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "compression": "^1.8.1",
@@ -69,8 +72,10 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": ".",
+    "testMatch": [
+      "<rootDir>/test/unit/**/*.spec.ts"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -80,7 +85,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
-      "<rootDir>/../test/jest-setup.ts"
+      "<rootDir>/test/jest-setup.ts"
     ]
   }
 }

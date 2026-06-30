@@ -21,6 +21,9 @@ out/
 build
 dist
 
+# local upload files only (STORAGE_LOCAL_PATH default: ./uploads at repo root)
+/uploads/
+
 # turbo
 .turbo
 

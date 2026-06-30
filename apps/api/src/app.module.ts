@@ -1,35 +1,39 @@
 import { Module } from "@nestjs/common"
-import {
-  APP_FILTER,
-  APP_GUARD,
-  APP_INTERCEPTOR,
-  Reflector,
-} from "@nestjs/core"
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, Reflector } from "@nestjs/core"
 import { CqrsModule } from "@nestjs/cqrs"
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
 import { AuthModule } from "@thallesp/nestjs-better-auth"
 import { auth } from "@workspace/auth"
-import { JwksGuard, OrgRbacGuard, RbacGuard, RolesGuard } from "@workspace/auth/nestjs"
+import {
+  JwksGuard,
+  OrgRbacGuard,
+  RbacGuard,
+  RolesGuard,
+} from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
 import {
   DatabaseModule,
   DATABASE_READY,
 } from "./common/database/database.module"
+import { StorageModule } from "./common/storage/storage.module"
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor"
 import { TransformResponseInterceptor } from "./common/interceptors/transform-response.interceptor"
 import { HealthModule } from "./modules/health/health.module"
 import { MeModule } from "./modules/me/me.module"
 import { NotesModule } from "./modules/notes/notes.module"
+import { UploadsModule } from "./modules/uploads/uploads.module"
 
 @Module({
   imports: [
     CqrsModule.forRoot(),
     DatabaseModule,
+    StorageModule,
     HealthModule,
     MeModule,
     NotesModule,
+    UploadsModule,
     ThrottlerModule.forRoot([
       {
         name: "default",

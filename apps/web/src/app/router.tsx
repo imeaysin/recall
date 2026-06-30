@@ -7,6 +7,7 @@ import { RootLayout } from "@/components/layouts/root-layout"
 import { accountRoutes } from "@/features/account/routes"
 import { authRoutes } from "@/features/auth/routes"
 import { dashboardRoutes } from "@/features/dashboard/routes"
+import { notesRoutes } from "@/features/notes/routes"
 import { homeRoutes } from "@/features/home/routes"
 import { ProtectedRoute } from "@/routing/protected-route"
 import { paths } from "@/config/paths"
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [...dashboardRoutes, ...accountRoutes],
+        children: [...dashboardRoutes, ...notesRoutes, ...accountRoutes],
       },
     ],
   },

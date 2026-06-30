@@ -57,12 +57,7 @@ export async function checkOrganizationPermissionAsync(
   for (const roleName of organizationRole.split(",")) {
     if (authorizeStaticRole(roleName, resource, action)) return true
     if (
-      await authorizeDynamicRole(
-        organizationId,
-        roleName,
-        resource,
-        action
-      )
+      await authorizeDynamicRole(organizationId, roleName, resource, action)
     ) {
       return true
     }

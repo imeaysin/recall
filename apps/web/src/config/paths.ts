@@ -1,6 +1,7 @@
 export const paths = {
   home: "/",
   dashboard: "/dashboard",
+  notes: "/dashboard/notes",
   account: {
     settings: "/account/settings",
     outOfOffice: "/account/settings/out-of-office",

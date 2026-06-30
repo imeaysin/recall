@@ -2,15 +2,15 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  Logger,
   NestInterceptor,
 } from "@nestjs/common"
+import { createLogger } from "@workspace/logger"
 import type { Request, Response } from "express"
 import { Observable, tap } from "rxjs"
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger("HTTP")
+  private readonly logger = createLogger("HTTP")
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     if (context.getType() !== "http") return next.handle()
@@ -22,8 +22,14 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         const response = context.switchToHttp().getResponse<Response>()
-        this.logger.log(
-          `${method} ${url} ${response.statusCode} - ${Date.now() - started}ms`
+        this.logger.info(
+          {
+            method,
+            url,
+            statusCode: response.statusCode,
+            durationMs: Date.now() - started,
+          },
+          "request completed"
         )
       })
     )

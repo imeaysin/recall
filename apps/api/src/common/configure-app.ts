@@ -1,7 +1,10 @@
-import { Logger, ValidationPipe, VersioningType } from "@nestjs/common"
+import { ValidationPipe, VersioningType } from "@nestjs/common"
 import type { INestApplication } from "@nestjs/common"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
+import { createLogger } from "@workspace/logger"
+import { storageEnv } from "@workspace/config/storage"
 import compression from "compression"
+import express from "express"
 import helmet from "helmet"
 import { env } from "@workspace/config"
 
@@ -60,7 +63,13 @@ function applySwagger(app: INestApplication) {
   const document = SwaggerModule.createDocument(app, swaggerConfig)
   SwaggerModule.setup("docs", app, document)
 
-  Logger.log("Swagger available at /docs", "ConfigureApp")
+  createLogger("ConfigureApp").info("Swagger available at /docs")
+}
+
+function applyLocalUploads(app: INestApplication) {
+  if (storageEnv.STORAGE_PROVIDER !== "local") return
+
+  app.use("/uploads", express.static(storageEnv.STORAGE_LOCAL_PATH))
 }
 
 /** Shared bootstrap used by `main.ts` and e2e tests. */
@@ -70,5 +79,6 @@ export function configureApp(app: INestApplication) {
   applyVersioning(app)
   applyValidation(app)
   applyTrustProxy(app)
+  applyLocalUploads(app)
   applySwagger(app)
 }

@@ -36,6 +36,8 @@ CI runs the same checks. Set `SKIP_ENV_VALIDATION=true` locally if you do not ha
 3. Match existing scripts: `dev`, `build`, `lint`, `format`, `typecheck`.
 4. Document ports and purpose in the root README.
 
+See [docs/adding-a-feature.md](./docs/adding-a-feature.md) for the full-stack pattern.
+
 ## Code style
 
 - Prettier + ESLint — run `pnpm format` and `pnpm lint`.

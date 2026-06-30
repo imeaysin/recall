@@ -1,6 +1,7 @@
 import { Logger } from "@nestjs/common"
 import { NestFactory } from "@nestjs/core"
 import { env } from "@workspace/config"
+import { createLogger } from "@workspace/logger"
 import { AppModule } from "./app.module"
 import { configureApp } from "./common/configure-app"
 
@@ -10,25 +11,25 @@ async function bootstrap() {
     bodyParser: false,
   })
 
-  const logger = new Logger("Bootstrap")
-  app.useLogger(logger)
+  const nestLogger = new Logger("Bootstrap")
+  app.useLogger(nestLogger)
 
   configureApp(app)
   app.enableShutdownHooks()
 
   await app.listen(env.PORT)
 
-  logger.log(`API listening on http://localhost:${env.PORT}`)
+  const logger = createLogger("Bootstrap")
+  logger.info({ port: env.PORT }, "API listening")
   if (env.NODE_ENV !== "production") {
-    logger.log(`Swagger docs at http://localhost:${env.PORT}/docs`)
+    logger.info({ path: "/docs" }, "Swagger docs available")
   }
 }
 
 bootstrap().catch((error: unknown) => {
-  const logger = new Logger("Bootstrap")
-  logger.error(
-    "Failed to start API",
-    error instanceof Error ? error.stack : error
+  createLogger("Bootstrap").error(
+    { err: error instanceof Error ? error : { message: String(error) } },
+    "Failed to start API"
   )
   process.exit(1)
 })

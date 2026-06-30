@@ -41,6 +41,7 @@ catalog:
   "@nestjs/cqrs": 11.0.3
   lucide-react: 1.22.0
   date-fns: 4.4.0
+  pino: 9.6.0
   "@fontsource-variable/geist-mono": 5.2.8
   "@fontsource/cal-sans": 5.2.3
 
@@ -55,29 +56,29 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   msw: false
-  '@nestjs/core': false
-  '@scarf/scarf': false
+  "@nestjs/core": false
+  "@scarf/scarf": false
   esbuild: true
   msgpackr-extract: false
-  '@swc/core': true
+  "@swc/core": true
 
 minimumReleaseAgeExclude:
-  - '@better-auth/core@1.6.23'
-  - '@better-auth/drizzle-adapter@1.6.23'
-  - '@better-auth/kysely-adapter@1.6.23'
-  - '@better-auth/memory-adapter@1.6.23'
-  - '@better-auth/mongo-adapter@1.6.23'
-  - '@better-auth/passkey@1.6.23'
-  - '@better-auth/prisma-adapter@1.6.23'
-  - '@better-auth/telemetry@1.6.23'
-  - '@nestjs/swagger@11.4.5'
-  - '@turbo/darwin-64@2.10.2'
-  - '@turbo/darwin-arm64@2.10.2'
-  - '@turbo/gen@2.10.2'
-  - '@turbo/linux-64@2.10.2'
-  - '@turbo/linux-arm64@2.10.2'
-  - '@turbo/windows-64@2.10.2'
-  - '@turbo/windows-arm64@2.10.2'
+  - "@better-auth/core@1.6.23"
+  - "@better-auth/drizzle-adapter@1.6.23"
+  - "@better-auth/kysely-adapter@1.6.23"
+  - "@better-auth/memory-adapter@1.6.23"
+  - "@better-auth/mongo-adapter@1.6.23"
+  - "@better-auth/passkey@1.6.23"
+  - "@better-auth/prisma-adapter@1.6.23"
+  - "@better-auth/telemetry@1.6.23"
+  - "@nestjs/swagger@11.4.5"
+  - "@turbo/darwin-64@2.10.2"
+  - "@turbo/darwin-arm64@2.10.2"
+  - "@turbo/gen@2.10.2"
+  - "@turbo/linux-64@2.10.2"
+  - "@turbo/linux-arm64@2.10.2"
+  - "@turbo/windows-64@2.10.2"
+  - "@turbo/windows-arm64@2.10.2"
   - auth@1.6.23
   - better-auth@1.6.23
   - lucide-react@1.22.0

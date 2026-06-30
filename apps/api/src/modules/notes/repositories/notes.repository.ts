@@ -1,11 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { getDb } from "@workspace/db"
 import { ObjectId } from "mongodb"
-import {
-  NoteEntity,
-  NoteRecord,
-  toNoteEntity,
-} from "../entities/note.entity"
+import { NoteEntity, NoteRecord, toNoteEntity } from "../entities/note.entity"
 
 const COLLECTION = "notes"
 

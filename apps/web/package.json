@@ -21,6 +21,7 @@
     "@workspace/auth": "workspace:*",
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
+    "@workspace/dates": "workspace:*",
     "@workspace/ui": "workspace:*",
     "lucide-react": "catalog:",
     "react": "catalog:",
