@@ -5,7 +5,9 @@ const external = [
   "@better-auth/passkey",
   "@nestjs/common",
   "@nestjs/core",
+  "@tanstack/react-query",
   "@workspace/config",
+  "@workspace/contracts",
   "@workspace/email",
   "expo-secure-store",
   "hono",
@@ -50,6 +52,7 @@ export default defineConfig((options): Options | Options[] => [
       "adapters/mobile/expo-client": "src/adapters/mobile/expo-client.ts",
       "adapters/hono/bearer.middleware":
         "src/adapters/hono/bearer.middleware.ts",
+      "react/index": "src/react/index.ts",
     },
     dts: true,
     clean: false,

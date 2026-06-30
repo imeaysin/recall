@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { PageLoading } from "@workspace/ui/components/page-loading"
-import { useSignOutMutation } from "@/features/auth/hooks/use-auth-mutations"
+import { useSignOutMutation } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function SignOutPage() {

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { ShellMain } from "@workspace/ui/components/shell"
 import { Button } from "@workspace/ui/components/button"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
+import { useAuthSession } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function DashboardPage() {

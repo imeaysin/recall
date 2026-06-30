@@ -71,11 +71,16 @@ export function AuthOtpInput({
 export interface AuthPageBodyProps {
   children: ReactNode
   footer?: ReactNode
+  className?: string
 }
 
-export function AuthPageBody({ children, footer }: AuthPageBodyProps) {
+export function AuthPageBody({
+  children,
+  footer,
+  className,
+}: AuthPageBodyProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", className)}>
       {children}
       {footer ? <div className="text-center">{footer}</div> : null}
     </div>

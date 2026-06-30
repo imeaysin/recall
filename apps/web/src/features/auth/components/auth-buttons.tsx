@@ -1,27 +1,33 @@
-import { AuthOAuthButton } from "@workspace/ui/auth"
-import { useSocialSignInMutation } from "@/features/auth/hooks/use-auth-mutations"
+import {
+  useSocialSignInMutation,
+  type SocialSignInInput,
+} from "@workspace/auth/react"
+import { AuthProviderButtons, type AuthOAuthProvider } from "@workspace/ui/auth"
+import { absoluteAppUrl, defaultAuthenticatedRoute } from "@/config/routes"
 
-const providers = [
-  { id: "google" as const, label: "Google", primary: true },
-  { id: "github" as const, label: "GitHub", primary: false },
-]
+const providers: AuthOAuthProvider[] = ["google", "github"]
 
 export function AuthButtons() {
   const socialSignIn = useSocialSignInMutation()
 
+  function handleProviderClick(provider: AuthOAuthProvider) {
+    const input: SocialSignInInput = {
+      provider,
+      callbackURL: absoluteAppUrl(defaultAuthenticatedRoute),
+    }
+    socialSignIn.mutate(input)
+  }
+
   return (
-    <div className="flex flex-col gap-3">
-      {providers.map((provider) => (
-        <AuthOAuthButton
-          key={provider.id}
-          loading={
-            socialSignIn.isPending && socialSignIn.variables === provider.id
-          }
-          onClick={() => socialSignIn.mutate(provider.id)}
-          primary={provider.primary}
-          provider={provider.id}
-        />
-      ))}
-    </div>
+    <AuthProviderButtons
+      loadingProvider={
+        socialSignIn.isPending
+          ? (socialSignIn.variables?.provider ?? null)
+          : null
+      }
+      onProviderClick={handleProviderClick}
+      providers={providers}
+      showDivider
+    />
   )
 }

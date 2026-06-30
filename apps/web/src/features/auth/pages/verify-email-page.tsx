@@ -7,8 +7,9 @@ import { toastManager } from "@workspace/ui/components/toast"
 import {
   useSendVerificationEmailMutation,
   useVerifyEmailMutation,
-} from "@/features/auth/hooks/use-auth-mutations"
-import { routes } from "@/config/routes"
+} from "@workspace/auth/react"
+import { OpenEmailButton } from "@workspace/ui/auth"
+import { absoluteAppUrl, routes } from "@/config/routes"
 
 function getVerifyEmailCopy(verified: boolean) {
   if (verified) {
@@ -70,7 +71,10 @@ export function VerifyEmailPage() {
     }
 
     try {
-      await sendVerification.mutateAsync(email)
+      await sendVerification.mutateAsync({
+        email,
+        callbackURL: absoluteAppUrl(routes.verifyEmail),
+      })
       toastManager.add({
         title: "Email sent",
         description: "Check your inbox for a new verification link.",
@@ -95,16 +99,19 @@ export function VerifyEmailPage() {
 
       <div className="flex flex-col gap-3">
         {!verified && email ? (
-          <Button
-            className="w-full"
-            loading={sendVerification.isPending}
-            onClick={() => void resendEmail()}
-            size="lg"
-            type="button"
-            variant="outline"
-          >
-            Resend verification email
-          </Button>
+          <>
+            <OpenEmailButton email={email} />
+            <Button
+              className="w-full"
+              loading={sendVerification.isPending}
+              onClick={() => void resendEmail()}
+              size="lg"
+              type="button"
+              variant="outline"
+            >
+              Resend verification email
+            </Button>
+          </>
         ) : null}
         <Button
           className="w-full"

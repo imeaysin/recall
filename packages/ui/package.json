@@ -13,6 +13,7 @@
     "@fontsource-variable/geist-mono": "catalog:",
     "@fontsource/cal-sans": "catalog:",
     "@radix-ui/react-icons": "^1.3.2",
+    "@workspace/auth": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "catalog:",

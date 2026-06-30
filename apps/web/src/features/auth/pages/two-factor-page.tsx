@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthOtpInput, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useVerifyTotpMutation } from "@/features/auth/hooks/use-auth-mutations"
+import { useVerifyTotpMutation } from "@workspace/auth/react"
 import { defaultAuthenticatedRoute, routes } from "@/config/routes"
 
 export function TwoFactorPage() {

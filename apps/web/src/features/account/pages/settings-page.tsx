@@ -1,33 +1,27 @@
-import { Link } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 import { ShellMain } from "@workspace/ui/components/shell"
-import { Button } from "@workspace/ui/components/button"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
+import { Settings, type SettingsView } from "@workspace/ui/auth"
 import { routes } from "@/config/routes"
 
+function isSettingsView(value: string | undefined): value is SettingsView {
+  return value === "account" || value === "security"
+}
+
 export function SettingsPage() {
-  const { data: session } = useAuthSession()
+  const { section } = useParams<{ section?: string }>()
+
+  if (!section) {
+    return <Navigate replace to={routes.settingsAccount} />
+  }
+
+  if (!isSettingsView(section)) {
+    return <Navigate replace to={routes.settingsAccount} />
+  }
 
   return (
     <ShellMain heading="Account" subtitle="Manage your account settings.">
-      <div className="flex max-w-md flex-col gap-4">
-        <dl className="flex flex-col gap-3 text-sm">
-          <div>
-            <dt className="text-muted-foreground">Name</dt>
-            <dd>{session?.user.name ?? "—"}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground">Email</dt>
-            <dd>{session?.user.email ?? "—"}</dd>
-          </div>
-        </dl>
-        <Button
-          className="w-fit"
-          render={<Link to={routes.signOut} />}
-          type="button"
-          variant="outline"
-        >
-          Sign out
-        </Button>
+      <div className="max-w-2xl">
+        <Settings view={section} />
       </div>
     </ShellMain>
   )

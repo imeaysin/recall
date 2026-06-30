@@ -1,0 +1,42 @@
+import { Link, useNavigate } from "react-router-dom"
+import { AuthUiConfigProvider } from "@workspace/auth/react"
+import {
+  absoluteAppUrl,
+  defaultAuthenticatedRoute,
+  routes,
+} from "@/config/routes"
+
+export function AuthUiConfigBridge({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const navigate = useNavigate()
+
+  return (
+    <AuthUiConfigProvider
+      Link={({ to, href, className, children: linkChildren }) => (
+        <Link className={className} to={to ?? href ?? "#"}>
+          {linkChildren}
+        </Link>
+      )}
+      absoluteAppUrl={absoluteAppUrl}
+      navigate={(to, options) => navigate(to, { replace: options?.replace })}
+      routes={{
+        signIn: routes.signIn,
+        signUp: routes.signUp,
+        signOut: routes.signOut,
+        forgotPassword: routes.forgotPassword,
+        resetPassword: routes.resetPassword,
+        verifyEmail: routes.verifyEmail,
+        twoFactor: routes.twoFactor,
+        settingsAccount: routes.settingsAccount,
+        settingsSecurity: routes.settingsSecurity,
+        defaultAuthenticated: defaultAuthenticatedRoute,
+      }}
+      siteName="Theo"
+    >
+      {children}
+    </AuthUiConfigProvider>
+  )
+}

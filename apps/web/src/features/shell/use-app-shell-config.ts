@@ -9,8 +9,7 @@ import type {
 import { appNavigation } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
-import { useSignOutMutation } from "@/features/auth/hooks/use-auth-mutations"
+import { useAuthSession, useSignOutMutation } from "@workspace/auth/react"
 
 export function useAppShellConfig() {
   const navigate = useNavigate()
@@ -24,7 +23,7 @@ export function useAppShellConfig() {
     () => [
       {
         label: "Settings",
-        href: routes.settings,
+        href: routes.settingsAccount,
         icon: SettingsIcon,
       },
     ],

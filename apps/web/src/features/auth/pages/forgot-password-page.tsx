@@ -10,8 +10,8 @@ import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useForgotPasswordMutation } from "@/features/auth/hooks/use-auth-mutations"
-import { routes } from "@/config/routes"
+import { useForgotPasswordMutation } from "@workspace/auth/react"
+import { absoluteAppUrl, routes } from "@/config/routes"
 
 export function ForgotPasswordPage() {
   const forgotPassword = useForgotPasswordMutation()
@@ -22,7 +22,10 @@ export function ForgotPasswordPage() {
 
   async function onSubmit(values: ForgotPasswordInput) {
     try {
-      await forgotPassword.mutateAsync(values)
+      await forgotPassword.mutateAsync({
+        email: values.email,
+        redirectTo: absoluteAppUrl(routes.resetPassword),
+      })
       toastManager.add({
         title: "Check your email",
         description: "If an account exists, a reset link has been sent.",

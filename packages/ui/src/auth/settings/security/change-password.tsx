@@ -1,0 +1,341 @@
+"use client"
+
+import {
+  useAuthUiConfig,
+  useChangePassword,
+  useListAccounts,
+  useRequestPasswordReset,
+  useSession,
+} from "@workspace/auth/react"
+import { Eye, EyeOff } from "lucide-react"
+import { type SyntheticEvent, useState } from "react"
+import { Button } from "@workspace/ui/components/button"
+import { Card, CardFooter, CardPanel } from "@workspace/ui/components/card"
+import { Field, FieldError } from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@workspace/ui/components/input-group"
+import { Label } from "@workspace/ui/components/label"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { toastManager } from "@workspace/ui/components/toast"
+import { cn } from "@workspace/ui/lib/utils"
+
+export interface ChangePasswordProps {
+  className?: string
+}
+
+const MIN_PASSWORD_LENGTH = 8
+
+export function ChangePassword({ className }: ChangePasswordProps) {
+  const { data: session } = useSession()
+  const { data: accounts, isPending: isAccountsPending } = useListAccounts()
+
+  const hasCredentialAccount = accounts?.some(
+    (account) => account.providerId === "credential"
+  )
+
+  if (!isAccountsPending && !hasCredentialAccount) {
+    return <SetPassword className={className} />
+  }
+
+  return (
+    <ChangePasswordForm
+      className={className}
+      session={isAccountsPending ? undefined : session}
+    />
+  )
+}
+
+function SetPassword({ className }: { className?: string }) {
+  const config = useAuthUiConfig()
+  const { data: session } = useSession()
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset()
+
+  const handleSetPassword = () => {
+    if (!session?.user.email) return
+    requestPasswordReset(
+      {
+        email: session.user.email,
+        redirectTo: config.absoluteAppUrl(config.routes.resetPassword),
+      },
+      {
+        onSuccess: () => {
+          toastManager.add({
+            title: "Password reset email sent",
+            type: "success",
+          })
+        },
+      }
+    )
+  }
+
+  return (
+    <div>
+      <h2 className="mb-3 text-sm font-semibold">Change password</h2>
+
+      <Card className={cn(className)}>
+        <CardPanel className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm leading-tight font-medium">Set a password</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              You signed in with a social account. Set a password to also sign
+              in with email.
+            </p>
+          </div>
+
+          <Button
+            disabled={isPending || !session?.user.email}
+            onClick={handleSetPassword}
+            size="sm"
+          >
+            {isPending ? <Spinner /> : null}
+            Send reset link
+          </Button>
+        </CardPanel>
+      </Card>
+    </div>
+  )
+}
+
+function ChangePasswordForm({
+  className,
+  session,
+}: {
+  className?: string
+  session: ReturnType<typeof useSession>["data"] | undefined
+}) {
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false)
+  const [fieldErrors, setFieldErrors] = useState<{
+    currentPassword?: string
+    newPassword?: string
+    confirmPassword?: string
+  }>({})
+
+  const { mutate: changePassword, isPending } = useChangePassword()
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (newPassword !== confirmPassword) {
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+      toastManager.add({
+        title: "Passwords do not match",
+        type: "error",
+      })
+      return
+    }
+
+    changePassword(
+      {
+        currentPassword,
+        newPassword,
+        revokeOtherSessions: true,
+      },
+      {
+        onError: () => {
+          setCurrentPassword("")
+          setNewPassword("")
+          setConfirmPassword("")
+        },
+        onSuccess: () => {
+          setCurrentPassword("")
+          setNewPassword("")
+          setConfirmPassword("")
+          toastManager.add({
+            title: "Password updated",
+            type: "success",
+          })
+        },
+      }
+    )
+  }
+
+  return (
+    <div>
+      <h2 className="mb-3 text-sm font-semibold">Change password</h2>
+
+      <form onSubmit={handleSubmit}>
+        <Card className={cn(className)}>
+          <CardPanel className="flex flex-col gap-6">
+            <Field data-invalid={!!fieldErrors.currentPassword}>
+              <Label htmlFor="currentPassword">Current password</Label>
+
+              {session ? (
+                <Input
+                  aria-invalid={!!fieldErrors.currentPassword}
+                  autoComplete="current-password"
+                  disabled={isPending}
+                  id="currentPassword"
+                  name="currentPassword"
+                  onChange={(e) => {
+                    setCurrentPassword(e.target.value)
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      currentPassword: undefined,
+                    }))
+                  }}
+                  onInvalid={(e) => {
+                    e.preventDefault()
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      currentPassword: (e.target as HTMLInputElement)
+                        .validationMessage,
+                    }))
+                  }}
+                  placeholder="Enter your current password"
+                  required
+                  type="password"
+                  value={currentPassword}
+                />
+              ) : (
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
+              )}
+
+              <FieldError>{fieldErrors.currentPassword}</FieldError>
+            </Field>
+
+            <Field data-invalid={!!fieldErrors.newPassword}>
+              <Label htmlFor="newPassword">New password</Label>
+
+              {session ? (
+                <InputGroup>
+                  <InputGroupInput
+                    aria-invalid={!!fieldErrors.newPassword}
+                    autoComplete="new-password"
+                    disabled={isPending}
+                    id="newPassword"
+                    minLength={MIN_PASSWORD_LENGTH}
+                    name="newPassword"
+                    onChange={(e) => {
+                      setNewPassword(e.target.value)
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        newPassword: undefined,
+                      }))
+                    }}
+                    onInvalid={(e) => {
+                      e.preventDefault()
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        newPassword: (e.target as HTMLInputElement)
+                          .validationMessage,
+                      }))
+                    }}
+                    placeholder="Enter a new password"
+                    required
+                    type={isNewPasswordVisible ? "text" : "password"}
+                    value={newPassword}
+                  />
+
+                  <InputGroupAddon align="inline-end">
+                    <Button
+                      aria-label={
+                        isNewPasswordVisible ? "Hide password" : "Show password"
+                      }
+                      disabled={isPending}
+                      onClick={() =>
+                        setIsNewPasswordVisible(!isNewPasswordVisible)
+                      }
+                      size="icon-xs"
+                      type="button"
+                      variant="ghost"
+                    >
+                      {isNewPasswordVisible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
+              ) : (
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
+              )}
+
+              <FieldError>{fieldErrors.newPassword}</FieldError>
+            </Field>
+
+            <Field data-invalid={!!fieldErrors.confirmPassword}>
+              <Label htmlFor="confirmPassword">Confirm password</Label>
+
+              {session ? (
+                <InputGroup>
+                  <InputGroupInput
+                    aria-invalid={!!fieldErrors.confirmPassword}
+                    autoComplete="new-password"
+                    disabled={isPending}
+                    id="confirmPassword"
+                    minLength={MIN_PASSWORD_LENGTH}
+                    name="confirmPassword"
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value)
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        confirmPassword: undefined,
+                      }))
+                    }}
+                    onInvalid={(e) => {
+                      e.preventDefault()
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        confirmPassword: (e.target as HTMLInputElement)
+                          .validationMessage,
+                      }))
+                    }}
+                    placeholder="Confirm your password"
+                    required
+                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    value={confirmPassword}
+                  />
+
+                  <InputGroupAddon align="inline-end">
+                    <Button
+                      aria-label={
+                        isConfirmPasswordVisible
+                          ? "Hide password"
+                          : "Show password"
+                      }
+                      disabled={isPending}
+                      onClick={() =>
+                        setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                      }
+                      size="icon-xs"
+                      type="button"
+                      variant="ghost"
+                    >
+                      {isConfirmPasswordVisible ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
+              ) : (
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
+              )}
+
+              <FieldError>{fieldErrors.confirmPassword}</FieldError>
+            </Field>
+          </CardPanel>
+
+          <CardFooter>
+            <Button disabled={isPending || !session} size="sm" type="submit">
+              {isPending ? <Spinner /> : null}
+              Update password
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
+  )
+}

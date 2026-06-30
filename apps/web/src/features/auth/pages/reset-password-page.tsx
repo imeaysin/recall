@@ -10,7 +10,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useResetPasswordMutation } from "@/features/auth/hooks/use-auth-mutations"
+import { useResetPasswordMutation } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function ResetPasswordPage() {

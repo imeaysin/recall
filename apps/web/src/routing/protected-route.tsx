@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { PageLoading } from "@workspace/ui/components/page-loading"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
+import { useAuthSession } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function ProtectedRoute() {

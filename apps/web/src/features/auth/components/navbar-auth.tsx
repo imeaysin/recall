@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Button } from "@workspace/ui/components/button"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
+import { useAuthSession } from "@workspace/auth/react"
 import { defaultAuthenticatedRoute, routes } from "@/config/routes"
 
 export function NavbarAuth() {

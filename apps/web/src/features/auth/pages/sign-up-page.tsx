@@ -9,9 +9,12 @@ import { Input } from "@workspace/ui/components/input"
 import { PageLoading } from "@workspace/ui/components/page-loading"
 import { toastManager } from "@workspace/ui/components/toast"
 import { AuthButtons } from "@/features/auth/components/auth-buttons"
-import { useSignUpMutation } from "@/features/auth/hooks/use-auth-mutations"
-import { useAuthSession } from "@/features/auth/hooks/use-auth-session"
-import { defaultAuthenticatedRoute, routes } from "@/config/routes"
+import { useAuthSession, useSignUpMutation } from "@workspace/auth/react"
+import {
+  absoluteAppUrl,
+  defaultAuthenticatedRoute,
+  routes,
+} from "@/config/routes"
 import { site } from "@/config/site"
 
 export function SignUpPage() {
@@ -38,7 +41,10 @@ export function SignUpPage() {
 
   async function onSubmit(values: SignUpInput) {
     try {
-      await signUp.mutateAsync(values)
+      await signUp.mutateAsync({
+        ...values,
+        callbackURL: absoluteAppUrl(routes.verifyEmail),
+      })
       toastManager.add({
         title: "Account created",
         description: "Check your email to verify your account.",

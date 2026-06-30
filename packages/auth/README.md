@@ -8,12 +8,12 @@ Better Auth config, permissions, and framework adapters.
 
 Defined in [`src/permissions/platform.ts`](./src/permissions/platform.ts). Stored on `user.role`. Embedded in JWT as `role`.
 
-| Role | Typical use |
-|------|-------------|
-| `guest` | Read-only access |
-| `user` | Default on sign-up (`defaultRole: "user"`) |
+| Role      | Typical use                                                    |
+| --------- | -------------------------------------------------------------- |
+| `guest`   | Read-only access                                               |
+| `user`    | Default on sign-up (`defaultRole: "user"`)                     |
 | `manager` | Team lead — publish projects, invite/remove team, billing read |
-| `admin` | Full platform access + Better Auth admin API |
+| `admin`   | Full platform access + Better Auth admin API                   |
 
 **Assign platform role** (admin only):
 
@@ -36,11 +36,11 @@ User must refresh JWT after role change: `await authClient.token()`.
 
 Defined in [`src/permissions/organization.ts`](./src/permissions/organization.ts). Stored on `member.role`. Embedded in JWT as `organizationRole` (minted at `/api/auth/token`).
 
-| Role | Typical use |
-|------|-------------|
-| `owner` | Full org control |
-| `admin` | Manage members, invitations, settings |
-| `member` | Create/update own work |
+| Role     | Typical use                           |
+| -------- | ------------------------------------- |
+| `owner`  | Full org control                      |
+| `admin`  | Manage members, invitations, settings |
+| `member` | Create/update own work                |
 
 **Assign org role:**
 
@@ -68,7 +68,13 @@ export const supportRole = ac.newRole({
   content: ["read"],
   settings: ["read"],
 })
-export const roles = { guestRole, userRole, managerRole, adminRole, supportRole }
+export const roles = {
+  guestRole,
+  userRole,
+  managerRole,
+  adminRole,
+  supportRole,
+}
 export type RoleName = "guest" | "user" | "manager" | "admin" | "support"
 ```
 
@@ -102,35 +108,36 @@ Registered globally in `apps/api/src/app.module.ts`:
 JwksGuard → RbacGuard → OrgRbacGuard → RolesGuard
 ```
 
-| Decorator | Scope |
-|-----------|-------|
-| `@Public()` | Skip JWT |
-| `@RequirePermission(resource, action)` | Platform |
-| `@RequireOrgPermission(resource, action)` | Active org |
-| `@Roles(...)` | Platform role names (coarse) |
+| Decorator                                 | Scope                        |
+| ----------------------------------------- | ---------------------------- |
+| `@Public()`                               | Skip JWT                     |
+| `@RequirePermission(resource, action)`    | Platform                     |
+| `@RequireOrgPermission(resource, action)` | Active org                   |
+| `@Roles(...)`                             | Platform role names (coarse) |
 
 Permission statements (resources + actions) live in the `statement` export in each permissions file. Use those keys in decorators.
 
 ## JWT claims
 
-| Claim | Source |
-|-------|--------|
-| `role` | `user.role` (platform) |
-| `activeOrganizationId` | session |
-| `organizationRole` | `member.role` for active org |
+| Claim                  | Source                       |
+| ---------------------- | ---------------------------- |
+| `role`                 | `user.role` (platform)       |
+| `activeOrganizationId` | session                      |
+| `organizationRole`     | `member.role` for active org |
 
 Mint: `GET /api/auth/token` (session required). Business API verifies JWT via JWKS — no DB on the hot path; org dynamic roles are loaded only when `@RequireOrgPermission` is used.
 
 ## Exports
 
-| Import | Use |
-|--------|-----|
-| `@workspace/auth` | Server `auth` instance |
-| `@workspace/auth/client` | Browser `authClient` |
-| `@workspace/auth/nestjs` | Guards + decorators |
-| `@workspace/auth/permissions` | Platform AC + roles |
-| `@workspace/auth/permissions/organization` | Org AC + roles |
-| `@workspace/auth/types` | `JWTClaims`, `RoleName` |
+| Import                                     | Use                                            |
+| ------------------------------------------ | ---------------------------------------------- |
+| `@workspace/auth`                          | Server `auth` instance                         |
+| `@workspace/auth/client`                   | Browser `authClient`                           |
+| `@workspace/auth/react`                    | React hooks (`useAuthSession`, auth mutations) |
+| `@workspace/auth/nestjs`                   | Guards + decorators                            |
+| `@workspace/auth/permissions`              | Platform AC + roles                            |
+| `@workspace/auth/permissions/organization` | Org AC + roles                                 |
+| `@workspace/auth/types`                    | `JWTClaims`, `RoleName`                        |
 
 ## DB migrate
 
