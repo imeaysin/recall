@@ -1,23 +1,34 @@
 import type * as React from "react"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+} from "@workspace/ui/components/empty"
 import { cn } from "@workspace/ui/lib/utils"
 
 export function PageState({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<typeof Empty>) {
   return (
-    <div
-      className={cn(
-        "flex min-h-[50vh] flex-1 flex-col items-center justify-center px-4 py-16 text-center sm:py-24",
-        className
-      )}
-      {...props}
-    >
-      <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
-        {children}
-      </div>
-    </div>
+    <Empty className={cn("min-h-[50vh] flex-1 gap-8 py-16 sm:py-24", className)} {...props}>
+      {children}
+    </Empty>
+  )
+}
+
+export function PageStateHeader({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof EmptyHeader>) {
+  return (
+    <EmptyHeader className={cn("max-w-md", className)} {...props}>
+      {children}
+    </EmptyHeader>
   )
 }
 
@@ -25,17 +36,11 @@ export function PageStateIcon({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) {
+}: Omit<React.ComponentProps<typeof EmptyMedia>, "variant">) {
   return (
-    <div
-      className={cn(
-        "flex size-14 items-center justify-center border border-border bg-secondary text-muted-foreground [&_svg]:size-6",
-        className
-      )}
-      {...props}
-    >
+    <EmptyMedia className={cn("mb-0", className)} variant="icon" {...props}>
       {children}
-    </div>
+    </EmptyMedia>
   )
 }
 
@@ -46,10 +51,7 @@ export function PageStateTitle({
 }: React.ComponentProps<"h1">) {
   return (
     <h1
-      className={cn(
-        "font-serif text-2xl text-foreground sm:text-3xl",
-        className
-      )}
+      className={cn("font-heading text-xl font-semibold text-foreground sm:text-2xl", className)}
       {...props}
     >
       {children}
@@ -61,17 +63,11 @@ export function PageStateDescription({
   className,
   children,
   ...props
-}: React.ComponentProps<"p">) {
+}: React.ComponentProps<typeof EmptyDescription>) {
   return (
-    <p
-      className={cn(
-        "font-sans text-sm leading-relaxed text-muted-foreground",
-        className
-      )}
-      {...props}
-    >
+    <EmptyDescription className={className} {...props}>
       {children}
-    </p>
+    </EmptyDescription>
   )
 }
 
@@ -79,16 +75,13 @@ export function PageStateActions({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<typeof EmptyContent>) {
   return (
-    <div
-      className={cn(
-        "flex flex-wrap items-center justify-center gap-3 pt-1",
-        className
-      )}
+    <EmptyContent
+      className={cn("flex-row flex-wrap justify-center gap-3", className)}
       {...props}
     >
       {children}
-    </div>
+    </EmptyContent>
   )
 }

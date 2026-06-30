@@ -5,14 +5,13 @@ import {
   PageState,
   PageStateActions,
   PageStateDescription,
+  PageStateHeader,
   PageStateIcon,
   PageStateTitle,
 } from "@workspace/ui/components/page-state"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface PageNotFoundProps extends React.ComponentProps<
-  typeof PageState
-> {
+export interface PageNotFoundProps extends React.ComponentProps<typeof PageState> {
   title?: string
   description?: string
   homeHref?: string
@@ -31,16 +30,16 @@ export function PageNotFound({
 }: PageNotFoundProps) {
   return (
     <PageState className={cn(className)} {...props}>
-      <PageStateIcon aria-hidden>
-        <FileQuestionIcon />
-      </PageStateIcon>
-      <div className="space-y-2">
+      <PageStateHeader>
+        <PageStateIcon>
+          <FileQuestionIcon />
+        </PageStateIcon>
         <PageStateTitle>{title}</PageStateTitle>
         <PageStateDescription>{description}</PageStateDescription>
-      </div>
+      </PageStateHeader>
       <PageStateActions>
         {action ?? (
-          <Button render={<a href={homeHref} />} size="xl" variant="default">
+          <Button render={<a href={homeHref} />} size="lg">
             {homeLabel}
           </Button>
         )}

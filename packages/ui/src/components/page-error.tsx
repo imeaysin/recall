@@ -7,6 +7,7 @@ import {
   PageState,
   PageStateActions,
   PageStateDescription,
+  PageStateHeader,
   PageStateIcon,
   PageStateTitle,
 } from "@workspace/ui/components/page-state"
@@ -33,20 +34,20 @@ export function PageError({
 }: PageErrorProps) {
   return (
     <PageState className={cn(className)} {...props}>
-      <PageStateIcon aria-hidden>
-        <CircleAlertIcon />
-      </PageStateIcon>
-      <div className="space-y-2">
+      <PageStateHeader>
+        <PageStateIcon>
+          <CircleAlertIcon className="text-destructive" />
+        </PageStateIcon>
         <PageStateTitle>{title}</PageStateTitle>
         <PageStateDescription>{description}</PageStateDescription>
-      </div>
+      </PageStateHeader>
       <PageStateActions>
         {onRetry ? (
-          <Button onClick={onRetry} size="xl" variant="default">
+          <Button onClick={onRetry} size="lg">
             {retryLabel}
           </Button>
         ) : null}
-        <Button render={<a href={homeHref} />} size="xl" variant="outline">
+        <Button render={<a href={homeHref} />} size="lg" variant="outline">
           {homeLabel}
         </Button>
       </PageStateActions>
