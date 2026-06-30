@@ -5,5 +5,6 @@ export default defineConfig({
   format: ["cjs", "esm"],
   dts: true,
   clean: true,
-  minify: true,
+  // Pino transports spawn worker threads and must resolve `pino` / `pino-pretty` at runtime.
+  external: ["pino", "pino-pretty", "@nestjs/common"],
 })

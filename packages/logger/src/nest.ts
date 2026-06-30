@@ -1,5 +1,5 @@
 import type { LoggerService } from "@nestjs/common"
-import { createLogger } from "./index"
+import { createLogger, isNestVerboseContext } from "./index"
 
 function formatMessage(message: unknown): string {
   if (typeof message === "string") return message
@@ -14,7 +14,13 @@ function formatMessage(message: unknown): string {
 /** Routes NestJS framework logs through `@workspace/logger` (pino). */
 export class NestLoggerService implements LoggerService {
   log(message: unknown, context?: string): void {
-    createLogger(context ?? "Nest").info(formatMessage(message))
+    const logger = createLogger(context ?? "Nest")
+    const msg = formatMessage(message)
+    if (isNestVerboseContext(context)) {
+      logger.debug(msg)
+      return
+    }
+    logger.info(msg)
   }
 
   error(message: unknown, stack?: string, context?: string): void {
