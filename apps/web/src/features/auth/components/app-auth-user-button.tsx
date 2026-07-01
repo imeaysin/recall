@@ -47,16 +47,6 @@ export function AppSidebarUser() {
   const { userMenuItems } = useAppShellConfig()
 
   return (
-    <AppAuthUserButton
-      hideSettings
-      menuItems={userMenuItems.map((item) => ({
-        label: item.label,
-        href: item.href,
-        icon: item.icon,
-        onClick: item.onClick,
-        variant: item.variant,
-      }))}
-      size="sidebar"
-    />
+    <AppAuthUserButton hideSettings menuItems={userMenuItems} size="sidebar" />
   )
 }

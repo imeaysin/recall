@@ -7,22 +7,12 @@ export function AuthLayout() {
   return (
     <AuthShell
       homeHref={routes.home}
-      privacyHref={site.links.privacy}
-      renderHomeLink={({ href, className, children }) => (
+      linkComponent={({ href, className, children }) => (
         <Link className={className} to={href}>
           {children}
         </Link>
       )}
-      renderTermsLink={(href, label) => (
-        <a
-          className="text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
-          href={href}
-          rel="noreferrer"
-          target="_blank"
-        >
-          {label}
-        </a>
-      )}
+      privacyHref={site.links.privacy}
       termsHref={site.links.terms}
     >
       <Outlet />

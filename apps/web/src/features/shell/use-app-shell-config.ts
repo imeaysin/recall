@@ -2,24 +2,20 @@ import { useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { SettingsIcon } from "lucide-react"
 import { flattenNavItems } from "@workspace/ui/components/shell"
-import type {
-  CommandAction,
-  UserMenuItem,
-} from "@workspace/ui/components/shell"
+import type { CommandAction } from "@workspace/ui/components/shell"
+import type { AuthUserButtonMenuItem } from "@workspace/ui/auth"
 import { appNavigation } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
-import { useAuthSession, useSignOut } from "@workspace/auth/react"
+import { useSignOut } from "@workspace/auth/react"
 
 export function useAppShellConfig() {
   const navigate = useNavigate()
-  const { data: session, isPending: userLoading } = useAuthSession()
   const signOut = useSignOut()
-  const user = session?.user
 
   const navigation = useMemo(() => appNavigation, [])
 
-  const userMenuItems = useMemo<UserMenuItem[]>(
+  const userMenuItems = useMemo<AuthUserButtonMenuItem[]>(
     () => [
       {
         label: "Account settings",
@@ -46,14 +42,6 @@ export function useAppShellConfig() {
     commandActions,
     navigation,
     onSignOut: () => signOut.mutate(),
-    user: user
-      ? {
-          name: user.name ?? "User",
-          email: user.email ?? "",
-          avatarUrl: user.image ?? undefined,
-        }
-      : null,
-    userLoading,
     userMenuItems,
   }
 }

@@ -17,12 +17,6 @@ export interface ShellLinkProps {
 
 export type ShellLinkComponent = React.ComponentType<ShellLinkProps>
 
-export interface ShellUser {
-  name?: string | null
-  email?: string | null
-  avatarUrl?: string | null
-}
-
 export interface NavItem {
   name: string
   href: string
@@ -32,29 +26,11 @@ export interface NavItem {
   target?: string
   isLoading?: boolean
   onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
-  onlyDesktop?: boolean
-  onlyMobile?: boolean
-  moreOnMobile?: boolean
-  excludeFromMobileMore?: boolean
   isCurrent?: (args: {
     item: Pick<NavItem, "href">
     isChild?: boolean
     pathname: string | null
   }) => boolean
-}
-
-/** @deprecated Use `NavItem` */
-export type NavigationItemType = NavItem
-
-export interface UserMenuItem {
-  label: string
-  href?: string
-  icon?: LucideIcon
-  onClick?: () => void
-  target?: string
-  rel?: string
-  variant?: "default" | "destructive"
-  separatorBefore?: boolean
 }
 
 export interface CommandAction {

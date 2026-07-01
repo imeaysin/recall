@@ -1,5 +1,5 @@
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom"
-import { AppShell } from "@workspace/ui/components/shell"
+import { Shell } from "@workspace/ui/components/shell"
 import type {
   ShellLinkComponent,
   ShellLinkProps,
@@ -28,7 +28,7 @@ export function AppLayout() {
 
   return (
     <WorkspaceOnboardingGate>
-      <AppShell
+      <Shell
         brandLabel={shell.brandLabel}
         commandActions={shell.commandActions}
         linkComponent={ShellLink}
@@ -37,10 +37,9 @@ export function AppLayout() {
         pathname={location.pathname}
         sidebarUserControl={<AppSidebarUser />}
         userControl={<AppUserButton />}
-        withoutMain
       >
         <Outlet />
-      </AppShell>
+      </Shell>
     </WorkspaceOnboardingGate>
   )
 }

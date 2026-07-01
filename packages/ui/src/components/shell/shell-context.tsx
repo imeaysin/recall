@@ -14,10 +14,6 @@ const DefaultLink: ShellLinkComponent = ({
   </a>
 )
 
-const identity = (key: string): string => key
-
-const noop = (): void => undefined
-
 function resolvePathname(pathname?: string): string {
   if (pathname) return pathname
   if (typeof window !== "undefined") return window.location.pathname
@@ -27,7 +23,6 @@ function resolvePathname(pathname?: string): string {
 export interface ShellContextValue {
   Link: ShellLinkComponent
   pathname: string
-  t: (key: string) => string
   openCommandPalette: () => void
   isCommandPaletteEnabled: boolean
 }
@@ -37,7 +32,7 @@ const ShellContext = createContext<ShellContextValue | null>(null)
 export function useShell(): ShellContextValue {
   const ctx = useContext(ShellContext)
   if (!ctx) {
-    throw new Error("useShell must be used within a <Shell> / <AppShell>")
+    throw new Error("useShell must be used within a <Shell>")
   }
   return ctx
 }
@@ -45,7 +40,6 @@ export function useShell(): ShellContextValue {
 export interface ShellProviderProps {
   linkComponent?: ShellLinkComponent
   pathname?: string
-  t?: (key: string) => string
   openCommandPalette?: () => void
   isCommandPaletteEnabled?: boolean
   children: React.ReactNode
@@ -54,7 +48,6 @@ export interface ShellProviderProps {
 export function ShellProvider({
   linkComponent,
   pathname,
-  t,
   openCommandPalette,
   isCommandPaletteEnabled = false,
   children,
@@ -65,14 +58,12 @@ export function ShellProvider({
     () => ({
       Link: linkComponent ?? DefaultLink,
       pathname: resolvedPathname,
-      t: t ?? identity,
-      openCommandPalette: openCommandPalette ?? noop,
+      openCommandPalette: openCommandPalette ?? (() => undefined),
       isCommandPaletteEnabled,
     }),
     [
       linkComponent,
       resolvedPathname,
-      t,
       openCommandPalette,
       isCommandPaletteEnabled,
     ]

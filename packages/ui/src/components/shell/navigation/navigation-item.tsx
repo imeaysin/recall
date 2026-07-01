@@ -96,7 +96,7 @@ function IconSidebarParentItem({
   item: NavItem
   hasActiveChild: boolean
 }): React.ReactElement {
-  const { t, pathname, Link } = useShell()
+  const { pathname, Link } = useShell()
 
   return (
     <Menu>
@@ -104,7 +104,7 @@ function IconSidebarParentItem({
         render={
           <button
             aria-haspopup="menu"
-            aria-label={t(item.name)}
+            aria-label={item.name}
             className={sidebarNavItemClassName}
             data-active={hasActiveChild ? true : undefined}
             type="button"
@@ -115,7 +115,7 @@ function IconSidebarParentItem({
       </MenuTrigger>
       <MenuPopup align="start" className="min-w-44" side="right" sideOffset={8}>
         <MenuGroup>
-          <MenuGroupLabel>{t(item.name)}</MenuGroupLabel>
+          <MenuGroupLabel>{item.name}</MenuGroupLabel>
           {item.child?.map((child) => {
             const ChildIcon = child.icon
             const childCurrent = isNavItemActive({
@@ -133,7 +133,7 @@ function IconSidebarParentItem({
                 {ChildIcon ? (
                   <ChildIcon aria-hidden="true" className="size-4 shrink-0" />
                 ) : null}
-                {t(child.name)}
+                {child.name}
               </MenuLinkItem>
             )
           })}
@@ -150,7 +150,7 @@ export function ShellNavItem({
   item: NavItem
   isChild?: boolean
 }): React.ReactElement {
-  const { t, pathname, Link } = useShell()
+  const { pathname, Link } = useShell()
   const current = isNavItemActive({ item, pathname, isChild })
   const [expanded, setExpanded] = useState(false)
   const { isIconSidebar } = useSidebarState()
@@ -174,7 +174,7 @@ export function ShellNavItem({
         <button
           aria-current={current ? "page" : undefined}
           aria-expanded={isOpen}
-          aria-label={t(item.name)}
+          aria-label={item.name}
           className={sidebarNavItemClassName}
           data-active={hasActiveChild ? true : undefined}
           onClick={() => setExpanded((value) => !value)}
@@ -184,7 +184,7 @@ export function ShellNavItem({
             <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
           ) : null}
           <span className="flex w-full items-center justify-between truncate">
-            {t(item.name)}
+            {item.name}
             {item.badge}
           </span>
           {hasChildren && !hasActiveChild ? (
@@ -209,14 +209,14 @@ export function ShellNavItem({
     return (
       <Link
         aria-current={current ? "page" : undefined}
-        aria-label={t(item.name)}
+        aria-label={item.name}
         className={sidebarNavSubItemClassName}
         data-testid={item.name}
         href={item.href}
         target={item.target}
       >
         <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
-        <span className="truncate">{t(item.name)}</span>
+        <span className="truncate">{item.name}</span>
         {item.badge}
       </Link>
     )
@@ -229,7 +229,7 @@ export function ShellNavItem({
           render={
             <Link
               aria-current={current ? "page" : undefined}
-              aria-label={t(item.name)}
+              aria-label={item.name}
               className={sidebarNavItemClassName}
               data-testid={item.name}
               href={item.href}
@@ -239,7 +239,7 @@ export function ShellNavItem({
         >
           <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
         </TooltipTrigger>
-        <TooltipPopup side="right">{t(item.name)}</TooltipPopup>
+        <TooltipPopup side="right">{item.name}</TooltipPopup>
       </Tooltip>
     )
   }
@@ -247,14 +247,14 @@ export function ShellNavItem({
   return (
     <Link
       aria-current={current ? "page" : undefined}
-      aria-label={t(item.name)}
+      aria-label={item.name}
       className={sidebarNavItemClassName}
       data-testid={item.name}
       href={item.href}
       target={item.target}
     >
       <NavItemIcon icon={item.icon} isLoading={item.isLoading} />
-      <span className="truncate">{t(item.name)}</span>
+      <span className="truncate">{item.name}</span>
       {item.badge}
     </Link>
   )
@@ -271,7 +271,7 @@ export function ShellMobileNavItem({
   onClick?: () => void
   isActive?: boolean
 }): React.ReactElement {
-  const { t, pathname, Link } = useShell()
+  const { pathname, Link } = useShell()
   const current = isActive ?? isNavItemActive({ item, pathname, isChild })
   const Icon = item.icon
 
@@ -286,7 +286,7 @@ export function ShellMobileNavItem({
           className="mx-auto mb-1 block size-5 shrink-0 text-center text-inherit"
         />
       ) : null}
-      <span className="block truncate">{t(item.name)}</span>
+      <span className="block truncate">{item.name}</span>
     </>
   )
 
@@ -322,7 +322,7 @@ export function ShellMobileNavMoreItem({
   item: NavItem
   onNavigate?: () => void
 }): React.ReactElement {
-  const { t, pathname, Link } = useShell()
+  const { pathname, Link } = useShell()
 
   const Icon = item.icon
   const hasChildren = !!item.child?.length
@@ -334,7 +334,7 @@ export function ShellMobileNavMoreItem({
   const label = (
     <>
       {Icon ? <Icon aria-hidden="true" className="size-4 shrink-0" /> : null}
-      <span className="truncate">{t(item.name)}</span>
+      <span className="truncate">{item.name}</span>
     </>
   )
 
@@ -353,7 +353,7 @@ export function ShellMobileNavMoreItem({
           showBar
         >
           <div className="px-5 pt-4 pb-2">
-            <DrawerTitle>{t(item.name)}</DrawerTitle>
+            <DrawerTitle>{item.name}</DrawerTitle>
           </div>
           <div className="max-h-[70vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
             <nav className="flex flex-col gap-0.5 px-2 pb-4">
@@ -379,7 +379,7 @@ export function ShellMobileNavMoreItem({
                         className="size-4 shrink-0"
                       />
                     ) : null}
-                    <span className="truncate">{t(childItem.name)}</span>
+                    <span className="truncate">{childItem.name}</span>
                   </Link>
                 )
               })}

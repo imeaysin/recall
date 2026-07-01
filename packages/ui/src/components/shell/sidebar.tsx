@@ -11,8 +11,7 @@ import {
 } from "./navigation/navigation-styles"
 import { useShell } from "./shell-context"
 import { useSidebarState } from "./sidebar-state"
-import { UserDropdown } from "./user-dropdown/user-dropdown"
-import type { NavItem, ShellUser, UserMenuItem } from "./types"
+import type { NavItem } from "./types"
 
 const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
@@ -99,13 +98,6 @@ export interface ShellSidebarProps {
   logo?: React.ReactNode
   brandLabel?: string
   homeHref?: string
-  bannersHeight?: number
-  user?: ShellUser | null
-  userLoading?: boolean
-  onSignOut?: () => void
-  userMenuItems?: UserMenuItem[]
-  signOutLabel?: string
-  sidebarHeader?: React.ReactNode
   sidebarUserControl?: React.ReactNode
 }
 
@@ -114,13 +106,6 @@ export function ShellSidebar({
   logo,
   brandLabel,
   homeHref = "/",
-  bannersHeight = 0,
-  user,
-  userLoading,
-  onSignOut,
-  userMenuItems = [],
-  signOutLabel,
-  sidebarHeader,
   sidebarUserControl,
 }: ShellSidebarProps): React.ReactElement {
   const { Link } = useShell()
@@ -140,8 +125,6 @@ export function ShellSidebar({
           {
             "--sidebar-width": SIDEBAR_WIDTH,
             "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-            maxHeight: `calc(100vh - ${bannersHeight}px)`,
-            top: `${bannersHeight}px`,
           } as React.CSSProperties
         }
       >
@@ -176,33 +159,12 @@ export function ShellSidebar({
               )}
             </div>
 
-            {sidebarHeader ? (
-              <div
-                className={cn(
-                  "w-full shrink-0",
-                  isIconSidebar && "flex justify-center"
-                )}
-              >
-                {sidebarHeader}
-              </div>
-            ) : null}
-
             <ShellNav items={navigation} />
           </div>
 
-          {sidebarUserControl ??
-            (user || userLoading ? (
-              <div className="w-full shrink-0">
-                <UserDropdown
-                  loading={userLoading}
-                  menuItems={userMenuItems}
-                  onSignOut={onSignOut}
-                  placement="sidebar"
-                  signOutLabel={signOutLabel}
-                  user={user}
-                />
-              </div>
-            ) : null)}
+          {sidebarUserControl ? (
+            <div className="w-full shrink-0">{sidebarUserControl}</div>
+          ) : null}
         </div>
       </aside>
     </div>

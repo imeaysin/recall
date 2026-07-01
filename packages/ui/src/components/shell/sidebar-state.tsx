@@ -37,7 +37,7 @@ const SidebarStateContext = createContext<SidebarStateValue | null>(null)
 export function useSidebarState(): SidebarStateValue {
   const ctx = useContext(SidebarStateContext)
   if (!ctx) {
-    throw new Error("useSidebarState must be used within <AppShell>")
+    throw new Error("useSidebarState must be used within <Shell>")
   }
   return ctx
 }

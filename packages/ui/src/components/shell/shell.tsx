@@ -3,22 +3,15 @@
 import type React from "react"
 import { useCallback, useState } from "react"
 import { cn } from "@workspace/ui/lib/utils"
-import { BannerContainer } from "./banners/layout-banner"
 import { CommandPalette, useCommandPaletteShortcut } from "./command-palette"
 import { ShellMobileNav } from "./navigation/navigation"
 import { ShellProvider } from "./shell-context"
-import { SidebarStateProvider } from "./sidebar-state"
 import { ShellBackButton } from "./shell-back-button"
+import { SidebarStateProvider } from "./sidebar-state"
 import { getShellCtaClassName } from "./shell-layout"
 import { ShellSidebar } from "./sidebar"
 import { TopNav } from "./top-nav"
-import type {
-  CommandAction,
-  NavItem,
-  ShellLinkComponent,
-  ShellUser,
-  UserMenuItem,
-} from "./types"
+import type { CommandAction, NavItem, ShellLinkComponent } from "./types"
 
 export interface ShellMainProps {
   heading?: React.ReactNode
@@ -122,65 +115,36 @@ export function ShellMain({
   )
 }
 
-export interface ShellProps extends ShellMainProps {
+export interface ShellProps {
   linkComponent?: ShellLinkComponent
   pathname?: string
-  t?: (key: string) => string
-
   navigation: NavItem[]
-  bottomNavItems?: NavItem[]
-  user?: ShellUser | null
-  userLoading?: boolean
-  onSignOut?: () => void
-  userMenuItems?: UserMenuItem[]
-  signOutLabel?: string
-
   logo?: React.ReactNode
-  logoIcon?: React.ReactNode
   brandLabel?: string
   homeHref?: string
-
   commandActions?: CommandAction[]
   onSelectCommandAction?: (action: CommandAction) => void
   commandPlaceholder?: string
-  enableCommandPalette?: boolean
   userControl?: React.ReactNode
-  sidebarHeader?: React.ReactNode
   sidebarUserControl?: React.ReactNode
-
-  banners?: React.ReactNode
-  withoutMain?: boolean
+  children: React.ReactNode
 }
 
 export function Shell({
   linkComponent,
   pathname,
-  t,
   navigation,
-  bottomNavItems,
-  user,
-  userLoading,
-  onSignOut,
-  userMenuItems,
-  signOutLabel,
   logo,
-  logoIcon,
   brandLabel,
   homeHref = "/",
   commandActions = [],
   onSelectCommandAction,
   commandPlaceholder,
-  enableCommandPalette,
   userControl,
-  sidebarHeader,
   sidebarUserControl,
-  banners,
-  withoutMain,
   children,
-  ...mainProps
 }: ShellProps): React.ReactElement {
-  const isCommandPaletteEnabled =
-    enableCommandPalette ?? commandActions.length > 0
+  const isCommandPaletteEnabled = commandActions.length > 0
   const [commandOpen, setCommandOpen] = useState(false)
 
   const toggleCommandPalette = useCallback(() => {
@@ -199,24 +163,15 @@ export function Shell({
       linkComponent={linkComponent}
       openCommandPalette={openCommandPalette}
       pathname={pathname}
-      t={t}
     >
       <SidebarStateProvider>
         <div className="flex min-h-screen flex-col bg-sidebar">
-          {banners && <BannerContainer>{banners}</BannerContainer>}
-
           <div className="flex flex-1" data-testid="dashboard-shell">
             <ShellSidebar
               brandLabel={brandLabel}
               homeHref={homeHref}
-              logo={logoIcon ?? logo}
+              logo={logo}
               navigation={navigation}
-              onSignOut={onSignOut}
-              signOutLabel={signOutLabel}
-              user={user}
-              userLoading={userLoading}
-              userMenuItems={userMenuItems}
-              sidebarHeader={sidebarHeader}
               sidebarUserControl={sidebarUserControl}
             />
 
@@ -232,17 +187,8 @@ export function Shell({
                 userControl={userControl}
               />
               <div className="max-w-full flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6">
-                {withoutMain ? (
-                  children
-                ) : (
-                  <ShellMain {...mainProps}>{children}</ShellMain>
-                )}
-                {!mainProps.backPath && (
-                  <ShellMobileNav
-                    bottomNavItems={bottomNavItems}
-                    items={navigation}
-                  />
-                )}
+                {children}
+                <ShellMobileNav items={navigation} />
               </div>
             </main>
           </div>
@@ -262,17 +208,11 @@ export function Shell({
   )
 }
 
-export const AppShell = Shell
-
 export { flattenNavItems } from "./navigation/navigation-utils"
-export { MORE_SEPARATOR_NAME } from "./navigation/navigation"
 
 export type {
   CommandAction,
   NavItem,
-  NavigationItemType,
   ShellLinkComponent,
   ShellLinkProps,
-  ShellUser,
-  UserMenuItem,
 } from "./types"
