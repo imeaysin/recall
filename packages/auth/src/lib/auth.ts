@@ -22,6 +22,10 @@ import { organizationPluginOptions } from "../config/organization-plugin"
 import type { JwtPayload } from "../config/jwt"
 import { authCollections } from "../permissions/collections"
 import { authDb, authMongoClient } from "../db/mongo"
+import {
+  ensureDefaultOrganization,
+  ensureSessionActiveOrganization,
+} from "./default-organization"
 
 function socialProviders() {
   const providers: Record<string, Record<string, string>> = {}
@@ -68,7 +72,7 @@ function socialProviders() {
 }
 
 export function createAuth() {
-  return betterAuth({
+  const auth = betterAuth({
     appName: env.APP_NAME,
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
@@ -77,6 +81,25 @@ export function createAuth() {
     ),
 
     database: mongodbAdapter(authDb, { client: authMongoClient }),
+
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user, context) => {
+            await ensureDefaultOrganization(context, {
+              id: user.id,
+              name: user.name,
+            })
+          },
+        },
+      },
+      session: {
+        create: {
+          before: async (session, context) =>
+            ensureSessionActiveOrganization(context, session),
+        },
+      },
+    },
 
     emailAndPassword: {
       enabled: true,
@@ -182,6 +205,8 @@ export function createAuth() {
       nextCookies(),
     ],
   })
+
+  return auth
 }
 
 export const auth = createAuth()

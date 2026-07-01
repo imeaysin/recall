@@ -4,9 +4,21 @@ import {
   useActiveOrganization,
   useAuthenticate,
   useAuthUiConfig,
+  useListOrganizations,
+  useSetActiveOrganization,
 } from "@workspace/auth/react"
-import { Settings as SettingsIcon, Users } from "lucide-react"
+import { Building2, Settings as SettingsIcon, Users } from "lucide-react"
 import { useEffect } from "react"
+import { Button } from "@workspace/ui/components/button"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@workspace/ui/components/empty"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 import {
   Tabs,
   TabsContent,
@@ -27,6 +39,7 @@ export interface OrganizationProps {
   view: OrganizationTabView
   settings?: OrganizationSettingsProps
   people?: OrganizationPeopleProps
+  onCreateOrganization?: () => void
 }
 
 export function Organization({
@@ -35,20 +48,53 @@ export function Organization({
   view,
   settings,
   people,
+  onCreateOrganization,
 }: OrganizationProps) {
   const config = useAuthUiConfig()
   useAuthenticate()
 
-  const { data: activeOrganization, isPending } = useActiveOrganization()
+  const { data: activeOrganization, isPending: activePending } =
+    useActiveOrganization()
+  const { data: organizations, isPending: organizationsPending } =
+    useListOrganizations()
+  const { mutate: setActiveOrganization } = useSetActiveOrganization()
+
+  const isPending = activePending || organizationsPending
 
   useEffect(() => {
-    if (!isPending && !activeOrganization) {
-      config.navigate(config.routes.defaultAuthenticated, { replace: true })
-    }
-  }, [activeOrganization, config, isPending])
+    if (isPending || activeOrganization) return
 
-  if (!isPending && !activeOrganization) {
-    return null
+    const firstOrganization = organizations?.[0]
+    if (firstOrganization) {
+      setActiveOrganization({ organizationId: firstOrganization.id })
+    }
+  }, [activeOrganization, isPending, organizations, setActiveOrganization])
+
+  if (isPending) {
+    return <Skeleton className="h-48 w-full rounded-xl" />
+  }
+
+  if (!activeOrganization) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Building2 />
+          </EmptyMedia>
+          <EmptyTitle>No workspace yet</EmptyTitle>
+          <EmptyDescription>
+            Create a workspace to manage settings, members, and invitations.
+          </EmptyDescription>
+        </EmptyHeader>
+        {onCreateOrganization ? (
+          <EmptyContent>
+            <Button onClick={onCreateOrganization} type="button">
+              Create workspace
+            </Button>
+          </EmptyContent>
+        ) : null}
+      </Empty>
+    )
   }
 
   return (
