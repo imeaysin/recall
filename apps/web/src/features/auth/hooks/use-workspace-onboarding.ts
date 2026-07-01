@@ -54,23 +54,13 @@ export function useWorkspaceOnboarding() {
   })
 
   return {
-    dialogProps: {
-      open: true,
-      required: true,
-      showSlug: false,
-      onOpenChange: () => undefined,
+    props: {
       isPending,
       name,
       onNameChange: (value: string) =>
         form.setValue("name", value, { shouldValidate: true }),
       nameError: form.formState.errors.name?.message,
-      slug: "",
-      onSlugChange: () => undefined,
       onSubmit,
-      title: "Name your workspace",
-      description:
-        "Choose a name for your workspace. You can invite teammates later.",
-      submitLabel: "Continue",
     },
   }
 }

@@ -81,6 +81,9 @@ export type { OrganizationSlugFieldProps } from "./organization/organization-slu
 export { CreateOrganizationDialog } from "./organization/create-organization-dialog"
 export type { CreateOrganizationDialogProps } from "./organization/create-organization-dialog"
 
+export { WorkspaceOnboarding } from "./organization/workspace-onboarding"
+export type { WorkspaceOnboardingProps } from "./organization/workspace-onboarding"
+
 export { Organization } from "./organization/organization"
 export type {
   OrganizationProps,
