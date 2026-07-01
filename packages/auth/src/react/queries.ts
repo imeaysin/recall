@@ -5,11 +5,11 @@ import { useEffect, useMemo } from "react"
 import { authClient, type AuthClient } from "../lib/auth-client"
 import type { ActiveOrganization } from "../types/organization"
 import { useAuthUiConfig } from "./auth-ui-config"
-import { organizationPluginOptions } from "../config/organization-plugin"
-import { canAssignOrganizationRole } from "../permissions/organization"
 import {
+  checkOrganizationPermissionMap,
+  createOrganizationPermissionResult,
   formatOrganizationRoleLabel,
-  getStaticOrganizationRoleNames,
+  resolveAssignableOrganizationRoles,
   type OrganizationPermissionCheck,
 } from "../permissions/organization"
 import { authQueryKeys } from "./query-keys"
@@ -266,21 +266,59 @@ export function useListUserInvitations(client: AuthClient = authClient) {
 export function useOrganizationPermission(
   input: OrganizationPermissionCheck,
   organizationId?: string,
-  client: AuthClient = authClient
+  client: AuthClient = authClient,
+  options?: { enabled?: boolean }
 ) {
   const { permissions } = input
+  const hookEnabled = options?.enabled ?? true
   const { enabled, session } = useAuthenticatedQueryEnabled(client)
   const resolvedOrganizationId = resolveActiveOrganizationId(
     organizationId,
     session
   )
+  const { data: activeMember, isPending: memberPending } =
+    useActiveMember(client)
+  const { data: dynamicRoles, isPending: dynamicRolesPending } =
+    useListOrganizationRoles(organizationId, client, {
+      enabled: hookEnabled,
+    })
 
-  return useQuery({
+  const hasDynamicRoles = (dynamicRoles?.length ?? 0) > 0
+  const prerequisitesPending =
+    hookEnabled &&
+    enabled &&
+    !!resolvedOrganizationId &&
+    (memberPending || dynamicRolesPending)
+  const canUseStaticCheck =
+    hookEnabled &&
+    enabled &&
+    !!resolvedOrganizationId &&
+    !prerequisitesPending &&
+    !hasDynamicRoles &&
+    !!activeMember?.role
+  const shouldUseApi =
+    hookEnabled &&
+    enabled &&
+    !!resolvedOrganizationId &&
+    !prerequisitesPending &&
+    hasDynamicRoles
+
+  const staticResult = useMemo(
+    () =>
+      canUseStaticCheck
+        ? createOrganizationPermissionResult(
+            checkOrganizationPermissionMap(activeMember.role, permissions)
+          )
+        : undefined,
+    [activeMember?.role, canUseStaticCheck, permissions]
+  )
+
+  const apiQuery = useQuery({
     queryKey: authQueryKeys.organizationPermission(
       resolvedOrganizationId ?? "",
       permissions
     ),
-    enabled: enabled && !!resolvedOrganizationId,
+    enabled: shouldUseApi,
     queryFn: () =>
       unwrapClientResult(
         client.organization.hasPermission({
@@ -291,12 +329,50 @@ export function useOrganizationPermission(
         })
       ),
   })
+
+  if (!hookEnabled) {
+    return {
+      ...apiQuery,
+      data: undefined,
+      isPending: false,
+      isLoading: false,
+      isFetching: false,
+    }
+  }
+
+  if (prerequisitesPending) {
+    return {
+      ...apiQuery,
+      data: undefined,
+      isPending: true,
+      isLoading: true,
+      isFetching: false,
+    }
+  }
+
+  if (canUseStaticCheck) {
+    return {
+      ...apiQuery,
+      data: staticResult,
+      isPending: false,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      error: null,
+      status: "success" as const,
+      fetchStatus: "idle" as const,
+    }
+  }
+
+  return apiQuery
 }
 
 export function useListOrganizationRoles(
   organizationId?: string,
-  client: AuthClient = authClient
+  client: AuthClient = authClient,
+  options?: { enabled?: boolean }
 ) {
+  const hookEnabled = options?.enabled ?? true
   const { enabled, session } = useAuthenticatedQueryEnabled(client)
   const resolvedOrganizationId = resolveActiveOrganizationId(
     organizationId,
@@ -305,7 +381,7 @@ export function useListOrganizationRoles(
 
   return useQuery({
     queryKey: authQueryKeys.organizationRoles(resolvedOrganizationId),
-    enabled: enabled && !!resolvedOrganizationId,
+    enabled: hookEnabled && enabled && !!resolvedOrganizationId,
     queryFn: async () => {
       return unwrapClientResult(
         client.organization.listRoles(
@@ -316,34 +392,55 @@ export function useListOrganizationRoles(
   })
 }
 
-export function useAssignableOrganizationRoles(organizationId?: string) {
+export function useAssignableOrganizationRoles(
+  organizationId?: string,
+  options?: { enabled?: boolean }
+) {
+  const hookEnabled = options?.enabled ?? true
   const { data: activeMember, isPending: memberPending } = useActiveMember()
-  const { data: roleRecords, isPending: rolesPending } =
-    useListOrganizationRoles(organizationId)
-  const { data: canUpdateMembers, isPending: permissionPending } =
+  const { data: dynamicRoles, isPending: dynamicRolesPending } =
+    useListOrganizationRoles(organizationId, authClient, {
+      enabled: hookEnabled,
+    })
+  const { data: canUpdateMembers, isPending: updatePermissionPending } =
     useOrganizationPermission(
       { permissions: { member: ["update"] } },
-      organizationId
+      organizationId,
+      authClient,
+      { enabled: hookEnabled }
+    )
+  const { data: canInviteMembers, isPending: invitePermissionPending } =
+    useOrganizationPermission(
+      { permissions: { invitation: ["create"] } },
+      organizationId,
+      authClient,
+      { enabled: hookEnabled }
     )
 
-  const assignableRoles = useMemo(() => {
-    if (!canUpdateMembers?.success) return []
+  const canAssignRoles =
+    !!canUpdateMembers?.success || !!canInviteMembers?.success
 
-    const roleNames =
-      roleRecords?.map((record) => record.role) ??
-      (organizationPluginOptions.dynamicAccessControl.enabled
-        ? []
-        : getStaticOrganizationRoleNames())
-
-    return roleNames.filter((roleName: string) =>
-      canAssignOrganizationRole(activeMember?.role, roleName)
-    )
-  }, [activeMember?.role, canUpdateMembers?.success, roleRecords])
+  const assignableRoles = useMemo(
+    () =>
+      hookEnabled
+        ? resolveAssignableOrganizationRoles({
+            canAssignRoles,
+            activeMemberRole: activeMember?.role,
+            dynamicRoles,
+          })
+        : [],
+    [activeMember?.role, canAssignRoles, dynamicRoles, hookEnabled]
+  )
 
   return {
     roles: assignableRoles,
     formatOrganizationRoleLabel,
-    isPending: rolesPending || memberPending || permissionPending,
+    isPending: hookEnabled
+      ? memberPending ||
+        dynamicRolesPending ||
+        updatePermissionPending ||
+        invitePermissionPending
+      : false,
   }
 }
 

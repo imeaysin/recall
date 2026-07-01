@@ -1,5 +1,6 @@
 "use client"
 
+import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -16,9 +17,9 @@ import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import {
   Select,
-  SelectButton,
   SelectItem,
   SelectPopup,
+  SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
 
@@ -33,8 +34,7 @@ export interface InviteMemberDialogProps {
   roleError?: string
   roles: string[]
   formatRoleLabel: (role: string) => string
-  rolesPending?: boolean
-  onSubmit: () => void
+  onSubmit: SubmitEventHandler<HTMLFormElement>
   isPending?: boolean
 }
 
@@ -49,11 +49,14 @@ export function InviteMemberDialog({
   roleError,
   roles,
   formatRoleLabel,
-  rolesPending = false,
   onSubmit,
   isPending = false,
 }: InviteMemberDialogProps) {
-  const fieldsDisabled = isPending || rolesPending
+  const fieldsDisabled = isPending
+  const roleItems = roles.map((roleName) => ({
+    value: roleName,
+    label: formatRoleLabel(roleName),
+  }))
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
@@ -65,7 +68,13 @@ export function InviteMemberDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <Form className="contents" onSubmit={onSubmit}>
+        <Form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault()
+            onSubmit(event)
+          }}
+        >
           <DialogPanel className="flex flex-col gap-4">
             <Field data-invalid={!!emailError}>
               <FieldLabel htmlFor="invite-member-email">Email</FieldLabel>
@@ -85,17 +94,18 @@ export function InviteMemberDialog({
             <Field data-invalid={!!roleError}>
               <FieldLabel htmlFor="invite-member-role">Role</FieldLabel>
               <Select
-                disabled={fieldsDisabled}
-                onValueChange={(value) => onRoleChange(value ?? role)}
-                value={role}
+                disabled={fieldsDisabled || roleItems.length === 0}
+                items={roleItems}
+                onValueChange={(value) => onRoleChange(value ?? "")}
+                value={role || null}
               >
-                <SelectButton className="w-full" id="invite-member-role">
-                  <SelectValue />
-                </SelectButton>
+                <SelectTrigger className="w-full" id="invite-member-role">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
                 <SelectPopup>
-                  {roles.map((roleName) => (
-                    <SelectItem key={roleName} value={roleName}>
-                      {formatRoleLabel(roleName)}
+                  {roleItems.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectPopup>

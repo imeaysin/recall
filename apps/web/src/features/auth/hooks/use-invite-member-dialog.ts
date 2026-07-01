@@ -16,33 +16,33 @@ import {
 
 export function useInviteMemberDialog() {
   const [open, setOpen] = useState(false)
-  const {
-    roles,
-    formatOrganizationRoleLabel,
-    isPending: rolesPending,
-  } = useAssignableOrganizationRoles()
+  const { roles, formatOrganizationRoleLabel } = useAssignableOrganizationRoles(
+    undefined,
+    { enabled: open }
+  )
   const { mutate: inviteMember, isPending } = useInviteMember()
 
-  const defaultRole = roles.includes("member")
-    ? "member"
-    : (roles.at(-1) ?? "member")
+  const defaultRole = roles.includes("member") ? "member" : (roles.at(-1) ?? "")
 
   const form = useForm<InviteMemberInput>({
     resolver: zodResolver(inviteMemberSchema),
-    defaultValues: { email: "", role: defaultRole },
+    defaultValues: { email: "", role: "" },
   })
 
   const email = useWatch({ control: form.control, name: "email" })
   const role = useWatch({ control: form.control, name: "role" })
 
   useEffect(() => {
-    if (!open) return
-    form.reset({ email: "", role: defaultRole })
-  }, [defaultRole, form, open])
+    if (!open || roles.length === 0) return
+
+    const currentRole = form.getValues("role")
+    const nextRole = roles.includes(currentRole) ? currentRole : defaultRole
+    form.setValue("role", nextRole, { shouldValidate: true })
+  }, [defaultRole, form, open, roles])
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      form.reset({ email: "", role: defaultRole })
+      form.reset({ email: "", role: "" })
     }
     setOpen(nextOpen)
   }
@@ -52,7 +52,6 @@ export function useInviteMemberDialog() {
     onOpenChange: handleOpenChange,
     roles,
     formatRoleLabel: formatOrganizationRoleLabel,
-    rolesPending,
     isPending,
     email,
     onEmailChange: (value) =>

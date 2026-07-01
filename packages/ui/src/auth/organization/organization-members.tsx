@@ -2,6 +2,7 @@
 
 import {
   useActiveOrganization,
+  useAssignableOrganizationRoles,
   useOrganizationPermission,
 } from "@workspace/auth/react"
 import { Button } from "@workspace/ui/components/button"
@@ -35,6 +36,8 @@ export function OrganizationMembers({
   const { data: invitePermission } = useOrganizationPermission(
     organizationUiPermissions.inviteMember
   )
+  const { roles: assignableRoles, formatOrganizationRoleLabel } =
+    useAssignableOrganizationRoles()
 
   const members = activeOrganization?.members ?? []
   const canInvite = !!invitePermission?.success
@@ -79,7 +82,12 @@ export function OrganizationMembers({
             ) : null}
             {!isPending
               ? members.map((member) => (
-                  <OrganizationMemberRow key={member.id} member={member} />
+                  <OrganizationMemberRow
+                    key={member.id}
+                    assignableRoles={assignableRoles}
+                    formatRoleLabel={formatOrganizationRoleLabel}
+                    member={member}
+                  />
                 ))
               : null}
           </TableBody>

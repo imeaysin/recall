@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest"
 import {
   canAssignOrganizationRole,
   checkOrganizationPermission,
+  checkOrganizationPermissionMap,
   formatOrganizationRoleLabel,
+  getOrganizationRoleNames,
   parseOrganizationRoles,
+  resolveAssignableOrganizationRoles,
 } from "../src/permissions/organization"
 
 describe("checkOrganizationPermission", () => {
@@ -57,6 +60,85 @@ describe("canAssignOrganizationRole", () => {
   it("allows non-owner role assignment for any assigner", () => {
     expect(canAssignOrganizationRole("admin", "member")).toBe(true)
     expect(canAssignOrganizationRole("member", "member")).toBe(true)
+  })
+})
+
+describe("getOrganizationRoleNames", () => {
+  it("always includes built-in roles and merges dynamic roles", () => {
+    expect(getOrganizationRoleNames()).toEqual(["owner", "admin", "member"])
+    expect(getOrganizationRoleNames([])).toEqual(["owner", "admin", "member"])
+    expect(getOrganizationRoleNames([{ role: "moderator" }])).toEqual([
+      "owner",
+      "admin",
+      "member",
+      "moderator",
+    ])
+  })
+})
+
+describe("checkOrganizationPermissionMap", () => {
+  it("checks every action in a permission map", () => {
+    expect(
+      checkOrganizationPermissionMap("owner", {
+        invitation: ["create"],
+        member: ["update"],
+      })
+    ).toBe(true)
+    expect(
+      checkOrganizationPermissionMap("member", {
+        invitation: ["create"],
+      })
+    ).toBe(false)
+  })
+})
+
+describe("resolveAssignableOrganizationRoles", () => {
+  it("returns built-in roles for owners who can invite", () => {
+    expect(
+      resolveAssignableOrganizationRoles({
+        canAssignRoles: true,
+        activeMemberRole: "owner",
+        dynamicRoles: [],
+      })
+    ).toEqual(["owner", "admin", "member"])
+  })
+
+  it("does not require dynamic roles from list-roles", () => {
+    expect(
+      resolveAssignableOrganizationRoles({
+        canAssignRoles: true,
+        activeMemberRole: "owner",
+        dynamicRoles: undefined,
+      })
+    ).toEqual(["owner", "admin", "member"])
+  })
+
+  it("returns no roles when the user cannot assign", () => {
+    expect(
+      resolveAssignableOrganizationRoles({
+        canAssignRoles: false,
+        activeMemberRole: "owner",
+      })
+    ).toEqual([])
+  })
+
+  it("prevents non-owners from assigning the owner role", () => {
+    expect(
+      resolveAssignableOrganizationRoles({
+        canAssignRoles: true,
+        activeMemberRole: "admin",
+      })
+    ).toEqual(["admin", "member"])
+  })
+
+  it("merges custom dynamic roles", () => {
+    expect(
+      resolveAssignableOrganizationRoles({
+        canAssignRoles: true,
+        activeMemberRole: "owner",
+        dynamicRoles: [{ role: "moderator" }],
+      })
+    ).toEqual(["owner", "admin", "member", "moderator"])
   })
 })
 

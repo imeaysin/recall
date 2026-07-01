@@ -77,6 +77,25 @@ export function checkOrganizationPermission<R extends OrganizationResource>(
     )
 }
 
+export function checkOrganizationPermissionMap(
+  organizationRole: string | null | undefined,
+  permissions: OrganizationPermissionMap
+): boolean {
+  return Object.entries(permissions).every(([resource, actions]) =>
+    actions.every((action) =>
+      checkOrganizationPermission(
+        organizationRole,
+        resource as OrganizationResource,
+        action as OrganizationAction<OrganizationResource>
+      )
+    )
+  )
+}
+
+export function createOrganizationPermissionResult(success: boolean) {
+  return { error: null, success }
+}
+
 export function parseOrganizationRoles(role: string | null | undefined) {
   return (role ?? "")
     .split(",")
@@ -94,6 +113,17 @@ export function getStaticOrganizationRoleNames(): (keyof typeof organizationRole
   return Object.keys(organizationRoles) as (keyof typeof organizationRoles)[]
 }
 
+/** Static built-in roles plus any dynamic roles from list-roles. */
+export function getOrganizationRoleNames(
+  dynamicRoles?: Array<{ role: string }> | null
+): string[] {
+  const staticNames = getStaticOrganizationRoleNames()
+  const dynamicNames =
+    dynamicRoles?.map((record) => record.role).filter(Boolean) ?? []
+
+  return [...new Set([...staticNames, ...dynamicNames])]
+}
+
 export function canAssignOrganizationRole(
   assignerRole: string | null | undefined,
   targetRole: string
@@ -103,4 +133,19 @@ export function canAssignOrganizationRole(
   }
 
   return true
+}
+
+/** Built-in roles plus optional dynamic roles, filtered by what the assigner may grant. */
+export function resolveAssignableOrganizationRoles(input: {
+  canAssignRoles: boolean
+  activeMemberRole?: string | null
+  dynamicRoles?: Array<{ role: string }> | null
+}): string[] {
+  if (!input.canAssignRoles) return []
+
+  const roleNames = getOrganizationRoleNames(input.dynamicRoles)
+
+  return roleNames.filter((roleName) =>
+    canAssignOrganizationRole(input.activeMemberRole, roleName)
+  )
 }

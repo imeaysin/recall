@@ -2,7 +2,6 @@
 
 import {
   useActiveOrganization,
-  useAssignableOrganizationRoles,
   useOrganizationPermission,
   useSession,
   useUpdateMemberRole,
@@ -28,17 +27,21 @@ import { organizationUiPermissions } from "./ui-permissions"
 
 export interface OrganizationMemberRowProps {
   member: OrganizationMember
+  assignableRoles: string[]
+  formatRoleLabel: (role: string) => string
 }
 
-export function OrganizationMemberRow({ member }: OrganizationMemberRowProps) {
+export function OrganizationMemberRow({
+  member,
+  assignableRoles,
+  formatRoleLabel: formatRole,
+}: OrganizationMemberRowProps) {
   const { data: session } = useSession()
   const { data: activeOrganization } = useActiveOrganization()
   const { data: hasUpdatePermission, isPending: updatePermissionPending } =
     useOrganizationPermission(organizationUiPermissions.updateMember)
   const { data: hasDeletePermission, isPending: deletePermissionPending } =
     useOrganizationPermission(organizationUiPermissions.removeMember)
-  const { roles: assignableRoles, formatOrganizationRoleLabel: formatRole } =
-    useAssignableOrganizationRoles()
   const { mutate: updateMemberRole, isPending: isUpdatingRole } =
     useUpdateMemberRole()
 

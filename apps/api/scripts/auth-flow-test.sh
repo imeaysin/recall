@@ -184,6 +184,20 @@ if [ "$VERIFIED" = true ]; then
     -d "{\"name\":\"Edge Org\",\"slug\":\"$SLUG\"}")
   if echo "$ORG" | grep -q '"id"'; then
     check "create organization" "true"
+    LIST_ROLES=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" "$BASE/api/auth/organization/list-roles")
+    check "list-roles returns array for owner" "echo '$LIST_ROLES' | grep -qE '^\\[.*\\]$'"
+    HAS_INVITE=$(curl -s -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/has-permission" \
+      -H 'Content-Type: application/json' \
+      -H "Origin: $ORIGIN" \
+      -d '{"permissions":{"invitation":["create"]}}')
+    check "owner has invitation:create" "echo '$HAS_INVITE' | grep -q '\"success\":true'"
+    HAS_MEMBER_UPDATE=$(curl -s -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/has-permission" \
+      -H 'Content-Type: application/json' \
+      -H "Origin: $ORIGIN" \
+      -d '{"permissions":{"member":["update"]}}')
+    check "owner has member:update" "echo '$HAS_MEMBER_UPDATE' | grep -q '\"success\":true'"
+    ACTIVE_MEMBER=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" "$BASE/api/auth/organization/get-active-member")
+    check_output_contains "get-active-member returns owner role" "$ACTIVE_MEMBER" owner
     ORG_DUP=$(curl -s -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/create" \
       -H 'Content-Type: application/json' \
       -H "Origin: $ORIGIN" \
@@ -204,6 +218,10 @@ if [ "$VERIFIED" = true ]; then
     fi
   else
     skip_test "create organization (no session)"
+    skip_test "list-roles returns array for owner"
+    skip_test "owner has invitation:create"
+    skip_test "owner has member:update"
+    skip_test "get-active-member returns owner role"
     skip_test "duplicate org slug rejected"
     skip_test "owner can invite member"
     skip_test "accept invitation without session blocked"
@@ -211,6 +229,10 @@ if [ "$VERIFIED" = true ]; then
   fi
 else
   skip_test "create organization (no session)"
+  skip_test "list-roles returns array for owner"
+  skip_test "owner has invitation:create"
+  skip_test "owner has member:update"
+  skip_test "get-active-member returns owner role"
   skip_test "duplicate org slug rejected"
   skip_test "owner can invite member"
   skip_test "accept invitation without session blocked"

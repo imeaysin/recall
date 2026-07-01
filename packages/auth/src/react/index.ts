@@ -31,8 +31,11 @@ export {
   useUser,
 } from "./queries"
 export {
+  checkOrganizationPermissionMap,
+  createOrganizationPermissionResult,
   formatOrganizationRoleLabel,
   parseOrganizationRoles,
+  resolveAssignableOrganizationRoles,
 } from "../permissions/organization"
 export type {
   OrganizationAction,
