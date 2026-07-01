@@ -32,6 +32,15 @@ export const changeEmailSchema = z.object({
   email: z.string().trim().email("Enter a valid email address"),
 })
 
+export const organizationRoleNameSchema = z
+  .string()
+  .trim()
+  .min(1, "Role name is required")
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Use lowercase letters, numbers, and hyphens"
+  )
+
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>
 export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>
 export type InviteMemberInput = z.infer<typeof inviteMemberSchema>

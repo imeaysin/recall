@@ -559,6 +559,39 @@ export function useCheckSlug(client: AuthClient = authClient) {
   })
 }
 
+export function useCreateOrganizationRole(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["organization"]["createRole"]>[0]
+    ) => unwrapClientResult(client.organization.createRole(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useUpdateOrganizationRole(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["organization"]["updateRole"]>[0]
+    ) => unwrapClientResult(client.organization.updateRole(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useDeleteOrganizationRole(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["organization"]["deleteRole"]>[0]
+    ) => unwrapClientResult(client.organization.deleteRole(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
 // Backward-compatible aliases used by the web app
 export const useSignInMutation = useSignInEmail
 export const useSignUpMutation = useSignUpEmail

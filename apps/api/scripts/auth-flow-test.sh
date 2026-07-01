@@ -209,6 +209,13 @@ if [ "$VERIFIED" = true ]; then
       -H "Origin: $ORIGIN" \
       -d "{\"email\":\"$INVITE_EMAIL\",\"role\":\"member\"}")
     check_output_contains "owner can invite member" "$INVITE" id email
+    CREATE_ROLE=$(curl -s -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/create-role" \
+      -H 'Content-Type: application/json' \
+      -H "Origin: $ORIGIN" \
+      -d '{"role":"moderator","permission":{"project":["read"],"member":["read"]}}')
+    check "owner can create custom role" "echo '$CREATE_ROLE' | grep -q '\"success\":true'"
+    LIST_ROLES_AFTER=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" "$BASE/api/auth/organization/list-roles")
+    check "list-roles includes custom role" "echo '$LIST_ROLES_AFTER' | grep -q moderator"
     check "accept invitation without session blocked" "curl -s -o /dev/null -w '%{http_code}' -X POST '$BASE/api/auth/organization/accept-invitation' -H 'Content-Type: application/json' -d '{\"invitationId\":\"fake\"}' | grep -q '401'"
     if [ -n "$JWT" ]; then
       ME=$(curl -s -H "Authorization: Bearer $JWT" "$BASE/v1/me")
@@ -224,6 +231,8 @@ if [ "$VERIFIED" = true ]; then
     skip_test "get-active-member returns owner role"
     skip_test "duplicate org slug rejected"
     skip_test "owner can invite member"
+    skip_test "owner can create custom role"
+    skip_test "list-roles includes custom role"
     skip_test "accept invitation without session blocked"
     skip_test "JWT includes activeOrganizationId"
   fi

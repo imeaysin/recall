@@ -119,4 +119,16 @@ export type { OrganizationInvitationsProps } from "./organization/organization-i
 export { InviteMemberDialog } from "./organization/invite-member-dialog"
 export type { InviteMemberDialogProps } from "./organization/invite-member-dialog"
 
+export { OrganizationRoles } from "./organization/organization-roles"
+export type { OrganizationRolesProps } from "./organization/organization-roles"
+
+export { CreateOrganizationRoleDialog } from "./organization/create-organization-role-dialog"
+export type { CreateOrganizationRoleDialogProps } from "./organization/create-organization-role-dialog"
+
+export { EditOrganizationRoleDialog } from "./organization/edit-organization-role-dialog"
+export type { EditOrganizationRoleDialogProps } from "./organization/edit-organization-role-dialog"
+
+export { DeleteOrganizationRoleDialog } from "./organization/delete-organization-role-dialog"
+export type { DeleteOrganizationRoleDialogProps } from "./organization/delete-organization-role-dialog"
+
 export { sanitizeOrganizationSlug } from "./organization/sanitize-slug"

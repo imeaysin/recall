@@ -34,6 +34,7 @@ export function AuthUiConfigBridge({
         settingsSecurity: routes.settingsSecurity,
         organizationSettings: routes.organizationSettings,
         organizationPeople: routes.organizationPeople,
+        organizationRoles: routes.organizationRoles,
         defaultAuthenticated: defaultAuthenticatedRoute,
       }}
       siteName="Theo"

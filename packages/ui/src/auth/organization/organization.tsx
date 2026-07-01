@@ -7,7 +7,12 @@ import {
   useListOrganizations,
   useSetActiveOrganization,
 } from "@workspace/auth/react"
-import { Building2, Settings as SettingsIcon, Users } from "lucide-react"
+import {
+  Building2,
+  Settings as SettingsIcon,
+  Shield,
+  Users,
+} from "lucide-react"
 import { useEffect } from "react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -28,10 +33,12 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import type { OrganizationPeopleProps } from "./organization-people"
 import { OrganizationPeople } from "./organization-people"
+import type { OrganizationRolesProps } from "./organization-roles"
+import { OrganizationRoles } from "./organization-roles"
 import type { OrganizationSettingsProps } from "./organization-settings"
 import { OrganizationSettings } from "./organization-settings"
 
-export type OrganizationTabView = "settings" | "people"
+export type OrganizationTabView = "settings" | "people" | "roles"
 
 export interface OrganizationProps {
   className?: string
@@ -39,6 +46,7 @@ export interface OrganizationProps {
   view: OrganizationTabView
   settings?: OrganizationSettingsProps
   people?: OrganizationPeopleProps
+  roles?: OrganizationRolesProps
   onCreateOrganization?: () => void
 }
 
@@ -48,6 +56,7 @@ export function Organization({
   view,
   settings,
   people,
+  roles,
   onCreateOrganization,
 }: OrganizationProps) {
   const config = useAuthUiConfig()
@@ -118,6 +127,15 @@ export function Organization({
             <Users className="text-muted-foreground" />
             People
           </TabsTab>
+
+          <TabsTab
+            className="gap-1"
+            onClick={() => config.navigate(config.routes.organizationRoles)}
+            value="roles"
+          >
+            <Shield className="text-muted-foreground" />
+            Roles
+          </TabsTab>
         </TabsList>
       </div>
 
@@ -127,6 +145,10 @@ export function Organization({
 
       <TabsContent tabIndex={-1} value="people">
         <OrganizationPeople {...people} />
+      </TabsContent>
+
+      <TabsContent tabIndex={-1} value="roles">
+        <OrganizationRoles {...roles} />
       </TabsContent>
     </Tabs>
   )

@@ -33,6 +33,7 @@ export interface AuthRoutes {
   settingsSecurity: string
   organizationSettings: string
   organizationPeople: string
+  organizationRoles: string
   defaultAuthenticated: string
 }
 

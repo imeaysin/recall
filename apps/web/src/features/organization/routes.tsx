@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom"
 import type { RouteObject } from "react-router-dom"
 import { routes, routeSegments } from "@/config/routes"
 import { OrganizationPeoplePage } from "@/features/organization/pages/organization-people-page"
+import { OrganizationRolesPage } from "@/features/organization/pages/organization-roles-page"
 import { OrganizationSettingsPage } from "@/features/organization/pages/organization-settings-page"
 
 export const organizationRoutes: RouteObject[] = [
@@ -14,6 +15,7 @@ export const organizationRoutes: RouteObject[] = [
       },
       { path: "settings", element: <OrganizationSettingsPage /> },
       { path: "people", element: <OrganizationPeoplePage /> },
+      { path: "roles", element: <OrganizationRolesPage /> },
       {
         path: "*",
         element: <Navigate replace to={routes.organizationSettings} />,

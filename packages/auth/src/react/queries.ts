@@ -303,15 +303,24 @@ export function useOrganizationPermission(
     !prerequisitesPending &&
     hasDynamicRoles
 
-  const staticResult = useMemo(
-    () =>
-      canUseStaticCheck
-        ? createOrganizationPermissionResult(
-            checkOrganizationPermissionMap(activeMember.role, permissions)
-          )
-        : undefined,
-    [activeMember?.role, canUseStaticCheck, permissions]
-  )
+  const staticQuery = useQuery({
+    queryKey: authQueryKeys.organizationPermissionStatic(
+      resolvedOrganizationId ?? "",
+      activeMember?.role ?? "",
+      permissions
+    ),
+    enabled: canUseStaticCheck,
+    queryFn: () => {
+      if (!activeMember?.role) {
+        throw new Error("Active member role is required for permission check")
+      }
+
+      return createOrganizationPermissionResult(
+        checkOrganizationPermissionMap(activeMember.role, permissions)
+      )
+    },
+    staleTime: Number.POSITIVE_INFINITY,
+  })
 
   const apiQuery = useQuery({
     queryKey: authQueryKeys.organizationPermission(
@@ -332,7 +341,7 @@ export function useOrganizationPermission(
 
   if (!hookEnabled) {
     return {
-      ...apiQuery,
+      ...staticQuery,
       data: undefined,
       isPending: false,
       isLoading: false,
@@ -342,7 +351,7 @@ export function useOrganizationPermission(
 
   if (prerequisitesPending) {
     return {
-      ...apiQuery,
+      ...staticQuery,
       data: undefined,
       isPending: true,
       isLoading: true,
@@ -351,17 +360,7 @@ export function useOrganizationPermission(
   }
 
   if (canUseStaticCheck) {
-    return {
-      ...apiQuery,
-      data: staticResult,
-      isPending: false,
-      isLoading: false,
-      isFetching: false,
-      isError: false,
-      error: null,
-      status: "success" as const,
-      fetchStatus: "idle" as const,
-    }
+    return staticQuery
   }
 
   return apiQuery

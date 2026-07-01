@@ -32,10 +32,19 @@ export {
 } from "./queries"
 export {
   checkOrganizationPermissionMap,
+  countOrganizationPermissions,
   createOrganizationPermissionResult,
+  formatOrganizationPermissionLabel,
   formatOrganizationRoleLabel,
+  getOrganizationRoleNames,
+  getStaticOrganizationRoleNames,
+  hasOrganizationPermission,
+  isReservedOrganizationRoleName,
+  organizationPermissionMatrix,
   parseOrganizationRoles,
+  reservedOrganizationRoleNames,
   resolveAssignableOrganizationRoles,
+  toggleOrganizationPermission,
 } from "../permissions/organization"
 export type {
   OrganizationAction,
@@ -44,6 +53,12 @@ export type {
   OrganizationResource,
   OrganizationRequiredPermission,
 } from "../permissions/organization"
+export type {
+  CreateOrganizationRoleInput,
+  DeleteOrganizationRoleInput,
+  OrganizationRole,
+  UpdateOrganizationRoleInput,
+} from "../types/organization"
 export {
   useAcceptInvitation,
   useAddPasskey,
@@ -53,8 +68,10 @@ export {
   useCheckSlug,
   useCreateApiKey,
   useCreateOrganization,
+  useCreateOrganizationRole,
   useDeleteApiKey,
   useDeleteOrganization,
+  useDeleteOrganizationRole,
   useDeletePasskey,
   useDeleteUser,
   useForgotPasswordMutation,
@@ -86,6 +103,7 @@ export {
   useUnlinkAccount,
   useUpdateMemberRole,
   useUpdateOrganization,
+  useUpdateOrganizationRole,
   useUpdateUser,
   useVerifyEmail,
   useVerifyEmailMutation,

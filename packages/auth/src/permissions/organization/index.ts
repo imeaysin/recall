@@ -51,16 +51,24 @@ export const organizationRoles = {
   member: memberRole,
 } as const
 
-const ownerRoleName = "owner" as const satisfies keyof typeof organizationRoles
+const ownerRoleName = "owner" satisfies keyof typeof organizationRoles
+
+function isStaticOrganizationRoleName(
+  roleName: string
+): roleName is keyof typeof organizationRoles {
+  return roleName in organizationRoles
+}
 
 export function authorizeStaticOrganizationRole<R extends OrganizationResource>(
   roleName: string,
   resource: R,
   action: OrganizationAction<R>
 ): boolean {
-  const role =
-    organizationRoles[roleName.trim() as keyof typeof organizationRoles]
-  return role?.authorize({ [resource]: [action] }).success ?? false
+  const trimmed = roleName.trim()
+  if (!isStaticOrganizationRoleName(trimmed)) return false
+
+  const role = organizationRoles[trimmed]
+  return role.authorize({ [resource]: [action] }).success
 }
 
 export function checkOrganizationPermission<R extends OrganizationResource>(
@@ -77,19 +85,30 @@ export function checkOrganizationPermission<R extends OrganizationResource>(
     )
 }
 
+function isOrganizationResource(
+  resource: string
+): resource is OrganizationResource {
+  return resource in statement
+}
+
 export function checkOrganizationPermissionMap(
   organizationRole: string | null | undefined,
   permissions: OrganizationPermissionMap
 ): boolean {
-  return Object.entries(permissions).every(([resource, actions]) =>
-    actions.every((action) =>
-      checkOrganizationPermission(
-        organizationRole,
-        resource as OrganizationResource,
-        action as OrganizationAction<OrganizationResource>
-      )
-    )
-  )
+  for (const resource of Object.keys(permissions)) {
+    if (!isOrganizationResource(resource)) continue
+
+    const actions = permissions[resource]
+    if (!actions) continue
+
+    for (const action of actions) {
+      if (!checkOrganizationPermission(organizationRole, resource, action)) {
+        return false
+      }
+    }
+  }
+
+  return true
 }
 
 export function createOrganizationPermissionResult(success: boolean) {
@@ -110,7 +129,7 @@ export function formatOrganizationRoleLabel(role: string) {
 }
 
 export function getStaticOrganizationRoleNames(): (keyof typeof organizationRoles)[] {
-  return Object.keys(organizationRoles) as (keyof typeof organizationRoles)[]
+  return ["owner", "admin", "member"]
 }
 
 /** Static built-in roles plus any dynamic roles from list-roles. */
@@ -149,3 +168,13 @@ export function resolveAssignableOrganizationRoles(input: {
     canAssignOrganizationRole(input.activeMemberRole, roleName)
   )
 }
+
+export {
+  countOrganizationPermissions,
+  formatOrganizationPermissionLabel,
+  hasOrganizationPermission,
+  isReservedOrganizationRoleName,
+  organizationPermissionMatrix,
+  reservedOrganizationRoleNames,
+  toggleOrganizationPermission,
+} from "./permission-matrix"

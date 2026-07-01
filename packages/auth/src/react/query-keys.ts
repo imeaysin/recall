@@ -35,6 +35,18 @@ export const authQueryKeys = {
       organizationId,
       permission,
     ] as const,
+  organizationPermissionStatic: (
+    organizationId: string,
+    memberRole: string,
+    permission: OrganizationPermissionMap
+  ) =>
+    [
+      ...authQueryKeys.all,
+      "organization-permission-static",
+      organizationId,
+      memberRole,
+      permission,
+    ] as const,
   usernameAvailable: (username: string) =>
     [...authQueryKeys.all, "username-available", username] as const,
 } as const
