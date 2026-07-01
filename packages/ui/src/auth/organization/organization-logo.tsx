@@ -11,7 +11,7 @@ import {
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
 
-export type OrganizationLogoSize = "sm" | "md" | "lg"
+export type OrganizationLogoSize = "xs" | "sm" | "md" | "lg"
 
 export interface OrganizationLogoProps {
   className?: string
@@ -22,9 +22,17 @@ export interface OrganizationLogoProps {
 }
 
 const sizeClasses: Record<OrganizationLogoSize, string> = {
+  xs: "size-4",
   sm: "size-8",
   md: "size-10",
   lg: "size-12",
+}
+
+const fallbackIconClasses: Record<OrganizationLogoSize, string> = {
+  xs: "size-2.5",
+  sm: "size-4",
+  md: "size-4",
+  lg: "size-5",
 }
 
 export function OrganizationLogo({
@@ -46,9 +54,9 @@ export function OrganizationLogo({
   return (
     <Avatar className={cn("rounded-full", sizeClasses[size], className)}>
       <AvatarImage alt={organization?.name ?? "Organization"} src={logo} />
-      <AvatarFallback className="text-muted-foreground">
+      <AvatarFallback className="text-[10px] text-muted-foreground">
         {fallback ?? initials ?? (
-          <Briefcase aria-hidden="true" className="size-4" />
+          <Briefcase aria-hidden="true" className={fallbackIconClasses[size]} />
         )}
       </AvatarFallback>
     </Avatar>

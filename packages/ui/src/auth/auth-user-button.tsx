@@ -79,11 +79,31 @@ function TriggerContent({
   if (size === "sidebar") {
     return (
       <>
-        <AuthUserView
-          className="min-w-0 flex-1 in-data-[collapsed]:hidden"
-          loading={isPending}
-          user={user}
-        />
+        <div className="flex min-w-0 flex-1 items-center gap-2 in-data-[collapsed]:hidden">
+          <AuthUserAvatar
+            className="size-6 shrink-0 rounded-lg"
+            loading={isPending}
+            user={user}
+          />
+          <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+            {isPending && !user ? (
+              <>
+                <span className="truncate font-medium">Loading...</span>
+              </>
+            ) : (
+              <>
+                <span className="truncate font-medium">
+                  {user?.name ?? "User"}
+                </span>
+                {user?.email ? (
+                  <span className="truncate text-xs text-sidebar-foreground/70">
+                    {user.email}
+                  </span>
+                ) : null}
+              </>
+            )}
+          </div>
+        </div>
         <AuthUserAvatar
           className="hidden size-6 shrink-0 rounded-lg in-data-[collapsed]:flex"
           loading={isPending}
@@ -140,6 +160,13 @@ export function AuthUserButton({
   const triggerLabel = user?.name ?? user?.email ?? "Account menu"
   const hasAccountSection = menuItems.length > 0 || !hideSettings
 
+  let menuPopupClassName = "min-w-56"
+  if (isSidebar) {
+    menuPopupClassName = "w-(--anchor-width) min-w-(--anchor-width)"
+  } else if (showWorkspaceMenu) {
+    menuPopupClassName = "min-w-64"
+  }
+
   return (
     <Menu onOpenChange={setOpen} open={open}>
       <MenuTrigger
@@ -153,7 +180,9 @@ export function AuthUserButton({
 
       <MenuPopup
         align={isSidebar ? "start" : align}
-        className={cn("min-w-56", showWorkspaceMenu && "min-w-64")}
+        className={menuPopupClassName}
+        side={isSidebar ? "top" : "bottom"}
+        sideOffset={isSidebar ? 8 : 4}
       >
         {user ? (
           <>

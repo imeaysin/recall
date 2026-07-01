@@ -12,12 +12,13 @@ import { Check, PlusCircle, Settings } from "lucide-react"
 import type { ReactNode } from "react"
 import {
   MenuGroup,
+  MenuGroupLabel,
   MenuItem,
   MenuSeparator,
 } from "@workspace/ui/components/menu"
 import { toastManager } from "@workspace/ui/components/toast"
-import { cn } from "@workspace/ui/lib/utils"
 import { AuthUserView } from "../auth-user-view"
+import { OrganizationLogo } from "./organization-logo"
 import { OrganizationView } from "./organization-view"
 
 export interface OrganizationSwitcherMenuProps {
@@ -105,7 +106,8 @@ export function OrganizationSwitcherMenu({
       {menuHeader ? <MenuSeparator /> : null}
 
       {hasSwitcherEntries ? (
-        <>
+        <MenuGroup>
+          <MenuGroupLabel>Workspaces</MenuGroupLabel>
           {showPersonalSwitcher ? (
             <MenuItem
               disabled={isPending}
@@ -121,24 +123,26 @@ export function OrganizationSwitcherMenu({
             return (
               <MenuItem
                 key={organization.id}
-                className={cn(isActive && "bg-accent")}
                 disabled={isPending || isActive}
                 onClick={() => handleSetActive(organization)}
               >
-                <OrganizationView organization={organization} />
+                <OrganizationLogo organization={organization} size="xs" />
+                <span className="min-w-0 flex-1 truncate">
+                  {organization.name}
+                </span>
                 {isActive ? (
                   <Check className="ml-auto size-4 text-muted-foreground" />
                 ) : null}
               </MenuItem>
             )
           })}
-        </>
+        </MenuGroup>
       ) : null}
 
       {hasWorkspaceActions ? (
         <>
           {hasSwitcherEntries ? <MenuSeparator className="my-1.5" /> : null}
-          <MenuGroup className="space-y-0.5">
+          <MenuGroup>
             {activeOrg ? (
               <MenuItem
                 disabled={isPending}
