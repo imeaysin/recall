@@ -1,9 +1,9 @@
 "use client"
 
 import { useActiveOrganization } from "@workspace/auth/react"
-import { CreateOrganizationDialog, Organization } from "@workspace/ui/auth"
+import { Organization } from "@workspace/ui/auth"
 import { ShellMain } from "@workspace/ui/components/shell"
-import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
+import { useAppOutletContext } from "@/features/auth/app-outlet-context"
 import { useOrganizationProfileForm } from "@/features/auth/hooks/use-organization-profile-form"
 
 const emptyOrganization = {
@@ -15,7 +15,7 @@ const emptyOrganization = {
 
 export function OrganizationSettingsPage() {
   const { data: activeOrganization } = useActiveOrganization()
-  const createOrganization = useCreateOrganizationDialog()
+  const { openCreateOrganization } = useAppOutletContext()
   const organization = activeOrganization ?? emptyOrganization
   const profile = useOrganizationProfileForm(organization)
 
@@ -24,9 +24,8 @@ export function OrganizationSettingsPage() {
       heading="Workspace"
       subtitle="Manage your workspace settings and members."
     >
-      <CreateOrganizationDialog {...createOrganization.dialogProps} />
       <Organization
-        onCreateOrganization={createOrganization.openDialog}
+        onCreateOrganization={openCreateOrganization}
         settings={activeOrganization ? { profile } : undefined}
         view="settings"
       />

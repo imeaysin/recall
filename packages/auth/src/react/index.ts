@@ -87,5 +87,11 @@ export type {
   UpdateUserInput,
 } from "./mutations"
 export { authQueryKeys } from "./query-keys"
+export {
+  buildOrganizationSlug,
+  sanitizeOrganizationSlug,
+} from "../lib/organization-slug"
+export { DEFAULT_JWT_STORAGE_KEY } from "../lib/constants"
+export { clearStoredAuthJwt, refreshAuthToken } from "./utils/auth-token"
 export { getEmailProviderLink } from "./utils/email-provider"
 export type { EmailProviderLink } from "./utils/email-provider"

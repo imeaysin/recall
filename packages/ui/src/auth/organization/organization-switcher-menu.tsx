@@ -15,6 +15,7 @@ import {
   MenuItem,
   MenuSeparator,
 } from "@workspace/ui/components/menu"
+import { toastManager } from "@workspace/ui/components/toast"
 import { AuthUserView } from "../auth-user-view"
 import { OrganizationView } from "./organization-view"
 
@@ -37,17 +38,46 @@ export function OrganizationSwitcherMenu({
   const { data: session } = useAuthSession()
   const { data: activeOrganization } = useActiveOrganization()
   const { data: organizations } = useListOrganizations()
-  const { mutate: setActiveOrganization } = useSetActiveOrganization()
+  const { mutate: setActiveOrganization, isPending } =
+    useSetActiveOrganization()
 
+  const activeOrganizationId = session?.session.activeOrganizationId ?? null
   const activeOrg = activeOrganization
   const orgList = organizations ?? []
-  const otherOrganizations = orgList.filter(
-    (organization) => organization.id !== activeOrg?.id
-  )
+  const otherOrganizations = activeOrganizationId
+    ? orgList.filter((organization) => organization.id !== activeOrganizationId)
+    : orgList
 
   function handleSetActive(organization: OrganizationSummary | null) {
+    const organizationId = organization?.id ?? null
+
+    if (organizationId === activeOrganizationId) {
+      onClose()
+      return
+    }
+
     onClose()
-    setActiveOrganization({ organizationId: organization?.id ?? null })
+
+    setActiveOrganization(
+      { organizationId },
+      {
+        onSuccess: () => {
+          if (organization?.name) {
+            toastManager.add({
+              title: "Workspace switched",
+              description: `You're now in ${organization.name}.`,
+              type: "success",
+            })
+          }
+        },
+        onError: () => {
+          toastManager.add({
+            title: "Could not switch workspace",
+            type: "error",
+          })
+        },
+      }
+    )
   }
 
   let menuHeader: ReactNode = null
@@ -80,7 +110,10 @@ export function OrganizationSwitcherMenu({
       {hasSwitcherEntries ? (
         <>
           {showPersonalSwitcher ? (
-            <MenuItem onClick={() => handleSetActive(null)}>
+            <MenuItem
+              disabled={isPending}
+              onClick={() => handleSetActive(null)}
+            >
               <AuthUserView hideSubtitle user={session?.user} />
             </MenuItem>
           ) : null}
@@ -88,6 +121,7 @@ export function OrganizationSwitcherMenu({
           {otherOrganizations.map((organization) => (
             <MenuItem
               key={organization.id}
+              disabled={isPending}
               onClick={() => handleSetActive(organization)}
             >
               <OrganizationView organization={organization} />
@@ -102,6 +136,7 @@ export function OrganizationSwitcherMenu({
           <MenuGroup className="space-y-0.5">
             {activeOrg ? (
               <MenuItem
+                disabled={isPending}
                 onClick={() => {
                   onClose()
                   config.navigate(config.routes.organizationSettings)
@@ -114,6 +149,7 @@ export function OrganizationSwitcherMenu({
 
             {!hideCreate ? (
               <MenuItem
+                disabled={isPending}
                 onClick={() => {
                   onClose()
                   onCreateOrganization?.()

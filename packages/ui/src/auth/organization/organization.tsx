@@ -5,7 +5,6 @@ import {
   useAuthenticate,
   useAuthUiConfig,
   useListOrganizations,
-  useSetActiveOrganization,
 } from "@workspace/auth/react"
 import {
   Building2,
@@ -13,7 +12,6 @@ import {
   Shield,
   Users,
 } from "lucide-react"
-import { useEffect } from "react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Empty,
@@ -64,20 +62,9 @@ export function Organization({
 
   const { data: activeOrganization, isPending: activePending } =
     useActiveOrganization()
-  const { data: organizations, isPending: organizationsPending } =
-    useListOrganizations()
-  const { mutate: setActiveOrganization } = useSetActiveOrganization()
+  const { isPending: organizationsPending } = useListOrganizations()
 
   const isPending = activePending || organizationsPending
-
-  useEffect(() => {
-    if (isPending || activeOrganization) return
-
-    const firstOrganization = organizations?.[0]
-    if (firstOrganization) {
-      setActiveOrganization({ organizationId: firstOrganization.id })
-    }
-  }, [activeOrganization, isPending, organizations, setActiveOrganization])
 
   if (isPending) {
     return <Skeleton className="h-48 w-full rounded-xl" />

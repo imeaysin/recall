@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useCreateOrganization } from "@workspace/auth/react"
 import type { CreateOrganizationDialogProps } from "@workspace/ui/auth"
-import { sanitizeOrganizationSlug } from "@workspace/ui/auth"
+import { sanitizeOrganizationSlug } from "@workspace/auth/react"
 import { useCallback, useEffect, useState } from "react"
 import { useForm, useFormState, useWatch } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"

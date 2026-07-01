@@ -77,32 +77,35 @@ function TriggerContent({
   size,
   user,
   activeOrganization,
+  organizationPending,
   showWorkspaceMenu,
 }: {
   isPending: boolean
   size: AuthUserButtonProps["size"]
   user: AuthUserAvatarUser | null
   activeOrganization?: { name: string; slug: string } | null
+  organizationPending?: boolean
   showWorkspaceMenu: boolean
 }) {
-  const showWorkspaceTrigger =
-    showWorkspaceMenu && size === "sidebar" && activeOrganization
-
-  if (showWorkspaceTrigger) {
-    return (
-      <>
-        <OrganizationView
-          className="min-w-0 flex-1 in-data-[collapsed]:hidden"
-          organization={activeOrganization}
-        />
-        <OrganizationView
-          className="hidden min-w-0 in-data-[collapsed]:flex"
-          hideSlug
-          organization={activeOrganization}
-        />
-        <ChevronsUpDown className="ml-auto size-4 shrink-0 text-sidebar-foreground/60 in-data-[collapsed]:hidden" />
-      </>
-    )
+  if (showWorkspaceMenu && size === "sidebar") {
+    if (organizationPending || activeOrganization) {
+      return (
+        <>
+          <OrganizationView
+            className="min-w-0 flex-1 in-data-[collapsed]:hidden"
+            loading={organizationPending}
+            organization={activeOrganization}
+          />
+          <OrganizationView
+            className="hidden min-w-0 in-data-[collapsed]:flex"
+            hideSlug
+            loading={organizationPending}
+            organization={activeOrganization}
+          />
+          <ChevronsUpDown className="ml-auto size-4 shrink-0 text-sidebar-foreground/60 in-data-[collapsed]:hidden" />
+        </>
+      )
+    }
   }
 
   if (size === "sidebar") {
@@ -151,7 +154,8 @@ export function AuthUserButton({
 }: AuthUserButtonProps) {
   const config = useAuthUiConfig()
   const { data: session, isPending } = useAuthSession()
-  const { data: activeOrganization } = useActiveOrganization()
+  const { data: activeOrganization, isPending: organizationPending } =
+    useActiveOrganization()
   const [open, setOpen] = useState(false)
   const { Link } = config
 
@@ -167,8 +171,9 @@ export function AuthUserButton({
 
   const isIconOnly = size === "icon"
   const isSidebar = size === "sidebar"
-  const workspaceTriggerLabel =
-    showWorkspaceMenu && activeOrganization
+  const isSidebarWorkspaceSwitcher = showWorkspaceMenu && isSidebar
+  const triggerLabel =
+    isSidebarWorkspaceSwitcher && activeOrganization
       ? activeOrganization.name
       : (user?.name ?? "Account menu")
   const hasAccountSection = menuItems.length > 0 || !hideSettings
@@ -176,7 +181,7 @@ export function AuthUserButton({
   return (
     <Menu onOpenChange={setOpen} open={open}>
       <MenuTrigger
-        aria-label={isIconOnly ? "Account menu" : workspaceTriggerLabel}
+        aria-label={isIconOnly ? "Account menu" : triggerLabel}
         className={getTriggerClassName(size, className)}
         disabled={isPending && !user}
         render={<button type="button" />}
@@ -184,6 +189,7 @@ export function AuthUserButton({
         <TriggerContent
           activeOrganization={activeOrganization}
           isPending={isPending}
+          organizationPending={organizationPending}
           showWorkspaceMenu={showWorkspaceMenu}
           size={size}
           user={user}
@@ -196,13 +202,17 @@ export function AuthUserButton({
       >
         {user ? (
           <>
-            <MenuGroup>
-              <MenuGroupLabel className="p-0 font-normal">
-                <AuthUserView className="px-2 py-1.5" user={user} />
-              </MenuGroupLabel>
-            </MenuGroup>
+            {isSidebarWorkspaceSwitcher ? null : (
+              <>
+                <MenuGroup>
+                  <MenuGroupLabel className="p-0 font-normal">
+                    <AuthUserView className="px-2 py-1.5" user={user} />
+                  </MenuGroupLabel>
+                </MenuGroup>
 
-            <MenuSeparator className="my-1.5" />
+                <MenuSeparator className="my-1.5" />
+              </>
+            )}
 
             {showWorkspaceMenu ? (
               <OrganizationSwitcherMenu

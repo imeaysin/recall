@@ -1,8 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCreateOrganization, useAuthSession } from "@workspace/auth/react"
-import { sanitizeOrganizationSlug } from "@workspace/ui/auth"
+import {
+  buildOrganizationSlug,
+  useCreateOrganization,
+  useAuthSession,
+} from "@workspace/auth/react"
 import { useNavigate } from "react-router-dom"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
@@ -32,7 +35,7 @@ export function useWorkspaceOnboarding() {
     createOrganization(
       {
         name: values.name,
-        slug: `${sanitizeOrganizationSlug(values.name) || "workspace"}-${userId.slice(0, 8)}`,
+        slug: buildOrganizationSlug(values.name, userId),
       },
       {
         onSuccess: () => {

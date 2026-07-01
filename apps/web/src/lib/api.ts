@@ -1,4 +1,5 @@
 import { authClient } from "@workspace/auth/client"
+import { DEFAULT_JWT_STORAGE_KEY } from "@workspace/auth/react"
 import { env } from "@/config/env"
 import {
   HttpErrorCode,
@@ -8,7 +9,7 @@ import {
   type ApiSuccessResponse,
 } from "@workspace/contracts"
 
-const JWT_STORAGE_KEY = "__ba_jwt"
+const JWT_STORAGE_KEY = DEFAULT_JWT_STORAGE_KEY
 
 async function getBearerToken(): Promise<string | null> {
   if (typeof sessionStorage !== "undefined") {

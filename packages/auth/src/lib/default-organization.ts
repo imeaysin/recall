@@ -1,19 +1,12 @@
 import type { GenericEndpointContext, Session } from "better-auth"
 import { getOrgAdapter } from "better-auth/plugins/organization"
 import { organizationPluginOptions } from "../config/organization-plugin"
+import {
+  buildOrganizationSlug,
+  sanitizeOrganizationSlug,
+} from "./organization-slug"
 
-export function sanitizeOrganizationSlug(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
-
-export function buildOrganizationSlug(name: string, userId: string) {
-  const base = sanitizeOrganizationSlug(name) || "workspace"
-  return `${base}-${userId.slice(0, 8)}`
-}
+export { buildOrganizationSlug, sanitizeOrganizationSlug }
 
 function getOrganizationAdapter(context: GenericEndpointContext) {
   return getOrgAdapter(context.context, organizationPluginOptions)

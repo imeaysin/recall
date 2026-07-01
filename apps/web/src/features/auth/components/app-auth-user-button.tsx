@@ -1,15 +1,13 @@
 import {
   AuthUserButton,
-  CreateOrganizationDialog,
   type AuthUserButtonMenuItem,
   type AuthUserButtonProps,
 } from "@workspace/ui/auth"
-import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 
 type AppAuthUserButtonProps = Pick<
   AuthUserButtonProps,
-  "className" | "hideSettings" | "size"
+  "className" | "hideSettings" | "onCreateOrganization" | "size"
 > & {
   menuItems?: AuthUserButtonMenuItem[]
 }
@@ -18,35 +16,51 @@ function AppAuthUserButton({
   className,
   hideSettings,
   menuItems,
+  onCreateOrganization,
   size,
 }: AppAuthUserButtonProps) {
   const { onSignOut } = useAppShellConfig()
-  const createOrganization = useCreateOrganizationDialog()
 
   return (
-    <>
-      <AuthUserButton
-        className={className}
-        hideSettings={hideSettings}
-        menuItems={menuItems}
-        onCreateOrganization={createOrganization.openDialog}
-        onSignOut={onSignOut}
-        showWorkspaceMenu
-        size={size}
-      />
-      <CreateOrganizationDialog {...createOrganization.dialogProps} />
-    </>
+    <AuthUserButton
+      className={className}
+      hideSettings={hideSettings}
+      menuItems={menuItems}
+      onCreateOrganization={onCreateOrganization}
+      onSignOut={onSignOut}
+      showWorkspaceMenu
+      size={size}
+    />
   )
 }
 
-export function AppUserButton() {
-  return <AppAuthUserButton className="max-w-[45vw]" size="compact" />
+export function AppUserButton({
+  onCreateOrganization,
+}: {
+  onCreateOrganization: () => void
+}) {
+  return (
+    <AppAuthUserButton
+      className="max-w-[45vw]"
+      onCreateOrganization={onCreateOrganization}
+      size="compact"
+    />
+  )
 }
 
-export function AppSidebarUser() {
+export function AppSidebarUser({
+  onCreateOrganization,
+}: {
+  onCreateOrganization: () => void
+}) {
   const { userMenuItems } = useAppShellConfig()
 
   return (
-    <AppAuthUserButton hideSettings menuItems={userMenuItems} size="sidebar" />
+    <AppAuthUserButton
+      hideSettings
+      menuItems={userMenuItems}
+      onCreateOrganization={onCreateOrganization}
+      size="sidebar"
+    />
   )
 }

@@ -1,14 +1,14 @@
 "use client"
 
 import { useActiveOrganization } from "@workspace/auth/react"
-import { CreateOrganizationDialog, Organization } from "@workspace/ui/auth"
+import { Organization } from "@workspace/ui/auth"
 import { ShellMain } from "@workspace/ui/components/shell"
-import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
+import { useAppOutletContext } from "@/features/auth/app-outlet-context"
 import { useOrganizationRoleDialogs } from "@/features/auth/hooks/use-organization-role-dialogs"
 
 export function OrganizationRolesPage() {
   const { data: activeOrganization } = useActiveOrganization()
-  const createOrganization = useCreateOrganizationDialog()
+  const { openCreateOrganization } = useAppOutletContext()
   const roleDialogs = useOrganizationRoleDialogs()
 
   return (
@@ -16,9 +16,8 @@ export function OrganizationRolesPage() {
       heading="Workspace"
       subtitle="Manage built-in and custom roles for your workspace."
     >
-      <CreateOrganizationDialog {...createOrganization.dialogProps} />
       <Organization
-        onCreateOrganization={createOrganization.openDialog}
+        onCreateOrganization={openCreateOrganization}
         roles={
           activeOrganization
             ? {

@@ -1,4 +1,5 @@
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom"
+import { CreateOrganizationDialog } from "@workspace/ui/auth"
 import { Shell } from "@workspace/ui/components/shell"
 import type {
   ShellLinkComponent,
@@ -10,6 +11,8 @@ import {
   AppUserButton,
 } from "@/features/auth/components/app-auth-user-button"
 import { WorkspaceOnboardingGate } from "@/features/auth/components/workspace-onboarding-gate"
+import type { AppOutletContext } from "@/features/auth/app-outlet-context"
+import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 
 const ShellLink: ShellLinkComponent = ({
@@ -25,6 +28,10 @@ const ShellLink: ShellLinkComponent = ({
 export function AppLayout() {
   const location = useLocation()
   const shell = useAppShellConfig()
+  const createOrganization = useCreateOrganizationDialog()
+  const outletContext: AppOutletContext = {
+    openCreateOrganization: createOrganization.openDialog,
+  }
 
   return (
     <WorkspaceOnboardingGate>
@@ -35,11 +42,18 @@ export function AppLayout() {
         logo={<Logo />}
         navigation={shell.navigation}
         pathname={location.pathname}
-        sidebarUserControl={<AppSidebarUser />}
-        userControl={<AppUserButton />}
+        sidebarUserControl={
+          <AppSidebarUser
+            onCreateOrganization={createOrganization.openDialog}
+          />
+        }
+        userControl={
+          <AppUserButton onCreateOrganization={createOrganization.openDialog} />
+        }
       >
-        <Outlet />
+        <Outlet context={outletContext} />
       </Shell>
+      <CreateOrganizationDialog {...createOrganization.dialogProps} />
     </WorkspaceOnboardingGate>
   )
 }

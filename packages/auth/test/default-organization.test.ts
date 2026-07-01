@@ -2,9 +2,9 @@ import type { GenericEndpointContext } from "better-auth"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import {
   buildOrganizationSlug,
-  ensureSessionActiveOrganization,
   sanitizeOrganizationSlug,
-} from "../src/lib/default-organization"
+} from "../src/lib/organization-slug"
+import { ensureSessionActiveOrganization } from "../src/lib/default-organization"
 
 const mockAdapter = {
   listOrganizations: vi.fn(),

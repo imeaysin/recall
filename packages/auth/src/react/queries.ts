@@ -132,13 +132,14 @@ export function useActiveOrganization(
   slug?: string,
   client: AuthClient = authClient
 ) {
-  const { enabled } = useAuthenticatedQueryEnabled(client)
+  const { enabled, session } = useAuthenticatedQueryEnabled(client)
+  const activeOrganizationId = session?.session.activeOrganizationId ?? null
+
   return useQuery<ActiveOrganization | null>({
-    queryKey: authQueryKeys.activeOrganization(slug),
+    queryKey: authQueryKeys.activeOrganization(slug, activeOrganizationId),
     enabled,
     queryFn: async () => {
-      const { data: session } = client.useSession.get()
-      let organizationId = session?.session.activeOrganizationId
+      let organizationId = activeOrganizationId ?? undefined
 
       if (slug) {
         const organizations = await unwrapClientResult(

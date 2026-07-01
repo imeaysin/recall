@@ -14,6 +14,7 @@ import {
 } from "@workspace/config/client"
 import { adminPluginOptions } from "../config/admin-plugin"
 import { organizationPluginOptions } from "../config/organization-plugin"
+import { DEFAULT_JWT_STORAGE_KEY } from "../lib/constants"
 
 const { authUrl } = parseClientPublicEnv(getClientPublicEnvSource())
 
@@ -32,7 +33,7 @@ export const authClient = createAuthClient({
     onSuccess: (ctx) => {
       const jwt = ctx.response.headers.get("set-auth-jwt")
       if (jwt && typeof sessionStorage !== "undefined") {
-        sessionStorage.setItem("__ba_jwt", jwt)
+        sessionStorage.setItem(DEFAULT_JWT_STORAGE_KEY, jwt)
       }
     },
   },

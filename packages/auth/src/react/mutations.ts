@@ -10,6 +10,11 @@ import type {
 } from "@workspace/contracts"
 import { authClient, type AuthClient } from "../lib/auth-client"
 import { authQueryKeys } from "./query-keys"
+import {
+  clearStoredAuthJwt,
+  DEFAULT_JWT_STORAGE_KEY,
+  refreshAuthToken,
+} from "./utils/auth-token"
 import { unwrapClientResult } from "./utils/client-call"
 
 export type SignUpMutationInput = SignUpInput & {
@@ -132,16 +137,14 @@ export function useSignUpEmail(client: AuthClient = authClient) {
 
 export function useSignOut(
   client: AuthClient = authClient,
-  { jwtStorageKey = "__ba_jwt" }: SignOutOptions = {}
+  { jwtStorageKey = DEFAULT_JWT_STORAGE_KEY }: SignOutOptions = {}
 ) {
   const invalidate = useInvalidateAuthQueries()
   return useMutation({
     mutationFn: async () => {
       const { error } = await client.signOut()
       if (error) throw error
-      if (typeof sessionStorage !== "undefined") {
-        sessionStorage.removeItem(jwtStorageKey)
-      }
+      clearStoredAuthJwt(jwtStorageKey)
     },
     onSuccess: () => invalidate(),
   })
@@ -400,8 +403,24 @@ export function useDeleteApiKey(client: AuthClient = authClient) {
 export function useCreateOrganization(client: AuthClient = authClient) {
   const invalidate = useInvalidateAuthQueries()
   return useMutation({
-    mutationFn: async (input: { name: string; slug: string; logo?: string }) =>
-      unwrapClientResult(client.organization.create(input)),
+    mutationFn: async (input: {
+      name: string
+      slug: string
+      logo?: string
+    }) => {
+      const organization = await unwrapClientResult(
+        client.organization.create(input)
+      )
+
+      if (organization?.id) {
+        await unwrapClientResult(
+          client.organization.setActive({ organizationId: organization.id })
+        )
+        await refreshAuthToken(client)
+      }
+
+      return organization
+    },
     onSuccess: () => invalidate(),
   })
 }
@@ -434,8 +453,11 @@ export function useUpdateOrganization(client: AuthClient = authClient) {
 export function useDeleteOrganization(client: AuthClient = authClient) {
   const invalidate = useInvalidateAuthQueries()
   return useMutation({
-    mutationFn: async (input: { organizationId: string }) =>
-      unwrapClientResult(client.organization.delete(input)),
+    mutationFn: async (input: { organizationId: string }) => {
+      const result = await unwrapClientResult(client.organization.delete(input))
+      await refreshAuthToken(client)
+      return result
+    },
     onSuccess: () => invalidate(),
   })
 }
@@ -443,8 +465,13 @@ export function useDeleteOrganization(client: AuthClient = authClient) {
 export function useSetActiveOrganization(client: AuthClient = authClient) {
   const invalidate = useInvalidateAuthQueries()
   return useMutation({
-    mutationFn: async (input: { organizationId: string | null }) =>
-      unwrapClientResult(client.organization.setActive(input)),
+    mutationFn: async (input: { organizationId: string | null }) => {
+      const result = await unwrapClientResult(
+        client.organization.setActive(input)
+      )
+      await refreshAuthToken(client)
+      return result
+    },
     onSuccess: () => invalidate(),
   })
 }
@@ -519,7 +546,11 @@ export function useLeaveOrganization(client: AuthClient = authClient) {
         throw new Error("No active organization")
       }
 
-      return unwrapClientResult(client.organization.leave({ organizationId }))
+      const result = await unwrapClientResult(
+        client.organization.leave({ organizationId })
+      )
+      await refreshAuthToken(client)
+      return result
     },
     onSuccess: () => invalidate(),
   })
@@ -528,8 +559,28 @@ export function useLeaveOrganization(client: AuthClient = authClient) {
 export function useAcceptInvitation(client: AuthClient = authClient) {
   const invalidate = useInvalidateAuthQueries()
   return useMutation({
-    mutationFn: async (input: { invitationId: string }) =>
-      unwrapClientResult(client.organization.acceptInvitation(input)),
+    mutationFn: async (input: { invitationId: string }) => {
+      const invitation = await unwrapClientResult(
+        client.organization.acceptInvitation(input)
+      )
+
+      const organizationId =
+        invitation &&
+        typeof invitation === "object" &&
+        "organizationId" in invitation &&
+        typeof invitation.organizationId === "string"
+          ? invitation.organizationId
+          : null
+
+      if (organizationId) {
+        await unwrapClientResult(
+          client.organization.setActive({ organizationId })
+        )
+      }
+
+      await refreshAuthToken(client)
+      return invitation
+    },
     onSuccess: () => invalidate(),
   })
 }
