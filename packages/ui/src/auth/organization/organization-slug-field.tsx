@@ -12,12 +12,25 @@ import {
 import { Spinner } from "@workspace/ui/components/spinner"
 import { sanitizeOrganizationSlug } from "./sanitize-slug"
 
+export function isSameOrganizationSlug(
+  value: string,
+  currentSlug?: string | null
+) {
+  if (!currentSlug) return false
+
+  return (
+    sanitizeOrganizationSlug(value.trim()) ===
+    sanitizeOrganizationSlug(currentSlug.trim())
+  )
+}
+
 export interface OrganizationSlugFieldProps {
   id?: string
   value: string
   onChange: (value: string) => void
   onBlur?: () => void
   currentSlug?: string
+  checkAvailability?: boolean
   disabled?: boolean
   error?: string
 }
@@ -43,6 +56,7 @@ export function OrganizationSlugField({
   onChange,
   onBlur,
   currentSlug,
+  checkAvailability = true,
   disabled,
   error,
 }: OrganizationSlugFieldProps) {
@@ -54,35 +68,38 @@ export function OrganizationSlugField({
     reset: resetCheckSlug,
   } = useCheckSlug()
 
+  const trimmedValue = value.trim()
+  const isCurrentSlug = isSameOrganizationSlug(value, currentSlug)
+  const shouldCheckAvailability =
+    checkAvailability && trimmedValue.length > 0 && !isCurrentSlug
+
   useEffect(() => {
     resetCheckSlug()
 
-    const trimmed = value.trim()
-    if (!trimmed || trimmed === currentSlug?.trim()) return
+    if (!shouldCheckAvailability) return
 
     const timeout = window.setTimeout(() => {
-      checkSlug({ slug: trimmed })
+      checkSlug({ slug: trimmedValue })
     }, 500)
 
     return () => window.clearTimeout(timeout)
-  }, [checkSlug, currentSlug, resetCheckSlug, value])
+  }, [checkSlug, resetCheckSlug, shouldCheckAvailability, trimmedValue])
 
-  const trimmedValue = value.trim()
-  const isCurrentSlug = !!currentSlug && trimmedValue === currentSlug.trim()
   const slugTaken =
-    !isCurrentSlug && (!!checkSlugError || checkSlugData?.status === false)
+    shouldCheckAvailability &&
+    (!!checkSlugError || checkSlugData?.status === false)
   const validationError =
     error ?? (slugTaken ? "This slug is already taken" : undefined)
 
   return (
-    <Field data-invalid={!!validationError}>
+    <Field invalid={!!validationError}>
       <FieldLabel htmlFor={id}>Slug</FieldLabel>
       <InputGroup>
         <InputGroupInput
           aria-invalid={!!validationError}
+          autoComplete="off"
           disabled={disabled}
           id={id}
-          name="slug"
           onBlur={onBlur}
           onChange={(event) =>
             onChange(sanitizeOrganizationSlug(event.target.value))
@@ -91,7 +108,7 @@ export function OrganizationSlugField({
           type="text"
           value={value}
         />
-        {trimmedValue && !isCurrentSlug ? (
+        {shouldCheckAvailability ? (
           <InputGroupAddon align="inline-end">
             <SlugAvailabilityIcon
               hasError={slugTaken}

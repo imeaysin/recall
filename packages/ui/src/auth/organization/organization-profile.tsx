@@ -1,5 +1,6 @@
 "use client"
 
+import type { SubmitEventHandler } from "react"
 import {
   useActiveOrganization,
   useOrganizationPermission,
@@ -20,10 +21,12 @@ export interface OrganizationProfileProps {
   onNameChange?: (value: string) => void
   nameError?: string
   slug?: string
+  currentSlug?: string
   onSlugChange?: (value: string) => void
   onSlugBlur?: () => void
   slugError?: string
-  onSubmit?: () => void
+  checkSlugAvailability?: boolean
+  onSubmit?: SubmitEventHandler<HTMLFormElement>
   isPending?: boolean
 }
 
@@ -54,9 +57,11 @@ export function OrganizationProfile({
   onNameChange,
   nameError,
   slug = "",
+  currentSlug,
   onSlugChange,
   onSlugBlur,
   slugError,
+  checkSlugAvailability = true,
   onSubmit,
   isPending = false,
 }: OrganizationProfileProps) {
@@ -81,7 +86,13 @@ export function OrganizationProfile({
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-      <Form key={activeOrganization.id} onSubmit={onSubmit}>
+      <Form
+        key={activeOrganization.id}
+        onSubmit={(event) => {
+          event.preventDefault()
+          onSubmit(event)
+        }}
+      >
         <Card className={cn(className)}>
           <CardPanel className="flex flex-col gap-4">
             <Field data-invalid={!!nameError}>
@@ -100,7 +111,8 @@ export function OrganizationProfile({
             </Field>
 
             <OrganizationSlugField
-              currentSlug={activeOrganization.slug}
+              checkAvailability={checkSlugAvailability}
+              currentSlug={currentSlug ?? activeOrganization.slug}
               disabled={isPending || readOnly}
               error={slugError}
               id={slugInputId}

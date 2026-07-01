@@ -83,7 +83,10 @@ export type {
 export { OrganizationView } from "./organization/organization-view"
 export type { OrganizationViewProps } from "./organization/organization-view"
 
-export { OrganizationSlugField } from "./organization/organization-slug-field"
+export {
+  OrganizationSlugField,
+  isSameOrganizationSlug,
+} from "./organization/organization-slug-field"
 export type { OrganizationSlugFieldProps } from "./organization/organization-slug-field"
 
 export { CreateOrganizationDialog } from "./organization/create-organization-dialog"

@@ -25,35 +25,33 @@ export function useWorkspaceOnboarding() {
 
   const name = useWatch({ control: form.control, name: "name" })
 
-  function onSubmit() {
-    void form.handleSubmit((values) => {
-      const userId = session?.user.id
-      if (!userId) return
+  const onSubmit = form.handleSubmit((values) => {
+    const userId = session?.user.id
+    if (!userId) return
 
-      createOrganization(
-        {
-          name: values.name,
-          slug: `${sanitizeOrganizationSlug(values.name) || "workspace"}-${userId.slice(0, 8)}`,
+    createOrganization(
+      {
+        name: values.name,
+        slug: `${sanitizeOrganizationSlug(values.name) || "workspace"}-${userId.slice(0, 8)}`,
+      },
+      {
+        onSuccess: () => {
+          toastManager.add({
+            title: "Workspace created",
+            description: "You're ready to use Theo.",
+            type: "success",
+          })
+          navigate(routes.dashboard, { replace: true })
         },
-        {
-          onSuccess: () => {
-            toastManager.add({
-              title: "Workspace created",
-              description: "You're ready to use Theo.",
-              type: "success",
-            })
-            navigate(routes.dashboard, { replace: true })
-          },
-          onError: () => {
-            toastManager.add({
-              title: "Could not create workspace",
-              type: "error",
-            })
-          },
-        }
-      )
-    })()
-  }
+        onError: () => {
+          toastManager.add({
+            title: "Could not create workspace",
+            type: "error",
+          })
+        },
+      }
+    )
+  })
 
   return {
     dialogProps: {

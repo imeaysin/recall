@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useUpdateOrganization } from "@workspace/auth/react"
 import type { Organization } from "@workspace/auth/types/organization"
 import type { OrganizationProfileProps } from "@workspace/ui/auth"
+import { isSameOrganizationSlug } from "@workspace/ui/auth"
 import { useCallback, useEffect, useRef } from "react"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, useFormState, useWatch } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
   updateOrganizationSchema,
@@ -28,6 +29,8 @@ export function useOrganizationProfileForm(
 
   const name = useWatch({ control: form.control, name: "name" })
   const slug = useWatch({ control: form.control, name: "slug" })
+  const { errors } = useFormState({ control: form.control })
+  const savedSlug = organization.slug ?? ""
 
   useEffect(() => {
     form.reset({
@@ -45,31 +48,33 @@ export function useOrganizationProfileForm(
     [form]
   )
 
-  const onSubmit = useCallback(
-    () =>
-      form.handleSubmit((values) => {
-        updateOrganization(values, {
-          onSuccess: () => {
-            toastManager.add({
-              title: "Workspace updated",
-              type: "success",
-            })
-          },
+  const onSubmit = form.handleSubmit((values) => {
+    updateOrganization(values, {
+      onSuccess: () => {
+        toastManager.add({
+          title: "Workspace updated",
+          type: "success",
         })
-      })(),
-    [form, updateOrganization]
-  )
+        form.reset(values)
+      },
+    })
+  })
 
   return {
     isPending,
     name,
     onNameChange: (value) =>
       form.setValue("name", value, { shouldValidate: true }),
-    nameError: form.formState.errors.name?.message,
+    nameError: errors.name?.message,
     slug,
+    currentSlug: savedSlug,
     onSlugChange: handleSlugChange,
-    onSlugBlur: () => void form.trigger("slug"),
-    slugError: form.formState.errors.slug?.message,
+    onSlugBlur: () => {
+      if (isSameOrganizationSlug(slug, savedSlug)) return
+      void form.trigger("slug")
+    },
+    slugError: errors.slug?.message,
+    checkSlugAvailability: !isSameOrganizationSlug(slug, savedSlug),
     onSubmit,
   }
 }

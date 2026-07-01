@@ -1,5 +1,6 @@
 "use client"
 
+import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -26,7 +27,7 @@ export interface CreateOrganizationDialogProps {
   onSlugChange: (value: string) => void
   onSlugBlur?: () => void
   slugError?: string
-  onSubmit: () => void
+  onSubmit: SubmitEventHandler<HTMLFormElement>
   isPending?: boolean
   required?: boolean
   showSlug?: boolean
@@ -66,7 +67,13 @@ export function CreateOrganizationDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <Form className="contents" onSubmit={onSubmit}>
+        <Form
+          className="contents"
+          onSubmit={(event) => {
+            event.preventDefault()
+            onSubmit(event)
+          }}
+        >
           <DialogPanel className="flex flex-col gap-4">
             <Field data-invalid={!!nameError}>
               <FieldLabel htmlFor="create-organization-name">Name</FieldLabel>

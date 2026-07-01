@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useCreateOrganization } from "@workspace/auth/react"
 import type { CreateOrganizationDialogProps } from "@workspace/ui/auth"
 import { sanitizeOrganizationSlug } from "@workspace/ui/auth"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { useForm, useWatch } from "react-hook-form"
+import { useCallback, useEffect, useState } from "react"
+import { useForm, useFormState, useWatch } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
   createOrganizationSchema,
@@ -14,7 +14,6 @@ import {
 
 export function useCreateOrganizationDialog() {
   const [open, setOpen] = useState(false)
-  const slugEdited = useRef(false)
   const { mutate: createOrganization, isPending } = useCreateOrganization()
 
   const form = useForm<CreateOrganizationInput>({
@@ -24,10 +23,10 @@ export function useCreateOrganizationDialog() {
 
   const name = useWatch({ control: form.control, name: "name" })
   const slug = useWatch({ control: form.control, name: "slug" })
+  const { dirtyFields } = useFormState({ control: form.control })
 
   const resetForm = useCallback(() => {
     form.reset({ name: "", slug: "" })
-    slugEdited.current = false
   }, [form])
 
   useEffect(() => {
@@ -37,11 +36,12 @@ export function useCreateOrganizationDialog() {
   }, [open, resetForm])
 
   useEffect(() => {
-    if (slugEdited.current) return
+    if (dirtyFields.slug) return
     form.setValue("slug", sanitizeOrganizationSlug(name), {
+      shouldDirty: false,
       shouldValidate: Boolean(name),
     })
-  }, [form, name])
+  }, [dirtyFields.slug, form, name])
 
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
@@ -55,27 +55,22 @@ export function useCreateOrganizationDialog() {
 
   const handleSlugChange = useCallback(
     (value: string) => {
-      slugEdited.current = true
-      form.setValue("slug", value, { shouldValidate: true })
+      form.setValue("slug", value, { shouldDirty: true, shouldValidate: true })
     },
     [form]
   )
 
-  const onSubmit = useCallback(
-    () =>
-      form.handleSubmit((values) => {
-        createOrganization(values, {
-          onSuccess: () => {
-            toastManager.add({
-              title: "Workspace created",
-              type: "success",
-            })
-            handleOpenChange(false)
-          },
+  const onSubmit = form.handleSubmit((values) => {
+    createOrganization(values, {
+      onSuccess: () => {
+        toastManager.add({
+          title: "Workspace created",
+          type: "success",
         })
-      })(),
-    [createOrganization, form, handleOpenChange]
-  )
+        handleOpenChange(false)
+      },
+    })
+  })
 
   const dialogProps: CreateOrganizationDialogProps = {
     open,
