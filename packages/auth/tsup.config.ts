@@ -8,6 +8,7 @@ const external = [
   "@tanstack/react-query",
   "@workspace/config",
   "@workspace/contracts",
+  "@workspace/db",
   "@workspace/email",
   "expo-secure-store",
   "jose",

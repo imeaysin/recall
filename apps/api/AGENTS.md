@@ -48,3 +48,44 @@ modules/<feature>/
 **Domain errors:** add codes to `DomainErrorCode` in `packages/contracts/src/api/errors.ts`, then use `apiNotFound(..., DomainErrorCode.NOTE_NOT_FOUND)`.
 
 Do not call repositories or storage directly from controllers.
+
+## Serverless architecture
+
+The API is designed for **stateless, serverless execution** (e.g. Vercel, AWS Lambda, Cloud Run). Every request must stand alone.
+
+### Request context (never from client body)
+
+| Context                | Source                                                                  |
+| ---------------------- | ----------------------------------------------------------------------- |
+| User id, platform role | Verified JWT (`@CurrentUser()`)                                         |
+| Active workspace       | JWT `activeOrganizationId` (`@CurrentOrganization()`)                   |
+| Org permissions        | JWT `organizationRole` + DB for dynamic roles (`@RequireOrgPermission`) |
+
+Org-scoped routes (notes, uploads) must use `@CurrentOrganization()` — never accept `organizationId` from query/body.
+
+### What must not exist
+
+- **In-memory rate limiting** — removed `@nestjs/throttler` (counters are per-instance). Use API gateway limits or Better Auth `rateLimit.storage: "database"` when upgrading Better Auth.
+- **Separate MongoDB pools** — auth and business API share `@workspace/db` (`connectDb` once per instance).
+- **Session state on business routes** — `/v1/*` uses Bearer JWT only; Better Auth cookies are for `/api/auth/*`.
+
+### Acceptable per-instance state
+
+- Mongoose connection reuse (`readyState === 1` guard in `connectDb`)
+- Lazy `getAuth()` singleton (immutable config, not user data)
+- JWKS public-key cache in `jose` (`cooldownDuration` in `verifyAccessToken`)
+- `STORAGE` provider factory (env-bound, stateless)
+
+### Deployment
+
+- **MongoDB:** use a serverless-friendly URI (e.g. Atlas) with connection pooling; `DatabaseModule` connects on boot via `DATABASE_READY`.
+- **File uploads:** set `STORAGE_PROVIDER=s3` in production — `local` + `express.static` is dev-only (ephemeral disk, not multi-instance safe).
+- **Graceful shutdown:** `DatabaseLifecycle` disconnects on `onModuleDestroy` (long-running dev; optional in pure serverless).
+
+### Guard chain
+
+```
+JwksGuard → RbacGuard → OrgRbacGuard
+```
+
+`@Public()` skips JWT. `@RequirePermission` = platform role from JWT. `@RequireOrgPermission` = active org from JWT + permission check.

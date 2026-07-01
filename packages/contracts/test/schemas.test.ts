@@ -20,6 +20,7 @@ describe("NoteResponseSchema", () => {
   it("requires ISO date strings", () => {
     const note = NoteResponseSchema.parse({
       id: "1",
+      organizationId: "org1",
       userId: "u1",
       title: "Test",
       body: "",

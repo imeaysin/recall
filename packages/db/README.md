@@ -10,7 +10,7 @@ import { connectDb, getDb } from "@workspace/db"
 await connectDb()
 ```
 
-`getDb()` exposes the native MongoDB handle used by Better Auth.
+`getDb()` and `getMongoClient()` expose the native MongoDB handle and client from the shared Mongoose connection (single pool per instance).
 
 ## Auth migrations
 

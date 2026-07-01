@@ -20,7 +20,11 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import type { JwtClaims } from "@workspace/auth/types"
-import { CurrentUser } from "../../common/decorators"
+import {
+  CurrentOrganization,
+  CurrentUser,
+  RequireOrgPermission,
+} from "../../common/decorators"
 import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import { BulkDeleteNotesCommand } from "./commands/bulk-delete-notes.command"
 import { CreateNoteCommand } from "./commands/create-note.command"
@@ -46,44 +50,67 @@ export class NotesController {
   ) {}
 
   @Get()
+  @RequireOrgPermission("content", "read")
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "List notes",
-    description: "Returns all notes owned by the authenticated user.",
+    description:
+      "Returns all notes owned by the authenticated user in the active workspace.",
   })
   @ApiOkResponse({ type: NotesListApiResponseDto })
-  async list(@CurrentUser() user: JwtClaims) {
-    return this.queryBus.execute(new ListNotesQuery(user.id))
+  async list(
+    @CurrentOrganization() organizationId: string,
+    @CurrentUser() user: JwtClaims
+  ) {
+    return this.queryBus.execute(new ListNotesQuery(organizationId, user.id))
   }
 
   @Post()
+  @RequireOrgPermission("content", "create")
   @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "Create a note",
-    description: "Creates a new note for the authenticated user.",
+    description:
+      "Creates a new note for the authenticated user in the active workspace.",
   })
   @ApiCreatedResponse({ type: NoteApiResponseDto })
-  create(@CurrentUser() user: JwtClaims, @Body() body: CreateNoteDto) {
-    return this.commandBus.execute(new CreateNoteCommand(user.id, body))
+  create(
+    @CurrentOrganization() organizationId: string,
+    @CurrentUser() user: JwtClaims,
+    @Body() body: CreateNoteDto
+  ) {
+    return this.commandBus.execute(
+      new CreateNoteCommand(organizationId, user.id, body)
+    )
   }
 
   @Post("bulk-delete")
+  @RequireOrgPermission("content", "delete")
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "Bulk delete notes",
-    description: "Deletes up to 100 notes by id. Only owned notes are removed.",
+    description:
+      "Deletes up to 100 notes by id. Only notes owned by the user in the active workspace are removed.",
   })
   @ApiOkResponse({ type: BulkDeleteNotesApiResponseDto })
-  bulkDelete(@CurrentUser() user: JwtClaims, @Body() body: BulkDeleteNotesDto) {
-    return this.commandBus.execute(new BulkDeleteNotesCommand(user.id, body))
+  bulkDelete(
+    @CurrentOrganization() organizationId: string,
+    @CurrentUser() user: JwtClaims,
+    @Body() body: BulkDeleteNotesDto
+  ) {
+    return this.commandBus.execute(
+      new BulkDeleteNotesCommand(organizationId, user.id, body)
+    )
   }
 
   @Patch(":id")
+  @RequireOrgPermission("content", "update")
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "Update a note",
-    description: "Updates title and/or body of an owned note.",
+    description:
+      "Updates title and/or body of a note owned by the user in the active workspace.",
   })
   @ApiParam({
     name: "id",
@@ -92,19 +119,24 @@ export class NotesController {
   })
   @ApiOkResponse({ type: NoteApiResponseDto })
   update(
+    @CurrentOrganization() organizationId: string,
     @CurrentUser() user: JwtClaims,
     @Param("id") id: string,
     @Body() body: UpdateNoteDto
   ) {
-    return this.commandBus.execute(new UpdateNoteCommand(user.id, id, body))
+    return this.commandBus.execute(
+      new UpdateNoteCommand(organizationId, user.id, id, body)
+    )
   }
 
   @Delete(":id")
+  @RequireOrgPermission("content", "delete")
   @HttpCode(204)
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "Delete a note",
-    description: "Permanently deletes an owned note.",
+    description:
+      "Permanently deletes a note owned by the user in the active workspace.",
   })
   @ApiParam({
     name: "id",
@@ -112,7 +144,13 @@ export class NotesController {
     example: "507f1f77bcf86cd799439011",
   })
   @ApiNoContentResponse({ description: "Note deleted" })
-  remove(@CurrentUser() user: JwtClaims, @Param("id") id: string) {
-    return this.commandBus.execute(new DeleteNoteCommand(user.id, id))
+  remove(
+    @CurrentOrganization() organizationId: string,
+    @CurrentUser() user: JwtClaims,
+    @Param("id") id: string
+  ) {
+    return this.commandBus.execute(
+      new DeleteNoteCommand(organizationId, user.id, id)
+    )
   }
 }

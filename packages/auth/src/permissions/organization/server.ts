@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { authDb, ensureAuthMongoConnected, toMongoId } from "../../db/mongo"
+import { getAuthDb, ensureAuthMongoConnected, toMongoId } from "../../db/mongo"
 import { authCollections } from "../collections"
 import {
   ac,
@@ -20,7 +20,7 @@ async function authorizeDynamicRole<R extends OrganizationResource>(
 ): Promise<boolean> {
   await ensureAuthMongoConnected()
 
-  const record = await authDb
+  const record = await getAuthDb()
     .collection(authCollections.organizationRole)
     .findOne({
       organizationId: toMongoId(organizationId),

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useActiveOrganizationId } from "@workspace/auth/react"
 import {
   BulkDeleteNotesSchema,
   CreateNoteSchema,
@@ -14,30 +15,39 @@ import { toastManager } from "@workspace/ui/components/toast"
 import { apiRoutes } from "@/config/api-routes"
 import { apiFetch } from "@/lib/api"
 
-export const notesQueryKey = ["notes"] as const
+export const notesQueryKey = (organizationId?: string | null) =>
+  ["notes", organizationId ?? null] as const
 
 function patchNotesList(
   queryClient: ReturnType<typeof useQueryClient>,
+  organizationId: string | null | undefined,
   updater: (items: NoteResponse[]) => NoteResponse[]
 ) {
-  queryClient.setQueryData<NotesListResponse>(notesQueryKey, (current) => {
-    if (!current) return current
-    return { items: updater(current.items) }
-  })
+  queryClient.setQueryData<NotesListResponse>(
+    notesQueryKey(organizationId),
+    (current) => {
+      if (!current) return current
+      return { items: updater(current.items) }
+    }
+  )
 }
 
 export function useNotesQuery() {
+  const organizationId = useActiveOrganizationId()
+
   return useQuery({
-    queryKey: notesQueryKey,
+    queryKey: notesQueryKey(organizationId),
     queryFn: async () => {
       const data = await apiFetch<unknown>(apiRoutes.notes)
       return NotesListResponseSchema.parse(data)
     },
+    enabled: !!organizationId,
   })
 }
 
 export function useCreateNoteMutation() {
   const queryClient = useQueryClient()
+  const organizationId = useActiveOrganizationId()
 
   return useMutation({
     mutationFn: async (input: CreateNoteInput) => {
@@ -53,7 +63,9 @@ export function useCreateNoteMutation() {
         title: "Note created",
         type: "success",
       })
-      queryClient.invalidateQueries({ queryKey: notesQueryKey })
+      queryClient.invalidateQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
     },
     onError: () => {
       toastManager.add({
@@ -66,6 +78,7 @@ export function useCreateNoteMutation() {
 
 export function useUpdateNoteMutation() {
   const queryClient = useQueryClient()
+  const organizationId = useActiveOrganizationId()
 
   return useMutation({
     mutationFn: async ({
@@ -83,7 +96,7 @@ export function useUpdateNoteMutation() {
       return data as NoteResponse
     },
     onSuccess: (note) => {
-      patchNotesList(queryClient, (items) =>
+      patchNotesList(queryClient, organizationId, (items) =>
         items.map((item) => (item.id === note.id ? note : item))
       )
       toastManager.add({
@@ -98,20 +111,25 @@ export function useUpdateNoteMutation() {
       })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: notesQueryKey })
+      queryClient.invalidateQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
     },
   })
 }
 
 export function useDeleteNoteMutation() {
   const queryClient = useQueryClient()
+  const organizationId = useActiveOrganizationId()
 
   return useMutation({
     mutationFn: (noteId: string) =>
       apiFetch<void>(apiRoutes.note(noteId), { method: "DELETE" }),
     onMutate: async (noteId) => {
-      await queryClient.cancelQueries({ queryKey: notesQueryKey })
-      patchNotesList(queryClient, (items) =>
+      await queryClient.cancelQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
+      patchNotesList(queryClient, organizationId, (items) =>
         items.filter((item) => item.id !== noteId)
       )
     },
@@ -128,13 +146,16 @@ export function useDeleteNoteMutation() {
       })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: notesQueryKey })
+      queryClient.invalidateQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
     },
   })
 }
 
 export function useBulkDeleteNotesMutation() {
   const queryClient = useQueryClient()
+  const organizationId = useActiveOrganizationId()
 
   return useMutation({
     mutationFn: async (input: BulkDeleteNotesInput) => {
@@ -145,9 +166,11 @@ export function useBulkDeleteNotesMutation() {
       })
     },
     onMutate: async (input) => {
-      await queryClient.cancelQueries({ queryKey: notesQueryKey })
+      await queryClient.cancelQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
       const ids = new Set(input.ids)
-      patchNotesList(queryClient, (items) =>
+      patchNotesList(queryClient, organizationId, (items) =>
         items.filter((item) => !ids.has(item.id))
       )
     },
@@ -167,7 +190,9 @@ export function useBulkDeleteNotesMutation() {
       })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: notesQueryKey })
+      queryClient.invalidateQueries({
+        queryKey: notesQueryKey(organizationId),
+      })
     },
   })
 }

@@ -12,14 +12,15 @@ export class DeleteNoteHandler implements ICommandHandler<DeleteNoteCommand> {
   constructor(private readonly notesRepository: NotesRepository) {}
 
   async execute(command: DeleteNoteCommand): Promise<void> {
-    const deleted = await this.notesRepository.deleteByIdForUser(
+    const deleted = await this.notesRepository.deleteByIdForOrganizationAndUser(
       command.noteId,
+      command.organizationId,
       command.userId
     )
     if (deleted) return
 
     const existing = await this.notesRepository.findById(command.noteId)
-    if (!existing) {
+    if (!existing || existing.organizationId !== command.organizationId) {
       apiNotFound("Note not found", DomainErrorCode.NOTE_NOT_FOUND)
     }
     apiForbidden(

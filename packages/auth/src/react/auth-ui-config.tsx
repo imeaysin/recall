@@ -43,7 +43,6 @@ export interface AuthUiConfig {
   Link: AuthLinkComponent
   siteName: string
   absoluteAppUrl: (path: string) => string
-  jwtStorageKey: string
   socialProviders: ("google" | "github")[]
   verifyEmailStorageKey: string
 }
@@ -62,7 +61,6 @@ export interface AuthUiConfigProviderProps {
   Link: AuthLinkComponent
   siteName: string
   absoluteAppUrl?: AuthUiConfig["absoluteAppUrl"]
-  jwtStorageKey?: string
   socialProviders?: AuthUiConfig["socialProviders"]
   verifyEmailStorageKey?: string
 }
@@ -74,7 +72,6 @@ export function AuthUiConfigProvider({
   Link,
   siteName,
   absoluteAppUrl = defaultAbsoluteAppUrl,
-  jwtStorageKey = "__ba_jwt",
   socialProviders = ["google", "github"],
   verifyEmailStorageKey = "theo.auth.verify-email",
 }: AuthUiConfigProviderProps) {
@@ -85,7 +82,6 @@ export function AuthUiConfigProvider({
       Link,
       siteName,
       absoluteAppUrl,
-      jwtStorageKey,
       socialProviders,
       verifyEmailStorageKey,
     }),
@@ -95,7 +91,6 @@ export function AuthUiConfigProvider({
       Link,
       siteName,
       absoluteAppUrl,
-      jwtStorageKey,
       socialProviders,
       verifyEmailStorageKey,
     ]

@@ -66,25 +66,6 @@ export function useSignInEmail(client: AuthClient = authClient) {
   })
 }
 
-export function useSignInUsername(client: AuthClient = authClient) {
-  return useMutation({
-    mutationFn: async (input: { username: string; password: string }) => {
-      const signInUsername = (
-        client.signIn as AuthClient["signIn"] & {
-          username?: (input: {
-            username: string
-            password: string
-          }) => ReturnType<AuthClient["signIn"]["email"]>
-        }
-      ).username
-      if (!signInUsername) {
-        throw new Error("Username sign-in is not enabled")
-      }
-      return unwrapClientResult(signInUsername(input))
-    },
-  })
-}
-
 export function useSignInMagicLink(client: AuthClient = authClient) {
   return useMutation({
     mutationFn: async (input: { email: string; callbackURL: string }) =>
@@ -318,88 +299,6 @@ export function useRevokeSession(client: AuthClient = authClient) {
   return useMutation({
     mutationFn: async (input: { token: string }) =>
       unwrapClientResult(client.revokeSession(input)),
-    onSuccess: () => invalidate(),
-  })
-}
-
-export function useRevokeMultiSession(client: AuthClient = authClient) {
-  const invalidate = useInvalidateAuthQueries()
-  return useMutation({
-    mutationFn: async (input: { sessionToken: string }) => {
-      const revokeDeviceSession = (
-        client as AuthClient & {
-          multiSession?: {
-            revoke: (input: {
-              sessionToken: string
-            }) => ReturnType<AuthClient["revokeSession"]>
-          }
-        }
-      ).multiSession?.revoke
-      if (!revokeDeviceSession) {
-        throw new Error("Multi-session is not enabled")
-      }
-      return unwrapClientResult(revokeDeviceSession(input))
-    },
-    onSuccess: () => invalidate(),
-  })
-}
-
-export function useSetActiveSession(client: AuthClient = authClient) {
-  const invalidate = useInvalidateAuthQueries()
-  return useMutation({
-    mutationFn: async (input: { sessionToken: string }) => {
-      const setActive = (
-        client as AuthClient & {
-          multiSession?: {
-            setActive: (input: {
-              sessionToken: string
-            }) => ReturnType<AuthClient["revokeSession"]>
-          }
-        }
-      ).multiSession?.setActive
-      if (!setActive) throw new Error("Multi-session is not enabled")
-      return unwrapClientResult(setActive(input))
-    },
-    onSuccess: () => invalidate(),
-  })
-}
-
-export function useCreateApiKey(client: AuthClient = authClient) {
-  const invalidate = useInvalidateAuthQueries()
-  return useMutation({
-    mutationFn: async (input: { name?: string }) => {
-      const create = (
-        client as AuthClient & {
-          apiKey?: {
-            create: (input: {
-              name?: string
-            }) => ReturnType<AuthClient["revokeSession"]>
-          }
-        }
-      ).apiKey?.create
-      if (!create) throw new Error("API keys are not enabled")
-      return unwrapClientResult(create(input))
-    },
-    onSuccess: () => invalidate(),
-  })
-}
-
-export function useDeleteApiKey(client: AuthClient = authClient) {
-  const invalidate = useInvalidateAuthQueries()
-  return useMutation({
-    mutationFn: async (input: { keyId: string }) => {
-      const remove = (
-        client as AuthClient & {
-          apiKey?: {
-            delete: (input: {
-              keyId: string
-            }) => ReturnType<AuthClient["revokeSession"]>
-          }
-        }
-      ).apiKey?.delete
-      if (!remove) throw new Error("API keys are not enabled")
-      return unwrapClientResult(remove(input))
-    },
     onSuccess: () => invalidate(),
   })
 }

@@ -17,9 +17,20 @@ async function main() {
     return
   }
 
+  const member = await db.collection("member").findOne({ userId: user.id })
+  if (!member || typeof member.organizationId !== "string") {
+    console.log(
+      "No organization membership found. Create a workspace in the web app, then re-run seed."
+    )
+    await client.close()
+    return
+  }
+
+  const organizationId = member.organizationId
   const now = new Date()
   const notes = [
     {
+      organizationId,
       userId: user.id,
       title: "Welcome to Theo",
       body: "This note was created by `pnpm --filter api seed`.",
@@ -27,6 +38,7 @@ async function main() {
       updatedAt: now,
     },
     {
+      organizationId,
       userId: user.id,
       title: "Try the API",
       body: "Open Swagger at /docs or use the Notes page in the web app.",
@@ -35,12 +47,13 @@ async function main() {
     },
   ]
 
-  const existing = await db
-    .collection("notes")
-    .countDocuments({ userId: user.id })
+  const existing = await db.collection("notes").countDocuments({
+    organizationId,
+    userId: user.id,
+  })
   if (existing > 0) {
     console.log(
-      `User ${user.email} already has ${existing} note(s). Skipping seed.`
+      `User ${user.email} already has ${existing} note(s) in this workspace. Skipping seed.`
     )
     await client.close()
     return

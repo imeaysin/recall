@@ -11,18 +11,17 @@ import {
 import { useVerifyTotp } from "@workspace/auth/react"
 import { routes, defaultAuthenticatedRoute } from "@/config/routes"
 import {
-  resolvePostAuthRedirectPath,
+  getSafeRedirectPath,
   withAuthRedirectQuery,
 } from "@/routing/safe-redirect"
 
 export function TwoFactorPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const redirectPath = resolvePostAuthRedirectPath({
-    redirect: searchParams.get("redirect"),
-    fallback: defaultAuthenticatedRoute,
-    invitationPath: routes.acceptInvitation,
-  })
+  const redirectPath = getSafeRedirectPath(
+    searchParams.get("redirect"),
+    defaultAuthenticatedRoute
+  )
   const verifyTotp = useVerifyTotp()
   const [code, setCode] = useState("")
   const [codeError, setCodeError] = useState<string>()

@@ -13,10 +13,12 @@ export class BulkDeleteNotesHandler implements ICommandHandler<BulkDeleteNotesCo
   async execute(
     command: BulkDeleteNotesCommand
   ): Promise<BulkDeleteNotesResponse> {
-    const deletedCount = await this.notesRepository.deleteManyByIdsForUser(
-      command.input.ids,
-      command.userId
-    )
+    const deletedCount =
+      await this.notesRepository.deleteManyByIdsForOrganizationAndUser(
+        command.input.ids,
+        command.organizationId,
+        command.userId
+      )
     return BulkDeleteNotesResponseSchema.parse({ deletedCount })
   }
 }

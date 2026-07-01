@@ -18,7 +18,11 @@ import {
 } from "@nestjs/swagger"
 import type { JwtClaims } from "@workspace/auth/types"
 import { DomainErrorCode } from "@workspace/contracts"
-import { CurrentUser } from "../../common/decorators"
+import {
+  CurrentOrganization,
+  CurrentUser,
+  RequireOrgPermission,
+} from "../../common/decorators"
 import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import { apiBadRequest } from "../../common/exceptions/api.exception"
 import { UploadFileCommand } from "./commands/upload-file.command"
@@ -33,11 +37,13 @@ export class UploadsController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post()
+  @RequireOrgPermission("content", "create")
   @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth("bearer")
   @ApiOperation({
     summary: "Upload a file",
-    description: "Uploads a single file (max 5 MB) for the authenticated user.",
+    description:
+      "Uploads a single file (max 5 MB) for the authenticated user in the active workspace.",
   })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
@@ -59,6 +65,7 @@ export class UploadsController {
     FileInterceptor("file", { limits: { fileSize: MAX_BYTES, files: 1 } })
   )
   upload(
+    @CurrentOrganization() organizationId: string,
     @CurrentUser() user: JwtClaims,
     @UploadedFile()
     file?: {
@@ -73,6 +80,8 @@ export class UploadsController {
       apiBadRequest("File is required", DomainErrorCode.FILE_REQUIRED)
     }
 
-    return this.commandBus.execute(new UploadFileCommand(user.id, uploaded))
+    return this.commandBus.execute(
+      new UploadFileCommand(organizationId, user.id, uploaded)
+    )
   }
 }

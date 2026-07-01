@@ -8,7 +8,6 @@ import { magicLink } from "better-auth/plugins/magic-link"
 import { emailOTP } from "better-auth/plugins/email-otp"
 import { organization } from "better-auth/plugins/organization"
 import { passkey } from "@better-auth/passkey"
-import { nextCookies } from "better-auth/next-js"
 import { env } from "@workspace/config"
 import {
   sendVerificationEmail,
@@ -20,7 +19,7 @@ import {
 import { adminPluginOptions } from "../config/admin-plugin"
 import { organizationPluginOptions } from "../config/organization-plugin"
 import type { JwtPayload } from "../config/jwt"
-import { authDb, authMongoClient } from "../db/mongo"
+import { getAuthDb, getAuthMongoClient } from "../db/mongo"
 import { findOrganizationMemberRole } from "./organization-role"
 import { ensureSessionActiveOrganization } from "./default-organization"
 
@@ -77,7 +76,7 @@ export function createAuth() {
       origin.trim()
     ),
 
-    database: mongodbAdapter(authDb, { client: authMongoClient }),
+    database: mongodbAdapter(getAuthDb(), { client: getAuthMongoClient() }),
 
     databaseHooks: {
       session: {
@@ -179,14 +178,20 @@ export function createAuth() {
           )
         },
       }),
-
-      nextCookies(),
     ],
   })
 
   return auth
 }
 
-export const auth = createAuth()
+let authInstance: Auth | null = null
+
+/** Lazily creates Better Auth after `connectDb()` — safe for serverless cold starts. */
+export function getAuth(): Auth {
+  if (!authInstance) {
+    authInstance = createAuth()
+  }
+  return authInstance
+}
 
 export type Auth = ReturnType<typeof createAuth>

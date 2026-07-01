@@ -31,6 +31,12 @@ export function useUser(client: AuthClient = authClient) {
   }
 }
 
+/** Active workspace id from the Better Auth session. */
+export function useActiveOrganizationId(client: AuthClient = authClient) {
+  const { data: session } = useAuthSession(client)
+  return session?.session.activeOrganizationId ?? null
+}
+
 export function useAuthenticate(options?: {
   redirectTo?: string
   enabled?: boolean
@@ -81,23 +87,6 @@ export function useListSessions(client: AuthClient = authClient) {
   })
 }
 
-export function useListDeviceSessions(client: AuthClient = authClient) {
-  const { enabled } = useAuthenticatedQueryEnabled(client)
-  return useQuery({
-    queryKey: authQueryKeys.deviceSessions(),
-    enabled,
-    queryFn: async () => {
-      const listDeviceSessions = (
-        client as AuthClient & {
-          listDeviceSessions?: () => ReturnType<AuthClient["listSessions"]>
-        }
-      ).listDeviceSessions
-      if (!listDeviceSessions) return []
-      return unwrapClientResult(listDeviceSessions.call(client))
-    },
-  })
-}
-
 export function useListPasskeys(client: AuthClient = authClient) {
   const { enabled } = useAuthenticatedQueryEnabled(client)
   return useQuery({
@@ -107,23 +96,6 @@ export function useListPasskeys(client: AuthClient = authClient) {
       const listPasskeys = client.passkey?.listUserPasskeys
       if (!listPasskeys) return []
       return unwrapClientResult(listPasskeys.call(client.passkey))
-    },
-  })
-}
-
-export function useListApiKeys(client: AuthClient = authClient) {
-  const { enabled } = useAuthenticatedQueryEnabled(client)
-  return useQuery({
-    queryKey: authQueryKeys.apiKeys(),
-    enabled,
-    queryFn: async () => {
-      const listApiKeys = (
-        client as AuthClient & {
-          apiKey?: { list: () => ReturnType<AuthClient["listSessions"]> }
-        }
-      ).apiKey?.list
-      if (!listApiKeys) return []
-      return unwrapClientResult(listApiKeys())
     },
   })
 }
@@ -438,25 +410,4 @@ export function useAssignableOrganizationRoles(
         invitePermissionPending
       : false,
   }
-}
-
-export function useIsUsernameAvailable(
-  username: string,
-  client: AuthClient = authClient
-) {
-  return useQuery({
-    queryKey: authQueryKeys.usernameAvailable(username),
-    enabled: username.length > 0,
-    queryFn: async () => {
-      const isUsernameAvailable = (
-        client as AuthClient & {
-          isUsernameAvailable?: (input: {
-            username: string
-          }) => ReturnType<AuthClient["listSessions"]>
-        }
-      ).isUsernameAvailable
-      if (!isUsernameAvailable) return { available: false }
-      return unwrapClientResult(isUsernameAvailable({ username }))
-    },
-  })
 }

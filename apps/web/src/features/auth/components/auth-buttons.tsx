@@ -1,8 +1,10 @@
-import { useSignInSocial, type SocialSignInInput } from "@workspace/auth/react"
+import {
+  useSignInSocial,
+  useAuthUiConfig,
+  type SocialSignInInput,
+} from "@workspace/auth/react"
 import { AuthProviderButtons, type AuthOAuthProvider } from "@workspace/ui/auth"
 import { absoluteAppUrl, defaultAuthenticatedRoute } from "@/config/routes"
-
-const providers: AuthOAuthProvider[] = ["google", "github"]
 
 interface AuthButtonsProps {
   callbackPath?: string
@@ -11,6 +13,7 @@ interface AuthButtonsProps {
 export function AuthButtons({
   callbackPath = defaultAuthenticatedRoute,
 }: AuthButtonsProps) {
+  const { socialProviders } = useAuthUiConfig()
   const socialSignIn = useSignInSocial()
 
   function handleProviderClick(provider: AuthOAuthProvider) {
@@ -29,7 +32,7 @@ export function AuthButtons({
           : null
       }
       onProviderClick={handleProviderClick}
-      providers={providers}
+      providers={socialProviders}
       showDivider
     />
   )

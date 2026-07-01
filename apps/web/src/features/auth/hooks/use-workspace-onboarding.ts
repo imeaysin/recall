@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
-  buildOrganizationSlug,
+  checkOrganizationSlugAvailable,
+  resolveAvailableOrganizationSlug,
   useCreateOrganization,
   useAuthSession,
 } from "@workspace/auth/react"
@@ -29,15 +30,18 @@ export function useWorkspaceOnboarding() {
   const name = useWatch({ control: form.control, name: "name" })
   const { errors } = useFormState({ control: form.control })
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onSubmit = form.handleSubmit(async (values) => {
     const userId = session?.user.id
     if (!userId) return
 
+    const slug = await resolveAvailableOrganizationSlug(
+      values.name,
+      userId,
+      checkOrganizationSlugAvailable
+    )
+
     createOrganization(
-      {
-        name: values.name,
-        slug: buildOrganizationSlug(values.name, userId),
-      },
+      { name: values.name, slug },
       {
         onSuccess: () => {
           toastManager.add({

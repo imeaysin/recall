@@ -4,6 +4,7 @@ import { apiSuccessResponse } from "../api/envelopes"
 export const NoteResponseSchema = z
   .object({
     id: z.string().describe("Unique note identifier"),
+    organizationId: z.string().describe("Workspace organization id"),
     userId: z.string().describe("Owner user id"),
     title: z.string().describe("Note title"),
     body: z.string().describe("Note body"),
@@ -13,7 +14,7 @@ export const NoteResponseSchema = z
   .meta({
     id: "NoteResponseDto",
     title: "Note",
-    description: "A user-owned note.",
+    description: "A note scoped to a workspace and owned by a user.",
   })
 
 export const CreateNoteSchema = z
@@ -90,7 +91,8 @@ export const BulkDeleteNotesSchema = z
   .meta({
     id: "BulkDeleteNotesDto",
     title: "Bulk delete notes",
-    description: "Delete multiple notes owned by the current user.",
+    description:
+      "Delete multiple notes owned by the current user in the active workspace.",
   })
 
 export const BulkDeleteNotesResponseSchema = z
@@ -109,12 +111,15 @@ export const BulkDeleteNotesResponseSchema = z
 
 export const NotesListResponseSchema = z
   .object({
-    items: z.array(NoteResponseSchema).describe("Notes for the current user"),
+    items: z
+      .array(NoteResponseSchema)
+      .describe("Notes for the current user in the active workspace"),
   })
   .meta({
     id: "NotesListResponseDto",
     title: "Notes list",
-    description: "Paginated-style list wrapper (all notes for the user).",
+    description:
+      "Paginated-style list wrapper (all notes for the user in the active workspace).",
   })
 
 export type NoteResponse = z.infer<typeof NoteResponseSchema>

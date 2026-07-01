@@ -8,9 +8,8 @@ import {
 } from "@nestjs/core"
 import { ZodValidationPipe } from "nestjs-zod"
 import { CqrsModule } from "@nestjs/cqrs"
-import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler"
 import { AuthModule } from "@thallesp/nestjs-better-auth"
-import { auth } from "@workspace/auth"
+import { getAuth } from "@workspace/auth"
 import { JwksGuard, OrgRbacGuard, RbacGuard } from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
@@ -36,19 +35,12 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
     MeModule,
     NotesModule,
     UploadsModule,
-    ThrottlerModule.forRoot([
-      {
-        name: "default",
-        ttl: 60_000,
-        limit: 120,
-      },
-    ]),
     AuthModule.forRootAsync({
       imports: [DatabaseModule],
       inject: [DATABASE_READY],
       disableGlobalAuthGuard: true,
       useFactory: () => ({
-        auth,
+        auth: getAuth(),
         bodyParser: {
           json: { limit: "2mb" },
           urlencoded: { limit: "2mb", extended: true },
@@ -60,7 +52,6 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
   controllers: [AppController],
   providers: [
     AppService,
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
     {
       provide: APP_GUARD,
       useFactory: (reflector: Reflector) => new JwksGuard(reflector),

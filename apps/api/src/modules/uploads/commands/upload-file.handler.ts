@@ -9,9 +9,9 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
   constructor(private readonly storageRepository: StorageRepository) {}
 
   async execute(command: UploadFileCommand): Promise<UploadResponse> {
-    const { userId, file } = command
+    const { organizationId, userId, file } = command
     const safeName = file.originalname.replace(/[^\w.-]+/g, "_").slice(0, 120)
-    const path = `${userId}/${randomUUID()}-${safeName}`
+    const path = `${organizationId}/${userId}/${randomUUID()}-${safeName}`
 
     const result = await this.storageRepository.upload({
       path,

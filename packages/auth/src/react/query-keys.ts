@@ -6,9 +6,7 @@ export const authQueryKeys = {
   accountInfo: (accountId?: string) =>
     [...authQueryKeys.all, "account-info", accountId] as const,
   sessions: () => [...authQueryKeys.all, "sessions"] as const,
-  deviceSessions: () => [...authQueryKeys.all, "device-sessions"] as const,
   passkeys: () => [...authQueryKeys.all, "passkeys"] as const,
-  apiKeys: () => [...authQueryKeys.all, "api-keys"] as const,
   organizations: () => [...authQueryKeys.all, "organizations"] as const,
   activeOrganization: (slug?: string, organizationId?: string | null) =>
     [
@@ -50,6 +48,4 @@ export const authQueryKeys = {
       memberRole,
       permission,
     ] as const,
-  usernameAvailable: (username: string) =>
-    [...authQueryKeys.all, "username-available", username] as const,
 } as const

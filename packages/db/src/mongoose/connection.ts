@@ -4,10 +4,19 @@ import { createLogger } from "@workspace/logger"
 
 const logger = createLogger("DB")
 
-let isConnected = false
-
 const RETRY_ATTEMPTS = 5
 const RETRY_DELAY_MS = 3000
+
+function isConnectionReady() {
+  return mongoose.connection.readyState === 1
+}
+
+export function getMongoClient() {
+  if (!isConnectionReady()) {
+    throw new Error("MongoDB not connected. Call connectDb() first.")
+  }
+  return mongoose.connection.getClient()
+}
 
 export function getDb() {
   const db = mongoose.connection.db
@@ -18,7 +27,7 @@ export function getDb() {
 }
 
 export async function connectDb(uri: string = databaseEnv.MONGODB_URI) {
-  if (isConnected) return mongoose
+  if (isConnectionReady()) return mongoose
 
   let lastError: unknown
 
@@ -27,7 +36,6 @@ export async function connectDb(uri: string = databaseEnv.MONGODB_URI) {
       const instance = await mongoose.connect(uri, {
         serverSelectionTimeoutMS: 5000,
       })
-      isConnected = true
       logger.info({ attempt }, "Connected to MongoDB")
       return instance
     } catch (error) {
@@ -51,12 +59,11 @@ export async function connectDb(uri: string = databaseEnv.MONGODB_URI) {
 }
 
 export async function disconnectDb() {
-  if (!isConnected) return
+  if (!isConnectionReady()) return
   await mongoose.disconnect()
-  isConnected = false
   logger.info("Disconnected from MongoDB")
 }
 
 export function isDbConnected(): boolean {
-  return isConnected && mongoose.connection.readyState === 1
+  return isConnectionReady()
 }

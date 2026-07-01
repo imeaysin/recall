@@ -122,5 +122,3 @@ export type { EditOrganizationRoleDialogProps } from "./organization/edit-organi
 
 export { DeleteOrganizationRoleDialog } from "./organization/delete-organization-role-dialog"
 export type { DeleteOrganizationRoleDialogProps } from "./organization/delete-organization-role-dialog"
-
-export { sanitizeOrganizationSlug } from "./organization/sanitize-slug"

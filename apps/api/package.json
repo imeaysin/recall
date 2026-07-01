@@ -27,7 +27,6 @@
     "@nestjs/cqrs": "catalog:",
     "@nestjs/platform-express": "catalog:",
     "@nestjs/swagger": "catalog:",
-    "@nestjs/throttler": "catalog:",
     "@thallesp/nestjs-better-auth": "^2.6.1",
     "@workspace/auth": "workspace:*",
     "@workspace/config": "workspace:*",

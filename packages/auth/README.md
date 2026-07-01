@@ -107,11 +107,13 @@ Registered globally in `apps/api/src/app.module.ts`:
 JwksGuard → RbacGuard → OrgRbacGuard
 ```
 
-| Decorator                                 | Scope      |
-| ----------------------------------------- | ---------- |
-| `@Public()`                               | Skip JWT   |
-| `@RequirePermission(resource, action)`    | Platform   |
-| `@RequireOrgPermission(resource, action)` | Active org |
+| Decorator                                 | Scope                                          |
+| ----------------------------------------- | ---------------------------------------------- |
+| `@Public()`                               | Skip JWT                                       |
+| `@CurrentUser()`                          | JWT claims                                     |
+| `@CurrentOrganization()`                  | JWT `activeOrganizationId` (throws if missing) |
+| `@RequirePermission(resource, action)`    | Platform                                       |
+| `@RequireOrgPermission(resource, action)` | Active org                                     |
 
 Permission statements (resources + actions) live in the `statement` export in each permissions file. Use those keys in decorators.
 
@@ -181,17 +183,17 @@ With `dynamicAccessControl` enabled, **always use `hasPermission` hooks for UI**
 
 ## Exports
 
-| Import                                     | Use                                            |
-| ------------------------------------------ | ---------------------------------------------- |
-| `@workspace/auth`                          | Server `auth` instance                         |
-| `@workspace/auth/client`                   | Browser `authClient`                           |
-| `@workspace/auth/react`                    | React hooks (`useAuthSession`, auth mutations) |
-| `@workspace/auth/nestjs`                   | Guards + decorators                            |
-| `@workspace/auth/permissions`              | Platform AC + roles                            |
-| `@workspace/auth/permissions/organization` | Org AC + roles + sync check helpers            |
-| `@workspace/auth/types`                    | `JwtClaims`, `PlatformRoleName`                |
-| `@workspace/auth/types/organization`       | Org entity types + role CRUD input types       |
-| `@workspace/auth/mobile`                   | Expo auth client                               |
+| Import                                     | Use                                             |
+| ------------------------------------------ | ----------------------------------------------- |
+| `@workspace/auth`                          | Server `getAuth()` (after `connectDb`)          |
+| `@workspace/auth/client`                   | Browser `authClient`                            |
+| `@workspace/auth/react`                    | React hooks (`useAuthSession`, auth mutations)  |
+| `@workspace/auth/nestjs`                   | Guards + decorators (`@CurrentOrganization`, …) |
+| `@workspace/auth/permissions`              | Platform AC + roles                             |
+| `@workspace/auth/permissions/organization` | Org AC + roles + sync check helpers             |
+| `@workspace/auth/types`                    | `JwtClaims`, `PlatformRoleName`                 |
+| `@workspace/auth/types/organization`       | Org entity types + role CRUD input types        |
+| `@workspace/auth/mobile`                   | Expo auth client                                |
 
 ## DB migrate
 
@@ -200,3 +202,11 @@ After plugin changes:
 ```bash
 pnpm --filter @workspace/auth db:migrate
 ```
+
+## Serverless
+
+- **Single DB pool:** `getAuthDb()` / `getAuthMongoClient()` delegate to `@workspace/db` — do not create a second `MongoClient`.
+- **Lazy init:** call `connectDb()` before `getAuth()` (API: `DatabaseModule` + `DATABASE_READY`; CLI: `auth.cli.ts`).
+- **Sessions & rate limits:** stored in MongoDB via Better Auth adapter — no in-memory session store.
+- **Business API:** stateless JWT verification (`JwksGuard`); workspace from token, not client input.
+- **Rate limiting:** avoid in-memory counters in Nest. Prefer edge/gateway limits; when on Better Auth versions that support it, use `rateLimit: { storage: "database" }` and re-run `db:migrate`.

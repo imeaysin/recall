@@ -1,5 +1,5 @@
 import { authCollections } from "../permissions/collections"
-import { authDb, ensureAuthMongoConnected, toMongoId } from "../db/mongo"
+import { ensureAuthMongoConnected, getAuthDb, toMongoId } from "../db/mongo"
 
 export { toMongoId } from "../db/mongo"
 
@@ -9,10 +9,12 @@ export async function findOrganizationMemberRole(
 ) {
   await ensureAuthMongoConnected()
 
-  const member = await authDb.collection(authCollections.member).findOne({
-    organizationId: toMongoId(organizationId),
-    userId: toMongoId(userId),
-  })
+  const member = await getAuthDb()
+    .collection(authCollections.member)
+    .findOne({
+      organizationId: toMongoId(organizationId),
+      userId: toMongoId(userId),
+    })
 
   return typeof member?.role === "string" ? member.role : null
 }

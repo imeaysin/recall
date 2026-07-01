@@ -7,10 +7,13 @@ const COLLECTION = "notes"
 
 @Injectable()
 export class NotesRepository {
-  async findByUserId(userId: string): Promise<NoteEntity[]> {
+  async findByOrganizationAndUser(
+    organizationId: string,
+    userId: string
+  ): Promise<NoteEntity[]> {
     const records = await getDb()
       .collection<NoteRecord>(COLLECTION)
-      .find({ userId })
+      .find({ organizationId, userId })
       .sort({ createdAt: -1 })
       .toArray()
 
@@ -18,13 +21,14 @@ export class NotesRepository {
   }
 
   async insert(
-    data: Pick<NoteEntity, "userId" | "title" | "body">
+    data: Pick<NoteEntity, "organizationId" | "userId" | "title" | "body">
   ): Promise<NoteEntity> {
     const now = new Date()
 
     const { insertedId } = await getDb()
       .collection<Omit<NoteRecord, "_id">>(COLLECTION)
       .insertOne({
+        organizationId: data.organizationId,
         userId: data.userId,
         title: data.title,
         body: data.body,
@@ -34,6 +38,7 @@ export class NotesRepository {
 
     return {
       id: insertedId.toString(),
+      organizationId: data.organizationId,
       userId: data.userId,
       title: data.title,
       body: data.body,
@@ -52,8 +57,9 @@ export class NotesRepository {
     return record ? toNoteEntity(record) : null
   }
 
-  async updateByIdForUser(
+  async updateByIdForOrganizationAndUser(
     id: string,
+    organizationId: string,
     userId: string,
     data: Partial<Pick<NoteEntity, "title" | "body">>
   ): Promise<NoteEntity | null> {
@@ -63,7 +69,7 @@ export class NotesRepository {
     const result = await getDb()
       .collection<NoteRecord>(COLLECTION)
       .findOneAndUpdate(
-        { _id: new ObjectId(id), userId },
+        { _id: new ObjectId(id), organizationId, userId },
         {
           $set: {
             ...data,
@@ -76,17 +82,25 @@ export class NotesRepository {
     return result ? toNoteEntity(result) : null
   }
 
-  async deleteByIdForUser(id: string, userId: string): Promise<boolean> {
+  async deleteByIdForOrganizationAndUser(
+    id: string,
+    organizationId: string,
+    userId: string
+  ): Promise<boolean> {
     if (!ObjectId.isValid(id)) return false
 
     const result = await getDb()
       .collection<NoteRecord>(COLLECTION)
-      .deleteOne({ _id: new ObjectId(id), userId })
+      .deleteOne({ _id: new ObjectId(id), organizationId, userId })
 
     return result.deletedCount > 0
   }
 
-  async deleteManyByIdsForUser(ids: string[], userId: string): Promise<number> {
+  async deleteManyByIdsForOrganizationAndUser(
+    ids: string[],
+    organizationId: string,
+    userId: string
+  ): Promise<number> {
     const objectIds = ids
       .filter((id) => ObjectId.isValid(id))
       .map((id) => new ObjectId(id))
@@ -95,7 +109,7 @@ export class NotesRepository {
 
     const result = await getDb()
       .collection<NoteRecord>(COLLECTION)
-      .deleteMany({ _id: { $in: objectIds }, userId })
+      .deleteMany({ _id: { $in: objectIds }, organizationId, userId })
 
     return result.deletedCount
   }

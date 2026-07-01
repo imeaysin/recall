@@ -10,6 +10,7 @@ export class CreateNoteHandler implements ICommandHandler<CreateNoteCommand> {
 
   async execute(command: CreateNoteCommand): Promise<NoteResponse> {
     const note = await this.notesRepository.insert({
+      organizationId: command.organizationId,
       userId: command.userId,
       title: command.input.title,
       body: command.input.body,

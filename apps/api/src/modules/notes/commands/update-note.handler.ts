@@ -14,15 +14,16 @@ export class UpdateNoteHandler implements ICommandHandler<UpdateNoteCommand> {
   constructor(private readonly notesRepository: NotesRepository) {}
 
   async execute(command: UpdateNoteCommand): Promise<NoteResponse> {
-    const updated = await this.notesRepository.updateByIdForUser(
+    const updated = await this.notesRepository.updateByIdForOrganizationAndUser(
       command.noteId,
+      command.organizationId,
       command.userId,
       command.input
     )
     if (updated) return toNoteResponse(updated)
 
     const existing = await this.notesRepository.findById(command.noteId)
-    if (!existing) {
+    if (!existing || existing.organizationId !== command.organizationId) {
       apiNotFound("Note not found", DomainErrorCode.NOTE_NOT_FOUND)
     }
     apiForbidden(

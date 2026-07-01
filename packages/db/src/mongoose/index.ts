@@ -1,1 +1,7 @@
-export { connectDb, disconnectDb, getDb, isDbConnected } from "./connection"
+export {
+  connectDb,
+  disconnectDb,
+  getDb,
+  getMongoClient,
+  isDbConnected,
+} from "./connection"

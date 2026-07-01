@@ -1,20 +1,20 @@
-import { MongoClient, ObjectId } from "mongodb"
+import { ObjectId } from "mongodb"
+import { connectDb, getDb, getMongoClient, isDbConnected } from "@workspace/db"
 import { env } from "@workspace/config"
 
-const client = new MongoClient(env.MONGODB_URI)
+/** Shared MongoDB handle — same pool as business API (`@workspace/db`). */
+export function getAuthDb() {
+  return getDb()
+}
 
-/** Shared MongoDB handle for auth (Better Auth adapter + permission lookups). */
-export const authDb = client.db()
+export function getAuthMongoClient() {
+  return getMongoClient()
+}
 
-export const authMongoClient = client
-
-let connectPromise: Promise<MongoClient> | null = null
-
-export function ensureAuthMongoConnected() {
-  if (!connectPromise) {
-    connectPromise = client.connect()
+export async function ensureAuthMongoConnected() {
+  if (!isDbConnected()) {
+    await connectDb(env.MONGODB_URI)
   }
-  return connectPromise
 }
 
 /** Better Auth stores foreign keys to `id` fields as ObjectIds in MongoDB. */
