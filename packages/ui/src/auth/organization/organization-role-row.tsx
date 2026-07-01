@@ -3,9 +3,9 @@
 import {
   countOrganizationPermissions,
   formatOrganizationRoleLabel,
-  useOrganizationPermission,
-} from "@workspace/auth/react"
-import type { OrganizationRole } from "@workspace/auth/react"
+} from "@workspace/auth/permissions/organization"
+import { useOrganizationPermission } from "@workspace/auth/react"
+import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { Pencil, Trash2 } from "lucide-react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"

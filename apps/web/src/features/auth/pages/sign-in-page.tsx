@@ -9,7 +9,7 @@ import { Input } from "@workspace/ui/components/input"
 import { PageLoading } from "@workspace/ui/components/page-loading"
 import { toastManager } from "@workspace/ui/components/toast"
 import { AuthButtons } from "@/features/auth/components/auth-buttons"
-import { useSignInMutation, useAuthSession } from "@workspace/auth/react"
+import { useSignInEmail, useAuthSession } from "@workspace/auth/react"
 import { defaultAuthenticatedRoute, routes } from "@/config/routes"
 import { site } from "@/config/site"
 import {
@@ -36,7 +36,7 @@ export function SignInPage() {
     invitationPath: routes.acceptInvitation,
   })
   const { data: session, isPending } = useAuthSession()
-  const signIn = useSignInMutation()
+  const signIn = useSignInEmail()
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: { email: "", password: "" },

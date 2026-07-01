@@ -1,4 +1,4 @@
-import type { OrganizationPermissionCheck } from "@workspace/auth/react"
+import type { OrganizationPermissionCheck } from "@workspace/auth/permissions/organization"
 
 export const organizationUiPermissions = {
   deleteOrganization: { permissions: { organization: ["delete"] } },

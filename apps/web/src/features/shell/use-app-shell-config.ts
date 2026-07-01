@@ -9,12 +9,12 @@ import type {
 import { appNavigation } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
-import { useAuthSession, useSignOutMutation } from "@workspace/auth/react"
+import { useAuthSession, useSignOut } from "@workspace/auth/react"
 
 export function useAppShellConfig() {
   const navigate = useNavigate()
   const { data: session, isPending: userLoading } = useAuthSession()
-  const signOut = useSignOutMutation()
+  const signOut = useSignOut()
   const user = session?.user
 
   const navigation = useMemo(() => appNavigation, [])

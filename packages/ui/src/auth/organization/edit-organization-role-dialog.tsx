@@ -1,11 +1,9 @@
 "use client"
 
 import type { SubmitEventHandler } from "react"
-import type {
-  OrganizationPermissionMap,
-  OrganizationRole,
-} from "@workspace/auth/react"
-import { formatOrganizationRoleLabel } from "@workspace/auth/react"
+import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
+import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
+import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,

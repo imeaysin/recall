@@ -14,6 +14,7 @@ jest.mock("@workspace/auth/nestjs", () => ({
   Public: () => () => undefined,
   CurrentUser: () => () => undefined,
   RequirePermission: () => () => undefined,
+  RequireOrgPermission: () => () => undefined,
   JwksGuard: class JwksGuard {
     canActivate() {
       return true
@@ -26,11 +27,6 @@ jest.mock("@workspace/auth/nestjs", () => ({
   },
   OrgRbacGuard: class OrgRbacGuard {
     async canActivate() {
-      return true
-    }
-  },
-  RolesGuard: class RolesGuard {
-    canActivate() {
       return true
     }
   },

@@ -1,12 +1,12 @@
 "use client"
 
-import type { OrganizationPermissionMap } from "@workspace/auth/react"
+import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import {
   formatOrganizationPermissionLabel,
   hasOrganizationPermission,
   organizationPermissionMatrix,
   toggleOrganizationPermission,
-} from "@workspace/auth/react"
+} from "@workspace/auth/permissions/organization"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Label } from "@workspace/ui/components/label"
 import { cn } from "@workspace/ui/lib/utils"

@@ -3,10 +3,12 @@
 import {
   formatOrganizationRoleLabel,
   getStaticOrganizationRoleNames,
+} from "@workspace/auth/permissions/organization"
+import {
   useListOrganizationRoles,
   useOrganizationPermission,
 } from "@workspace/auth/react"
-import type { OrganizationRole } from "@workspace/auth/react"
+import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { Button } from "@workspace/ui/components/button"
 import { Card } from "@workspace/ui/components/card"
 import {

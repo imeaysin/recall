@@ -3,7 +3,7 @@
 import {
   useActiveOrganization,
   useAuthUiConfig,
-  useSession,
+  useAuthSession,
 } from "@workspace/auth/react"
 import type { LucideIcon } from "lucide-react"
 import { ChevronsUpDown, LogOut, Settings } from "lucide-react"
@@ -150,7 +150,7 @@ export function AuthUserButton({
   onCreateOrganization,
 }: AuthUserButtonProps) {
   const config = useAuthUiConfig()
-  const { data: session, isPending } = useSession()
+  const { data: session, isPending } = useAuthSession()
   const { data: activeOrganization } = useActiveOrganization()
   const [open, setOpen] = useState(false)
   const { Link } = config

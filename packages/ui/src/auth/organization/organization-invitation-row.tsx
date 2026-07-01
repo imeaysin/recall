@@ -1,7 +1,7 @@
 "use client"
 
+import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import {
-  formatOrganizationRoleLabel,
   useCancelInvitation,
   useOrganizationPermission,
 } from "@workspace/auth/react"

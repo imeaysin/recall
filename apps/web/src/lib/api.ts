@@ -1,4 +1,4 @@
-import { authClient } from "@/lib/auth"
+import { authClient } from "@workspace/auth/client"
 import { env } from "@/config/env"
 import {
   HttpErrorCode,

@@ -10,14 +10,14 @@ import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useResetPasswordMutation } from "@workspace/auth/react"
+import { useResetPassword } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function ResetPasswordPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = searchParams.get("token") ?? ""
-  const resetPassword = useResetPasswordMutation()
+  const resetPassword = useResetPassword()
   const form = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { password: "", confirmPassword: "" },

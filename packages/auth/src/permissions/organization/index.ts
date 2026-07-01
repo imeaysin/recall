@@ -134,7 +134,7 @@ export function getStaticOrganizationRoleNames(): (keyof typeof organizationRole
 
 /** Static built-in roles plus any dynamic roles from list-roles. */
 export function getOrganizationRoleNames(
-  dynamicRoles?: Array<{ role: string }> | null
+  dynamicRoles?: { role: string }[] | null
 ): string[] {
   const staticNames = getStaticOrganizationRoleNames()
   const dynamicNames =
@@ -158,7 +158,7 @@ export function canAssignOrganizationRole(
 export function resolveAssignableOrganizationRoles(input: {
   canAssignRoles: boolean
   activeMemberRole?: string | null
-  dynamicRoles?: Array<{ role: string }> | null
+  dynamicRoles?: { role: string }[] | null
 }): string[] {
   if (!input.canAssignRoles) return []
 

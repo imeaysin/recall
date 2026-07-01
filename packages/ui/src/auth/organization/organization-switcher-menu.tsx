@@ -4,7 +4,7 @@ import {
   useActiveOrganization,
   useAuthUiConfig,
   useListOrganizations,
-  useSession,
+  useAuthSession,
   useSetActiveOrganization,
 } from "@workspace/auth/react"
 import type { OrganizationSummary } from "@workspace/auth/types/organization"
@@ -34,7 +34,7 @@ export function OrganizationSwitcherMenu({
   onCreateOrganization,
 }: OrganizationSwitcherMenuProps) {
   const config = useAuthUiConfig()
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { data: activeOrganization } = useActiveOrganization()
   const { data: organizations } = useListOrganizations()
   const { mutate: setActiveOrganization } = useSetActiveOrganization()

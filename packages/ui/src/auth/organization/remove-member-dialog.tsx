@@ -1,9 +1,7 @@
 "use client"
 
-import {
-  formatOrganizationRoleLabel,
-  useRemoveMember,
-} from "@workspace/auth/react"
+import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
+import { useRemoveMember } from "@workspace/auth/react"
 import type { OrganizationMember } from "@workspace/auth/types/organization"
 import {
   AlertDialog,

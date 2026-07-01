@@ -42,16 +42,6 @@
       "import": "./dist/types/organization.js",
       "require": "./dist/types/organization.cjs"
     },
-    "./nextjs": {
-      "types": "./dist/adapters/nextjs/index.d.ts",
-      "import": "./dist/adapters/nextjs/index.js",
-      "require": "./dist/adapters/nextjs/index.cjs"
-    },
-    "./nextjs/server": {
-      "types": "./dist/adapters/nextjs/server.d.ts",
-      "import": "./dist/adapters/nextjs/server.js",
-      "require": "./dist/adapters/nextjs/server.cjs"
-    },
     "./mobile": {
       "types": "./dist/adapters/mobile/expo-client.d.ts",
       "import": "./dist/adapters/mobile/expo-client.js",
@@ -61,11 +51,6 @@
       "types": "./dist/adapters/nestjs/index.d.ts",
       "import": "./dist/adapters/nestjs/index.js",
       "require": "./dist/adapters/nestjs/index.cjs"
-    },
-    "./hono": {
-      "types": "./dist/adapters/hono/bearer.middleware.d.ts",
-      "import": "./dist/adapters/hono/bearer.middleware.js",
-      "require": "./dist/adapters/hono/bearer.middleware.cjs"
     },
     "./react": {
       "types": "./dist/react/index.d.ts",
@@ -112,19 +97,12 @@
     "expo-secure-store": {
       "optional": true
     },
-    "hono": {
-      "optional": true
-    },
-    "next": {
-      "optional": true
-    },
     "react": {
       "optional": true
     }
   },
   "devDependencies": {
     "auth": "catalog:",
-    "next": "catalog:",
     "@types/react": "catalog:",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",

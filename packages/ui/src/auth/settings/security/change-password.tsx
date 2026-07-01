@@ -5,7 +5,7 @@ import {
   useChangePassword,
   useListAccounts,
   useRequestPasswordReset,
-  useSession,
+  useAuthSession,
 } from "@workspace/auth/react"
 import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
@@ -30,7 +30,7 @@ export interface ChangePasswordProps {
 const MIN_PASSWORD_LENGTH = 8
 
 export function ChangePassword({ className }: ChangePasswordProps) {
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
   const hasCredentialAccount = accounts?.some(
@@ -51,7 +51,7 @@ export function ChangePassword({ className }: ChangePasswordProps) {
 
 function SetPassword({ className }: { className?: string }) {
   const config = useAuthUiConfig()
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset()
 
   const handleSetPassword = () => {
@@ -106,7 +106,7 @@ function ChangePasswordForm({
   session,
 }: {
   className?: string
-  session: ReturnType<typeof useSession>["data"] | undefined
+  session: ReturnType<typeof useAuthSession>["data"] | undefined
 }) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")

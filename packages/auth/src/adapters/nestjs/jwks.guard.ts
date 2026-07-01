@@ -5,14 +5,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
-import { jwtVerify, createRemoteJWKSet } from "jose"
-import { env } from "@workspace/config"
+import { isJwtExpiredError, verifyAccessToken } from "../../lib/jwt"
 import { IS_PUBLIC_KEY } from "./public.decorator"
-
-const JWKS = createRemoteJWKSet(
-  new URL(`${env.BETTER_AUTH_URL}/api/auth/jwks`),
-  { cooldownDuration: 300_000 }
-)
 
 @Injectable()
 export class JwksGuard implements CanActivate {
@@ -33,19 +27,10 @@ export class JwksGuard implements CanActivate {
     if (!token) throw new UnauthorizedException("Missing bearer token")
 
     try {
-      const { payload } = await jwtVerify(token, JWKS, {
-        issuer: env.BETTER_AUTH_URL,
-        audience: env.BETTER_AUTH_URL,
-      })
-      req.user = payload
+      req.user = await verifyAccessToken(token)
       return true
-    } catch (err: unknown) {
-      if (
-        err &&
-        typeof err === "object" &&
-        "code" in err &&
-        err.code === "ERR_JWT_EXPIRED"
-      ) {
+    } catch (error: unknown) {
+      if (isJwtExpiredError(error)) {
         throw new UnauthorizedException("Token expired")
       }
       throw new UnauthorizedException("Invalid token")

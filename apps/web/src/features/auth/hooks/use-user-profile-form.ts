@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useSession, useUpdateUser } from "@workspace/auth/react"
+import { useAuthSession, useUpdateUser } from "@workspace/auth/react"
 import type { UserProfileProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
 import { useForm, useWatch } from "react-hook-form"
@@ -9,7 +9,7 @@ import { toastManager } from "@workspace/ui/components/toast"
 import { userNameSchema, type UserNameInput } from "@/features/auth/schemas"
 
 export function useUserProfileForm(): UserProfileProps {
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { mutate: updateUser, isPending } = useUpdateUser()
 
   const form = useForm<UserNameInput>({

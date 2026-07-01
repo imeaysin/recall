@@ -9,7 +9,7 @@ import { Input } from "@workspace/ui/components/input"
 import { PageLoading } from "@workspace/ui/components/page-loading"
 import { toastManager } from "@workspace/ui/components/toast"
 import { AuthButtons } from "@/features/auth/components/auth-buttons"
-import { useAuthSession, useSignUpMutation } from "@workspace/auth/react"
+import { useAuthSession, useSignUpEmail } from "@workspace/auth/react"
 import {
   absoluteAppUrl,
   defaultAuthenticatedRoute,
@@ -29,7 +29,7 @@ export function SignUpPage() {
     defaultAuthenticatedRoute
   )
   const { data: session, isPending } = useAuthSession()
-  const signUp = useSignUpMutation()
+  const signUp = useSignUpEmail()
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {

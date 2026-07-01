@@ -23,10 +23,6 @@ function useAuthenticatedQueryEnabled(client: AuthClient = authClient) {
 
 export { useAuthSession } from "./use-auth-session"
 
-export function useSession(client: AuthClient = authClient) {
-  return useAuthSession(client)
-}
-
 export function useUser(client: AuthClient = authClient) {
   const sessionState = useAuthSession(client)
   return {

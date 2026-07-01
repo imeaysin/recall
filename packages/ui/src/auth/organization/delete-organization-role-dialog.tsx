@@ -1,8 +1,8 @@
 "use client"
 
 import type { SubmitEventHandler } from "react"
-import type { OrganizationRole } from "@workspace/auth/react"
-import { formatOrganizationRoleLabel } from "@workspace/auth/react"
+import type { OrganizationRole } from "@workspace/auth/types/organization"
+import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import { TriangleAlert } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import {

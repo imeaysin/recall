@@ -3,7 +3,7 @@
 import {
   useActiveOrganization,
   useOrganizationPermission,
-  useSession,
+  useAuthSession,
   useUpdateMemberRole,
 } from "@workspace/auth/react"
 import type { OrganizationMember } from "@workspace/auth/types/organization"
@@ -36,7 +36,7 @@ export function OrganizationMemberRow({
   assignableRoles,
   formatRoleLabel: formatRole,
 }: OrganizationMemberRowProps) {
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { data: activeOrganization } = useActiveOrganization()
   const { data: hasUpdatePermission, isPending: updatePermissionPending } =
     useOrganizationPermission(organizationUiPermissions.updateMember)

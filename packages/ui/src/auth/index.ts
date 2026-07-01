@@ -47,9 +47,6 @@ export type {
   AuthUserButtonProps,
 } from "./auth-user-button"
 
-export { VerifyEmail } from "./verify-email"
-export type { VerifyEmailProps } from "./verify-email"
-
 export { Settings } from "./settings/settings"
 export type { SettingsProps, SettingsView } from "./settings/settings"
 

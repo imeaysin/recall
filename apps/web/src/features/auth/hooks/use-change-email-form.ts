@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import {
   useAuthUiConfig,
   useChangeEmail,
-  useSession,
+  useAuthSession,
 } from "@workspace/auth/react"
 import type { ChangeEmailProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
@@ -17,7 +17,7 @@ import {
 
 export function useChangeEmailForm(): ChangeEmailProps {
   const config = useAuthUiConfig()
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { mutate: changeEmail, isPending } = useChangeEmail()
 
   const form = useForm<ChangeEmailInput>({

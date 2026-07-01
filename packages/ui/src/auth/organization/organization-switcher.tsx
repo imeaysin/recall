@@ -3,7 +3,7 @@
 import {
   useActiveOrganization,
   useListOrganizations,
-  useSession,
+  useAuthSession,
 } from "@workspace/auth/react"
 import type { OrganizationSummary } from "@workspace/auth/types/organization"
 import { ChevronsUpDown } from "lucide-react"
@@ -34,7 +34,7 @@ function SwitcherTriggerContent({
   collapsed: boolean
   isPending: boolean
   activeOrg?: OrganizationSummary | null
-  session: ReturnType<typeof useSession>["data"]
+  session: ReturnType<typeof useAuthSession>["data"]
   hidePersonal: boolean
 }) {
   if (collapsed) {
@@ -85,7 +85,7 @@ export function OrganizationSwitcher({
   hidePersonal = false,
   onCreateOrganization,
 }: OrganizationSwitcherProps) {
-  const { data: session, isPending: sessionPending } = useSession()
+  const { data: session, isPending: sessionPending } = useAuthSession()
   const { data: activeOrganization, isPending: activeOrganizationPending } =
     useActiveOrganization()
   const { isPending: organizationsPending } = useListOrganizations()

@@ -1,7 +1,4 @@
-import {
-  useSocialSignInMutation,
-  type SocialSignInInput,
-} from "@workspace/auth/react"
+import { useSignInSocial, type SocialSignInInput } from "@workspace/auth/react"
 import { AuthProviderButtons, type AuthOAuthProvider } from "@workspace/ui/auth"
 import { absoluteAppUrl, defaultAuthenticatedRoute } from "@/config/routes"
 
@@ -14,7 +11,7 @@ interface AuthButtonsProps {
 export function AuthButtons({
   callbackPath = defaultAuthenticatedRoute,
 }: AuthButtonsProps) {
-  const socialSignIn = useSocialSignInMutation()
+  const socialSignIn = useSignInSocial()
 
   function handleProviderClick(provider: AuthOAuthProvider) {
     const input: SocialSignInInput = {

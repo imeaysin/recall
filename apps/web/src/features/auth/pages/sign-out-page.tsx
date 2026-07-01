@@ -1,12 +1,12 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { PageLoading } from "@workspace/ui/components/page-loading"
-import { useSignOutMutation } from "@workspace/auth/react"
+import { useSignOut } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
 export function SignOutPage() {
   const navigate = useNavigate()
-  const { mutateAsync: signOut } = useSignOutMutation()
+  const { mutateAsync: signOut } = useSignOut()
 
   useEffect(() => {
     void signOut().finally(() => {

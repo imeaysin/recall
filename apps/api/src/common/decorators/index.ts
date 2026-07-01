@@ -3,5 +3,4 @@ export {
   CurrentUser,
   RequirePermission,
   RequireOrgPermission,
-  Roles,
 } from "@workspace/auth/nestjs"

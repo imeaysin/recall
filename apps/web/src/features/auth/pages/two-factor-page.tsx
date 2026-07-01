@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { AuthOtpInput, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useVerifyTotpMutation } from "@workspace/auth/react"
+import { useVerifyTotp } from "@workspace/auth/react"
 import { routes, defaultAuthenticatedRoute } from "@/config/routes"
 import {
   resolvePostAuthRedirectPath,
@@ -17,7 +17,7 @@ export function TwoFactorPage() {
     fallback: defaultAuthenticatedRoute,
     invitationPath: routes.acceptInvitation,
   })
-  const verifyTotp = useVerifyTotpMutation()
+  const verifyTotp = useVerifyTotp()
   const [code, setCode] = useState("")
   const [invalid, setInvalid] = useState(false)
 

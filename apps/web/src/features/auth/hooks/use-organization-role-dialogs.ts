@@ -3,14 +3,14 @@
 import {
   countOrganizationPermissions,
   isReservedOrganizationRoleName,
+} from "@workspace/auth/permissions/organization"
+import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
+import {
   useCreateOrganizationRole,
   useDeleteOrganizationRole,
   useUpdateOrganizationRole,
 } from "@workspace/auth/react"
-import type {
-  OrganizationPermissionMap,
-  OrganizationRole,
-} from "@workspace/auth/react"
+import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { useState, type SubmitEventHandler } from "react"
 import { toastManager } from "@workspace/ui/components/toast"
 import { organizationRoleNameSchema } from "@/features/auth/schemas"

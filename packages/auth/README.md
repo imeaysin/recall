@@ -29,7 +29,6 @@ User must refresh JWT after role change: `await authClient.token()`.
 
 ```ts
 @RequirePermission("team", "invite")  // manager + admin have this
-@Roles("admin", "manager")            // coarse alternative
 ```
 
 ### Organization (per org)
@@ -108,12 +107,11 @@ Registered globally in `apps/api/src/app.module.ts`:
 JwksGuard → RbacGuard → OrgRbacGuard
 ```
 
-| Decorator                                 | Scope                                                   |
-| ----------------------------------------- | ------------------------------------------------------- |
-| `@Public()`                               | Skip JWT                                                |
-| `@RequirePermission(resource, action)`    | Platform                                                |
-| `@RequireOrgPermission(resource, action)` | Active org                                              |
-| `@Roles(...)`                             | Platform role names (optional, not registered globally) |
+| Decorator                                 | Scope      |
+| ----------------------------------------- | ---------- |
+| `@Public()`                               | Skip JWT   |
+| `@RequirePermission(resource, action)`    | Platform   |
+| `@RequireOrgPermission(resource, action)` | Active org |
 
 Permission statements (resources + actions) live in the `statement` export in each permissions file. Use those keys in decorators.
 
@@ -190,8 +188,10 @@ With `dynamicAccessControl` enabled, **always use `hasPermission` hooks for UI**
 | `@workspace/auth/react`                    | React hooks (`useAuthSession`, auth mutations) |
 | `@workspace/auth/nestjs`                   | Guards + decorators                            |
 | `@workspace/auth/permissions`              | Platform AC + roles                            |
-| `@workspace/auth/permissions/organization` | Org AC + roles + server checks                 |
-| `@workspace/auth/types`                    | `JWTClaims`, `RoleName`                        |
+| `@workspace/auth/permissions/organization` | Org AC + roles + sync check helpers            |
+| `@workspace/auth/types`                    | `JwtClaims`, `PlatformRoleName`                |
+| `@workspace/auth/types/organization`       | Org entity types + role CRUD input types       |
+| `@workspace/auth/mobile`                   | Expo auth client                               |
 
 ## DB migrate
 

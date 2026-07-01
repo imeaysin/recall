@@ -5,8 +5,8 @@ import { Button } from "@workspace/ui/components/button"
 import { PageLoading } from "@workspace/ui/components/page-loading"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
-  useSendVerificationEmailMutation,
-  useVerifyEmailMutation,
+  useSendVerificationEmail,
+  useVerifyEmail,
   useAuthSession,
 } from "@workspace/auth/react"
 import { OpenEmailButton } from "@workspace/ui/auth"
@@ -39,9 +39,8 @@ export function VerifyEmailPage() {
   const token = searchParams.get("token")
   const { data: session } = useAuthSession()
   const [verified, setVerified] = useState(false)
-  const sendVerification = useSendVerificationEmailMutation()
-  const { mutate: verifyEmail, isPending: isVerifying } =
-    useVerifyEmailMutation()
+  const sendVerification = useSendVerificationEmail()
+  const { mutate: verifyEmail, isPending: isVerifying } = useVerifyEmail()
   const copy = getVerifyEmailCopy(verified)
 
   useEffect(() => {

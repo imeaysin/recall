@@ -4,7 +4,7 @@ import {
   useAuthUiConfig,
   useListSessions,
   useRevokeSession,
-  useSession,
+  useAuthSession,
 } from "@workspace/auth/react"
 import { LogOut, Monitor, Smartphone, X } from "lucide-react"
 import type { ReactNode } from "react"
@@ -60,7 +60,7 @@ function timeAgo(date: Date) {
 
 function ActiveSessionRow({ activeSession }: { activeSession: SessionRecord }) {
   const config = useAuthUiConfig()
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
   const isCurrentSession = activeSession.token === session?.session.token
@@ -141,7 +141,7 @@ function SessionRowSkeleton() {
 }
 
 export function ActiveSessions({ className }: ActiveSessionsProps) {
-  const { data: session } = useSession()
+  const { data: session } = useAuthSession()
   const { data: sessions, isPending } = useListSessions()
 
   const activeSessions = [

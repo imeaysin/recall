@@ -1,7 +1,7 @@
 "use client"
 
 import type { SubmitEventHandler } from "react"
-import type { OrganizationPermissionMap } from "@workspace/auth/react"
+import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,

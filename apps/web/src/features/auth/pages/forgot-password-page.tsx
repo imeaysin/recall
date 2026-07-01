@@ -10,11 +10,11 @@ import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { toastManager } from "@workspace/ui/components/toast"
-import { useForgotPasswordMutation } from "@workspace/auth/react"
+import { useRequestPasswordReset } from "@workspace/auth/react"
 import { absoluteAppUrl, routes } from "@/config/routes"
 
 export function ForgotPasswordPage() {
-  const forgotPassword = useForgotPasswordMutation()
+  const forgotPassword = useRequestPasswordReset()
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" },

@@ -591,14 +591,3 @@ export function useDeleteOrganizationRole(client: AuthClient = authClient) {
     onSuccess: () => invalidate(),
   })
 }
-
-// Backward-compatible aliases used by the web app
-export const useSignInMutation = useSignInEmail
-export const useSignUpMutation = useSignUpEmail
-export const useSignOutMutation = useSignOut
-export const useForgotPasswordMutation = useRequestPasswordReset
-export const useResetPasswordMutation = useResetPassword
-export const useSocialSignInMutation = useSignInSocial
-export const useSendVerificationEmailMutation = useSendVerificationEmail
-export const useVerifyEmailMutation = useVerifyEmail
-export const useVerifyTotpMutation = useVerifyTotp
