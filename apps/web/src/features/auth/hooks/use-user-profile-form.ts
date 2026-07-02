@@ -10,7 +10,7 @@ import { userNameSchema, type UserNameInput } from "@/features/auth/schemas"
 
 export function useUserProfileForm(): UserProfileProps {
   const { data: session } = useAuthSession()
-  const { mutate: updateUser, isPending } = useUpdateUser()
+  const { mutateAsync: updateUser, isPending } = useUpdateUser()
 
   const form = useForm<UserNameInput>({
     resolver: zodResolver(userNameSchema),
@@ -34,14 +34,23 @@ export function useUserProfileForm(): UserProfileProps {
       form.setValue("name", value, { shouldValidate: true }),
     nameError: errors.name?.message,
     onSubmit: form.handleSubmit((values) => {
-      updateUser(values, {
-        onSuccess: () => {
-          toastManager.add({
+      void toastManager
+        .promise(updateUser(values), {
+          error: {
+            description: "Please try again.",
+            title: "Could not update profile",
+            type: "error",
+          },
+          loading: {
+            title: "Saving profile…",
+            type: "loading",
+          },
+          success: {
             title: "Profile updated",
             type: "success",
-          })
-        },
-      })
+          },
+        })
+        .catch(() => {})
     }),
   }
 }

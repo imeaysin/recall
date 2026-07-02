@@ -87,8 +87,9 @@ export function VerifyEmailPage() {
       })
     } catch {
       toastManager.add({
-        title: "Could not resend",
         description: "Please try again in a moment.",
+        id: "verify-email-resend-error",
+        title: "Could not resend",
         type: "error",
       })
     }

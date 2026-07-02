@@ -25,7 +25,7 @@ export function useOrganizationProfileForm(
   const slugEdited = useRef(false)
   const [slugAvailability, setSlugAvailability] =
     useState<OrganizationSlugAvailabilityState>(defaultSlugAvailability)
-  const { mutate: updateOrganization, isPending } = useUpdateOrganization()
+  const { mutateAsync: updateOrganization, isPending } = useUpdateOrganization()
 
   const form = useForm<UpdateOrganizationInput>({
     resolver: zodResolver(updateOrganizationSchema),
@@ -65,22 +65,24 @@ export function useOrganizationProfileForm(
   const onSubmit = form.handleSubmit((values) => {
     if (!canSubmit) return
 
-    updateOrganization(values, {
-      onSuccess: () => {
-        toastManager.add({
+    void toastManager
+      .promise(updateOrganization(values), {
+        error: {
+          description: "That slug may already be taken. Try a different slug.",
+          title: "Could not update workspace",
+          type: "error",
+        },
+        loading: {
+          title: "Saving workspace…",
+          type: "loading",
+        },
+        success: {
           title: "Workspace updated",
           type: "success",
-        })
-        form.reset(values)
-      },
-      onError: () => {
-        toastManager.add({
-          title: "Could not update workspace",
-          description: "That slug may already be taken. Try a different slug.",
-          type: "error",
-        })
-      },
-    })
+        },
+      })
+      .then(() => form.reset(values))
+      .catch(() => {})
   })
 
   return {

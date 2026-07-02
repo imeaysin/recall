@@ -38,6 +38,11 @@ function patchNotesList({
   )
 }
 
+const notesErrorToast = {
+  description: "Please try again.",
+  type: "error" as const,
+}
+
 export function useNotesQuery() {
   const organizationId = useActiveOrganizationId()
 
@@ -56,27 +61,35 @@ export function useCreateNoteMutation() {
   const organizationId = useActiveOrganizationId()
 
   return useMutation({
-    mutationFn: async (input: CreateNoteInput) => {
-      const body = CreateNoteSchema.parse(input)
-      const data = await apiFetch<unknown>(apiRoutes.notes, {
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-      return data as NoteResponse
-    },
+    mutationFn: (input: CreateNoteInput) =>
+      toastManager.promise(
+        (async () => {
+          const body = CreateNoteSchema.parse(input)
+          const data = await apiFetch<unknown>(apiRoutes.notes, {
+            method: "POST",
+            body: JSON.stringify(body),
+          })
+          return data as NoteResponse
+        })(),
+        {
+          error: {
+            ...notesErrorToast,
+            title: "Could not create note",
+          },
+          loading: {
+            description: "Saving your note.",
+            title: "Creating note…",
+            type: "loading",
+          },
+          success: {
+            title: "Note created",
+            type: "success",
+          },
+        }
+      ),
     onSuccess: () => {
-      toastManager.add({
-        title: "Note created",
-        type: "success",
-      })
       queryClient.invalidateQueries({
         queryKey: notesQueryKey(organizationId),
-      })
-    },
-    onError: () => {
-      toastManager.add({
-        title: "Could not create note",
-        type: "error",
       })
     },
   })
@@ -87,36 +100,44 @@ export function useUpdateNoteMutation() {
   const organizationId = useActiveOrganizationId()
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       noteId,
       input,
     }: {
       noteId: string
       input: UpdateNoteInput
-    }) => {
-      const body = UpdateNoteSchema.parse(input)
-      const data = await apiFetch<unknown>(apiRoutes.note(noteId), {
-        method: "PATCH",
-        body: JSON.stringify(body),
-      })
-      return data as NoteResponse
-    },
+    }) =>
+      toastManager.promise(
+        (async () => {
+          const body = UpdateNoteSchema.parse(input)
+          const data = await apiFetch<unknown>(apiRoutes.note(noteId), {
+            method: "PATCH",
+            body: JSON.stringify(body),
+          })
+          return data as NoteResponse
+        })(),
+        {
+          error: {
+            ...notesErrorToast,
+            title: "Could not update note",
+          },
+          loading: {
+            description: "Saving your changes.",
+            title: "Updating note…",
+            type: "loading",
+          },
+          success: {
+            title: "Note updated",
+            type: "success",
+          },
+        }
+      ),
     onSuccess: (note) => {
       patchNotesList({
         queryClient,
         organizationId,
         updater: (items) =>
           items.map((item) => (item.id === note.id ? note : item)),
-      })
-      toastManager.add({
-        title: "Note updated",
-        type: "success",
-      })
-    },
-    onError: () => {
-      toastManager.add({
-        title: "Could not update note",
-        type: "error",
       })
     },
     onSettled: () => {
@@ -133,7 +154,23 @@ export function useDeleteNoteMutation() {
 
   return useMutation({
     mutationFn: (noteId: string) =>
-      apiFetch<void>(apiRoutes.note(noteId), { method: "DELETE" }),
+      toastManager.promise(
+        apiFetch<void>(apiRoutes.note(noteId), { method: "DELETE" }),
+        {
+          error: {
+            ...notesErrorToast,
+            title: "Could not delete note",
+          },
+          loading: {
+            title: "Deleting note…",
+            type: "loading",
+          },
+          success: {
+            title: "Note deleted",
+            type: "success",
+          },
+        }
+      ),
     onMutate: async (noteId) => {
       await queryClient.cancelQueries({
         queryKey: notesQueryKey(organizationId),
@@ -142,18 +179,6 @@ export function useDeleteNoteMutation() {
         queryClient,
         organizationId,
         updater: (items) => items.filter((item) => item.id !== noteId),
-      })
-    },
-    onSuccess: () => {
-      toastManager.add({
-        title: "Note deleted",
-        type: "success",
-      })
-    },
-    onError: () => {
-      toastManager.add({
-        title: "Could not delete note",
-        type: "error",
       })
     },
     onSettled: () => {
@@ -169,13 +194,33 @@ export function useBulkDeleteNotesMutation() {
   const organizationId = useActiveOrganizationId()
 
   return useMutation({
-    mutationFn: async (input: BulkDeleteNotesInput) => {
-      const body = BulkDeleteNotesSchema.parse(input)
-      return apiFetch<{ deletedCount: number }>(apiRoutes.notesBulkDelete, {
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-    },
+    mutationFn: (input: BulkDeleteNotesInput) =>
+      toastManager.promise(
+        (async () => {
+          const body = BulkDeleteNotesSchema.parse(input)
+          return apiFetch<{ deletedCount: number }>(apiRoutes.notesBulkDelete, {
+            method: "POST",
+            body: JSON.stringify(body),
+          })
+        })(),
+        {
+          error: {
+            ...notesErrorToast,
+            title: "Could not delete notes",
+          },
+          loading: {
+            title: "Deleting notes…",
+            type: "loading",
+          },
+          success: (result) => ({
+            title:
+              result.deletedCount === 1
+                ? "1 note deleted"
+                : `${result.deletedCount} notes deleted`,
+            type: "success",
+          }),
+        }
+      ),
     onMutate: async (input) => {
       await queryClient.cancelQueries({
         queryKey: notesQueryKey(organizationId),
@@ -185,21 +230,6 @@ export function useBulkDeleteNotesMutation() {
         queryClient,
         organizationId,
         updater: (items) => items.filter((item) => !ids.has(item.id)),
-      })
-    },
-    onSuccess: (result) => {
-      toastManager.add({
-        title:
-          result.deletedCount === 1
-            ? "1 note deleted"
-            : `${result.deletedCount} notes deleted`,
-        type: "success",
-      })
-    },
-    onError: () => {
-      toastManager.add({
-        title: "Could not delete notes",
-        type: "error",
       })
     },
     onSettled: () => {

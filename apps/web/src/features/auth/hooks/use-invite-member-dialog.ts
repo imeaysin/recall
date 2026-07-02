@@ -20,7 +20,7 @@ export function useInviteMemberDialog() {
     undefined,
     { enabled: open }
   )
-  const { mutate: inviteMember, isPending } = useInviteMember()
+  const { mutateAsync: inviteMember, isPending } = useInviteMember()
 
   const defaultRole = roles.includes("member") ? "member" : (roles.at(-1) ?? "")
 
@@ -63,20 +63,28 @@ export function useInviteMemberDialog() {
       form.setValue("role", value, { shouldValidate: true }),
     roleError: errors.role?.message,
     onSubmit: form.handleSubmit((values) => {
-      inviteMember(values, {
-        onSuccess: () => {
-          toastManager.add({
+      void toastManager
+        .promise(inviteMember(values), {
+          error: {
+            description: "Check the email address and try again.",
+            title: "Could not send invitation",
+            type: "error",
+          },
+          loading: {
+            title: "Sending invitation…",
+            type: "loading",
+          },
+          success: {
             title: "Invitation sent",
             type: "success",
-          })
-          handleOpenChange(false)
-        },
-        onError: () => {
+          },
+        })
+        .then(() => handleOpenChange(false))
+        .catch(() => {
           form.setError("email", {
             message: "Could not send the invitation. Please try again.",
           })
-        },
-      })
+        })
     }),
   }
 

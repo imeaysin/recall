@@ -27,7 +27,7 @@ export function useCreateOrganizationDialog() {
   const [slugAvailability, setSlugAvailability] =
     useState<OrganizationSlugAvailabilityState>(defaultSlugAvailability)
   const { data: session } = useAuthSession()
-  const { mutate: createOrganization, isPending } = useCreateOrganization()
+  const { mutateAsync: createOrganization, isPending } = useCreateOrganization()
   const userId = session?.user.id
 
   const form = useForm<CreateOrganizationInput>({
@@ -101,22 +101,26 @@ export function useCreateOrganizationDialog() {
   const onSubmit = form.handleSubmit((values) => {
     if (!canSubmit) return
 
-    createOrganization(values, {
-      onSuccess: () => {
-        toastManager.add({
+    void toastManager
+      .promise(createOrganization(values), {
+        error: {
+          description: "That slug may already be taken. Try a different slug.",
+          title: "Could not create workspace",
+          type: "error",
+        },
+        loading: {
+          title: "Creating workspace…",
+          type: "loading",
+        },
+        success: {
           title: "Workspace created",
           type: "success",
-        })
-        handleOpenChange(false)
-      },
-      onError: () => {
-        toastManager.add({
-          title: "Could not create workspace",
-          description: "That slug may already be taken. Try a different slug.",
-          type: "error",
-        })
-      },
-    })
+        },
+      })
+      .then(() => handleOpenChange(false))
+      .catch(() => {
+        return
+      })
   })
 
   const dialogProps: CreateOrganizationDialogProps = {

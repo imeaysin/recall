@@ -18,7 +18,7 @@ import {
 export function useChangeEmailForm(): ChangeEmailProps {
   const config = useAuthUiConfig()
   const { data: session } = useAuthSession()
-  const { mutate: changeEmail, isPending } = useChangeEmail()
+  const { mutateAsync: changeEmail, isPending } = useChangeEmail()
 
   const form = useForm<ChangeEmailInput>({
     resolver: zodResolver(changeEmailSchema),
@@ -42,20 +42,30 @@ export function useChangeEmailForm(): ChangeEmailProps {
       form.setValue("email", value, { shouldValidate: true }),
     emailError: errors.email?.message,
     onSubmit: form.handleSubmit((values) => {
-      changeEmail(
-        {
-          newEmail: values.email,
-          callbackURL: config.absoluteAppUrl(config.routes.settingsAccount),
-        },
-        {
-          onSuccess: () => {
-            toastManager.add({
-              title: "Verification email sent to your new address",
+      void toastManager
+        .promise(
+          changeEmail({
+            newEmail: values.email,
+            callbackURL: config.absoluteAppUrl(config.routes.settingsAccount),
+          }),
+          {
+            error: {
+              description: "Check the address and try again.",
+              title: "Could not send verification email",
+              type: "error",
+            },
+            loading: {
+              title: "Sending verification email…",
+              type: "loading",
+            },
+            success: {
+              description: "Check your inbox to confirm the change.",
+              title: "Verification email sent",
               type: "success",
-            })
-          },
-        }
-      )
+            },
+          }
+        )
+        .catch(() => {})
     }),
   }
 }

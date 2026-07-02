@@ -40,7 +40,7 @@ export function OrganizationSwitcherMenu({
   const { data: session } = useAuthSession()
   const { data: activeOrganization } = useActiveOrganization()
   const { data: organizations } = useListOrganizations()
-  const { mutate: setActiveOrganization, isPending } =
+  const { mutateAsync: setActiveOrganization, isPending } =
     useSetActiveOrganization()
 
   const activeOrganizationId = session?.session.activeOrganizationId ?? null
@@ -57,26 +57,29 @@ export function OrganizationSwitcherMenu({
 
     onClose()
 
-    setActiveOrganization(
-      { organizationId },
-      {
-        onSuccess: () => {
-          if (organization?.name) {
-            toastManager.add({
-              title: "Workspace switched",
+    void toastManager
+      .promise(setActiveOrganization({ organizationId }), {
+        error: {
+          description: "Please try again.",
+          title: "Could not switch workspace",
+          type: "error",
+        },
+        loading: {
+          title: "Switching workspace…",
+          type: "loading",
+        },
+        success: organization?.name
+          ? {
               description: `You're now in ${organization.name}.`,
+              title: "Workspace switched",
               type: "success",
-            })
-          }
-        },
-        onError: () => {
-          toastManager.add({
-            title: "Could not switch workspace",
-            type: "error",
-          })
-        },
-      }
-    )
+            }
+          : {
+              title: "Workspace switched",
+              type: "success",
+            },
+      })
+      .catch(() => {})
   }
 
   let menuHeader: ReactNode = null

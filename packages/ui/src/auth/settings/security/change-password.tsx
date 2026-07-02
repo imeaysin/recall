@@ -146,10 +146,7 @@ function ChangePasswordForm({
           setCurrentPassword("")
           setNewPassword("")
           setConfirmPassword("")
-          toastManager.add({
-            title: "Password updated",
-            type: "success",
-          })
+          toastManager.add({ title: "Password updated", type: "success" })
         },
       }
     )

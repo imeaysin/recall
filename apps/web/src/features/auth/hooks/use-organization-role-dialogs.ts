@@ -30,11 +30,11 @@ export function useOrganizationRoleDialogs() {
   const [permissions, setPermissions] =
     useState<OrganizationPermissionMap>(emptyPermissions)
 
-  const { mutate: createRole, isPending: isCreating } =
+  const { mutateAsync: createRole, isPending: isCreating } =
     useCreateOrganizationRole()
-  const { mutate: updateRole, isPending: isUpdating } =
+  const { mutateAsync: updateRole, isPending: isUpdating } =
     useUpdateOrganizationRole()
-  const { mutate: deleteRole, isPending: isDeleting } =
+  const { mutateAsync: deleteRole, isPending: isDeleting } =
     useDeleteOrganizationRole()
 
   function resetCreateForm() {
@@ -106,21 +106,30 @@ export function useOrganizationRoleDialogs() {
     setPermissionError(nextPermissionError)
     if (nextRoleNameError || nextPermissionError) return
 
-    createRole(
-      {
-        role: roleName.trim().toLowerCase(),
-        permission: permissions,
-      },
-      {
-        onSuccess: () => {
-          toastManager.add({
+    void toastManager
+      .promise(
+        createRole({
+          role: roleName.trim().toLowerCase(),
+          permission: permissions,
+        }),
+        {
+          error: {
+            description: "Please try again.",
+            title: "Could not create role",
+            type: "error",
+          },
+          loading: {
+            title: "Creating role…",
+            type: "loading",
+          },
+          success: {
             title: "Role created",
             type: "success",
-          })
-          handleCreateOpenChange(false)
-        },
-      }
-    )
+          },
+        }
+      )
+      .then(() => handleCreateOpenChange(false))
+      .catch(() => {})
   }
 
   const handleEditSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
@@ -131,39 +140,54 @@ export function useOrganizationRoleDialogs() {
     setPermissionError(nextPermissionError)
     if (nextPermissionError) return
 
-    updateRole(
-      {
-        roleId: selectedRole.id,
-        data: { permission: permissions },
-      },
-      {
-        onSuccess: () => {
-          toastManager.add({
+    void toastManager
+      .promise(
+        updateRole({
+          roleId: selectedRole.id,
+          data: { permission: permissions },
+        }),
+        {
+          error: {
+            description: "Please try again.",
+            title: "Could not update role",
+            type: "error",
+          },
+          loading: {
+            title: "Updating role…",
+            type: "loading",
+          },
+          success: {
             title: "Role updated",
             type: "success",
-          })
-          handleEditOpenChange(false)
-        },
-      }
-    )
+          },
+        }
+      )
+      .then(() => handleEditOpenChange(false))
+      .catch(() => {})
   }
 
   const handleDeleteSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
     if (!selectedRole) return
 
-    deleteRole(
-      { roleId: selectedRole.id },
-      {
-        onSuccess: () => {
-          toastManager.add({
-            title: "Role deleted",
-            type: "success",
-          })
-          handleDeleteOpenChange(false)
+    void toastManager
+      .promise(deleteRole({ roleId: selectedRole.id }), {
+        error: {
+          description: "Please try again.",
+          title: "Could not delete role",
+          type: "error",
         },
-      }
-    )
+        loading: {
+          title: "Deleting role…",
+          type: "loading",
+        },
+        success: {
+          title: "Role deleted",
+          type: "success",
+        },
+      })
+      .then(() => handleDeleteOpenChange(false))
+      .catch(() => {})
   }
 
   return {
