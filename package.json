@@ -13,7 +13,7 @@
     "db:down": "docker compose down",
     "setup": "cp -n .env.example .env && pnpm install && pnpm db:up",
     "lint": "turbo lint",
-    "format": "turbo format",
+    "format": "prettier --write .",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "prepare": "husky"

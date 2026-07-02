@@ -1,10 +1,10 @@
-import js from "@eslint/js";
-import { globalIgnores } from "eslint/config";
-import pluginReactHooks from "eslint-plugin-react-hooks";
-import pluginReact from "eslint-plugin-react";
-import globals from "globals";
-import pluginNext from "@next/eslint-plugin-next";
-import { config as baseConfig } from "./base.js";
+import js from "@eslint/js"
+import { globalIgnores } from "eslint/config"
+import pluginReactHooks from "eslint-plugin-react-hooks"
+import pluginReact from "eslint-plugin-react"
+import globals from "globals"
+import pluginNext from "@next/eslint-plugin-next"
+import { config as baseConfig } from "./base.js"
 
 /**
  * A custom ESLint configuration for libraries that use Next.js.
@@ -49,4 +49,4 @@ export const nextJsConfig = [
       "react/react-in-jsx-scope": "off",
     },
   },
-];
+]

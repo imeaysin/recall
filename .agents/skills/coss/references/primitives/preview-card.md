@@ -58,7 +58,7 @@ Preview card with rich content:
       </Avatar>
       <div>
         <p className="text-sm font-semibold">John Doe</p>
-        <p className="text-muted-foreground text-xs">Software Engineer</p>
+        <p className="text-xs text-muted-foreground">Software Engineer</p>
       </div>
     </div>
   </PreviewCardPopup>

@@ -24,36 +24,36 @@ curl -fsSL https://heroui.com/install | bash -s heroui-react
 
 **This guide is for HeroUI v3 ONLY.** Do NOT apply v2 patterns — the provider, styling, and component API all changed:
 
-| Feature       | v2 (DO NOT USE)                   | v3 (USE THIS)                               |
-| ------------- | --------------------------------- | ------------------------------------------- |
-| Provider      | `<HeroUIProvider>` required       | **No Provider needed**                      |
-| Animations    | `framer-motion` package           | CSS-based, no extra deps                    |
-| Component API | Flat props: `<Card title="x">`    | Compound: `<Card><Card.Header>`             |
-| Styling       | Tailwind v3 + `@heroui/theme`     | Tailwind v4 + `@heroui/styles`         	  |
-| Packages      | `@heroui/system`, `@heroui/theme` | `@heroui/react`, `@heroui/styles` 		  |
+| Feature       | v2 (DO NOT USE)                   | v3 (USE THIS)                     |
+| ------------- | --------------------------------- | --------------------------------- |
+| Provider      | `<HeroUIProvider>` required       | **No Provider needed**            |
+| Animations    | `framer-motion` package           | CSS-based, no extra deps          |
+| Component API | Flat props: `<Card title="x">`    | Compound: `<Card><Card.Header>`   |
+| Styling       | Tailwind v3 + `@heroui/theme`     | Tailwind v4 + `@heroui/styles`    |
+| Packages      | `@heroui/system`, `@heroui/theme` | `@heroui/react`, `@heroui/styles` |
 
 ```tsx
 // DO NOT DO THIS - v2 pattern
-import { HeroUIProvider } from "@heroui/react";
-import { motion } from "framer-motion";
+import { HeroUIProvider } from "@heroui/react"
+import { motion } from "framer-motion"
 
-<HeroUIProvider>
-	<Card title="Product" description="A great product" />
-</HeroUIProvider>;
+;<HeroUIProvider>
+  <Card title="Product" description="A great product" />
+</HeroUIProvider>
 ```
 
 ### CORRECT (v3 patterns)
 
 ```tsx
 // DO THIS - v3 pattern (no provider, compound components)
-import { Card } from "@heroui/react";
+import { Card } from "@heroui/react"
 
-<Card>
-	<Card.Header>
-		<Card.Title>Product</Card.Title>
-		<Card.Description>A great product</Card.Description>
-	</Card.Header>
-</Card>;
+;<Card>
+  <Card.Header>
+    <Card.Title>Product</Card.Title>
+    <Card.Description>A great product</Card.Description>
+  </Card.Header>
+</Card>
 ```
 
 **Always fetch v3 docs before implementing.**
@@ -141,21 +141,21 @@ npm i @heroui/styles @heroui/react tailwind-variants tailwindcss @tailwindcss/po
 3. **Import in `app/layout.tsx`:**
 
 ```tsx
-import "./globals.css";
+import "./globals.css"
 
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode
 }) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<body>
-				{/* No Provider needed in HeroUI v3! */}
-				{children}
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        {/* No Provider needed in HeroUI v3! */}
+        {children}
+      </body>
+    </html>
+  )
 }
 ```
 
@@ -163,10 +163,10 @@ export default function RootLayout({
 
 ```js
 export default {
-	plugins: {
-		"@tailwindcss/postcss": {},
-	},
-};
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+}
 ```
 
 ### Critical Setup Requirements
@@ -207,10 +207,10 @@ HeroUI v3 uses CSS variables with `oklch` color space:
 
 ```css
 :root {
-	--accent: oklch(0.6204 0.195 253.83);
-	--accent-foreground: var(--snow);
-	--background: oklch(0.9702 0 0);
-	--foreground: var(--eclipse);
+  --accent: oklch(0.6204 0.195 253.83);
+  --accent-foreground: var(--snow);
+  --background: oklch(0.9702 0 0);
+  --foreground: var(--eclipse);
 }
 ```
 

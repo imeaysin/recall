@@ -67,9 +67,6 @@
     "lint": {
       "dependsOn": []
     },
-    "format": {
-      "dependsOn": []
-    },
     "typecheck": {
       "dependsOn": ["^build"]
     },
@@ -77,6 +74,7 @@
       "dependsOn": ["^build"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }

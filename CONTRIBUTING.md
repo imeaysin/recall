@@ -35,14 +35,14 @@ Set `SKIP_ENV_VALIDATION=true` locally if you do not have a full `.env`.
 
 1. Scaffold under `apps/<name>/`.
 2. Add env parsing in `@workspace/config/client` if the app needs public env vars.
-3. Match existing scripts: `dev`, `build`, `lint`, `format`, `typecheck`.
+3. Match existing scripts: `dev`, `build`, `lint`, `typecheck`.
 4. Document ports and purpose in the root README.
 
 See [docs/adding-a-feature.md](./docs/adding-a-feature.md) for the full-stack pattern.
 
 ## Code style
 
-- Prettier + ESLint — run `pnpm format` and `pnpm lint`.
+- Prettier + ESLint — run `pnpm format` (repo root) and `pnpm lint`.
 - Shared UI goes in `packages/ui`, not duplicated per app.
 - API request/response shapes go in `packages/contracts`.
 - Shared dependency versions live in `pnpm-workspace.yaml` under `catalog:` — use `"package": "catalog:"` in `package.json`, not hardcoded versions.

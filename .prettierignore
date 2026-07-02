@@ -1,7 +1,9 @@
-dist/
-node_modules/
-.next/
-.turbo/
-coverage/
+**/dist/
+**/node_modules/
+**/.next/
+**/.turbo/
+**/coverage/
+**/out/
+**/build/
 pnpm-lock.yaml
 .pnpm-store/

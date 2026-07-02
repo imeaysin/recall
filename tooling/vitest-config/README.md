@@ -2,10 +2,10 @@
 
 Shared [Vitest](https://vitest.dev) presets for the monorepo.
 
-| Export | Use for |
-|--------|---------|
-| `@workspace/vitest-config/node` | `packages/*` (default), Node / Nest-style code |
-| `@workspace/vitest-config/react` | `apps/web`, `apps/marketing` |
+| Export                           | Use for                                        |
+| -------------------------------- | ---------------------------------------------- |
+| `@workspace/vitest-config/node`  | `packages/*` (default), Node / Nest-style code |
+| `@workspace/vitest-config/react` | `apps/web`, `apps/marketing`                   |
 
 ## Package
 
@@ -34,7 +34,7 @@ export default mergeConfig(
         "@src": path.join(rootDir, "src"),
       },
     },
-  }),
+  })
 )
 ```
 

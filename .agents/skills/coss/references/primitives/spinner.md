@@ -50,7 +50,7 @@ Standalone spinner with label:
 ```tsx
 <div className="flex items-center gap-2">
   <Spinner aria-label="Loading" />
-  <span className="text-muted-foreground text-sm">Fetching data...</span>
+  <span className="text-sm text-muted-foreground">Fetching data...</span>
 </div>
 ```
 

@@ -17,9 +17,7 @@ const authPkg = path.resolve(apiRoot, "../../packages/auth")
 const { env } = await import(
   require.resolve("@workspace/config", { paths: [apiRoot] })
 )
-const { SignJWT } = await import(
-  require.resolve("jose", { paths: [authPkg] })
-)
+const { SignJWT } = await import(require.resolve("jose", { paths: [authPkg] }))
 
 const email = process.argv[2]
 if (!email) {

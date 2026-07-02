@@ -60,7 +60,7 @@ Frame with header actions:
   </FrameHeader>
   <FramePanel>{/* Table or list content */}</FramePanel>
   <FrameFooter>
-    <p className="text-muted-foreground text-sm">Showing 1-10 of 100</p>
+    <p className="text-sm text-muted-foreground">Showing 1-10 of 100</p>
   </FrameFooter>
 </Frame>
 ```

@@ -67,7 +67,7 @@ module.exports = (config) => ({
   entitlements: {
     "com.apple.developer.associated-domains": ["appclips:may20.expo.app"],
   },
-});
+})
 ```
 
 > If you skip this, `expo prebuild` will print: `Apple App Clip may require the associated domains entitlement but none were found`.
@@ -136,7 +136,7 @@ bunx expo customize src/app/+html.tsx
 Add the meta tag to the `<head>`:
 
 ```tsx
-import { ScrollViewStyleReset } from "expo-router/html";
+import { ScrollViewStyleReset } from "expo-router/html"
 
 export default function Root({ children }: { children: React.ReactNode }) {
   return (
@@ -150,7 +150,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
       </head>
       <body>{children}</body>
     </html>
-  );
+  )
 }
 ```
 

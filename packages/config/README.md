@@ -22,17 +22,17 @@ src/
 
 ## Who imports what
 
-| Consumer | Import | Variables validated |
-|----------|--------|---------------------|
-| `apps/api` | `@workspace/config` | Full server env |
-| `@workspace/auth` | `@workspace/config` | Full server env |
-| `@workspace/db` | `@workspace/config/database` | `MONGODB_URI` |
-| `@workspace/email` | `@workspace/config/email` | `RESEND_API_KEY`, `APP_NAME`, `BETTER_AUTH_URL`, `EMAIL_FROM` |
-| `@workspace/storage` | `@workspace/config/storage` | `STORAGE_*` |
-| `apps/web` | `@workspace/config/client` | `parseWebEnv(import.meta.env)` |
-| `apps/marketing` | `@workspace/config/client` | `parseMarketingEnv(process.env)` |
-| `apps/mobile` | `@workspace/config/client` | `parseMobileEnv(process.env)` |
-| `@workspace/auth/client` | `@workspace/config/client` | `parseClientPublicEnv()` (shared) |
+| Consumer                 | Import                       | Variables validated                                           |
+| ------------------------ | ---------------------------- | ------------------------------------------------------------- |
+| `apps/api`               | `@workspace/config`          | Full server env                                               |
+| `@workspace/auth`        | `@workspace/config`          | Full server env                                               |
+| `@workspace/db`          | `@workspace/config/database` | `MONGODB_URI`                                                 |
+| `@workspace/email`       | `@workspace/config/email`    | `RESEND_API_KEY`, `APP_NAME`, `BETTER_AUTH_URL`, `EMAIL_FROM` |
+| `@workspace/storage`     | `@workspace/config/storage`  | `STORAGE_*`                                                   |
+| `apps/web`               | `@workspace/config/client`   | `parseWebEnv(import.meta.env)`                                |
+| `apps/marketing`         | `@workspace/config/client`   | `parseMarketingEnv(process.env)`                              |
+| `apps/mobile`            | `@workspace/config/client`   | `parseMobileEnv(process.env)`                                 |
+| `@workspace/auth/client` | `@workspace/config/client`   | `parseClientPublicEnv()` (shared)                             |
 
 ## Usage
 

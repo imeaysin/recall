@@ -59,19 +59,19 @@ public class AppClipModule: Module {
 ## TypeScript interface
 
 ```ts
-import { NativeModule, requireOptionalNativeModule } from "expo";
+import { NativeModule, requireOptionalNativeModule } from "expo"
 
 declare class AppClipModule extends NativeModule<{}> {
-  prompt(): void;
-  isAppClip?: boolean;
+  prompt(): void
+  isAppClip?: boolean
 }
 
-const AppClipNative = requireOptionalNativeModule<AppClipModule>("AppClip");
+const AppClipNative = requireOptionalNativeModule<AppClipModule>("AppClip")
 
 if (AppClipNative?.isAppClip) {
   navigator.appClip = {
     prompt: AppClipNative.prompt,
-  };
+  }
 }
 
 declare global {
@@ -82,12 +82,12 @@ declare global {
      */
     appClip?: {
       /** Open the SKOverlay */
-      prompt: () => void;
-    };
+      prompt: () => void
+    }
   }
 }
 
-export {};
+export {}
 ```
 
 ## Usage
