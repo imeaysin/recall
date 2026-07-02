@@ -2,11 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CreateNoteSchema, type NoteResponse } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
+import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { Pane } from "@workspace/ui/components/pane"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm, useFormState } from "react-hook-form"
 import { z } from "zod"
 import {
   useCreateNoteMutation,
@@ -40,6 +41,7 @@ export function NoteFormSheet({
     resolver: zodResolver(noteFormSchema),
     defaultValues: { title: "", body: "" },
   })
+  const { errors } = useFormState({ control: form.control })
 
   useEffect(() => {
     if (!open) return
@@ -66,6 +68,10 @@ export function NoteFormSheet({
     form.reset({ title: "", body: "" })
   }
 
+  const formErrors: Record<string, string> = {}
+  if (errors.title?.message) formErrors.title = errors.title.message
+  if (errors.body?.message) formErrors.body = errors.body.message
+
   return (
     <Pane layout="side" onOpenChange={onOpenChange} open={open}>
       <Pane.Content showCloseButton side="right" variant="inset">
@@ -78,36 +84,47 @@ export function NoteFormSheet({
           </Pane.Description>
         </Pane.Header>
 
-        <form
+        <Form
           className="flex min-h-0 flex-1 flex-col"
+          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
           onSubmit={form.handleSubmit(handleSubmit)}
         >
           <Pane.Panel className="space-y-4">
-            <Field>
-              <FieldLabel htmlFor="note-title">Title</FieldLabel>
-              <Input
-                id="note-title"
-                nativeInput
-                placeholder="What is this note about?"
-                {...form.register("title")}
-                aria-invalid={Boolean(form.formState.errors.title)}
-                disabled={isPending}
-              />
-              <FieldError match={Boolean(form.formState.errors.title?.message)}>
-                {form.formState.errors.title?.message}
-              </FieldError>
-            </Field>
+            <Controller
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <Field name="title">
+                  <FieldLabel htmlFor="note-title">Title</FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={isPending}
+                    id="note-title"
+                    nativeInput
+                    placeholder="What is this note about?"
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
 
-            <Field>
-              <FieldLabel htmlFor="note-body">Body</FieldLabel>
-              <Textarea
-                id="note-body"
-                placeholder="Optional details…"
-                rows={8}
-                {...form.register("body")}
-                disabled={isPending}
-              />
-            </Field>
+            <Controller
+              control={form.control}
+              name="body"
+              render={({ field }) => (
+                <Field name="body">
+                  <FieldLabel htmlFor="note-body">Body</FieldLabel>
+                  <Textarea
+                    {...field}
+                    disabled={isPending}
+                    id="note-body"
+                    placeholder="Optional details…"
+                    rows={8}
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
           </Pane.Panel>
 
           <Pane.Footer variant="bare">
@@ -123,7 +140,7 @@ export function NoteFormSheet({
               {isEditing ? "Save changes" : "Create note"}
             </Button>
           </Pane.Footer>
-        </form>
+        </Form>
       </Pane.Content>
     </Pane>
   )

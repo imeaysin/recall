@@ -7,7 +7,7 @@ import {
 } from "@workspace/auth/react"
 import type { InviteMemberDialogProps } from "@workspace/ui/auth"
 import { useEffect, useState } from "react"
-import { useForm, useFormState, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
   inviteMemberSchema,
@@ -29,10 +29,6 @@ export function useInviteMemberDialog() {
     defaultValues: { email: "", role: "" },
   })
 
-  const email = useWatch({ control: form.control, name: "email" })
-  const role = useWatch({ control: form.control, name: "role" })
-  const { errors } = useFormState({ control: form.control })
-
   useEffect(() => {
     if (!open || roles.length === 0) return
 
@@ -51,17 +47,10 @@ export function useInviteMemberDialog() {
   const dialogProps: InviteMemberDialogProps = {
     open,
     onOpenChange: handleOpenChange,
+    control: form.control,
     roles,
     formatRoleLabel: formatOrganizationRoleLabel,
     isPending,
-    email,
-    onEmailChange: (value) =>
-      form.setValue("email", value, { shouldValidate: true }),
-    emailError: errors.email?.message,
-    role,
-    onRoleChange: (value) =>
-      form.setValue("role", value, { shouldValidate: true }),
-    roleError: errors.role?.message,
     onSubmit: form.handleSubmit((values) => {
       void toastManager
         .promise(inviteMember(values), {

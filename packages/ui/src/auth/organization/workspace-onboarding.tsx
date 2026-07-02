@@ -1,12 +1,12 @@
 "use client"
 
 import { useAuthSession, useAuthUiConfig } from "@workspace/auth/react"
-import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Icons } from "@workspace/ui/components/icons"
 import { Input } from "@workspace/ui/components/input"
+import { Controller, useFormState, type Control } from "react-hook-form"
 import type { AuthLinkComponent } from "../auth-shell"
 import { AuthPageBody } from "../auth-form"
 import { AuthPageHeader } from "../auth-page-header"
@@ -28,11 +28,11 @@ function DefaultLink({
   )
 }
 
+type WorkspaceOnboardingValues = { name: string }
+
 export interface WorkspaceOnboardingProps {
-  name: string
-  onNameChange: (value: string) => void
-  nameError?: string
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  control: Control<WorkspaceOnboardingValues>
+  onSubmit: () => void
   isPending?: boolean
   onSignOut?: () => void
   homeHref?: string
@@ -43,9 +43,7 @@ export interface WorkspaceOnboardingProps {
 }
 
 export function WorkspaceOnboarding({
-  name,
-  onNameChange,
-  nameError,
+  control,
   onSubmit,
   isPending = false,
   onSignOut,
@@ -57,6 +55,10 @@ export function WorkspaceOnboarding({
 }: WorkspaceOnboardingProps) {
   const config = useAuthUiConfig()
   const { data: session } = useAuthSession()
+  const { errors } = useFormState({ control })
+
+  const formErrors: Record<string, string> = {}
+  if (errors.name?.message) formErrors.name = errors.name.message
 
   const handleSignOut = () => {
     if (onSignOut) {
@@ -115,26 +117,31 @@ export function WorkspaceOnboarding({
 
             <Form
               className="flex flex-col gap-4"
-              onSubmit={(event) => {
-                event.preventDefault()
-                onSubmit(event)
-              }}
+              errors={
+                Object.keys(formErrors).length > 0 ? formErrors : undefined
+              }
+              onSubmit={onSubmit}
             >
-              <Field invalid={Boolean(nameError)}>
-                <FieldLabel htmlFor="workspace-onboarding-name">
-                  Workspace name
-                </FieldLabel>
-                <Input
-                  autoFocus
-                  disabled={isPending}
-                  id="workspace-onboarding-name"
-                  onChange={(event) => onNameChange(event.target.value)}
-                  placeholder="Acme Inc."
-                  type="text"
-                  value={name}
-                />
-                <FieldError match={Boolean(nameError)}>{nameError}</FieldError>
-              </Field>
+              <Controller
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <Field name="name">
+                    <FieldLabel htmlFor="workspace-onboarding-name">
+                      Workspace name
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      autoFocus
+                      disabled={isPending}
+                      id="workspace-onboarding-name"
+                      placeholder="Acme Inc."
+                      type="text"
+                    />
+                    <FieldError />
+                  </Field>
+                )}
+              />
 
               <Button className="w-full" loading={isPending} type="submit">
                 {submitLabel}

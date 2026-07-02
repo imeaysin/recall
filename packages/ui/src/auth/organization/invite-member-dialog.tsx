@@ -1,6 +1,5 @@
 "use client"
 
-import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Pane } from "@workspace/ui/components/pane"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
@@ -13,41 +12,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { Controller, useFormState, type Control } from "react-hook-form"
+
+type InviteMemberValues = { email: string; role: string }
 
 export interface InviteMemberDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  email: string
-  onEmailChange: (value: string) => void
-  emailError?: string
-  role: string
-  onRoleChange: (value: string) => void
-  roleError?: string
+  control: Control<InviteMemberValues>
   roles: string[]
   formatRoleLabel: (role: string) => string
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  onSubmit: () => void
   isPending?: boolean
 }
 
 export function InviteMemberDialog({
   open,
   onOpenChange,
-  email,
-  onEmailChange,
-  emailError,
-  role,
-  onRoleChange,
-  roleError,
+  control,
   roles,
   formatRoleLabel,
   onSubmit,
   isPending = false,
 }: InviteMemberDialogProps) {
+  const { errors } = useFormState({ control })
   const fieldsDisabled = isPending
   const roleItems = roles.map((roleName) => ({
     value: roleName,
     label: formatRoleLabel(roleName),
   }))
+
+  const formErrors: Record<string, string> = {}
+  if (errors.email?.message) formErrors.email = errors.email.message
+  if (errors.role?.message) formErrors.role = errors.role.message
 
   return (
     <Pane onOpenChange={onOpenChange} open={open}>
@@ -61,47 +58,59 @@ export function InviteMemberDialog({
 
         <Form
           className="contents"
-          onSubmit={(event) => {
-            event.preventDefault()
-            onSubmit(event)
-          }}
+          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+          onSubmit={onSubmit}
         >
           <Pane.Panel className="flex flex-col gap-4">
-            <Field invalid={Boolean(emailError)}>
-              <FieldLabel htmlFor="invite-member-email">Email</FieldLabel>
-              <Input
-                autoFocus
-                disabled={fieldsDisabled}
-                id="invite-member-email"
-                onChange={(event) => onEmailChange(event.target.value)}
-                placeholder="name@example.com"
-                type="email"
-                value={email}
-              />
-              <FieldError match={Boolean(emailError)}>{emailError}</FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <Field name="email">
+                  <FieldLabel htmlFor="invite-member-email">Email</FieldLabel>
+                  <Input
+                    {...field}
+                    autoFocus
+                    disabled={fieldsDisabled}
+                    id="invite-member-email"
+                    placeholder="name@example.com"
+                    type="email"
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
 
-            <Field className="w-full" invalid={Boolean(roleError)}>
-              <FieldLabel htmlFor="invite-member-role">Role</FieldLabel>
-              <Select
-                disabled={fieldsDisabled || roleItems.length === 0}
-                items={roleItems}
-                onValueChange={(item) => onRoleChange(item?.value ?? "")}
-                value={roleItems.find((item) => item.value === role) ?? null}
-              >
-                <SelectTrigger className="w-full" id="invite-member-role">
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectPopup alignItemWithTrigger={false}>
-                  {roleItems.map((item) => (
-                    <SelectItem key={item.value} value={item}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectPopup>
-              </Select>
-              <FieldError match={Boolean(roleError)}>{roleError}</FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <Field className="w-full" name="role">
+                  <FieldLabel htmlFor="invite-member-role">Role</FieldLabel>
+                  <Select
+                    disabled={fieldsDisabled || roleItems.length === 0}
+                    items={roleItems}
+                    onValueChange={(item) => field.onChange(item?.value ?? "")}
+                    value={
+                      roleItems.find((item) => item.value === field.value) ??
+                      null
+                    }
+                  >
+                    <SelectTrigger className="w-full" id="invite-member-role">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectPopup alignItemWithTrigger={false}>
+                      {roleItems.map((item) => (
+                        <SelectItem key={item.value} value={item}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectPopup>
+                  </Select>
+                  <FieldError />
+                </Field>
+              )}
+            />
           </Pane.Panel>
 
           <Pane.Footer>

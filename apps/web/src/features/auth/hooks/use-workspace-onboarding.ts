@@ -8,7 +8,7 @@ import {
   useAuthSession,
 } from "@workspace/auth/react"
 import { useNavigate } from "react-router-dom"
-import { useForm, useFormState, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toastManager } from "@workspace/ui/components/toast"
 import { routes } from "@/config/routes"
@@ -26,9 +26,6 @@ export function useWorkspaceOnboarding() {
     resolver: zodResolver(workspaceOnboardingSchema),
     defaultValues: { name: "" },
   })
-
-  const name = useWatch({ control: form.control, name: "name" })
-  const { errors } = useFormState({ control: form.control })
 
   const onSubmit = form.handleSubmit(async (values) => {
     const userId = session?.user.id
@@ -63,11 +60,8 @@ export function useWorkspaceOnboarding() {
 
   return {
     props: {
+      control: form.control,
       isPending,
-      name,
-      onNameChange: (value: string) =>
-        form.setValue("name", value, { shouldValidate: true }),
-      nameError: errors.name?.message,
       onSubmit,
     },
   }

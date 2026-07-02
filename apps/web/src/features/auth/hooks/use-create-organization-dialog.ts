@@ -37,7 +37,7 @@ export function useCreateOrganizationDialog() {
 
   const name = useWatch({ control: form.control, name: "name" })
   const slug = useWatch({ control: form.control, name: "slug" })
-  const { dirtyFields, errors } = useFormState({ control: form.control })
+  const { dirtyFields } = useFormState({ control: form.control })
 
   const resetForm = useCallback(() => {
     form.reset({ name: "", slug: "" })
@@ -84,13 +84,6 @@ export function useCreateOrganizationDialog() {
     [resetForm]
   )
 
-  const handleSlugChange = useCallback(
-    (value: string) => {
-      form.setValue("slug", value, { shouldDirty: true, shouldValidate: true })
-    },
-    [form]
-  )
-
   const canSubmit =
     !isPending &&
     !slugAvailability.checking &&
@@ -126,17 +119,12 @@ export function useCreateOrganizationDialog() {
   const dialogProps: CreateOrganizationDialogProps = {
     open,
     onOpenChange: handleOpenChange,
+    control: form.control,
     isPending,
     canSubmit,
-    name,
-    onNameChange: (value) =>
-      form.setValue("name", value, { shouldValidate: true }),
-    nameError: errors.name?.message,
-    slug,
-    onSlugChange: handleSlugChange,
     onSlugBlur: () => void form.trigger("slug"),
     onSlugAvailabilityChange: setSlugAvailability,
-    slugError: errors.slug?.message,
+    slugAvailabilityError: slugAvailability.error,
     onSubmit,
   }
 

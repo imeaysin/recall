@@ -7,12 +7,13 @@ import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
+import { Controller, useFormState, type Control } from "react-hook-form"
+
+type ChangeEmailValues = { email: string }
 
 export interface ChangeEmailProps {
   className?: string
-  email?: string
-  onEmailChange?: (value: string) => void
-  emailError?: string
+  control?: Control<ChangeEmailValues>
   onSubmit?: () => void
   isPending?: boolean
   hasSession?: boolean
@@ -20,42 +21,54 @@ export interface ChangeEmailProps {
 
 export function ChangeEmail({
   className,
-  email = "",
-  onEmailChange,
-  emailError,
+  control,
   onSubmit,
   isPending = false,
   hasSession = false,
 }: ChangeEmailProps) {
-  const wired = onSubmit != null
+  const wired = onSubmit != null && control != null
+  const { errors } = useFormState({ control, disabled: !control })
+
+  const formErrors: Record<string, string> = {}
+  if (errors.email?.message) {
+    formErrors.email = errors.email.message
+  }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Change email</h2>
-      <Form onSubmit={onSubmit ?? ((event) => event.preventDefault())}>
+      <Form
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
+      >
         <Card className={cn(className)}>
           <CardPanel className="flex flex-col gap-6">
-            <Field invalid={Boolean(emailError)}>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <Field name="email">
+                  <FieldLabel htmlFor="email">Email</FieldLabel>
 
-              {hasSession && wired ? (
-                <Input
-                  autoComplete="email"
-                  disabled={isPending}
-                  id="email"
-                  onChange={(event) => onEmailChange?.(event.target.value)}
-                  placeholder="you@example.com"
-                  type="email"
-                  value={email}
-                />
-              ) : (
-                <Skeleton>
-                  <Input className="invisible" nativeInput />
-                </Skeleton>
+                  {hasSession && wired ? (
+                    <Input
+                      {...field}
+                      autoComplete="email"
+                      disabled={isPending}
+                      id="email"
+                      placeholder="you@example.com"
+                      type="email"
+                    />
+                  ) : (
+                    <Skeleton>
+                      <Input className="invisible" nativeInput />
+                    </Skeleton>
+                  )}
+
+                  <FieldError />
+                </Field>
               )}
-
-              <FieldError match={Boolean(emailError)}>{emailError}</FieldError>
-            </Field>
+            />
           </CardPanel>
 
           <CardFooter>

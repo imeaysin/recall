@@ -8,7 +8,7 @@ import {
 } from "@workspace/auth/react"
 import type { ChangeEmailProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
-import { useForm, useFormState, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
   changeEmailSchema,
@@ -25,9 +25,6 @@ export function useChangeEmailForm(): ChangeEmailProps {
     defaultValues: { email: session?.user.email ?? "" },
   })
 
-  const email = useWatch({ control: form.control, name: "email" })
-  const { errors } = useFormState({ control: form.control })
-
   useEffect(() => {
     if (session?.user.email) {
       form.reset({ email: session.user.email })
@@ -35,12 +32,9 @@ export function useChangeEmailForm(): ChangeEmailProps {
   }, [form, session?.user.email])
 
   return {
+    control: form.control,
     hasSession: !!session,
     isPending,
-    email,
-    onEmailChange: (value) =>
-      form.setValue("email", value, { shouldValidate: true }),
-    emailError: errors.email?.message,
     onSubmit: form.handleSubmit((values) => {
       void toastManager
         .promise(

@@ -36,6 +36,7 @@ export function isSameOrganizationSlug(
 export interface OrganizationSlugAvailabilityState {
   checking: boolean
   available: boolean | null
+  error?: string
 }
 
 export interface OrganizationSlugFieldProps {
@@ -46,7 +47,6 @@ export interface OrganizationSlugFieldProps {
   currentSlug?: string
   checkAvailability?: boolean
   disabled?: boolean
-  error?: string
   onAvailabilityChange?: (state: OrganizationSlugAvailabilityState) => void
 }
 
@@ -73,7 +73,6 @@ export function OrganizationSlugField({
   currentSlug,
   checkAvailability = true,
   disabled,
-  error,
   onAvailabilityChange,
 }: OrganizationSlugFieldProps) {
   const {
@@ -114,11 +113,6 @@ export function OrganizationSlugField({
       ? "Could not verify slug availability"
       : undefined
 
-  const validationError =
-    error ??
-    availabilityError ??
-    (slugTaken ? "This slug is already taken" : undefined)
-
   useEffect(() => {
     if (!onAvailabilityChange) return
 
@@ -133,24 +127,31 @@ export function OrganizationSlugField({
     }
 
     if (checkSlugError && !isOrganizationSlugTakenError(checkSlugError)) {
-      onAvailabilityChange({ checking: false, available: null })
+      onAvailabilityChange({
+        checking: false,
+        available: null,
+        error: availabilityError,
+      })
       return
     }
 
     onAvailabilityChange({
       checking: false,
       available: checkSlugData?.available ?? null,
+      error: slugTaken ? "This slug is already taken" : undefined,
     })
   }, [
+    availabilityError,
     checkSlugData?.available,
     checkSlugError,
     isCheckingSlug,
     onAvailabilityChange,
     shouldCheckAvailability,
+    slugTaken,
   ])
 
   return (
-    <Field invalid={Boolean(validationError)}>
+    <Field name="slug">
       <FieldLabel htmlFor={id}>Slug</FieldLabel>
       <InputGroup>
         <FieldControl
@@ -180,9 +181,7 @@ export function OrganizationSlugField({
           </InputGroupAddon>
         ) : null}
       </InputGroup>
-      <FieldError match={Boolean(validationError)}>
-        {validationError}
-      </FieldError>
+      <FieldError />
     </Field>
   )
 }

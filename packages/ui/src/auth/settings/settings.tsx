@@ -11,6 +11,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import type { AccountSettingsProps } from "./account/account-settings"
 import { AccountSettings } from "./account/account-settings"
+import type { SecuritySettingsProps } from "./security/security-settings"
 import { SecuritySettings } from "./security/security-settings"
 
 export type SettingsView = "account" | "security"
@@ -20,9 +21,16 @@ export interface SettingsProps {
   view: SettingsView
   hideNav?: boolean
   account?: AccountSettingsProps
+  security?: SecuritySettingsProps
 }
 
-export function Settings({ className, view, hideNav, account }: SettingsProps) {
+export function Settings({
+  className,
+  view,
+  hideNav,
+  account,
+  security,
+}: SettingsProps) {
   const config = useAuthUiConfig()
   useAuthenticate()
 
@@ -55,7 +63,7 @@ export function Settings({ className, view, hideNav, account }: SettingsProps) {
       </TabsContent>
 
       <TabsContent tabIndex={-1} value="security">
-        <SecuritySettings />
+        <SecuritySettings {...security} />
       </TabsContent>
     </Tabs>
   )

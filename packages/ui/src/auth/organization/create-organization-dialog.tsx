@@ -1,26 +1,24 @@
 "use client"
 
-import type { SubmitEventHandler } from "react"
 import type { OrganizationSlugAvailabilityState } from "./organization-slug-field"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { Pane } from "@workspace/ui/components/pane"
+import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationSlugField } from "./organization-slug-field"
+
+type CreateOrganizationValues = { name: string; slug: string }
 
 export interface CreateOrganizationDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  name: string
-  onNameChange: (value: string) => void
-  nameError?: string
-  slug: string
-  onSlugChange: (value: string) => void
+  control: Control<CreateOrganizationValues>
   onSlugBlur?: () => void
   onSlugAvailabilityChange?: (state: OrganizationSlugAvailabilityState) => void
-  slugError?: string
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  slugAvailabilityError?: string
+  onSubmit: () => void
   isPending?: boolean
   canSubmit?: boolean
   required?: boolean
@@ -33,14 +31,10 @@ export interface CreateOrganizationDialogProps {
 export function CreateOrganizationDialog({
   open,
   onOpenChange,
-  name,
-  onNameChange,
-  nameError,
-  slug,
-  onSlugChange,
+  control,
   onSlugBlur,
   onSlugAvailabilityChange,
-  slugError,
+  slugAvailabilityError,
   onSubmit,
   isPending = false,
   canSubmit = true,
@@ -50,6 +44,14 @@ export function CreateOrganizationDialog({
   description = "Create a workspace to collaborate with your team.",
   submitLabel = "Create workspace",
 }: CreateOrganizationDialogProps) {
+  const { errors } = useFormState({ control })
+
+  const formErrors: Record<string, string> = {}
+  if (errors.name?.message) formErrors.name = errors.name.message
+
+  const slugMessage = slugAvailabilityError ?? errors.slug?.message
+  if (slugMessage) formErrors.slug = slugMessage
+
   function handleOpenChange(nextOpen: boolean) {
     if (required && !nextOpen) return
     onOpenChange(nextOpen)
@@ -65,35 +67,48 @@ export function CreateOrganizationDialog({
 
         <Form
           className="contents"
-          onSubmit={(event) => {
-            event.preventDefault()
-            onSubmit(event)
-          }}
+          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+          onSubmit={onSubmit}
         >
           <Pane.Panel className="flex flex-col gap-4">
-            <Field invalid={Boolean(nameError)}>
-              <FieldLabel htmlFor="create-organization-name">Name</FieldLabel>
-              <Input
-                autoFocus
-                disabled={isPending}
-                id="create-organization-name"
-                onChange={(event) => onNameChange(event.target.value)}
-                placeholder="Acme Inc."
-                type="text"
-                value={name}
-              />
-              <FieldError match={Boolean(nameError)}>{nameError}</FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <Field name="name">
+                  <FieldLabel htmlFor="create-organization-name">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    autoFocus
+                    disabled={isPending}
+                    id="create-organization-name"
+                    placeholder="Acme Inc."
+                    type="text"
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
 
             {showSlug ? (
-              <OrganizationSlugField
-                disabled={isPending}
-                error={slugError}
-                id="create-organization-slug"
-                onAvailabilityChange={onSlugAvailabilityChange}
-                onBlur={onSlugBlur}
-                onChange={onSlugChange}
-                value={slug}
+              <Controller
+                control={control}
+                name="slug"
+                render={({ field }) => (
+                  <OrganizationSlugField
+                    disabled={isPending}
+                    id="create-organization-slug"
+                    onAvailabilityChange={onSlugAvailabilityChange}
+                    onBlur={() => {
+                      field.onBlur()
+                      onSlugBlur?.()
+                    }}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
+                )}
               />
             ) : null}
           </Pane.Panel>

@@ -1,6 +1,5 @@
 "use client"
 
-import type { SubmitEventHandler } from "react"
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
@@ -8,16 +7,19 @@ import { Button } from "@workspace/ui/components/button"
 import { Pane } from "@workspace/ui/components/pane"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
+import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
+
+type EditOrganizationRoleValues = {
+  permission: OrganizationPermissionMap
+}
 
 export interface EditOrganizationRoleDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   role: OrganizationRole | null
-  permissions: OrganizationPermissionMap
-  onPermissionsChange: (permissions: OrganizationPermissionMap) => void
-  permissionError?: string
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  control: Control<EditOrganizationRoleValues>
+  onSubmit: () => void
   isPending?: boolean
 }
 
@@ -25,13 +27,18 @@ export function EditOrganizationRoleDialog({
   open,
   onOpenChange,
   role,
-  permissions,
-  onPermissionsChange,
-  permissionError,
+  control,
   onSubmit,
   isPending = false,
 }: EditOrganizationRoleDialogProps) {
+  const { errors } = useFormState({ control })
+
   if (!role) return null
+
+  const formErrors: Record<string, string> = {}
+  if (errors.permission?.message) {
+    formErrors.permission = errors.permission.message
+  }
 
   return (
     <Pane onOpenChange={onOpenChange} open={open}>
@@ -45,23 +52,25 @@ export function EditOrganizationRoleDialog({
 
         <Form
           className="contents"
-          onSubmit={(event) => {
-            event.preventDefault()
-            onSubmit(event)
-          }}
+          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+          onSubmit={onSubmit}
         >
           <Pane.Panel className="flex flex-col gap-4">
-            <Field invalid={Boolean(permissionError)}>
-              <FieldLabel>Permissions</FieldLabel>
-              <OrganizationRolePermissions
-                disabled={isPending}
-                onChange={onPermissionsChange}
-                permissions={permissions}
-              />
-              <FieldError match={Boolean(permissionError)}>
-                {permissionError}
-              </FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="permission"
+              render={({ field }) => (
+                <Field name="permission">
+                  <FieldLabel>Permissions</FieldLabel>
+                  <OrganizationRolePermissions
+                    disabled={isPending}
+                    onChange={field.onChange}
+                    permissions={field.value}
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
           </Pane.Panel>
 
           <Pane.Footer>

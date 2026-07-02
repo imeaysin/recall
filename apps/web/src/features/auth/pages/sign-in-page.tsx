@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useFormState } from "react-hook-form"
 import { signInSchema, type SignInInput } from "@workspace/contracts"
 import { AuthDivider, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
@@ -10,6 +10,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@workspace/ui/components/field"
+import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { PasswordInput } from "@workspace/ui/components/password-input"
 import { PageLoading } from "@workspace/ui/components/page-loading"
@@ -45,6 +46,7 @@ export function SignInPage() {
     resolver: zodResolver(signInSchema),
     defaultValues: { email: "", password: "" },
   })
+  const { errors } = useFormState({ control: form.control })
 
   if (isPending) {
     return <PageLoading />
@@ -80,6 +82,10 @@ export function SignInPage() {
     }
   }
 
+  const formErrors: Record<string, string> = {}
+  if (errors.email?.message) formErrors.email = errors.email.message
+  if (errors.password?.message) formErrors.password = errors.password.message
+
   return (
     <AuthPageBody
       footer={
@@ -106,16 +112,17 @@ export function SignInPage() {
 
       <AuthDivider />
 
-      <form
+      <Form
         className="flex flex-col gap-4"
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
         noValidate
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Controller
           control={form.control}
           name="email"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="email">
               <FieldLabel htmlFor="sign-in-email">Email</FieldLabel>
               <Input
                 {...field}
@@ -124,15 +131,15 @@ export function SignInPage() {
                 placeholder="you@example.com"
                 type="email"
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
         <Controller
           control={form.control}
           name="password"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="password">
               <FieldLabel htmlFor="sign-in-password">Password</FieldLabel>
               <FieldControl
                 {...field}
@@ -145,7 +152,7 @@ export function SignInPage() {
                   />
                 )}
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
@@ -166,7 +173,7 @@ export function SignInPage() {
         >
           Sign in
         </Button>
-      </form>
+      </Form>
     </AuthPageBody>
   )
 }

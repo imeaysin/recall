@@ -1,6 +1,5 @@
 "use client"
 
-import type { SubmitEventHandler } from "react"
 import type { OrganizationSlugAvailabilityState } from "./organization-slug-field"
 import {
   useActiveOrganization,
@@ -13,22 +12,21 @@ import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
+import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationSlugField } from "./organization-slug-field"
 import { organizationUiPermissions } from "./ui-permissions"
 
+type OrganizationProfileValues = { name: string; slug: string }
+
 export interface OrganizationProfileProps {
   className?: string
-  name?: string
-  onNameChange?: (value: string) => void
-  nameError?: string
-  slug?: string
+  control?: Control<OrganizationProfileValues>
   currentSlug?: string
-  onSlugChange?: (value: string) => void
   onSlugBlur?: () => void
-  slugError?: string
   checkSlugAvailability?: boolean
   onSlugAvailabilityChange?: (state: OrganizationSlugAvailabilityState) => void
-  onSubmit?: SubmitEventHandler<HTMLFormElement>
+  slugAvailabilityError?: string
+  onSubmit?: () => void
   isPending?: boolean
   canSubmit?: boolean
 }
@@ -56,16 +54,12 @@ function OrganizationProfileSkeleton({ className }: { className?: string }) {
 
 export function OrganizationProfile({
   className,
-  name = "",
-  onNameChange,
-  nameError,
-  slug = "",
+  control,
   currentSlug,
-  onSlugChange,
   onSlugBlur,
-  slugError,
   checkSlugAvailability = true,
   onSlugAvailabilityChange,
+  slugAvailabilityError,
   onSubmit,
   isPending = false,
   canSubmit = true,
@@ -74,7 +68,8 @@ export function OrganizationProfile({
   const { data: canUpdateOrganization, isPending: permissionPending } =
     useOrganizationPermission(organizationUiPermissions.updateOrganization)
   const readOnly = !canUpdateOrganization?.success
-  const wired = onSubmit != null
+  const wired = onSubmit != null && control != null
+  const { errors } = useFormState({ control, disabled: !control })
 
   if (!activeOrganization || permissionPending || !wired) {
     return (
@@ -88,42 +83,59 @@ export function OrganizationProfile({
   const nameInputId = `${activeOrganization.id}-name`
   const slugInputId = `${activeOrganization.id}-slug`
 
+  const formErrors: Record<string, string> = {}
+  if (errors.name?.message) formErrors.name = errors.name.message
+
+  const slugMessage = slugAvailabilityError ?? errors.slug?.message
+  if (slugMessage) formErrors.slug = slugMessage
+
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Profile</h2>
       <Form
         key={activeOrganization.id}
-        onSubmit={(event) => {
-          event.preventDefault()
-          onSubmit(event)
-        }}
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+        onSubmit={onSubmit}
       >
         <Card className={cn(className)}>
           <CardPanel className="flex flex-col gap-4 p-4">
-            <Field invalid={Boolean(nameError)}>
-              <FieldLabel htmlFor={nameInputId}>Name</FieldLabel>
-              <Input
-                autoComplete="organization"
-                disabled={isPending || readOnly}
-                id={nameInputId}
-                onChange={(event) => onNameChange?.(event.target.value)}
-                placeholder="Acme Inc."
-                type="text"
-                value={name}
-              />
-              <FieldError match={Boolean(nameError)}>{nameError}</FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <Field name="name">
+                  <FieldLabel htmlFor={nameInputId}>Name</FieldLabel>
+                  <Input
+                    {...field}
+                    autoComplete="organization"
+                    disabled={isPending || readOnly}
+                    id={nameInputId}
+                    placeholder="Acme Inc."
+                    type="text"
+                  />
+                  <FieldError />
+                </Field>
+              )}
+            />
 
-            <OrganizationSlugField
-              checkAvailability={checkSlugAvailability}
-              currentSlug={currentSlug ?? activeOrganization.slug}
-              disabled={isPending || readOnly}
-              error={slugError}
-              id={slugInputId}
-              onAvailabilityChange={onSlugAvailabilityChange}
-              onBlur={onSlugBlur}
-              onChange={(value) => onSlugChange?.(value)}
-              value={slug}
+            <Controller
+              control={control}
+              name="slug"
+              render={({ field }) => (
+                <OrganizationSlugField
+                  checkAvailability={checkSlugAvailability}
+                  currentSlug={currentSlug ?? activeOrganization.slug}
+                  disabled={isPending || readOnly}
+                  id={slugInputId}
+                  onAvailabilityChange={onSlugAvailabilityChange}
+                  onBlur={() => {
+                    field.onBlur()
+                    onSlugBlur?.()
+                  }}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
+              )}
             />
 
             {readOnly ? null : (

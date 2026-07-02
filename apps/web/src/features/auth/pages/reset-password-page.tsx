@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useFormState } from "react-hook-form"
 import {
   resetPasswordSchema,
   type ResetPasswordInput,
@@ -13,6 +13,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@workspace/ui/components/field"
+import { Form } from "@workspace/ui/components/form"
 import { PasswordInput } from "@workspace/ui/components/password-input"
 import { toastManager } from "@workspace/ui/components/toast"
 import { useResetPassword } from "@workspace/auth/react"
@@ -27,6 +28,7 @@ export function ResetPasswordPage() {
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { password: "", confirmPassword: "" },
   })
+  const { errors } = useFormState({ control: form.control })
 
   async function onSubmit(values: ResetPasswordInput) {
     if (!token) {
@@ -51,6 +53,12 @@ export function ResetPasswordPage() {
     }
   }
 
+  const formErrors: Record<string, string> = {}
+  if (errors.password?.message) formErrors.password = errors.password.message
+  if (errors.confirmPassword?.message) {
+    formErrors.confirmPassword = errors.confirmPassword.message
+  }
+
   return (
     <AuthPageBody
       footer={
@@ -67,16 +75,17 @@ export function ResetPasswordPage() {
         title="Reset password"
       />
 
-      <form
+      <Form
         className="flex flex-col gap-4"
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
         noValidate
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Controller
           control={form.control}
           name="password"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="password">
               <FieldLabel htmlFor="reset-password">New password</FieldLabel>
               <FieldControl
                 {...field}
@@ -89,15 +98,15 @@ export function ResetPasswordPage() {
                   />
                 )}
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
         <Controller
           control={form.control}
           name="confirmPassword"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="confirmPassword">
               <FieldLabel htmlFor="reset-password-confirm">
                 Confirm password
               </FieldLabel>
@@ -112,7 +121,7 @@ export function ResetPasswordPage() {
                   />
                 )}
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
@@ -125,7 +134,7 @@ export function ResetPasswordPage() {
         >
           Update password
         </Button>
-      </form>
+      </Form>
     </AuthPageBody>
   )
 }

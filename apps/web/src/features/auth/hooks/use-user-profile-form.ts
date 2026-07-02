@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuthSession, useUpdateUser } from "@workspace/auth/react"
 import type { UserProfileProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
-import { useForm, useFormState, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import { userNameSchema, type UserNameInput } from "@/features/auth/schemas"
 
@@ -17,9 +17,6 @@ export function useUserProfileForm(): UserProfileProps {
     defaultValues: { name: session?.user.name ?? "" },
   })
 
-  const name = useWatch({ control: form.control, name: "name" })
-  const { errors } = useFormState({ control: form.control })
-
   useEffect(() => {
     if (session?.user.name) {
       form.reset({ name: session.user.name })
@@ -27,12 +24,9 @@ export function useUserProfileForm(): UserProfileProps {
   }, [form, session?.user.name])
 
   return {
+    control: form.control,
     hasSession: !!session,
     isPending,
-    name,
-    onNameChange: (value) =>
-      form.setValue("name", value, { shouldValidate: true }),
-    nameError: errors.name?.message,
     onSubmit: form.handleSubmit((values) => {
       void toastManager
         .promise(updateUser(values), {

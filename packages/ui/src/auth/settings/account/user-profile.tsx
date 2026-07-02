@@ -7,12 +7,13 @@ import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
+import { Controller, useFormState, type Control } from "react-hook-form"
+
+type UserProfileValues = { name: string }
 
 export interface UserProfileProps {
   className?: string
-  name?: string
-  onNameChange?: (value: string) => void
-  nameError?: string
+  control?: Control<UserProfileValues>
   onSubmit?: () => void
   isPending?: boolean
   hasSession?: boolean
@@ -20,42 +21,54 @@ export interface UserProfileProps {
 
 export function UserProfile({
   className,
-  name = "",
-  onNameChange,
-  nameError,
+  control,
   onSubmit,
   isPending = false,
   hasSession = false,
 }: UserProfileProps) {
-  const wired = onSubmit != null
+  const wired = onSubmit != null && control != null
+  const { errors } = useFormState({ control, disabled: !control })
+
+  const formErrors: Record<string, string> = {}
+  if (errors.name?.message) {
+    formErrors.name = errors.name.message
+  }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-      <Form onSubmit={onSubmit ?? ((event) => event.preventDefault())}>
+      <Form
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
+      >
         <Card className={cn(className)}>
           <CardPanel className="flex flex-col gap-6">
-            <Field invalid={Boolean(nameError)}>
-              <FieldLabel htmlFor="name">Name</FieldLabel>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <Field name="name">
+                  <FieldLabel htmlFor="name">Name</FieldLabel>
 
-              {hasSession && wired ? (
-                <Input
-                  autoComplete="name"
-                  disabled={isPending}
-                  id="name"
-                  onChange={(event) => onNameChange?.(event.target.value)}
-                  placeholder="Your name"
-                  type="text"
-                  value={name}
-                />
-              ) : (
-                <Skeleton>
-                  <Input className="invisible" nativeInput />
-                </Skeleton>
+                  {hasSession && wired ? (
+                    <Input
+                      {...field}
+                      autoComplete="name"
+                      disabled={isPending}
+                      id="name"
+                      placeholder="Your name"
+                      type="text"
+                    />
+                  ) : (
+                    <Skeleton>
+                      <Input className="invisible" nativeInput />
+                    </Skeleton>
+                  )}
+
+                  <FieldError />
+                </Field>
               )}
-
-              <FieldError match={Boolean(nameError)}>{nameError}</FieldError>
-            </Field>
+            />
           </CardPanel>
 
           <CardFooter>

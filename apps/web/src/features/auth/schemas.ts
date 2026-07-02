@@ -1,3 +1,8 @@
+import {
+  countOrganizationPermissions,
+  isReservedOrganizationRoleName,
+} from "@workspace/auth/permissions/organization"
+import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { z } from "zod"
 
 const organizationSlugSchema = z
@@ -41,8 +46,36 @@ export const organizationRoleNameSchema = z
     "Use lowercase letters, numbers, and hyphens"
   )
 
+const organizationPermissionMapSchema = z.custom<OrganizationPermissionMap>(
+  (value) => typeof value === "object" && value !== null
+)
+
+export const createOrganizationRoleSchema = z.object({
+  role: organizationRoleNameSchema.refine(
+    (name) => !isReservedOrganizationRoleName(name),
+    "This role name is reserved"
+  ),
+  permission: organizationPermissionMapSchema.refine(
+    (permissions) => countOrganizationPermissions(permissions) > 0,
+    "Select at least one permission"
+  ),
+})
+
+export const editOrganizationRoleSchema = z.object({
+  permission: organizationPermissionMapSchema.refine(
+    (permissions) => countOrganizationPermissions(permissions) > 0,
+    "Select at least one permission"
+  ),
+})
+
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>
 export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>
 export type InviteMemberInput = z.infer<typeof inviteMemberSchema>
 export type UserNameInput = z.infer<typeof userNameSchema>
 export type ChangeEmailInput = z.infer<typeof changeEmailSchema>
+export type CreateOrganizationRoleInput = z.infer<
+  typeof createOrganizationRoleSchema
+>
+export type EditOrganizationRoleInput = z.infer<
+  typeof editOrganizationRoleSchema
+>

@@ -1,9 +1,5 @@
 "use client"
 
-import {
-  countOrganizationPermissions,
-  isReservedOrganizationRoleName,
-} from "@workspace/auth/permissions/organization"
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import {
   useCreateOrganizationRole,
@@ -11,9 +7,16 @@ import {
   useUpdateOrganizationRole,
 } from "@workspace/auth/react"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
-import { useState, type SubmitEventHandler } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState, type FormEvent } from "react"
+import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
-import { organizationRoleNameSchema } from "@/features/auth/schemas"
+import {
+  createOrganizationRoleSchema,
+  editOrganizationRoleSchema,
+  type CreateOrganizationRoleInput,
+  type EditOrganizationRoleInput,
+} from "@/features/auth/schemas"
 
 const emptyPermissions: OrganizationPermissionMap = {}
 
@@ -24,11 +27,16 @@ export function useOrganizationRoleDialogs() {
   const [selectedRole, setSelectedRole] = useState<OrganizationRole | null>(
     null
   )
-  const [roleName, setRoleName] = useState("")
-  const [roleNameError, setRoleNameError] = useState<string>()
-  const [permissionError, setPermissionError] = useState<string>()
-  const [permissions, setPermissions] =
-    useState<OrganizationPermissionMap>(emptyPermissions)
+
+  const createForm = useForm<CreateOrganizationRoleInput>({
+    resolver: zodResolver(createOrganizationRoleSchema),
+    defaultValues: { role: "", permission: emptyPermissions },
+  })
+
+  const editForm = useForm<EditOrganizationRoleInput>({
+    resolver: zodResolver(editOrganizationRoleSchema),
+    defaultValues: { permission: emptyPermissions },
+  })
 
   const { mutateAsync: createRole, isPending: isCreating } =
     useCreateOrganizationRole()
@@ -38,10 +46,7 @@ export function useOrganizationRoleDialogs() {
     useDeleteOrganizationRole()
 
   function resetCreateForm() {
-    setRoleName("")
-    setRoleNameError(undefined)
-    setPermissionError(undefined)
-    setPermissions(emptyPermissions)
+    createForm.reset({ role: "", permission: emptyPermissions })
   }
 
   function openCreateDialog() {
@@ -56,16 +61,14 @@ export function useOrganizationRoleDialogs() {
 
   function openEditDialog(role: OrganizationRole) {
     setSelectedRole(role)
-    setPermissions(role.permission ?? emptyPermissions)
-    setPermissionError(undefined)
+    editForm.reset({ permission: role.permission ?? emptyPermissions })
     setEditOpen(true)
   }
 
   function handleEditOpenChange(open: boolean) {
     if (!open) {
       setSelectedRole(null)
-      setPermissions(emptyPermissions)
-      setPermissionError(undefined)
+      editForm.reset({ permission: emptyPermissions })
     }
     setEditOpen(open)
   }
@@ -80,37 +83,12 @@ export function useOrganizationRoleDialogs() {
     setDeleteOpen(open)
   }
 
-  function validateRoleName(name: string) {
-    const parsed = organizationRoleNameSchema.safeParse(name)
-    if (!parsed.success) {
-      return parsed.error.issues[0]?.message ?? "Invalid role name"
-    }
-    if (isReservedOrganizationRoleName(parsed.data)) {
-      return "This role name is reserved"
-    }
-    return undefined
-  }
-
-  function validatePermissions(nextPermissions: OrganizationPermissionMap) {
-    if (countOrganizationPermissions(nextPermissions) === 0) {
-      return "Select at least one permission"
-    }
-    return undefined
-  }
-
-  const handleCreateSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault()
-    const nextRoleNameError = validateRoleName(roleName)
-    const nextPermissionError = validatePermissions(permissions)
-    setRoleNameError(nextRoleNameError)
-    setPermissionError(nextPermissionError)
-    if (nextRoleNameError || nextPermissionError) return
-
+  const handleCreateSubmit = createForm.handleSubmit((values) => {
     void toastManager
       .promise(
         createRole({
-          role: roleName.trim().toLowerCase(),
-          permission: permissions,
+          role: values.role.trim().toLowerCase(),
+          permission: values.permission,
         }),
         {
           error: {
@@ -130,21 +108,16 @@ export function useOrganizationRoleDialogs() {
       )
       .then(() => handleCreateOpenChange(false))
       .catch(() => {})
-  }
+  })
 
-  const handleEditSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault()
+  const handleEditSubmit = editForm.handleSubmit((values) => {
     if (!selectedRole) return
-
-    const nextPermissionError = validatePermissions(permissions)
-    setPermissionError(nextPermissionError)
-    if (nextPermissionError) return
 
     void toastManager
       .promise(
         updateRole({
           roleId: selectedRole.id,
-          data: { permission: permissions },
+          data: { permission: values.permission },
         }),
         {
           error: {
@@ -154,19 +127,21 @@ export function useOrganizationRoleDialogs() {
           },
           loading: {
             title: "Updating role…",
+            description: "The role is being updated.",
             type: "loading",
           },
           success: {
             title: "Role updated",
+            description: "The role has been updated.",
             type: "success",
           },
         }
       )
       .then(() => handleEditOpenChange(false))
       .catch(() => {})
-  }
+  })
 
-  const handleDeleteSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
+  const handleDeleteSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!selectedRole) return
 
@@ -179,10 +154,12 @@ export function useOrganizationRoleDialogs() {
         },
         loading: {
           title: "Deleting role…",
+          description: "The role is being deleted.",
           type: "loading",
         },
         success: {
           title: "Role deleted",
+          description: "The role has been deleted.",
           type: "success",
         },
       })
@@ -198,18 +175,7 @@ export function useOrganizationRoleDialogs() {
       createDialog: {
         open: createOpen,
         onOpenChange: handleCreateOpenChange,
-        role: roleName,
-        onRoleChange: (value: string) => {
-          setRoleName(value)
-          setRoleNameError(validateRoleName(value))
-        },
-        roleError: roleNameError,
-        permissions,
-        onPermissionsChange: (nextPermissions: OrganizationPermissionMap) => {
-          setPermissions(nextPermissions)
-          setPermissionError(validatePermissions(nextPermissions))
-        },
-        permissionError,
+        control: createForm.control,
         isPending: isCreating,
         onSubmit: handleCreateSubmit,
       },
@@ -217,12 +183,7 @@ export function useOrganizationRoleDialogs() {
         open: editOpen,
         onOpenChange: handleEditOpenChange,
         role: selectedRole,
-        permissions,
-        onPermissionsChange: (nextPermissions: OrganizationPermissionMap) => {
-          setPermissions(nextPermissions)
-          setPermissionError(validatePermissions(nextPermissions))
-        },
-        permissionError,
+        control: editForm.control,
         isPending: isUpdating,
         onSubmit: handleEditSubmit,
       },

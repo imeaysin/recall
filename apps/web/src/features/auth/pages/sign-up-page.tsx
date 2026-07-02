@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useFormState } from "react-hook-form"
 import { signUpSchema, type SignUpInput } from "@workspace/contracts"
 import { AuthDivider, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
@@ -10,6 +10,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@workspace/ui/components/field"
+import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { PasswordInput } from "@workspace/ui/components/password-input"
 import { PageLoading } from "@workspace/ui/components/page-loading"
@@ -45,6 +46,7 @@ export function SignUpPage() {
       confirmPassword: "",
     },
   })
+  const { errors } = useFormState({ control: form.control })
 
   if (isPending) {
     return <PageLoading />
@@ -75,6 +77,14 @@ export function SignUpPage() {
     }
   }
 
+  const formErrors: Record<string, string> = {}
+  if (errors.name?.message) formErrors.name = errors.name.message
+  if (errors.email?.message) formErrors.email = errors.email.message
+  if (errors.password?.message) formErrors.password = errors.password.message
+  if (errors.confirmPassword?.message) {
+    formErrors.confirmPassword = errors.confirmPassword.message
+  }
+
   return (
     <AuthPageBody
       footer={
@@ -101,16 +111,17 @@ export function SignUpPage() {
 
       <AuthDivider />
 
-      <form
+      <Form
         className="flex flex-col gap-4"
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
         noValidate
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Controller
           control={form.control}
           name="name"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="name">
               <FieldLabel htmlFor="sign-up-name">Name</FieldLabel>
               <Input
                 {...field}
@@ -119,15 +130,15 @@ export function SignUpPage() {
                 placeholder="Your name"
                 type="text"
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
         <Controller
           control={form.control}
           name="email"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="email">
               <FieldLabel htmlFor="sign-up-email">Email</FieldLabel>
               <Input
                 {...field}
@@ -136,15 +147,15 @@ export function SignUpPage() {
                 placeholder="you@example.com"
                 type="email"
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
         <Controller
           control={form.control}
           name="password"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="password">
               <FieldLabel htmlFor="sign-up-password">Password</FieldLabel>
               <FieldControl
                 {...field}
@@ -157,15 +168,15 @@ export function SignUpPage() {
                   />
                 )}
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
         <Controller
           control={form.control}
           name="confirmPassword"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="confirmPassword">
               <FieldLabel htmlFor="sign-up-confirm-password">
                 Confirm password
               </FieldLabel>
@@ -180,7 +191,7 @@ export function SignUpPage() {
                   />
                 )}
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
@@ -193,7 +204,7 @@ export function SignUpPage() {
         >
           Create account
         </Button>
-      </form>
+      </Form>
     </AuthPageBody>
   )
 }

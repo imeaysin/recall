@@ -58,7 +58,10 @@ export { SecuritySettings } from "./settings/security/security-settings"
 export type { SecuritySettingsProps } from "./settings/security/security-settings"
 
 export { ChangePassword } from "./settings/security/change-password"
-export type { ChangePasswordProps } from "./settings/security/change-password"
+export type {
+  ChangePasswordFormProps,
+  ChangePasswordProps,
+} from "./settings/security/change-password"
 
 export { LinkedAccounts } from "./settings/security/linked-accounts"
 export type { LinkedAccountsProps } from "./settings/security/linked-accounts"

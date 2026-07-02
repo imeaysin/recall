@@ -2,12 +2,10 @@
 
 import {
   useAuthUiConfig,
-  useChangePassword,
   useListAccounts,
   useRequestPasswordReset,
   useAuthSession,
 } from "@workspace/auth/react"
-import { type SyntheticEvent, useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardFooter, CardPanel } from "@workspace/ui/components/card"
 import {
@@ -22,14 +20,31 @@ import { PasswordInput } from "@workspace/ui/components/password-input"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { toastManager } from "@workspace/ui/components/toast"
 import { cn } from "@workspace/ui/lib/utils"
+import { Controller, useFormState, type Control } from "react-hook-form"
+
+type ChangePasswordValues = {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
 
 export interface ChangePasswordProps {
   className?: string
+  changePassword?: ChangePasswordFormProps
 }
 
-const MIN_PASSWORD_LENGTH = 8
+export interface ChangePasswordFormProps {
+  className?: string
+  control?: Control<ChangePasswordValues>
+  onSubmit?: () => void
+  isPending?: boolean
+  hasSession?: boolean
+}
 
-export function ChangePassword({ className }: ChangePasswordProps) {
+export function ChangePassword({
+  className,
+  changePassword,
+}: ChangePasswordProps) {
   const { data: session } = useAuthSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
@@ -44,7 +59,10 @@ export function ChangePassword({ className }: ChangePasswordProps) {
   return (
     <ChangePasswordForm
       className={className}
-      session={isAccountsPending ? undefined : session}
+      {...changePassword}
+      hasSession={
+        changePassword?.hasSession ?? (!isAccountsPending && !!session)
+      }
     />
   )
 }
@@ -103,204 +121,135 @@ function SetPassword({ className }: { className?: string }) {
 
 function ChangePasswordForm({
   className,
-  session,
-}: {
-  className?: string
-  session: ReturnType<typeof useAuthSession>["data"] | undefined
-}) {
-  const [currentPassword, setCurrentPassword] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [fieldErrors, setFieldErrors] = useState<{
-    currentPassword?: string
-    newPassword?: string
-    confirmPassword?: string
-  }>({})
+  control,
+  onSubmit,
+  isPending = false,
+  hasSession = false,
+}: ChangePasswordFormProps) {
+  const wired = onSubmit != null && control != null
+  const { errors } = useFormState({ control, disabled: !control })
 
-  const { mutate: changePassword, isPending } = useChangePassword()
-
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    if (newPassword !== confirmPassword) {
-      setFieldErrors({
-        confirmPassword: "Passwords do not match",
-      })
-      return
-    }
-
-    changePassword(
-      {
-        currentPassword,
-        newPassword,
-        revokeOtherSessions: true,
-      },
-      {
-        onError: () => {
-          setFieldErrors({
-            currentPassword: "Check your current password and try again.",
-          })
-          setCurrentPassword("")
-        },
-        onSuccess: () => {
-          setCurrentPassword("")
-          setNewPassword("")
-          setConfirmPassword("")
-          toastManager.add({ title: "Password updated", type: "success" })
-        },
-      }
-    )
+  const formErrors: Record<string, string> = {}
+  if (errors.currentPassword?.message) {
+    formErrors.currentPassword = errors.currentPassword.message
+  }
+  if (errors.newPassword?.message)
+    formErrors.newPassword = errors.newPassword.message
+  if (errors.confirmPassword?.message) {
+    formErrors.confirmPassword = errors.confirmPassword.message
   }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Change password</h2>
 
-      <Form onSubmit={handleSubmit}>
+      <Form
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
+      >
         <Card className={cn(className)}>
           <CardPanel className="flex flex-col gap-6">
-            <Field invalid={Boolean(fieldErrors.currentPassword)}>
-              <FieldLabel htmlFor="currentPassword">
-                Current password
-              </FieldLabel>
+            <Controller
+              control={control}
+              name="currentPassword"
+              render={({ field }) => (
+                <Field name="currentPassword">
+                  <FieldLabel htmlFor="currentPassword">
+                    Current password
+                  </FieldLabel>
 
-              {session ? (
-                <FieldControl
-                  render={(controlProps) => (
-                    <PasswordInput
-                      {...controlProps}
-                      autoComplete="current-password"
-                      disabled={isPending}
-                      id="currentPassword"
-                      name="currentPassword"
-                      onChange={(e) => {
-                        setCurrentPassword(e.target.value)
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          currentPassword: undefined,
-                        }))
-                      }}
-                      onInvalid={(e) => {
-                        e.preventDefault()
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          currentPassword: (e.target as HTMLInputElement)
-                            .validationMessage,
-                        }))
-                      }}
-                      placeholder="Enter your current password"
-                      required
-                      value={currentPassword}
+                  {hasSession && wired ? (
+                    <FieldControl
+                      {...field}
+                      render={(controlProps) => (
+                        <PasswordInput
+                          {...controlProps}
+                          autoComplete="current-password"
+                          disabled={isPending}
+                          id="currentPassword"
+                          placeholder="Enter your current password"
+                        />
+                      )}
                     />
+                  ) : (
+                    <Skeleton>
+                      <Input className="invisible" nativeInput />
+                    </Skeleton>
                   )}
-                />
-              ) : (
-                <Skeleton>
-                  <Input className="invisible" nativeInput />
-                </Skeleton>
+
+                  <FieldError />
+                </Field>
               )}
+            />
 
-              <FieldError match={Boolean(fieldErrors.currentPassword)}>
-                {fieldErrors.currentPassword}
-              </FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="newPassword"
+              render={({ field }) => (
+                <Field name="newPassword">
+                  <FieldLabel htmlFor="newPassword">New password</FieldLabel>
 
-            <Field invalid={Boolean(fieldErrors.newPassword)}>
-              <FieldLabel htmlFor="newPassword">New password</FieldLabel>
-
-              {session ? (
-                <FieldControl
-                  render={(controlProps) => (
-                    <PasswordInput
-                      {...controlProps}
-                      autoComplete="new-password"
-                      disabled={isPending}
-                      id="newPassword"
-                      minLength={MIN_PASSWORD_LENGTH}
-                      name="newPassword"
-                      onChange={(e) => {
-                        setNewPassword(e.target.value)
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          newPassword: undefined,
-                        }))
-                      }}
-                      onInvalid={(e) => {
-                        e.preventDefault()
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          newPassword: (e.target as HTMLInputElement)
-                            .validationMessage,
-                        }))
-                      }}
-                      placeholder="Enter a new password"
-                      required
-                      value={newPassword}
+                  {hasSession && wired ? (
+                    <FieldControl
+                      {...field}
+                      render={(controlProps) => (
+                        <PasswordInput
+                          {...controlProps}
+                          autoComplete="new-password"
+                          disabled={isPending}
+                          id="newPassword"
+                          placeholder="Enter a new password"
+                        />
+                      )}
                     />
+                  ) : (
+                    <Skeleton>
+                      <Input className="invisible" nativeInput />
+                    </Skeleton>
                   )}
-                />
-              ) : (
-                <Skeleton>
-                  <Input className="invisible" nativeInput />
-                </Skeleton>
+
+                  <FieldError />
+                </Field>
               )}
+            />
 
-              <FieldError match={Boolean(fieldErrors.newPassword)}>
-                {fieldErrors.newPassword}
-              </FieldError>
-            </Field>
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <Field name="confirmPassword">
+                  <FieldLabel htmlFor="confirmPassword">
+                    Confirm password
+                  </FieldLabel>
 
-            <Field invalid={Boolean(fieldErrors.confirmPassword)}>
-              <FieldLabel htmlFor="confirmPassword">
-                Confirm password
-              </FieldLabel>
-
-              {session ? (
-                <FieldControl
-                  render={(controlProps) => (
-                    <PasswordInput
-                      {...controlProps}
-                      autoComplete="new-password"
-                      disabled={isPending}
-                      id="confirmPassword"
-                      minLength={MIN_PASSWORD_LENGTH}
-                      name="confirmPassword"
-                      onChange={(e) => {
-                        setConfirmPassword(e.target.value)
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          confirmPassword: undefined,
-                        }))
-                      }}
-                      onInvalid={(e) => {
-                        e.preventDefault()
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          confirmPassword: (e.target as HTMLInputElement)
-                            .validationMessage,
-                        }))
-                      }}
-                      placeholder="Confirm your password"
-                      required
-                      value={confirmPassword}
+                  {hasSession && wired ? (
+                    <FieldControl
+                      {...field}
+                      render={(controlProps) => (
+                        <PasswordInput
+                          {...controlProps}
+                          autoComplete="new-password"
+                          disabled={isPending}
+                          id="confirmPassword"
+                          placeholder="Confirm your password"
+                        />
+                      )}
                     />
+                  ) : (
+                    <Skeleton>
+                      <Input className="invisible" nativeInput />
+                    </Skeleton>
                   )}
-                />
-              ) : (
-                <Skeleton>
-                  <Input className="invisible" nativeInput />
-                </Skeleton>
-              )}
 
-              <FieldError match={Boolean(fieldErrors.confirmPassword)}>
-                {fieldErrors.confirmPassword}
-              </FieldError>
-            </Field>
+                  <FieldError />
+                </Field>
+              )}
+            />
           </CardPanel>
 
           <CardFooter>
             <Button
-              disabled={!session}
+              disabled={!hasSession || !wired}
               loading={isPending}
               size="sm"
               type="submit"

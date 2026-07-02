@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "react-router-dom"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useFormState } from "react-hook-form"
 import {
   forgotPasswordSchema,
   type ForgotPasswordInput,
@@ -8,6 +8,7 @@ import {
 import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
+import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
 import { toastManager } from "@workspace/ui/components/toast"
 import { useRequestPasswordReset } from "@workspace/auth/react"
@@ -19,6 +20,7 @@ export function ForgotPasswordPage() {
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" },
   })
+  const { errors } = useFormState({ control: form.control })
 
   async function onSubmit(values: ForgotPasswordInput) {
     try {
@@ -38,6 +40,9 @@ export function ForgotPasswordPage() {
     }
   }
 
+  const formErrors: Record<string, string> = {}
+  if (errors.email?.message) formErrors.email = errors.email.message
+
   return (
     <AuthPageBody
       footer={
@@ -54,16 +59,17 @@ export function ForgotPasswordPage() {
         title="Forgot password"
       />
 
-      <form
+      <Form
         className="flex flex-col gap-4"
+        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
         noValidate
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Controller
           control={form.control}
           name="email"
-          render={({ field, fieldState: { invalid, error } }) => (
-            <Field invalid={invalid}>
+          render={({ field }) => (
+            <Field name="email">
               <FieldLabel htmlFor="forgot-password-email">Email</FieldLabel>
               <Input
                 {...field}
@@ -72,7 +78,7 @@ export function ForgotPasswordPage() {
                 placeholder="you@example.com"
                 type="email"
               />
-              <FieldError match={Boolean(error)}>{error?.message}</FieldError>
+              <FieldError />
             </Field>
           )}
         />
@@ -85,7 +91,7 @@ export function ForgotPasswordPage() {
         >
           Send reset link
         </Button>
-      </form>
+      </Form>
     </AuthPageBody>
   )
 }

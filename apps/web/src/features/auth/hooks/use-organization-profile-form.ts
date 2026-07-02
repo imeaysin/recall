@@ -6,8 +6,8 @@ import type { Organization } from "@workspace/auth/types/organization"
 import type { OrganizationProfileProps } from "@workspace/ui/auth"
 import type { OrganizationSlugAvailabilityState } from "@workspace/ui/auth"
 import { isSameOrganizationSlug } from "@workspace/ui/auth"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { useForm, useFormState, useWatch } from "react-hook-form"
+import { useEffect, useRef, useState } from "react"
+import { useForm, useWatch } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
   updateOrganizationSchema,
@@ -35,9 +35,7 @@ export function useOrganizationProfileForm(
     },
   })
 
-  const name = useWatch({ control: form.control, name: "name" })
   const slug = useWatch({ control: form.control, name: "slug" })
-  const { errors } = useFormState({ control: form.control })
   const savedSlug = organization.slug ?? ""
   const slugUnchanged = isSameOrganizationSlug(slug, savedSlug)
 
@@ -48,14 +46,6 @@ export function useOrganizationProfileForm(
     })
     slugEdited.current = false
   }, [form, organization.id, organization.name, organization.slug])
-
-  const handleSlugChange = useCallback(
-    (value: string) => {
-      slugEdited.current = true
-      form.setValue("slug", value, { shouldValidate: true })
-    },
-    [form]
-  )
 
   const canSubmit =
     !isPending &&
@@ -86,21 +76,16 @@ export function useOrganizationProfileForm(
   })
 
   return {
+    control: form.control,
     isPending,
     canSubmit,
-    name,
-    onNameChange: (value) =>
-      form.setValue("name", value, { shouldValidate: true }),
-    nameError: errors.name?.message,
-    slug,
     currentSlug: savedSlug,
-    onSlugChange: handleSlugChange,
     onSlugBlur: () => {
       if (slugUnchanged) return
       void form.trigger("slug")
     },
     onSlugAvailabilityChange: setSlugAvailability,
-    slugError: errors.slug?.message,
+    slugAvailabilityError: slugAvailability.error,
     checkSlugAvailability: !slugUnchanged,
     onSubmit,
   }
