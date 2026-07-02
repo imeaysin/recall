@@ -3,19 +3,10 @@
 import type { SubmitEventHandler } from "react"
 import type { OrganizationSlugAvailabilityState } from "./organization-slug-field"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
+import { Pane } from "@workspace/ui/components/pane"
 import { OrganizationSlugField } from "./organization-slug-field"
 
 export interface CreateOrganizationDialogProps {
@@ -65,12 +56,12 @@ export function CreateOrganizationDialog({
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogPopup showCloseButton={!required}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+    <Pane onOpenChange={handleOpenChange} open={open}>
+      <Pane.Content showCloseButton={!required}>
+        <Pane.Header>
+          <Pane.Title>{title}</Pane.Title>
+          <Pane.Description>{description}</Pane.Description>
+        </Pane.Header>
 
         <Form
           className="contents"
@@ -79,7 +70,7 @@ export function CreateOrganizationDialog({
             onSubmit(event)
           }}
         >
-          <DialogPanel className="flex flex-col gap-4">
+          <Pane.Panel className="flex flex-col gap-4">
             <Field invalid={Boolean(nameError)}>
               <FieldLabel htmlFor="create-organization-name">Name</FieldLabel>
               <Input
@@ -105,11 +96,11 @@ export function CreateOrganizationDialog({
                 value={slug}
               />
             ) : null}
-          </DialogPanel>
+          </Pane.Panel>
 
-          <DialogFooter>
+          <Pane.Footer>
             {required ? null : (
-              <DialogClose
+              <Pane.Close
                 render={
                   <Button
                     disabled={isPending}
@@ -119,14 +110,14 @@ export function CreateOrganizationDialog({
                 }
               >
                 Cancel
-              </DialogClose>
+              </Pane.Close>
             )}
             <Button disabled={!canSubmit} loading={isPending} type="submit">
               {submitLabel}
             </Button>
-          </DialogFooter>
+          </Pane.Footer>
         </Form>
-      </DialogPopup>
-    </Dialog>
+      </Pane.Content>
+    </Pane>
   )
 }

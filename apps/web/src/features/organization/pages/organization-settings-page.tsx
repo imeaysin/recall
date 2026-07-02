@@ -21,8 +21,10 @@ export function OrganizationSettingsPage() {
 
   return (
     <ShellMain
-      heading="Workspace"
-      subtitle="Manage your workspace settings and members."
+      header={{
+        heading: "Workspace",
+        subtitle: "Manage your workspace settings and members.",
+      }}
     >
       <Organization
         onCreateOrganization={openCreateOrganization}

@@ -6,114 +6,20 @@ import { cn } from "@workspace/ui/lib/utils"
 import { CommandPalette, useCommandPaletteShortcut } from "./command-palette"
 import { ShellMobileNav } from "./navigation/navigation"
 import { ShellProvider } from "./shell-context"
-import { ShellBackButton } from "./shell-back-button"
+import { shellContentClassName } from "./shell-layout"
+import { ShellMain } from "./shell-main"
 import { SidebarStateProvider } from "./sidebar-state"
-import { getShellCtaClassName } from "./shell-layout"
 import { ShellSidebar } from "./sidebar"
 import { TopNav } from "./top-nav"
 import type { CommandAction, NavItem, ShellLinkComponent } from "./types"
 
-export interface ShellMainProps {
-  heading?: React.ReactNode
-  subtitle?: React.ReactNode
-  CTA?: React.ReactNode
-  actions?: React.ReactNode
-  beforeCTAactions?: React.ReactNode
-  afterHeading?: React.ReactNode
-  headerClassName?: string
-  smallHeading?: boolean
-  large?: boolean
-  backPath?: string | boolean
-  onBack?: () => void
-  flexChildrenContainer?: boolean
-  contentClassName?: string
-  children: React.ReactNode
-}
-
-export function ShellMain({
-  heading,
-  subtitle,
-  CTA,
-  actions,
-  beforeCTAactions,
-  afterHeading,
-  headerClassName,
-  smallHeading,
-  large,
-  backPath,
-  onBack,
-  flexChildrenContainer,
-  contentClassName,
-  children,
-}: ShellMainProps): React.ReactElement {
-  const backButton =
-    backPath != null && backPath !== false ? (
-      <ShellBackButton backPath={backPath} onBack={onBack} />
-    ) : null
-
-  return (
-    <>
-      {(heading || !!backPath) && (
-        <div
-          className={cn(
-            "flex items-center md:mt-0",
-            smallHeading ? "lg:mb-7" : "lg:mb-8"
-          )}
-        >
-          {backButton}
-          {heading && (
-            <header
-              className={cn(
-                "flex w-full max-w-full flex-wrap items-center gap-2 md:flex-nowrap md:gap-0",
-                large && "py-8"
-              )}
-            >
-              <div
-                className={cn(
-                  "hidden min-w-0 flex-1 truncate md:block",
-                  headerClassName
-                )}
-              >
-                <h3
-                  className={cn(
-                    "inline max-w-28 truncate font-heading tracking-wide text-foreground sm:max-w-72 md:max-w-80 xl:max-w-full",
-                    smallHeading ? "text-base" : "text-xl"
-                  )}
-                >
-                  {heading}
-                </h3>
-                {subtitle && (
-                  <p
-                    className="text-sm text-muted-foreground md:block"
-                    data-testid="subtitle"
-                  >
-                    {subtitle}
-                  </p>
-                )}
-              </div>
-              {beforeCTAactions}
-              {CTA ? (
-                <div className={getShellCtaClassName(Boolean(backPath))}>
-                  {CTA}
-                </div>
-              ) : null}
-              {actions}
-            </header>
-          )}
-        </div>
-      )}
-      {afterHeading}
-      <div
-        className={cn(
-          flexChildrenContainer && "flex flex-1 flex-col",
-          contentClassName
-        )}
-      >
-        {children}
-      </div>
-    </>
-  )
-}
+export { ShellMain }
+export { shellPageStackClassName } from "./shell-layout"
+export type {
+  ShellMainBackProps,
+  ShellMainHeaderProps,
+  ShellMainProps,
+} from "./shell-main"
 
 export interface ShellProps {
   linkComponent?: ShellLinkComponent
@@ -165,8 +71,8 @@ export function Shell({
       pathname={pathname}
     >
       <SidebarStateProvider>
-        <div className="flex min-h-screen flex-col bg-sidebar">
-          <div className="flex flex-1" data-testid="dashboard-shell">
+        <div className="flex min-h-screen flex-col bg-sidebar [--shell-mobile-bottom-nav-height:4.5rem] [--shell-mobile-fab-inset:1rem]">
+          <div className="flex min-h-0 flex-1" data-testid="dashboard-shell">
             <ShellSidebar
               brandLabel={brandLabel}
               homeHref={homeHref}
@@ -177,7 +83,8 @@ export function Shell({
 
             <main
               className={cn(
-                "relative z-0 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background focus:outline-none md:m-2 md:ms-0 md:rounded-xl md:shadow-sm/5"
+                "relative z-0 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background focus:outline-none",
+                "md:m-2 md:ms-0 md:rounded-xl md:shadow-sm/5"
               )}
             >
               <TopNav
@@ -186,7 +93,7 @@ export function Shell({
                 logo={logo}
                 userControl={userControl}
               />
-              <div className="max-w-full flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6">
+              <div className={shellContentClassName}>
                 {children}
                 <ShellMobileNav items={navigation} />
               </div>

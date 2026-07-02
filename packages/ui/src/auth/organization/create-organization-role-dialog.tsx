@@ -3,16 +3,7 @@
 import type { SubmitEventHandler } from "react"
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
+import { Pane } from "@workspace/ui/components/pane"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
@@ -44,14 +35,14 @@ export function CreateOrganizationRoleDialog({
   isPending = false,
 }: CreateOrganizationRoleDialogProps) {
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogPopup className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Create role</DialogTitle>
-          <DialogDescription>
+    <Pane onOpenChange={onOpenChange} open={open}>
+      <Pane.Content className="max-w-lg">
+        <Pane.Header>
+          <Pane.Title>Create role</Pane.Title>
+          <Pane.Description>
             Define a custom role with specific permissions for this workspace.
-          </DialogDescription>
-        </DialogHeader>
+          </Pane.Description>
+        </Pane.Header>
 
         <Form
           className="contents"
@@ -60,7 +51,7 @@ export function CreateOrganizationRoleDialog({
             onSubmit(event)
           }}
         >
-          <DialogPanel className="flex flex-col gap-4">
+          <Pane.Panel className="flex flex-col gap-4">
             <Field invalid={Boolean(roleError)}>
               <FieldLabel htmlFor="create-organization-role-name">
                 Role name
@@ -87,22 +78,22 @@ export function CreateOrganizationRoleDialog({
                 {permissionError}
               </FieldError>
             </Field>
-          </DialogPanel>
+          </Pane.Panel>
 
-          <DialogFooter>
-            <DialogClose
+          <Pane.Footer>
+            <Pane.Close
               render={
                 <Button disabled={isPending} type="button" variant="outline" />
               }
             >
               Cancel
-            </DialogClose>
+            </Pane.Close>
             <Button loading={isPending} type="submit">
               Create role
             </Button>
-          </DialogFooter>
+          </Pane.Footer>
         </Form>
-      </DialogPopup>
-    </Dialog>
+      </Pane.Content>
+    </Pane>
   )
 }

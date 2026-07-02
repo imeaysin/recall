@@ -10,8 +10,10 @@ export function DashboardPage() {
 
   return (
     <ShellMain
-      heading="Overview"
-      subtitle={name ? `Welcome back, ${name}.` : "Welcome back."}
+      header={{
+        heading: "Overview",
+        subtitle: name ? `Welcome back, ${name}.` : "Welcome back.",
+      }}
     >
       <p className="mb-4 text-sm text-muted-foreground">
         This dashboard is a starting point. See the Notes example for a full

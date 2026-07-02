@@ -13,8 +13,10 @@ export function OrganizationRolesPage() {
 
   return (
     <ShellMain
-      heading="Workspace"
-      subtitle="Manage built-in and custom roles for your workspace."
+      header={{
+        heading: "Workspace",
+        subtitle: "Manage built-in and custom roles for your workspace.",
+      }}
     >
       <Organization
         onCreateOrganization={openCreateOrganization}

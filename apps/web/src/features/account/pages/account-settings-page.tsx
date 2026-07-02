@@ -10,7 +10,12 @@ export function AccountSettingsPage() {
   const changeEmail = useChangeEmailForm()
 
   return (
-    <ShellMain heading="Account" subtitle="Manage your account settings.">
+    <ShellMain
+      header={{
+        heading: "Account",
+        subtitle: "Manage your account settings.",
+      }}
+    >
       <Settings account={{ profile, changeEmail }} view="account" />
     </ShellMain>
   )

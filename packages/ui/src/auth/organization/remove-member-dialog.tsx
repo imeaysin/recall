@@ -3,18 +3,10 @@
 import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import { useRemoveMember } from "@workspace/auth/react"
 import type { OrganizationMember } from "@workspace/auth/types/organization"
-import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogPopup,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardPanel } from "@workspace/ui/components/card"
+import { Pane } from "@workspace/ui/components/pane"
 import { toastManager } from "@workspace/ui/components/toast"
 import { AuthUserView } from "../auth-user-view"
 
@@ -32,14 +24,14 @@ export function RemoveMemberDialog({
   const { mutate: removeMember, isPending } = useRemoveMember()
 
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogPopup>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Remove member</AlertDialogTitle>
-          <AlertDialogDescription>
+    <Pane.Alert onOpenChange={onOpenChange} open={open}>
+      <Pane.Alert.Content>
+        <Pane.Alert.Header>
+          <Pane.Alert.Title>Remove member</Pane.Alert.Title>
+          <Pane.Alert.Description>
             This member will lose access to the workspace.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+          </Pane.Alert.Description>
+        </Pane.Alert.Header>
 
         <div className="px-6 pb-2">
           <Card>
@@ -52,14 +44,14 @@ export function RemoveMemberDialog({
           </Card>
         </div>
 
-        <AlertDialogFooter>
-          <AlertDialogClose
+        <Pane.Alert.Footer>
+          <Pane.Alert.Close
             render={
               <Button disabled={isPending} type="button" variant="outline" />
             }
           >
             Cancel
-          </AlertDialogClose>
+          </Pane.Alert.Close>
           <Button
             loading={isPending}
             onClick={() =>
@@ -81,8 +73,8 @@ export function RemoveMemberDialog({
           >
             Remove member
           </Button>
-        </AlertDialogFooter>
-      </AlertDialogPopup>
-    </AlertDialog>
+        </Pane.Alert.Footer>
+      </Pane.Alert.Content>
+    </Pane.Alert>
   )
 }

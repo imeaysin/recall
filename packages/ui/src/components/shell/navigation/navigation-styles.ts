@@ -51,8 +51,9 @@ export const contentNavItemClassName = cn(
 )
 
 export const mobileBottomNavItemClassName = cn(
-  "relative my-2 min-w-0 flex-1 overflow-hidden rounded-lg bg-transparent p-1 text-center text-xs font-medium",
-  "text-muted-foreground hover:text-foreground focus:z-10 sm:text-sm",
+  "relative my-1 min-h-11 min-w-0 flex-1 overflow-hidden rounded-xl px-1 py-1.5 text-center text-[0.6875rem] leading-tight font-medium",
+  "text-muted-foreground transition-colors hover:text-foreground focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+  "sm:min-h-12 sm:text-xs",
   "[&[aria-current='page']]:text-foreground"
 )
 

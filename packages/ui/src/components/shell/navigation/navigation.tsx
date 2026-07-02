@@ -4,6 +4,10 @@ import type React from "react"
 import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "../command-palette"
 import { useSidebarState } from "../sidebar-state"
+import {
+  shellMobileBottomNavClassName,
+  shellMobileBottomSpacerClassName,
+} from "../shell-layout"
 import type { NavItem } from "../types"
 import { ShellMobileNavItem, ShellNavItem } from "./navigation-item"
 
@@ -32,16 +36,12 @@ export function ShellMobileNav({
 }): React.ReactElement {
   return (
     <>
-      <nav
-        className={cn(
-          "fixed bottom-0 left-0 z-30 flex w-full border-t border-border bg-background/80 px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] shadow backdrop-blur-md md:hidden"
-        )}
-      >
+      <div aria-hidden className={shellMobileBottomSpacerClassName} />
+      <nav className={shellMobileBottomNavClassName}>
         {items.map((item) => (
           <ShellMobileNavItem item={item} key={item.name} />
         ))}
       </nav>
-      <div className="block pt-12 md:hidden" />
     </>
   )
 }

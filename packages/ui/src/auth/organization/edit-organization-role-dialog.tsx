@@ -5,16 +5,7 @@ import type { OrganizationPermissionMap } from "@workspace/auth/permissions/orga
 import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
+import { Pane } from "@workspace/ui/components/pane"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
@@ -43,14 +34,14 @@ export function EditOrganizationRoleDialog({
   if (!role) return null
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogPopup className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Edit role</DialogTitle>
-          <DialogDescription>
+    <Pane onOpenChange={onOpenChange} open={open}>
+      <Pane.Content className="max-w-lg">
+        <Pane.Header>
+          <Pane.Title>Edit role</Pane.Title>
+          <Pane.Description>
             Update permissions for {formatOrganizationRoleLabel(role.role)}.
-          </DialogDescription>
-        </DialogHeader>
+          </Pane.Description>
+        </Pane.Header>
 
         <Form
           className="contents"
@@ -59,7 +50,7 @@ export function EditOrganizationRoleDialog({
             onSubmit(event)
           }}
         >
-          <DialogPanel className="flex flex-col gap-4">
+          <Pane.Panel className="flex flex-col gap-4">
             <Field invalid={Boolean(permissionError)}>
               <FieldLabel>Permissions</FieldLabel>
               <OrganizationRolePermissions
@@ -71,22 +62,22 @@ export function EditOrganizationRoleDialog({
                 {permissionError}
               </FieldError>
             </Field>
-          </DialogPanel>
+          </Pane.Panel>
 
-          <DialogFooter>
-            <DialogClose
+          <Pane.Footer>
+            <Pane.Close
               render={
                 <Button disabled={isPending} type="button" variant="outline" />
               }
             >
               Cancel
-            </DialogClose>
+            </Pane.Close>
             <Button loading={isPending} type="submit">
               Save changes
             </Button>
-          </DialogFooter>
+          </Pane.Footer>
         </Form>
-      </DialogPopup>
-    </Dialog>
+      </Pane.Content>
+    </Pane>
   )
 }

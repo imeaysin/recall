@@ -25,7 +25,10 @@ import {
   SelectPopup,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { ShellMain } from "@workspace/ui/components/shell"
+import {
+  ShellMain,
+  shellPageStackClassName,
+} from "@workspace/ui/components/shell"
 import { ConfirmDialog } from "@workspace/ui/components/confirm-dialog"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { useDebouncedValue } from "@workspace/ui/hooks/use-debounced-value"
@@ -182,175 +185,184 @@ export function NotesPage() {
   return (
     <>
       <ShellMain
-        CTA={
-          <Button onClick={openCreateSheet}>
-            <PlusIcon className="size-4" />
-            New note
-          </Button>
-        }
-        heading="Notes"
-        subtitle="Create, search, edit, and manage notes synced with the NestJS API."
+        header={{
+          heading: "Notes",
+          subtitle:
+            "Create, search, edit, and manage notes synced with the NestJS API.",
+          cta: (
+            <Button onClick={openCreateSheet}>
+              <PlusIcon className="size-4" />
+              New note
+            </Button>
+          ),
+        }}
       >
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <InputGroup className="max-w-md flex-1">
-            <InputGroupAddon align="inline-start">
-              <SearchIcon className="size-4 text-muted-foreground" />
-            </InputGroupAddon>
-            <InputGroupInput
-              aria-label="Search notes"
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search notes…"
-              value={search}
-            />
-          </InputGroup>
-
-          <Select
-            onValueChange={(value) => {
-              if (value) setSort(value as SortOption)
-            }}
-            value={sort}
-          >
-            <SelectButton className="w-full sm:w-44">
-              <SelectValue />
-            </SelectButton>
-            <SelectPopup>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectPopup>
-          </Select>
-        </div>
-
-        {selectedIds.size > 0 ? (
-          <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3">
-            <p className="text-sm font-medium">{selectedIds.size} selected</p>
-            <Button
-              disabled={isMutating}
-              onClick={() =>
-                setDeleteTarget({ type: "bulk", count: selectedIds.size })
-              }
-              size="sm"
-              variant="destructive"
-            >
-              <Trash2Icon className="size-4" />
-              Delete selected
-            </Button>
-            <Button
-              disabled={isMutating}
-              onClick={() => setSelectedIds(new Set())}
-              size="sm"
-              variant="ghost"
-            >
-              Clear selection
-            </Button>
-          </div>
-        ) : null}
-
-        {isLoading ? (
-          <div className="overflow-hidden rounded-lg border">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div
-                className="flex items-center gap-3 border-b px-4 py-4 last:border-b-0"
-                key={index}
-              >
-                <Skeleton className="size-4 rounded-sm" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-3 w-full max-w-md" />
-                  <Skeleton className="h-3 w-24" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-
-        {isError ? (
-          <Alert variant="error">
-            <CircleAlertIcon />
-            <AlertTitle>Could not load notes</AlertTitle>
-            <AlertDescription>
-              {error instanceof Error ? error.message : "Something went wrong."}
-            </AlertDescription>
-          </Alert>
-        ) : null}
-
-        {showEmptyInitial ? (
-          <Empty className="rounded-lg border border-dashed">
-            <EmptyContent>
-              <EmptyMedia variant="icon">
-                <FileTextIcon />
-              </EmptyMedia>
-              <EmptyTitle>No notes yet</EmptyTitle>
-              <EmptyDescription>
-                Create your first note or seed sample data with{" "}
-                <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                  pnpm --filter api seed
-                </code>
-                .
-              </EmptyDescription>
-              <Button onClick={openCreateSheet}>
-                <PlusIcon className="size-4" />
-                Create note
-              </Button>
-            </EmptyContent>
-          </Empty>
-        ) : null}
-
-        {showEmptySearch ? (
-          <Empty className="rounded-lg border border-dashed">
-            <EmptyContent>
-              <EmptyMedia variant="icon">
-                <SearchIcon />
-              </EmptyMedia>
-              <EmptyTitle>No matching notes</EmptyTitle>
-              <EmptyDescription>
-                Nothing matches &ldquo;{debouncedSearch.trim()}&rdquo;. Try a
-                different search term.
-              </EmptyDescription>
-            </EmptyContent>
-          </Empty>
-        ) : null}
-
-        {!isLoading && !isError && filteredNotes.length > 0 ? (
-          <div className="overflow-hidden rounded-lg border">
-            <div className="flex items-center gap-3 border-b bg-muted/30 px-4 py-3">
-              <Checkbox
-                aria-label="Select all visible notes"
-                checked={allVisibleSelected}
-                disabled={isMutating}
-                indeterminate={someVisibleSelected}
-                onCheckedChange={(checked) => toggleSelectAll(checked === true)}
+        <div className={shellPageStackClassName}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <InputGroup className="max-w-md flex-1">
+              <InputGroupAddon align="inline-start">
+                <SearchIcon className="size-4 text-muted-foreground" />
+              </InputGroupAddon>
+              <InputGroupInput
+                aria-label="Search notes"
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search notes…"
+                value={search}
               />
-              <p className="text-sm text-muted-foreground">
-                {filteredNotes.length} note
-                {filteredNotes.length === 1 ? "" : "s"}
-                {hasSearch ? " matching your search" : ""}
-              </p>
-            </div>
+            </InputGroup>
 
-            <ul className="divide-y divide-border">
-              {filteredNotes.map((note) => (
-                <NotesListItem
-                  disabled={isMutating}
-                  key={note.id}
-                  note={note}
-                  onDelete={() =>
-                    setDeleteTarget({
-                      type: "single",
-                      id: note.id,
-                      title: note.title,
-                    })
-                  }
-                  onEdit={() => openEditSheet(note)}
-                  onSelect={(checked) => toggleSelection(note.id, checked)}
-                  selected={selectedIds.has(note.id)}
-                />
-              ))}
-            </ul>
+            <Select
+              onValueChange={(value) => {
+                if (value) setSort(value as SortOption)
+              }}
+              value={sort}
+            >
+              <SelectButton className="w-full sm:w-44">
+                <SelectValue />
+              </SelectButton>
+              <SelectPopup>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectPopup>
+            </Select>
           </div>
-        ) : null}
+
+          {selectedIds.size > 0 ? (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3">
+              <p className="text-sm font-medium">{selectedIds.size} selected</p>
+              <Button
+                disabled={isMutating}
+                onClick={() =>
+                  setDeleteTarget({ type: "bulk", count: selectedIds.size })
+                }
+                size="sm"
+                variant="destructive"
+              >
+                <Trash2Icon className="size-4" />
+                Delete selected
+              </Button>
+              <Button
+                disabled={isMutating}
+                onClick={() => setSelectedIds(new Set())}
+                size="sm"
+                variant="ghost"
+              >
+                Clear selection
+              </Button>
+            </div>
+          ) : null}
+
+          {isLoading ? (
+            <div className="overflow-hidden rounded-lg border">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  className="flex items-center gap-3 border-b px-4 py-4 last:border-b-0"
+                  key={index}
+                >
+                  <Skeleton className="size-4 rounded-sm" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-full max-w-md" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {isError ? (
+            <Alert variant="error">
+              <CircleAlertIcon />
+              <AlertTitle>Could not load notes</AlertTitle>
+              <AlertDescription>
+                {error instanceof Error
+                  ? error.message
+                  : "Something went wrong."}
+              </AlertDescription>
+            </Alert>
+          ) : null}
+
+          {showEmptyInitial ? (
+            <Empty className="rounded-lg border border-dashed">
+              <EmptyContent>
+                <EmptyMedia variant="icon">
+                  <FileTextIcon />
+                </EmptyMedia>
+                <EmptyTitle>No notes yet</EmptyTitle>
+                <EmptyDescription>
+                  Create your first note or seed sample data with{" "}
+                  <code className="rounded bg-muted px-1 py-0.5 text-xs">
+                    pnpm --filter api seed
+                  </code>
+                  .
+                </EmptyDescription>
+                <Button onClick={openCreateSheet}>
+                  <PlusIcon className="size-4" />
+                  Create note
+                </Button>
+              </EmptyContent>
+            </Empty>
+          ) : null}
+
+          {showEmptySearch ? (
+            <Empty className="rounded-lg border border-dashed">
+              <EmptyContent>
+                <EmptyMedia variant="icon">
+                  <SearchIcon />
+                </EmptyMedia>
+                <EmptyTitle>No matching notes</EmptyTitle>
+                <EmptyDescription>
+                  Nothing matches &ldquo;{debouncedSearch.trim()}&rdquo;. Try a
+                  different search term.
+                </EmptyDescription>
+              </EmptyContent>
+            </Empty>
+          ) : null}
+
+          {!isLoading && !isError && filteredNotes.length > 0 ? (
+            <div className="overflow-hidden rounded-lg border">
+              <div className="flex items-center gap-3 border-b bg-muted/30 px-4 py-3">
+                <Checkbox
+                  aria-label="Select all visible notes"
+                  checked={allVisibleSelected}
+                  disabled={isMutating}
+                  indeterminate={someVisibleSelected}
+                  onCheckedChange={(checked) =>
+                    toggleSelectAll(checked === true)
+                  }
+                />
+                <p className="text-sm text-muted-foreground">
+                  {filteredNotes.length} note
+                  {filteredNotes.length === 1 ? "" : "s"}
+                  {hasSearch ? " matching your search" : ""}
+                </p>
+              </div>
+
+              <ul className="divide-y divide-border">
+                {filteredNotes.map((note) => (
+                  <NotesListItem
+                    disabled={isMutating}
+                    key={note.id}
+                    note={note}
+                    onDelete={() =>
+                      setDeleteTarget({
+                        type: "single",
+                        id: note.id,
+                        title: note.title,
+                      })
+                    }
+                    onEdit={() => openEditSheet(note)}
+                    onSelect={(checked) => toggleSelection(note.id, checked)}
+                    selected={selectedIds.has(note.id)}
+                  />
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
       </ShellMain>
 
       <NoteFormSheet

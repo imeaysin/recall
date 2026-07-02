@@ -23,7 +23,8 @@ export function TopNav({
   return (
     <nav
       className={cn(
-        "sticky top-0 z-40 flex h-14 w-full items-center justify-between gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-lg md:hidden"
+        "sticky top-0 z-40 flex h-14 w-full shrink-0 items-center justify-between gap-3 border-b border-border bg-background/95 px-4 backdrop-blur-lg",
+        "pt-[env(safe-area-inset-top,0px)] md:hidden"
       )}
     >
       <Link

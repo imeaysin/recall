@@ -2,16 +2,7 @@
 
 import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
+import { Pane } from "@workspace/ui/components/pane"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
@@ -59,14 +50,14 @@ export function InviteMemberDialog({
   }))
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogPopup>
-        <DialogHeader>
-          <DialogTitle>Invite member</DialogTitle>
-          <DialogDescription>
+    <Pane onOpenChange={onOpenChange} open={open}>
+      <Pane.Content>
+        <Pane.Header>
+          <Pane.Title>Invite member</Pane.Title>
+          <Pane.Description>
             Send an invitation to join this workspace.
-          </DialogDescription>
-        </DialogHeader>
+          </Pane.Description>
+        </Pane.Header>
 
         <Form
           className="contents"
@@ -75,7 +66,7 @@ export function InviteMemberDialog({
             onSubmit(event)
           }}
         >
-          <DialogPanel className="flex flex-col gap-4">
+          <Pane.Panel className="flex flex-col gap-4">
             <Field invalid={Boolean(emailError)}>
               <FieldLabel htmlFor="invite-member-email">Email</FieldLabel>
               <Input
@@ -111,22 +102,22 @@ export function InviteMemberDialog({
               </Select>
               <FieldError match={Boolean(roleError)}>{roleError}</FieldError>
             </Field>
-          </DialogPanel>
+          </Pane.Panel>
 
-          <DialogFooter>
-            <DialogClose
+          <Pane.Footer>
+            <Pane.Close
               render={
                 <Button disabled={isPending} type="button" variant="outline" />
               }
             >
               Cancel
-            </DialogClose>
+            </Pane.Close>
             <Button loading={isPending} type="submit">
               Invite member
             </Button>
-          </DialogFooter>
+          </Pane.Footer>
         </Form>
-      </DialogPopup>
-    </Dialog>
+      </Pane.Content>
+    </Pane>
   )
 }

@@ -3,15 +3,7 @@ import { CreateNoteSchema, type NoteResponse } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import {
-  Sheet,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetPanel,
-  SheetPopup,
-  SheetTitle,
-} from "@workspace/ui/components/sheet"
+import { Pane } from "@workspace/ui/components/pane"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -75,22 +67,22 @@ export function NoteFormSheet({
   }
 
   return (
-    <Sheet onOpenChange={onOpenChange} open={open}>
-      <SheetPopup showCloseButton side="right" variant="inset">
-        <SheetHeader>
-          <SheetTitle>{isEditing ? "Edit note" : "New note"}</SheetTitle>
-          <SheetDescription>
+    <Pane layout="side" onOpenChange={onOpenChange} open={open}>
+      <Pane.Content showCloseButton side="right" variant="inset">
+        <Pane.Header>
+          <Pane.Title>{isEditing ? "Edit note" : "New note"}</Pane.Title>
+          <Pane.Description>
             {isEditing
               ? "Update the title or body of your note."
               : "Add a title and optional details."}
-          </SheetDescription>
-        </SheetHeader>
+          </Pane.Description>
+        </Pane.Header>
 
         <form
           className="flex min-h-0 flex-1 flex-col"
           onSubmit={form.handleSubmit(handleSubmit)}
         >
-          <SheetPanel className="space-y-4">
+          <Pane.Panel className="space-y-4">
             <Field>
               <FieldLabel htmlFor="note-title">Title</FieldLabel>
               <Input
@@ -116,9 +108,9 @@ export function NoteFormSheet({
                 disabled={isPending}
               />
             </Field>
-          </SheetPanel>
+          </Pane.Panel>
 
-          <SheetFooter>
+          <Pane.Footer>
             <Button
               disabled={isPending}
               onClick={() => onOpenChange(false)}
@@ -130,9 +122,9 @@ export function NoteFormSheet({
             <Button disabled={isPending} type="submit">
               {isEditing ? "Save changes" : "Create note"}
             </Button>
-          </SheetFooter>
+          </Pane.Footer>
         </form>
-      </SheetPopup>
-    </Sheet>
+      </Pane.Content>
+    </Pane>
   )
 }

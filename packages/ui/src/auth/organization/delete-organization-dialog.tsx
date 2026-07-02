@@ -5,16 +5,7 @@ import type { Organization } from "@workspace/auth/types/organization"
 import { TriangleAlert } from "lucide-react"
 import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
-} from "@workspace/ui/components/dialog"
+import { Pane } from "@workspace/ui/components/pane"
 import { Form } from "@workspace/ui/components/form"
 import { toastManager } from "@workspace/ui/components/toast"
 import { OrganizationView } from "./organization-view"
@@ -51,37 +42,37 @@ export function DeleteOrganizationDialog({
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogPopup>
+    <Pane onOpenChange={onOpenChange} open={open}>
+      <Pane.Content>
         <Form className="contents" onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Delete workspace</DialogTitle>
-            <DialogDescription>
+          <Pane.Header>
+            <Pane.Title>Delete workspace</Pane.Title>
+            <Pane.Description>
               This action is permanent and cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
+            </Pane.Description>
+          </Pane.Header>
 
-          <DialogPanel>
+          <Pane.Panel>
             <div className="rounded-lg border bg-muted/30 px-3 py-2.5">
               <OrganizationView organization={organization} />
             </div>
-          </DialogPanel>
+          </Pane.Panel>
 
-          <DialogFooter>
-            <DialogClose
+          <Pane.Footer>
+            <Pane.Close
               render={
                 <Button disabled={isPending} type="button" variant="outline" />
               }
             >
               Cancel
-            </DialogClose>
+            </Pane.Close>
             <Button loading={isPending} type="submit" variant="destructive">
               <TriangleAlert />
               Delete workspace
             </Button>
-          </DialogFooter>
+          </Pane.Footer>
         </Form>
-      </DialogPopup>
-    </Dialog>
+      </Pane.Content>
+    </Pane>
   )
 }

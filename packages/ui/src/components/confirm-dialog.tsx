@@ -1,16 +1,8 @@
 "use client"
 
 import type React from "react"
-import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogPopup,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
+import { Pane } from "@workspace/ui/components/pane"
 
 export interface ConfirmDialogProps {
   open: boolean
@@ -36,20 +28,20 @@ export function ConfirmDialog({
   variant = "default",
 }: ConfirmDialogProps): React.ReactElement {
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogPopup>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+    <Pane.Alert onOpenChange={onOpenChange} open={open}>
+      <Pane.Alert.Content>
+        <Pane.Alert.Header>
+          <Pane.Alert.Title>{title}</Pane.Alert.Title>
           {description ? (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
+            <Pane.Alert.Description>{description}</Pane.Alert.Description>
           ) : null}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogClose
+        </Pane.Alert.Header>
+        <Pane.Alert.Footer>
+          <Pane.Alert.Close
             render={<Button disabled={pending} variant="outline" />}
           >
             {cancelLabel}
-          </AlertDialogClose>
+          </Pane.Alert.Close>
           <Button
             disabled={pending}
             onClick={() => void onConfirm()}
@@ -57,8 +49,8 @@ export function ConfirmDialog({
           >
             {confirmLabel}
           </Button>
-        </AlertDialogFooter>
-      </AlertDialogPopup>
-    </AlertDialog>
+        </Pane.Alert.Footer>
+      </Pane.Alert.Content>
+    </Pane.Alert>
   )
 }
