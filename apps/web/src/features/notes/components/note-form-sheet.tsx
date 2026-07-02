@@ -127,7 +127,7 @@ export function NoteFormSheet({
             />
           </Pane.Panel>
 
-          <Pane.Footer variant="bare">
+          <Pane.Footer>
             <Button
               disabled={isPending}
               onClick={() => onOpenChange(false)}

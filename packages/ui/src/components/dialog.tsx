@@ -133,7 +133,7 @@ export function DialogHeader({
 
 export function DialogFooter({
   className,
-  variant = "default",
+  variant = "bare",
   render,
   ...props
 }: useRender.ComponentProps<"div"> & {

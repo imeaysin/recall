@@ -104,7 +104,7 @@ export function AlertDialogHeader({
 
 export function AlertDialogFooter({
   className,
-  variant = "default",
+  variant = "bare",
   ...props
 }: React.ComponentProps<"div"> & {
   variant?: "default" | "bare"

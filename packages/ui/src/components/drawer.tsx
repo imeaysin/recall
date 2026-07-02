@@ -253,7 +253,7 @@ export function DrawerHeader({
 
 export function DrawerFooter({
   className,
-  variant = "default",
+  variant = "bare",
   allowSelection = true,
   render,
   ...props

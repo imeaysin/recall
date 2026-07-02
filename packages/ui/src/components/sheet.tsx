@@ -144,7 +144,7 @@ export function SheetHeader({
 
 export function SheetFooter({
   className,
-  variant = "default",
+  variant = "bare",
   render,
   ...props
 }: useRender.ComponentProps<"div"> & {
