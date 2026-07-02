@@ -7,7 +7,7 @@ import {
   type OrganizationProfileProps,
 } from "./organization-profile"
 
-export interface OrganizationSettingsProps {
+export type OrganizationSettingsProps = {
   className?: string
   profile?: OrganizationProfileProps
 }

@@ -12,7 +12,7 @@ import {
   shellMainSubtitleClassName,
 } from "./shell-layout"
 
-export interface ShellMainHeaderProps {
+export type ShellMainHeaderProps = {
   heading: React.ReactNode
   subtitle?: React.ReactNode
   cta?: React.ReactNode
@@ -24,12 +24,12 @@ export interface ShellMainHeaderProps {
   spacious?: boolean
 }
 
-export interface ShellMainBackProps {
+export type ShellMainBackProps = {
   path: string | boolean
   onBack?: () => void
 }
 
-export interface ShellMainProps {
+export type ShellMainProps = {
   header?: ShellMainHeaderProps
   back?: ShellMainBackProps
   contentClassName?: string

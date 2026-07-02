@@ -11,7 +11,7 @@ import { OrganizationSlugField } from "./organization-slug-field"
 
 type CreateOrganizationValues = { name: string; slug: string }
 
-export interface CreateOrganizationDialogProps {
+export type CreateOrganizationDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   control: Control<CreateOrganizationValues>

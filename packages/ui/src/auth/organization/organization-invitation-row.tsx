@@ -12,7 +12,7 @@ import { Button } from "@workspace/ui/components/button"
 import { TableCell, TableRow } from "@workspace/ui/components/table"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationInvitationRowProps {
+export type OrganizationInvitationRowProps = {
   invitation: OrganizationInvitation
 }
 

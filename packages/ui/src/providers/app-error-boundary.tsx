@@ -3,11 +3,11 @@
 import * as React from "react"
 import { PageError } from "@workspace/ui/components/page-error"
 
-interface AppErrorBoundaryState {
+type AppErrorBoundaryState = {
   error: Error | null
 }
 
-export interface AppErrorBoundaryProps {
+export type AppErrorBoundaryProps = {
   children: React.ReactNode
 }
 

@@ -5,7 +5,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { CommandTrigger } from "./command-palette"
 import { useShell } from "./shell-context"
 
-export interface TopNavProps {
+export type TopNavProps = {
   logo?: React.ReactNode
   brandLabel?: string
   homeHref?: string

@@ -10,7 +10,7 @@ import { Pane } from "@workspace/ui/components/pane"
 import { toastManager } from "@workspace/ui/components/toast"
 import { AuthUserView } from "../auth-user-view"
 
-export interface RemoveMemberDialogProps {
+export type RemoveMemberDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   member: OrganizationMember

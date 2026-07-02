@@ -20,11 +20,11 @@ import {
   providerIcons,
 } from "../../utils/provider-icons"
 
-export interface LinkedAccountsProps {
+export type LinkedAccountsProps = {
   className?: string
 }
 
-interface LinkedAccountRecord {
+type LinkedAccountRecord = {
   id: string
   accountId: string
   providerId: string

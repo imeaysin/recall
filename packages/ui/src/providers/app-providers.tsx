@@ -8,7 +8,7 @@ import {
 } from "@workspace/ui/components/toast"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 
-export interface AppProvidersProps {
+export type AppProvidersProps = {
   children: React.ReactNode
 }
 

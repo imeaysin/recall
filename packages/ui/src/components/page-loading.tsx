@@ -7,9 +7,9 @@ import {
 import { Spinner } from "@workspace/ui/components/spinner"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface PageLoadingProps extends React.ComponentProps<typeof Empty> {
+export type PageLoadingProps = {
   message?: string
-}
+} & React.ComponentProps<typeof Empty>
 
 export function PageLoading({
   message,

@@ -7,7 +7,7 @@ import {
   type ConfirmDialogProps,
 } from "@workspace/ui/components/confirm-dialog"
 
-export interface ConfirmDialogOptions {
+export type ConfirmDialogOptions = {
   title: string
   description?: React.ReactNode
   confirmLabel?: string

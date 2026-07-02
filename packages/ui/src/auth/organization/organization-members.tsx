@@ -21,7 +21,7 @@ import { InviteMemberDialog } from "./invite-member-dialog"
 import { OrganizationMemberRow } from "./organization-member-row"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationMembersProps {
+export type OrganizationMembersProps = {
   className?: string
   inviteDialog?: InviteMemberDialogProps
   onInviteClick?: () => void

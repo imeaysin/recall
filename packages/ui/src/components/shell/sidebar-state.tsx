@@ -23,7 +23,7 @@ function readCollapsedPreference(): boolean {
   }
 }
 
-interface SidebarStateValue {
+type SidebarStateValue = {
   state: "expanded" | "collapsed"
   collapsed: boolean
   isIconSidebar: boolean

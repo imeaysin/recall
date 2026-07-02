@@ -4,7 +4,7 @@ import { AuthDivider } from "./auth-divider"
 import { AuthOAuthButton, type AuthOAuthProvider } from "./auth-oauth-button"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface AuthProviderButtonsProps {
+export type AuthProviderButtonsProps = {
   providers: AuthOAuthProvider[]
   onProviderClick: (provider: AuthOAuthProvider) => void
   loadingProvider?: AuthOAuthProvider | null

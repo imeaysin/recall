@@ -12,7 +12,7 @@ import { Button } from "@workspace/ui/components/button"
 import { TableCell, TableRow } from "@workspace/ui/components/table"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationRoleRowProps {
+export type OrganizationRoleRowProps = {
   role: OrganizationRole
   onEdit: (role: OrganizationRole) => void
   onDelete: (role: OrganizationRole) => void

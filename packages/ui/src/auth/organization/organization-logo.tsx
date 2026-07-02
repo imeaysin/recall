@@ -13,7 +13,7 @@ import { cn } from "@workspace/ui/lib/utils"
 
 export type OrganizationLogoSize = "xs" | "sm" | "md" | "lg"
 
-export interface OrganizationLogoProps {
+export type OrganizationLogoProps = {
   className?: string
   fallback?: ReactNode
   loading?: boolean

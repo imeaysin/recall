@@ -12,7 +12,7 @@ import {
 } from "@workspace/ui/components/popover"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface DatePickerProps {
+export type DatePickerProps = {
   value?: Date
   onChange?: (date: Date | undefined) => void
   placeholder?: string

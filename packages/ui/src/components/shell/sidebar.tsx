@@ -93,7 +93,7 @@ function SidebarTrigger({
   )
 }
 
-export interface ShellSidebarProps {
+export type ShellSidebarProps = {
   navigation: NavItem[]
   logo?: React.ReactNode
   brandLabel?: string

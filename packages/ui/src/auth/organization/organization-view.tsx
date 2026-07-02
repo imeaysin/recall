@@ -6,11 +6,11 @@ import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
 import { OrganizationLogo } from "./organization-logo"
 
-export interface OrganizationViewProps extends ComponentProps<"div"> {
+export type OrganizationViewProps = {
   organization?: OrganizationSummary | null
   loading?: boolean
   hideSlug?: boolean
-}
+} & ComponentProps<"div">
 
 export function OrganizationView({
   organization,

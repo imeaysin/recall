@@ -11,7 +11,7 @@ import { Controller, useFormState, type Control } from "react-hook-form"
 
 type UserProfileValues = { name: string }
 
-export interface UserProfileProps {
+export type UserProfileProps = {
   className?: string
   control?: Control<UserProfileValues>
   onSubmit?: () => void

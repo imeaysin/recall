@@ -6,7 +6,7 @@ import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
 import { LinkedAccounts } from "./linked-accounts"
 
-export interface SecuritySettingsProps {
+export type SecuritySettingsProps = {
   className?: string
   changePassword?: ChangePasswordFormProps
 }

@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 import { Icons } from "@workspace/ui/components/icons"
 import { AuthTermsFooter } from "./auth-terms-footer"
 
-export interface AuthLinkProps {
+export type AuthLinkProps = {
   href: string
   className?: string
   children: ReactNode
@@ -12,7 +12,7 @@ export interface AuthLinkProps {
 
 export type AuthLinkComponent = React.ComponentType<AuthLinkProps>
 
-export interface AuthShellProps {
+export type AuthShellProps = {
   homeHref: string
   children: ReactNode
   termsHref?: string

@@ -111,7 +111,7 @@ import {
 } from "react-icons/md"
 import { PiDiscordLogo } from "react-icons/pi"
 
-interface SVGIconProps {
+type SVGIconProps = {
   size?: number
   stroke?: string
   fill?: string

@@ -16,7 +16,7 @@ const themeOptions = [
 
 type ThemeOption = (typeof themeOptions)[number]["value"]
 
-export interface ThemeSettingsProps {
+export type ThemeSettingsProps = {
   className?: string
 }
 

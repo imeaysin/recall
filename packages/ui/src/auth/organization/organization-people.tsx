@@ -7,7 +7,7 @@ import {
   type OrganizationMembersProps,
 } from "./organization-members"
 
-export interface OrganizationPeopleProps {
+export type OrganizationPeopleProps = {
   className?: string
   members?: Omit<OrganizationMembersProps, "className">
 }

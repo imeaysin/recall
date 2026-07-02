@@ -11,7 +11,7 @@ import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Label } from "@workspace/ui/components/label"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface OrganizationRolePermissionsProps {
+export type OrganizationRolePermissionsProps = {
   className?: string
   permissions: OrganizationPermissionMap
   onChange?: (permissions: OrganizationPermissionMap) => void

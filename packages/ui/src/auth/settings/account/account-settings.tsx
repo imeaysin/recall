@@ -5,7 +5,7 @@ import { ChangeEmail, type ChangeEmailProps } from "./change-email"
 import { ThemeSettings } from "../../../components/theme-settings"
 import { UserProfile, type UserProfileProps } from "./user-profile"
 
-export interface AccountSettingsProps {
+export type AccountSettingsProps = {
   className?: string
   profile?: UserProfileProps
   changeEmail?: ChangeEmailProps

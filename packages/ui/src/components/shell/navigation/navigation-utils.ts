@@ -5,7 +5,7 @@ export function getIsCurrent(item: NavItem) {
   return item.isCurrent ?? defaultIsCurrent
 }
 
-interface NavItemActiveInput {
+type NavItemActiveInput = {
   item: NavItem
   pathname: string | null
   isChild?: boolean
@@ -29,7 +29,7 @@ export function isNavParentActive(
   )
 }
 
-interface NavGroupOpenInput {
+type NavGroupOpenInput = {
   item: NavItem
   pathname: string | null
   expanded: boolean

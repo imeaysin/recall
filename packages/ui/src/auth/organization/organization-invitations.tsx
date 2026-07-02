@@ -13,7 +13,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import { OrganizationInvitationRow } from "./organization-invitation-row"
 
-export interface OrganizationInvitationsProps {
+export type OrganizationInvitationsProps = {
   className?: string
 }
 

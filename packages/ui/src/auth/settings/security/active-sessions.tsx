@@ -17,11 +17,11 @@ import { toastManager } from "@workspace/ui/components/toast"
 import { cn } from "@workspace/ui/lib/utils"
 import { parseUserAgent } from "../../utils/parse-user-agent"
 
-export interface ActiveSessionsProps {
+export type ActiveSessionsProps = {
   className?: string
 }
 
-interface SessionRecord {
+type SessionRecord = {
   id: string
   token: string
   userAgent?: string | null

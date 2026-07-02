@@ -20,7 +20,7 @@ export const filterClassName = cn(
   "flex flex-col gap-3 sm:flex-row sm:items-center"
 )
 
-export interface FilterOption<T extends string = string> {
+export type FilterOption<T extends string = string> = {
   value: T
   label: string
 }

@@ -21,7 +21,7 @@ import { AuthUserView } from "../auth-user-view"
 import { OrganizationLogo } from "./organization-logo"
 import { OrganizationView } from "./organization-view"
 
-export interface OrganizationSwitcherMenuProps {
+export type OrganizationSwitcherMenuProps = {
   hideCreate?: boolean
   hideHeader?: boolean
   hidePersonal?: boolean
@@ -80,7 +80,7 @@ export function OrganizationSwitcherMenu({
               type: "success",
             },
       })
-      .catch(() => {})
+      .catch(() => undefined)
   }
 
   let menuHeader: ReactNode = null

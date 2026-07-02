@@ -18,7 +18,7 @@ import { organizationUiPermissions } from "./ui-permissions"
 
 type OrganizationProfileValues = { name: string; slug: string }
 
-export interface OrganizationProfileProps {
+export type OrganizationProfileProps = {
   className?: string
   control?: Control<OrganizationProfileValues>
   currentSlug?: string

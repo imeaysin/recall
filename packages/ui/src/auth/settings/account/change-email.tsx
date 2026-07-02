@@ -11,7 +11,7 @@ import { Controller, useFormState, type Control } from "react-hook-form"
 
 type ChangeEmailValues = { email: string }
 
-export interface ChangeEmailProps {
+export type ChangeEmailProps = {
   className?: string
   control?: Control<ChangeEmailValues>
   onSubmit?: () => void

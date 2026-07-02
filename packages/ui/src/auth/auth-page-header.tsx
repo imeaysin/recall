@@ -1,4 +1,4 @@
-export interface AuthPageHeaderProps {
+export type AuthPageHeaderProps = {
   title: string
   description?: string
 }

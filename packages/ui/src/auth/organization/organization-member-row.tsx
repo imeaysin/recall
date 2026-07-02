@@ -25,7 +25,7 @@ import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 import { RemoveMemberDialog } from "./remove-member-dialog"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationMemberRowProps {
+export type OrganizationMemberRowProps = {
   member: OrganizationMember
   assignableRoles: string[]
   formatRoleLabel: (role: string) => string

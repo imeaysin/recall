@@ -16,7 +16,7 @@ import { Controller, useFormState, type Control } from "react-hook-form"
 
 type InviteMemberValues = { email: string; role: string }
 
-export interface InviteMemberDialogProps {
+export type InviteMemberDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   control: Control<InviteMemberValues>

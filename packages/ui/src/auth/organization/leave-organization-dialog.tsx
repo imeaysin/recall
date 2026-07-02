@@ -8,7 +8,7 @@ import { Pane } from "@workspace/ui/components/pane"
 import { toastManager } from "@workspace/ui/components/toast"
 import { OrganizationView } from "./organization-view"
 
-export interface LeaveOrganizationDialogProps {
+export type LeaveOrganizationDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   organization: Organization

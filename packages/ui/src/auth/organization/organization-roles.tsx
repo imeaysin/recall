@@ -29,7 +29,7 @@ import { EditOrganizationRoleDialog } from "./edit-organization-role-dialog"
 import { OrganizationRoleRow } from "./organization-role-row"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationRolesProps {
+export type OrganizationRolesProps = {
   className?: string
   createDialog?: CreateOrganizationRoleDialogProps
   editDialog?: EditOrganizationRoleDialogProps

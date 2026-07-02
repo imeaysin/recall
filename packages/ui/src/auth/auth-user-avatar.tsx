@@ -10,7 +10,7 @@ import {
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface AuthUserAvatarUser {
+export type AuthUserAvatarUser = {
   name?: string | null
   email?: string | null
   image?: string | null
@@ -18,7 +18,7 @@ export interface AuthUserAvatarUser {
   displayUsername?: string | null
 }
 
-export interface AuthUserAvatarProps {
+export type AuthUserAvatarProps = {
   user?: AuthUserAvatarUser | null
   loading?: boolean
   fallback?: ReactNode

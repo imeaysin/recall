@@ -20,7 +20,7 @@ function resolvePathname(pathname?: string): string {
   return "/"
 }
 
-export interface ShellContextValue {
+export type ShellContextValue = {
   Link: ShellLinkComponent
   pathname: string
   openCommandPalette: () => void
@@ -37,7 +37,7 @@ export function useShell(): ShellContextValue {
   return ctx
 }
 
-export interface ShellProviderProps {
+export type ShellProviderProps = {
   linkComponent?: ShellLinkComponent
   pathname?: string
   openCommandPalette?: () => void

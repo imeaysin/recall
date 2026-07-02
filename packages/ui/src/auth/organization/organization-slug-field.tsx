@@ -33,13 +33,13 @@ export function isSameOrganizationSlug(
   )
 }
 
-export interface OrganizationSlugAvailabilityState {
+export type OrganizationSlugAvailabilityState = {
   checking: boolean
   available: boolean | null
   error?: string
 }
 
-export interface OrganizationSlugFieldProps {
+export type OrganizationSlugFieldProps = {
   id?: string
   value: string
   onChange: (value: string) => void

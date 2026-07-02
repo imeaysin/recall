@@ -28,12 +28,12 @@ type ChangePasswordValues = {
   confirmPassword: string
 }
 
-export interface ChangePasswordProps {
+export type ChangePasswordProps = {
   className?: string
   changePassword?: ChangePasswordFormProps
 }
 
-export interface ChangePasswordFormProps {
+export type ChangePasswordFormProps = {
   className?: string
   control?: Control<ChangePasswordValues>
   onSubmit?: () => void

@@ -21,7 +21,7 @@ const providerConfig: Record<
   },
 }
 
-export interface AuthOAuthButtonProps {
+export type AuthOAuthButtonProps = {
   provider: AuthOAuthProvider
   onClick: () => void
   loading?: boolean

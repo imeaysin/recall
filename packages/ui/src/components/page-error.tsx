@@ -13,14 +13,14 @@ import {
 } from "@workspace/ui/components/page-state"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface PageErrorProps extends React.ComponentProps<typeof PageState> {
+export type PageErrorProps = {
   title?: string
   description?: string
   homeHref?: string
   homeLabel?: string
   retryLabel?: string
   onRetry?: () => void
-}
+} & React.ComponentProps<typeof PageState>
 
 export function PageError({
   title = "Something went wrong",

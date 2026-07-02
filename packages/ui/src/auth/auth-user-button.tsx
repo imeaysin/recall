@@ -19,7 +19,7 @@ import { AuthUserAvatar, type AuthUserAvatarUser } from "./auth-user-avatar"
 import { AuthUserView } from "./auth-user-view"
 import { OrganizationSwitcherMenu } from "./organization/organization-switcher-menu"
 
-export interface AuthUserButtonMenuItem {
+export type AuthUserButtonMenuItem = {
   label: string
   href?: string
   icon?: LucideIcon
@@ -27,13 +27,15 @@ export interface AuthUserButtonMenuItem {
   variant?: "default" | "destructive"
 }
 
-export interface AuthUserButtonProps {
+export type AuthUserButtonProps = {
   className?: string
   size?: "icon" | "default" | "compact" | "sidebar"
   align?: "start" | "center" | "end"
   menuItems?: AuthUserButtonMenuItem[]
   hideSettings?: boolean
   showWorkspaceMenu?: boolean
+  /** When `size` is `sidebar`, pass collapsed state so the menu uses flyout positioning. */
+  sidebarCollapsed?: boolean
   onSignOut?: () => void
   onCreateOrganization?: () => void
 }
@@ -137,6 +139,7 @@ export function AuthUserButton({
   menuItems = [],
   hideSettings = false,
   showWorkspaceMenu = false,
+  sidebarCollapsed = false,
   onSignOut,
   onCreateOrganization,
 }: AuthUserButtonProps) {
@@ -157,15 +160,21 @@ export function AuthUserButton({
 
   const isIconOnly = size === "icon"
   const isSidebar = size === "sidebar"
+  const isCollapsedSidebar = isSidebar && sidebarCollapsed
   const triggerLabel = user?.name ?? user?.email ?? "Account menu"
   const hasAccountSection = menuItems.length > 0 || !hideSettings
 
-  let menuPopupClassName = "min-w-56"
-  if (isSidebar) {
-    menuPopupClassName = "w-(--anchor-width) min-w-(--anchor-width)"
-  } else if (showWorkspaceMenu) {
-    menuPopupClassName = "min-w-64"
+  let menuPopupSide: "top" | "right" | "bottom" = "bottom"
+  if (isCollapsedSidebar) {
+    menuPopupSide = "right"
+  } else if (isSidebar) {
+    menuPopupSide = "top"
   }
+
+  const menuPopupAlign = isSidebar ? "start" : align
+  const menuPopupSideOffset = isSidebar ? 8 : 4
+  const menuPopupClassName =
+    isSidebar && !sidebarCollapsed ? "min-w-(--anchor-width)" : undefined
 
   return (
     <Menu onOpenChange={setOpen} open={open}>
@@ -179,10 +188,10 @@ export function AuthUserButton({
       </MenuTrigger>
 
       <MenuPopup
-        align={isSidebar ? "start" : align}
+        align={menuPopupAlign}
         className={menuPopupClassName}
-        side={isSidebar ? "top" : "bottom"}
-        sideOffset={isSidebar ? 8 : 4}
+        side={menuPopupSide}
+        sideOffset={menuPopupSideOffset}
       >
         {user ? (
           <>

@@ -38,7 +38,7 @@ import {
 } from "./navigation/navigation-styles"
 import type { CommandAction } from "./types"
 
-interface CommandGroupModel {
+type CommandGroupModel = {
   value: string
   items: CommandAction[]
 }
@@ -63,7 +63,7 @@ function groupActions(actions: CommandAction[]): CommandGroupModel[] {
   return groups
 }
 
-export interface CommandPaletteProps {
+export type CommandPaletteProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   actions: CommandAction[]

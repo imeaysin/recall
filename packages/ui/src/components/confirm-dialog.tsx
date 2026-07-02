@@ -4,7 +4,7 @@ import type React from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Pane } from "@workspace/ui/components/pane"
 
-export interface ConfirmDialogProps {
+export type ConfirmDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   title: string

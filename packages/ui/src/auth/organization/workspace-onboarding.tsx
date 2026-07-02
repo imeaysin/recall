@@ -30,7 +30,7 @@ function DefaultLink({
 
 type WorkspaceOnboardingValues = { name: string }
 
-export interface WorkspaceOnboardingProps {
+export type WorkspaceOnboardingProps = {
   control: Control<WorkspaceOnboardingValues>
   onSubmit: () => void
   isPending?: boolean

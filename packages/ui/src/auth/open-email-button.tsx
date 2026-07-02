@@ -5,7 +5,7 @@ import { getEmailProviderLink } from "@workspace/auth/react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface OpenEmailButtonProps {
+export type OpenEmailButtonProps = {
   email: string
   label?: string
   className?: string

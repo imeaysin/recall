@@ -1,4 +1,4 @@
-export interface AuthTermsFooterProps {
+export type AuthTermsFooterProps = {
   termsHref?: string
   privacyHref?: string
 }

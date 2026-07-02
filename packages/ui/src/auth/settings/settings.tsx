@@ -16,7 +16,7 @@ import { SecuritySettings } from "./security/security-settings"
 
 export type SettingsView = "account" | "security"
 
-export interface SettingsProps {
+export type SettingsProps = {
   className?: string
   view: SettingsView
   hideNav?: boolean

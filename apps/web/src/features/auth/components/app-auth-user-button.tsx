@@ -3,11 +3,16 @@ import {
   type AuthUserButtonMenuItem,
   type AuthUserButtonProps,
 } from "@workspace/ui/auth"
+import { useSidebarState } from "@workspace/ui/components/shell"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 
 type AppAuthUserButtonProps = Pick<
   AuthUserButtonProps,
-  "className" | "hideSettings" | "onCreateOrganization" | "size"
+  | "className"
+  | "hideSettings"
+  | "onCreateOrganization"
+  | "sidebarCollapsed"
+  | "size"
 > & {
   menuItems?: AuthUserButtonMenuItem[]
 }
@@ -17,6 +22,7 @@ function AppAuthUserButton({
   hideSettings,
   menuItems,
   onCreateOrganization,
+  sidebarCollapsed,
   size,
 }: AppAuthUserButtonProps) {
   const { onSignOut } = useAppShellConfig()
@@ -29,6 +35,7 @@ function AppAuthUserButton({
       onCreateOrganization={onCreateOrganization}
       onSignOut={onSignOut}
       showWorkspaceMenu
+      sidebarCollapsed={sidebarCollapsed}
       size={size}
     />
   )
@@ -54,12 +61,14 @@ export function AppSidebarUser({
   onCreateOrganization: () => void
 }) {
   const { userMenuItems } = useAppShellConfig()
+  const { isIconSidebar } = useSidebarState()
 
   return (
     <AppAuthUserButton
       hideSettings
       menuItems={userMenuItems}
       onCreateOrganization={onCreateOrganization}
+      sidebarCollapsed={isIconSidebar}
       size="sidebar"
     />
   )

@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react"
 import type React from "react"
 
-export interface ShellLinkProps {
+export type ShellLinkProps = {
   href: string
   children?: React.ReactNode
   className?: string
@@ -17,7 +17,7 @@ export interface ShellLinkProps {
 
 export type ShellLinkComponent = React.ComponentType<ShellLinkProps>
 
-export interface NavItem {
+export type NavItem = {
   name: string
   href: string
   icon?: LucideIcon
@@ -33,7 +33,7 @@ export interface NavItem {
   }) => boolean
 }
 
-export interface CommandAction {
+export type CommandAction = {
   id: string
   name: string
   section?: string

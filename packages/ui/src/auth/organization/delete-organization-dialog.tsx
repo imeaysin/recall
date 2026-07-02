@@ -10,7 +10,7 @@ import { Form } from "@workspace/ui/components/form"
 import { toastManager } from "@workspace/ui/components/toast"
 import { OrganizationView } from "./organization-view"
 
-export interface DeleteOrganizationDialogProps {
+export type DeleteOrganizationDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   organization: Organization

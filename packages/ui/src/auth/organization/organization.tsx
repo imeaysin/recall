@@ -38,7 +38,7 @@ import { OrganizationSettings } from "./organization-settings"
 
 export type OrganizationTabView = "settings" | "people" | "roles"
 
-export interface OrganizationProps {
+export type OrganizationProps = {
   className?: string
   hideNav?: boolean
   view: OrganizationTabView

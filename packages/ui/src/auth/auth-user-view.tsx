@@ -5,7 +5,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
 import { AuthUserAvatar, type AuthUserAvatarUser } from "./auth-user-avatar"
 
-export interface AuthUserViewProps {
+export type AuthUserViewProps = {
   user?: AuthUserAvatarUser | null
   loading?: boolean
   primaryLabel?: ReactNode

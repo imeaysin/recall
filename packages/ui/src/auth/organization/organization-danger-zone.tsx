@@ -9,7 +9,7 @@ import { DeleteOrganization } from "./delete-organization"
 import { LeaveOrganization } from "./leave-organization"
 import { organizationUiPermissions } from "./ui-permissions"
 
-export interface OrganizationDangerZoneProps {
+export type OrganizationDangerZoneProps = {
   className?: string
 }
 

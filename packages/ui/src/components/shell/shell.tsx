@@ -8,7 +8,8 @@ import { ShellMobileNav } from "./navigation/navigation"
 import { ShellProvider } from "./shell-context"
 import { shellContentClassName } from "./shell-layout"
 import { ShellMain } from "./shell-main"
-import { SidebarStateProvider } from "./sidebar-state"
+import { SidebarStateProvider, useSidebarState } from "./sidebar-state"
+export { SidebarStateProvider, useSidebarState }
 import { ShellSidebar } from "./sidebar"
 import { TopNav } from "./top-nav"
 import type { CommandAction, NavItem, ShellLinkComponent } from "./types"
@@ -21,7 +22,7 @@ export type {
   ShellMainProps,
 } from "./shell-main"
 
-export interface ShellProps {
+export type ShellProps = {
   linkComponent?: ShellLinkComponent
   pathname?: string
   navigation: NavItem[]

@@ -6,7 +6,7 @@ import { OTPField, OTPFieldInput } from "@workspace/ui/components/otp-field"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { cn } from "@workspace/ui/lib/utils"
 
-export interface AuthOtpInputProps {
+export type AuthOtpInputProps = {
   id?: string
   value: string
   onValueChange: (value: string) => void
@@ -71,7 +71,7 @@ export function AuthOtpInput({
   )
 }
 
-export interface AuthPageBodyProps {
+export type AuthPageBodyProps = {
   children: ReactNode
   footer?: ReactNode
   className?: string
