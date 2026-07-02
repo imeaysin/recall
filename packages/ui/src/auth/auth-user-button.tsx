@@ -27,6 +27,34 @@ export type AuthUserButtonMenuItem = {
   variant?: "default" | "destructive"
 }
 
+function renderAuthUserMenuItemContent(
+  item: AuthUserButtonMenuItem,
+  Icon?: LucideIcon
+) {
+  const destructive = item.variant === "destructive"
+
+  return (
+    <>
+      {Icon ? (
+        <Icon
+          className={cn(
+            destructive ? "text-destructive" : "text-muted-foreground"
+          )}
+        />
+      ) : null}
+      <span className={destructive ? "text-destructive" : undefined}>
+        {item.label}
+      </span>
+    </>
+  )
+}
+
+function getAuthUserMenuItemVariant(
+  variant: AuthUserButtonMenuItem["variant"]
+): "default" | "destructive" | undefined {
+  return variant === "destructive" ? "default" : variant
+}
+
 export type AuthUserButtonProps = {
   className?: string
   size?: "icon" | "default" | "compact" | "sidebar"
@@ -220,12 +248,8 @@ export function AuthUserButton({
 
             {menuItems.map((item) => {
               const Icon = item.icon
-              const content = (
-                <>
-                  {Icon ? <Icon className="text-muted-foreground" /> : null}
-                  {item.label}
-                </>
-              )
+              const content = renderAuthUserMenuItemContent(item, Icon)
+              const menuItemVariant = getAuthUserMenuItemVariant(item.variant)
 
               if (item.href) {
                 return (
@@ -237,7 +261,7 @@ export function AuthUserButton({
                         to={item.href}
                       />
                     }
-                    variant={item.variant}
+                    variant={menuItemVariant}
                   >
                     {content}
                   </MenuItem>
@@ -248,7 +272,7 @@ export function AuthUserButton({
                 <MenuItem
                   key={item.label}
                   onClick={item.onClick}
-                  variant={item.variant}
+                  variant={menuItemVariant}
                 >
                   {content}
                 </MenuItem>

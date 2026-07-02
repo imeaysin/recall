@@ -98,13 +98,14 @@ export function WorkspaceOnboarding({
               session?.user?.email ? (
                 <p className="text-xs text-muted-foreground">
                   Signed in as {session.user.email}.{" "}
-                  <button
-                    className="text-foreground underline underline-offset-2 transition-colors hover:text-primary"
+                  <Button
+                    className="h-auto p-0 text-xs"
                     onClick={handleSignOut}
                     type="button"
+                    variant="link"
                   >
                     Use a different account
-                  </button>
+                  </Button>
                 </p>
               ) : null
             }

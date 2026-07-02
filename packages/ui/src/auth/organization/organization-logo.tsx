@@ -54,7 +54,7 @@ export function OrganizationLogo({
   return (
     <Avatar className={cn("rounded-full", sizeClasses[size], className)}>
       <AvatarImage alt={organization?.name ?? "Organization"} src={logo} />
-      <AvatarFallback className="text-[10px] text-muted-foreground">
+      <AvatarFallback className="text-xs text-muted-foreground">
         {fallback ?? initials ?? (
           <Briefcase aria-hidden="true" className={fallbackIconClasses[size]} />
         )}

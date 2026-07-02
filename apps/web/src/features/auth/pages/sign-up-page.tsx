@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom"
 import { Controller, useForm, useFormState } from "react-hook-form"
 import { signUpSchema, type SignUpInput } from "@workspace/contracts"
-import { AuthDivider, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
+import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
 import {
   Field,
@@ -108,8 +108,6 @@ export function SignUpPage() {
       />
 
       <AuthButtons callbackPath={redirectPath} />
-
-      <AuthDivider />
 
       <Form
         className="flex flex-col gap-4"

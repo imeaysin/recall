@@ -48,7 +48,7 @@ export function AppUserButton({
 }) {
   return (
     <AppAuthUserButton
-      className="max-w-[45vw]"
+      className="max-w-xs"
       onCreateOrganization={onCreateOrganization}
       size="compact"
     />

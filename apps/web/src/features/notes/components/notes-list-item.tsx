@@ -11,7 +11,7 @@ import {
 } from "@workspace/ui/components/menu"
 import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from "lucide-react"
 
-interface NotesListItemProps {
+type NotesListItemProps = {
   note: NoteResponse
   selected: boolean
   onSelect: (checked: boolean) => void
@@ -37,22 +37,23 @@ export function NotesListItem({
         onCheckedChange={(checked) => onSelect(checked === true)}
       />
 
-      <button
-        className="min-w-0 flex-1 text-left"
+      <Button
+        className="h-auto min-w-0 flex-1 flex-col items-start gap-1 px-2 py-1 text-left"
         disabled={disabled}
         onClick={onEdit}
         type="button"
+        variant="ghost"
       >
-        <p className="truncate font-medium">{note.title}</p>
+        <span className="truncate font-medium">{note.title}</span>
         {note.body ? (
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+          <span className="line-clamp-2 text-sm text-muted-foreground">
             {note.body}
-          </p>
+          </span>
         ) : null}
-        <p className="mt-1 text-xs text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           Updated {relativeTime(note.updatedAt)}
-        </p>
-      </button>
+        </span>
+      </Button>
 
       <Menu>
         <MenuTrigger
@@ -68,9 +69,9 @@ export function NotesListItem({
             Edit
           </MenuItem>
           <MenuSeparator />
-          <MenuItem onClick={onDelete} variant="destructive">
-            <Trash2Icon className="size-4" />
-            Delete
+          <MenuItem onClick={onDelete}>
+            <Trash2Icon className="size-4 text-destructive" />
+            <span className="text-destructive">Delete</span>
           </MenuItem>
         </MenuPopup>
       </Menu>
