@@ -50,6 +50,7 @@ export function useChangeEmailForm(): ChangeEmailProps {
             },
             loading: {
               title: "Sending verification email…",
+              description: "The verification email is being sent.",
               type: "loading",
             },
             success: {
@@ -59,7 +60,7 @@ export function useChangeEmailForm(): ChangeEmailProps {
             },
           }
         )
-        .catch(() => {})
+        .catch(() => undefined)
     }),
   }
 }

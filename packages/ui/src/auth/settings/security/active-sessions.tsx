@@ -112,7 +112,15 @@ function ActiveSessionRow({ activeSession }: { activeSession: SessionRecord }) {
                   onSuccess: () => {
                     toastManager.add({
                       title: "Session revoked",
+                      description: "Your session has been revoked.",
                       type: "success",
+                    })
+                  },
+                  onError: () => {
+                    toastManager.add({
+                      title: "Could not revoke session",
+                      description: "Please try again.",
+                      type: "error",
                     })
                   },
                 }

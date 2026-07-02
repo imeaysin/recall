@@ -8,7 +8,7 @@ import {
 } from "@workspace/auth/react"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState, type FormEvent } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
 import {
@@ -98,16 +98,18 @@ export function useOrganizationRoleDialogs() {
           },
           loading: {
             title: "Creating role…",
+            description: "The role is being created.",
             type: "loading",
           },
           success: {
             title: "Role created",
+            description: "The role has been created.",
             type: "success",
           },
         }
       )
       .then(() => handleCreateOpenChange(false))
-      .catch(() => {})
+      .catch(() => undefined)
   })
 
   const handleEditSubmit = editForm.handleSubmit((values) => {
@@ -138,11 +140,10 @@ export function useOrganizationRoleDialogs() {
         }
       )
       .then(() => handleEditOpenChange(false))
-      .catch(() => {})
+      .catch(() => undefined)
   })
 
-  const handleDeleteSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  function handleDeleteSubmit() {
     if (!selectedRole) return
 
     void toastManager
@@ -164,7 +165,7 @@ export function useOrganizationRoleDialogs() {
         },
       })
       .then(() => handleDeleteOpenChange(false))
-      .catch(() => {})
+      .catch(() => undefined)
   }
 
   return {

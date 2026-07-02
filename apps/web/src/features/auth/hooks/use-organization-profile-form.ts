@@ -64,15 +64,17 @@ export function useOrganizationProfileForm(
         },
         loading: {
           title: "Saving workspace…",
+          description: "The workspace is being saved.",
           type: "loading",
         },
         success: {
           title: "Workspace updated",
+          description: "The workspace has been updated.",
           type: "success",
         },
       })
       .then(() => form.reset(values))
-      .catch(() => {})
+      .catch(() => undefined)
   })
 
   return {

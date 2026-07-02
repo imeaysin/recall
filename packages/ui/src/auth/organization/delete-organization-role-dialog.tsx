@@ -1,6 +1,5 @@
 "use client"
 
-import type { SubmitEventHandler } from "react"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import { TriangleAlert } from "lucide-react"
@@ -8,11 +7,11 @@ import { Button } from "@workspace/ui/components/button"
 import { Pane } from "@workspace/ui/components/pane"
 import { Form } from "@workspace/ui/components/form"
 
-export interface DeleteOrganizationRoleDialogProps {
+export type DeleteOrganizationRoleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   role: OrganizationRole | null
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  onSubmit: () => void
   isPending?: boolean
 }
 
@@ -32,7 +31,7 @@ export function DeleteOrganizationRoleDialog({
           className="contents"
           onSubmit={(event) => {
             event.preventDefault()
-            onSubmit(event)
+            onSubmit()
           }}
         >
           <Pane.Header>

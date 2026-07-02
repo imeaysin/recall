@@ -62,7 +62,15 @@ export function RemoveMemberDialog({
                     onOpenChange(false)
                     toastManager.add({
                       title: "Member removed",
+                      description: "The member has been removed.",
                       type: "success",
+                    })
+                  },
+                  onError: () => {
+                    toastManager.add({
+                      title: "Could not remove member",
+                      description: "Please try again.",
+                      type: "error",
                     })
                   },
                 }

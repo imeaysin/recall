@@ -66,6 +66,7 @@ export function OrganizationSwitcherMenu({
         },
         loading: {
           title: "Switching workspace…",
+          description: "The workspace is being switched.",
           type: "loading",
         },
         success: organization?.name

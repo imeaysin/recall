@@ -75,6 +75,7 @@ export function useCreateNoteMutation() {
           error: {
             ...notesErrorToast,
             title: "Could not create note",
+            description: "Please try again.",
           },
           loading: {
             description: "Saving your note.",
@@ -83,6 +84,7 @@ export function useCreateNoteMutation() {
           },
           success: {
             title: "Note created",
+            description: "Your note has been created.",
             type: "success",
           },
         }

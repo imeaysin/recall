@@ -61,10 +61,12 @@ export function useInviteMemberDialog() {
           },
           loading: {
             title: "Sending invitation…",
+            description: "The invitation is being sent.",
             type: "loading",
           },
           success: {
             title: "Invitation sent",
+            description: "The invitation has been sent.",
             type: "success",
           },
         })

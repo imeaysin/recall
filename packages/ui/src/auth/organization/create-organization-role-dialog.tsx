@@ -14,7 +14,7 @@ type CreateOrganizationRoleValues = {
   permission: OrganizationPermissionMap
 }
 
-export interface CreateOrganizationRoleDialogProps {
+export type CreateOrganizationRoleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   control: Control<CreateOrganizationRoleValues>

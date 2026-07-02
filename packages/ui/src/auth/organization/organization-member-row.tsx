@@ -99,7 +99,15 @@ export function OrganizationMemberRow({
                           onSuccess: () => {
                             toastManager.add({
                               title: "Member role updated",
+                              description: "The member role has been updated.",
                               type: "success",
+                            })
+                          },
+                          onError: () => {
+                            toastManager.add({
+                              title: "Could not update member role",
+                              description: "Please try again.",
+                              type: "error",
                             })
                           },
                         }

@@ -56,10 +56,18 @@ export function LeaveOrganizationDialog({
                     onOpenChange(false)
                     toastManager.add({
                       title: "Left workspace",
+                      description: "You have left the workspace.",
                       type: "success",
                     })
                     config.navigate(config.routes.defaultAuthenticated, {
                       replace: true,
+                    })
+                  },
+                  onError: () => {
+                    toastManager.add({
+                      title: "Could not leave workspace",
+                      description: "Please try again.",
+                      type: "error",
                     })
                   },
                 }

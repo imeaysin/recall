@@ -93,7 +93,15 @@ function LinkedAccountRow({
                 onSuccess: () => {
                   toastManager.add({
                     title: "Account unlinked",
+                    description: "Your account has been unlinked.",
                     type: "success",
+                  })
+                },
+                onError: () => {
+                  toastManager.add({
+                    title: "Could not unlink account",
+                    description: "Please try again.",
+                    type: "error",
                   })
                 },
               }

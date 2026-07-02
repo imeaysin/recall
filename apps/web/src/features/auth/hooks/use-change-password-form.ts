@@ -43,7 +43,11 @@ export function useChangePasswordForm(): ChangePasswordFormProps {
           },
           onSuccess: () => {
             form.reset()
-            toastManager.add({ title: "Password updated", type: "success" })
+            toastManager.add({
+              title: "Password updated",
+              description: "Your password has been updated.",
+              type: "success",
+            })
           },
         }
       )

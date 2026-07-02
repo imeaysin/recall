@@ -46,6 +46,7 @@ export function useWorkspaceOnboarding() {
         },
         loading: {
           title: "Creating workspace…",
+          description: "The workspace is being created.",
           type: "loading",
         },
         success: {
@@ -55,7 +56,7 @@ export function useWorkspaceOnboarding() {
         },
       })
       .then(() => navigate(routes.dashboard, { replace: true }))
-      .catch(() => {})
+      .catch(() => undefined)
   })
 
   return {

@@ -103,10 +103,12 @@ export function useCreateOrganizationDialog() {
         },
         loading: {
           title: "Creating workspace…",
+          description: "The workspace is being created.",
           type: "loading",
         },
         success: {
           title: "Workspace created",
+          description: "The workspace has been created.",
           type: "success",
         },
       })

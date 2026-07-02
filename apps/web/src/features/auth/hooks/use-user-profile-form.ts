@@ -37,14 +37,16 @@ export function useUserProfileForm(): UserProfileProps {
           },
           loading: {
             title: "Saving profile…",
+            description: "The profile is being saved.",
             type: "loading",
           },
           success: {
             title: "Profile updated",
+            description: "The profile has been updated.",
             type: "success",
           },
         })
-        .catch(() => {})
+        .catch(() => undefined)
     }),
   }
 }

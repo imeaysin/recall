@@ -31,8 +31,19 @@ export function DeleteOrganizationDialog({
       {
         onSuccess: () => {
           onOpenChange(false)
-          toastManager.add({ title: "Workspace deleted", type: "success" })
+          toastManager.add({
+            title: "Workspace deleted",
+            description: "The workspace has been deleted.",
+            type: "success",
+          })
           config.navigate(config.routes.defaultAuthenticated, { replace: true })
+        },
+        onError: () => {
+          toastManager.add({
+            title: "Could not delete workspace",
+            description: "Please try again.",
+            type: "error",
+          })
         },
       }
     )

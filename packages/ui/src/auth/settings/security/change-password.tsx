@@ -83,7 +83,15 @@ function SetPassword({ className }: { className?: string }) {
         onSuccess: () => {
           toastManager.add({
             title: "Password reset email sent",
+            description: "A reset link has been sent to your email.",
             type: "success",
+          })
+        },
+        onError: () => {
+          toastManager.add({
+            title: "Could not send reset link",
+            description: "Please try again.",
+            type: "error",
           })
         },
       }
