@@ -13,13 +13,13 @@ export type PaneRootProps = {
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   children?: React.ReactNode
-  /** `dialog` = centered modal on desktop; `side` = edge sheet on desktop. */
+  /** `side` = edge sheet on desktop (default); `dialog` = centered modal on desktop. */
   layout?: PaneLayout
 }
 
 const PaneOverlayModeContext = createContext<PaneOverlayMode>("dialog")
 
-const PaneLayoutContext = createContext<PaneLayout>("dialog")
+const PaneLayoutContext = createContext<PaneLayout>("side")
 
 export function usePaneOverlayMode(): PaneOverlayMode {
   return useContext(PaneOverlayModeContext)
@@ -36,7 +36,7 @@ export function usePaneDrawer(): boolean {
 
 export function PaneOverlayProvider({
   mode,
-  layout = "dialog",
+  layout = "side",
   children,
 }: {
   mode: PaneOverlayMode

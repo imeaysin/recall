@@ -73,8 +73,8 @@ export function NoteFormSheet({
   if (errors.body?.message) formErrors.body = errors.body.message
 
   return (
-    <Pane layout="side" onOpenChange={onOpenChange} open={open}>
-      <Pane.Content showCloseButton side="right" variant="inset">
+    <Pane onOpenChange={onOpenChange} open={open}>
+      <Pane.Content>
         <Pane.Header>
           <Pane.Title>{isEditing ? "Edit note" : "New note"}</Pane.Title>
           <Pane.Description>

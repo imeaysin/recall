@@ -72,7 +72,7 @@ export function SheetPopup({
   children,
   showCloseButton = true,
   side = "right",
-  variant = "default",
+  variant = "inset",
   closeProps,
   portalProps,
   ...props

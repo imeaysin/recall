@@ -53,7 +53,7 @@ type DialogPopupProps = React.ComponentProps<typeof DialogPopup>
 type SheetPopupProps = React.ComponentProps<typeof SheetPopup>
 
 function PaneRoot({
-  layout = "dialog",
+  layout = "side",
   open,
   defaultOpen,
   onOpenChange,
@@ -245,7 +245,7 @@ const PaneAlertDescription = createAlertPanePart(
 )
 const PaneAlertClose = createAlertPanePart(AlertDialogClose, DrawerClose)
 
-/** Centered modal on desktop, bottom drawer on mobile. Use `layout="side"` for edge sheets. */
+/** Edge sheet from the right on desktop, bottom drawer on mobile. Use `layout="dialog"` for centered modals. */
 export const Pane = Object.assign(PaneRoot, {
   Content: PaneContent,
   Header: PaneHeader,

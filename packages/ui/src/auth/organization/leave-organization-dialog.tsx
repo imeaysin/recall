@@ -4,6 +4,7 @@ import { useAuthUiConfig, useLeaveOrganization } from "@workspace/auth/react"
 import type { Organization } from "@workspace/auth/types/organization"
 import { LogOut } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+import { Card, CardPanel } from "@workspace/ui/components/card"
 import { Pane } from "@workspace/ui/components/pane"
 import { toastManager } from "@workspace/ui/components/toast"
 import { OrganizationView } from "./organization-view"
@@ -23,29 +24,31 @@ export function LeaveOrganizationDialog({
   const { mutate: leaveOrganization, isPending } = useLeaveOrganization()
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Leave workspace</Pane.Title>
-          <Pane.Description>
+    <Pane.Alert onOpenChange={onOpenChange} open={open}>
+      <Pane.Alert.Content>
+        <Pane.Alert.Header>
+          <Pane.Alert.Title>Leave workspace</Pane.Alert.Title>
+          <Pane.Alert.Description>
             You will lose access to this workspace and its resources.
-          </Pane.Description>
-        </Pane.Header>
+          </Pane.Alert.Description>
+        </Pane.Alert.Header>
 
-        <Pane.Panel>
-          <div className="rounded-lg border bg-muted/30 px-3 py-2.5">
-            <OrganizationView organization={organization} />
-          </div>
-        </Pane.Panel>
+        <div className="px-6 pb-2">
+          <Card>
+            <CardPanel>
+              <OrganizationView organization={organization} />
+            </CardPanel>
+          </Card>
+        </div>
 
-        <Pane.Footer>
-          <Pane.Close
+        <Pane.Alert.Footer>
+          <Pane.Alert.Close
             render={
               <Button disabled={isPending} type="button" variant="outline" />
             }
           >
             Cancel
-          </Pane.Close>
+          </Pane.Alert.Close>
           <Button
             loading={isPending}
             onClick={() =>
@@ -79,8 +82,8 @@ export function LeaveOrganizationDialog({
             <LogOut />
             Leave workspace
           </Button>
-        </Pane.Footer>
-      </Pane.Content>
-    </Pane>
+        </Pane.Alert.Footer>
+      </Pane.Alert.Content>
+    </Pane.Alert>
   )
 }
