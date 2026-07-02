@@ -31,6 +31,8 @@ export function useOrganizationRoleDialogs() {
   const createForm = useForm<CreateOrganizationRoleInput>({
     resolver: zodResolver(createOrganizationRoleSchema),
     defaultValues: { role: "", permission: emptyPermissions },
+    mode: "onSubmit",
+    reValidateMode: "onChange",
   })
 
   const editForm = useForm<EditOrganizationRoleInput>({

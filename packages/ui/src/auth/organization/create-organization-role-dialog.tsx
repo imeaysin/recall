@@ -2,10 +2,15 @@
 
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { Button } from "@workspace/ui/components/button"
-import { Pane } from "@workspace/ui/components/pane"
-import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
+import {
+  Field,
+  FieldControl,
+  FieldError,
+  FieldLabel,
+} from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Input } from "@workspace/ui/components/input"
+import { Pane } from "@workspace/ui/components/pane"
 import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
 
@@ -38,17 +43,18 @@ export function CreateOrganizationRoleDialog({
 
   return (
     <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content className="max-w-lg">
+      <Pane.Content>
         <Pane.Header>
           <Pane.Title>Create role</Pane.Title>
           <Pane.Description>
-            Define a custom role with specific permissions for this workspace.
+            Name the role, then pick what it can access.
           </Pane.Description>
         </Pane.Header>
 
         <Form
           className="contents"
-          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+          errors={formErrors}
+          noValidate
           onSubmit={onSubmit}
         >
           <Pane.Panel className="flex flex-col gap-4">
@@ -60,12 +66,17 @@ export function CreateOrganizationRoleDialog({
                   <FieldLabel htmlFor="create-organization-role-name">
                     Role name
                   </FieldLabel>
-                  <Input
+                  <FieldControl
                     {...field}
-                    autoFocus
-                    disabled={isPending}
-                    id="create-organization-role-name"
-                    placeholder="moderator"
+                    render={(controlProps) => (
+                      <Input
+                        {...controlProps}
+                        autoFocus
+                        disabled={isPending}
+                        id="create-organization-role-name"
+                        placeholder="moderator"
+                      />
+                    )}
                   />
                   <FieldError />
                 </Field>
@@ -76,7 +87,7 @@ export function CreateOrganizationRoleDialog({
               control={control}
               name="permission"
               render={({ field }) => (
-                <Field name="permission">
+                <Field className="gap-3" name="permission">
                   <FieldLabel>Permissions</FieldLabel>
                   <OrganizationRolePermissions
                     disabled={isPending}

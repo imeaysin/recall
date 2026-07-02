@@ -40,10 +40,15 @@ export const changeEmailSchema = z.object({
 export const organizationRoleNameSchema = z
   .string()
   .trim()
-  .min(1, "Role name is required")
-  .regex(
-    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    "Use lowercase letters, numbers, and hyphens"
+  .transform((value) => value.toLowerCase().replace(/\s+/g, "-"))
+  .pipe(
+    z
+      .string()
+      .min(1, "Role name is required")
+      .regex(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        "Use lowercase letters, numbers, and hyphens"
+      )
   )
 
 const organizationPermissionMapSchema = z.custom<OrganizationPermissionMap>(

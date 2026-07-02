@@ -42,7 +42,7 @@ export function EditOrganizationRoleDialog({
 
   return (
     <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content className="max-w-lg">
+      <Pane.Content>
         <Pane.Header>
           <Pane.Title>Edit role</Pane.Title>
           <Pane.Description>
@@ -60,7 +60,7 @@ export function EditOrganizationRoleDialog({
               control={control}
               name="permission"
               render={({ field }) => (
-                <Field name="permission">
+                <Field className="gap-3" name="permission">
                   <FieldLabel>Permissions</FieldLabel>
                   <OrganizationRolePermissions
                     disabled={isPending}
