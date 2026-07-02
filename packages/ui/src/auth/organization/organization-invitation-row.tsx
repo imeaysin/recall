@@ -69,9 +69,10 @@ export function OrganizationInvitationRow({
             loading={cancelPending}
             onClick={() => cancelInvitation({ invitationId: invitation.id })}
             size="icon"
-            variant="destructive-outline"
+            type="button"
+            variant="ghost"
           >
-            <X className="size-4" />
+            <X className="size-4 text-destructive" />
           </Button>
         ) : null}
       </TableCell>

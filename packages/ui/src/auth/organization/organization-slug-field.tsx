@@ -61,7 +61,7 @@ function SlugAvailabilityIcon({
 }) {
   if (isChecking) return <Spinner />
   if (isAvailable) return <Check className="size-4" />
-  if (hasError) return <X className="size-4 text-destructive-foreground" />
+  if (hasError) return <X className="size-4 text-destructive" />
   return null
 }
 

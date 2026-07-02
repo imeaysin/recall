@@ -127,9 +127,9 @@ export function OrganizationMemberRow({
               onClick={() => setLeaveOpen(true)}
               size="icon"
               type="button"
-              variant="destructive-outline"
+              variant="ghost"
             >
-              <LogOut className="size-4" />
+              <LogOut className="size-4 text-destructive" />
             </Button>
           ) : null}
           {!isCurrentUser && hasDeletePermission?.success ? (
@@ -138,9 +138,9 @@ export function OrganizationMemberRow({
               onClick={() => setRemoveOpen(true)}
               size="icon"
               type="button"
-              variant="destructive-outline"
+              variant="ghost"
             >
-              <Trash2 className="size-4" />
+              <Trash2 className="size-4 text-destructive" />
             </Button>
           ) : null}
         </div>

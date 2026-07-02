@@ -69,9 +69,9 @@ export function OrganizationRoleRow({
               onClick={() => onDelete(role)}
               size="icon"
               type="button"
-              variant="destructive-outline"
+              variant="ghost"
             >
-              <Trash2 className="size-4" />
+              <Trash2 className="size-4 text-destructive" />
             </Button>
           ) : null}
         </div>

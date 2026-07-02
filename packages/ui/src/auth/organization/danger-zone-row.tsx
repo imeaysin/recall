@@ -26,7 +26,7 @@ export function DangerZoneRow({
         onClick={onAction}
         size="sm"
         type="button"
-        variant="destructive-outline"
+        variant="destructive"
       >
         {actionLabel}
       </Button>
