@@ -60,22 +60,22 @@ export const storageSchema = z.object({
   STORAGE_S3_BASE_URL: z.string().default(""),
 })
 
+export const rateLimitSchema = z.object({
+  RATE_LIMIT_ENABLED: z
+    .enum(["true", "false"])
+    .default("true")
+    .transform((value) => value === "true"),
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
+})
+
 export const serverSchema = sharedSchema
-  .merge(databaseSchema)
-  .merge(urlsSchema)
-  .merge(authSchema)
-  .merge(emailSchema)
-  .merge(storageSchema)
-  .merge(
-    z.object({
-      RATE_LIMIT_ENABLED: z
-        .enum(["true", "false"])
-        .default("true")
-        .transform((value) => value === "true"),
-      RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
-      RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
-    })
-  )
+  .extend(databaseSchema.shape)
+  .extend(urlsSchema.shape)
+  .extend(authSchema.shape)
+  .extend(emailSchema.shape)
+  .extend(storageSchema.shape)
+  .extend(rateLimitSchema.shape)
 
 export const serverDefaults = {
   NODE_ENV: "development",
