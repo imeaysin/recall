@@ -32,6 +32,7 @@
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/db": "workspace:*",
+    "@workspace/jobs": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/storage": "workspace:*",
     "compression": "^1.8.1",

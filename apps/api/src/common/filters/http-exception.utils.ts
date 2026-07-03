@@ -8,6 +8,7 @@ import {
   type ApiFieldError,
 } from "@workspace/contracts"
 import { StorageError, type StorageErrorCode } from "@workspace/storage"
+import { getRequestId } from "@workspace/logger"
 import type { Request } from "express"
 import { ZodValidationException } from "nestjs-zod"
 import { z, ZodError } from "zod"
@@ -189,6 +190,8 @@ export function buildErrorEnvelope(
   status: number,
   request: Pick<Request, "url">
 ): ApiErrorResponse {
+  const requestId = getRequestId()
+
   return {
     success: false,
     statusCode: status,
@@ -196,6 +199,7 @@ export function buildErrorEnvelope(
     message: resolveClientMessage(exception, status),
     errors: resolveFieldErrors(exception),
     path: request.url,
+    ...(requestId ? { requestId } : {}),
     timestamp: new Date().toISOString(),
   }
 }

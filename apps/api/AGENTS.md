@@ -21,15 +21,17 @@ modules/<feature>/
 
 ## Cross-cutting (`src/common/`)
 
-| Path                          | Role                                                                       |
-| ----------------------------- | -------------------------------------------------------------------------- |
-| `configure-app.ts`            | CORS, helmet, versioning, swagger (`cleanupOpenApiDoc`), static uploads    |
-| `interceptors/`               | HTTP logging, success envelope transform                                   |
-| `filters/`                    | Global exception handler (machine-readable `code`)                         |
-| `decorators/`                 | Auth re-exports, `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()` |
-| `exceptions/`                 | `apiNotFound` / `apiForbidden` / `apiBadRequest` (typed `DomainErrorCode`) |
-| `storage/storage.module.ts`   | `STORAGE` provider from `@workspace/storage`                               |
-| `database/database.module.ts` | Global `DATABASE_READY` + injectable `MONGO_DB` (native driver `Db`)       |
+| Path                          | Role                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| `configure-app.ts`            | CORS, helmet, versioning, swagger (`cleanupOpenApiDoc`), static uploads           |
+| `interceptors/`               | HTTP logging (with `requestId`), success envelope transform                       |
+| `middleware/`                 | Request ID propagation, MongoDB-backed `/v1/*` rate limiting                      |
+| `jobs/`                       | In-process job queue (`@workspace/jobs`) — register handlers in `job-handlers.ts` |
+| `filters/`                    | Global exception handler (machine-readable `code`)                                |
+| `decorators/`                 | Auth re-exports, `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()`        |
+| `exceptions/`                 | `apiNotFound` / `apiForbidden` / `apiBadRequest` (typed `DomainErrorCode`)        |
+| `storage/storage.module.ts`   | `STORAGE` provider from `@workspace/storage`                                      |
+| `database/database.module.ts` | Global `DATABASE_READY` + injectable `MONGO_DB` (native driver `Db`)              |
 
 ## Testing
 
@@ -77,7 +79,7 @@ Org-scoped routes (notes, uploads) must use `@CurrentOrganization()` — never a
 
 ### What must not exist
 
-- **In-memory rate limiting** — removed `@nestjs/throttler` (counters are per-instance). Use API gateway limits or Better Auth `rateLimit.storage: "database"` when upgrading Better Auth.
+- **In-memory rate limiting** — removed `@nestjs/throttler` (counters are per-instance). `/v1/*` uses MongoDB-backed limits in `middleware/rate-limit.middleware.ts`; `/api/auth/*` uses Better Auth `rateLimit.storage: "database"`. Prefer edge/gateway limits in high-traffic production.
 - **Separate MongoDB pools** — auth and business API share `@workspace/db` (`connectDb` once per instance).
 - **Session state on business routes** — `/v1/*` uses Bearer JWT only; Better Auth cookies are for `/api/auth/*`.
 

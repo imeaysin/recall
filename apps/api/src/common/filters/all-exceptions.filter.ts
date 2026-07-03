@@ -4,7 +4,7 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from "@nestjs/common"
-import { createLogger } from "@workspace/logger"
+import { createLogger, getRequestId } from "@workspace/logger"
 import type { Request, Response } from "express"
 import { buildErrorEnvelope, resolveHttpStatus } from "./http-exception.utils"
 
@@ -29,6 +29,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private logServerError(request: Request, exception: unknown) {
     this.logger.error(
       {
+        requestId: getRequestId(),
         method: request.method,
         url: request.url,
         err:

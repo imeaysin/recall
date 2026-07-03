@@ -4,10 +4,13 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { cleanupOpenApiDoc } from "nestjs-zod"
 import { createLogger } from "@workspace/logger"
 import { storageEnv, resolveStorageLocalPath } from "@workspace/config/storage"
+import { getDb } from "@workspace/db"
 import compression from "compression"
 import express from "express"
 import helmet from "helmet"
 import { env } from "@workspace/config"
+import { applyRateLimit } from "./middleware/rate-limit.middleware"
+import { applyRequestContext } from "./middleware/request-context.middleware"
 
 function applySecurity(app: INestApplication) {
   app.use(
@@ -66,6 +69,13 @@ function applyLocalUploads(app: INestApplication) {
 
 /** Shared bootstrap used by `main.ts` and e2e tests. */
 export function configureApp(app: INestApplication) {
+  applyRequestContext(app)
+  applyRateLimit(app, {
+    enabled: env.RATE_LIMIT_ENABLED,
+    windowMs: env.RATE_LIMIT_WINDOW_MS,
+    max: env.RATE_LIMIT_MAX,
+    getDb: () => getDb(),
+  })
   applySecurity(app)
   applyCors(app)
   applyVersioning(app)

@@ -39,6 +39,11 @@ export const ApiErrorResponseSchema = z
       .string()
       .describe("Request path")
       .meta({ examples: ["/v1/notes"] }),
+    requestId: z
+      .string()
+      .optional()
+      .describe("Request correlation id when available")
+      .meta({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
     timestamp: z
       .string()
       .describe("ISO-8601 response timestamp")

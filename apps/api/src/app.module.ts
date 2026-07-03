@@ -11,6 +11,7 @@ import {
   DatabaseModule,
   DATABASE_READY,
 } from "./common/database/database.module"
+import { JobsModule } from "./common/jobs/jobs.module"
 import { StorageModule } from "./common/storage/storage.module"
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor"
@@ -25,6 +26,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
     CqrsModule.forRoot(),
     AuthGuardsModule.register(),
     DatabaseModule,
+    JobsModule,
     StorageModule,
     HealthModule,
     MeModule,

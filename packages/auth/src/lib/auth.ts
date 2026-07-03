@@ -84,6 +84,13 @@ export function createAuth() {
 
     database: mongodbAdapter(getAuthDb(), { client: getAuthMongoClient() }),
 
+    rateLimit: {
+      enabled: true,
+      window: 60,
+      max: 100,
+      storage: "database",
+    },
+
     databaseHooks: {
       session: {
         create: {

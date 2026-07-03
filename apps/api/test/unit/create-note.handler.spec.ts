@@ -1,6 +1,7 @@
 import { CommandHandler } from "@nestjs/cqrs"
 import { Test, type TestingModule } from "@nestjs/testing"
 import type { NoteResponse } from "@workspace/contracts"
+import { JOB_QUEUE } from "../../src/common/jobs/jobs.module"
 import { CreateNoteHandler } from "../../src/modules/notes/commands/create-note.handler"
 import { CreateNoteCommand } from "../../src/modules/notes/commands/create-note.command"
 import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
@@ -8,14 +9,17 @@ import { NotesRepository } from "../../src/modules/notes/repositories/notes.repo
 describe("CreateNoteHandler", () => {
   let handler: CreateNoteHandler
   let repository: { insert: jest.Mock }
+  let jobQueue: { enqueue: jest.Mock }
 
   beforeEach(async () => {
     repository = { insert: jest.fn() }
+    jobQueue = { enqueue: jest.fn() }
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
         CreateNoteHandler,
         { provide: NotesRepository, useValue: repository },
+        { provide: JOB_QUEUE, useValue: jobQueue },
       ],
     }).compile()
 
@@ -57,5 +61,10 @@ describe("CreateNoteHandler", () => {
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     } satisfies NoteResponse)
+    expect(jobQueue.enqueue).toHaveBeenCalledWith("note.created", {
+      noteId: "note-1",
+      organizationId: "org-1",
+      userId: "user-1",
+    })
   })
 })

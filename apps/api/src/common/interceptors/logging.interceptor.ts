@@ -5,7 +5,7 @@ import {
   Injectable,
   NestInterceptor,
 } from "@nestjs/common"
-import { createLogger } from "@workspace/logger"
+import { createLogger, getRequestId } from "@workspace/logger"
 import type { Request, Response } from "express"
 import { Observable, tap } from "rxjs"
 
@@ -22,9 +22,14 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const log = (statusCode: number, err?: unknown) => {
       const durationMs = Date.now() - started
-      const payload = err
-        ? { method, url, statusCode, durationMs, err }
-        : { method, url, statusCode, durationMs }
+      const payload = {
+        requestId: getRequestId(),
+        method,
+        url,
+        statusCode,
+        durationMs,
+        ...(err ? { err } : {}),
+      }
       const message = `${method} ${url} ${statusCode} ${durationMs}ms`
 
       if (statusCode >= 500) {

@@ -65,3 +65,9 @@ export function isNestVerboseContext(context?: string): boolean {
 
 export type { Logger }
 export { root as logger }
+export {
+  getRequestContext,
+  getRequestId,
+  runWithRequestContext,
+  type RequestContext,
+} from "./context"
