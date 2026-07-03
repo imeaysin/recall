@@ -5,7 +5,7 @@ import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organiz
 import type { OrganizationRole } from "@workspace/auth/types/organization"
 import { Button } from "@workspace/ui/components/button"
 import { Pane } from "@workspace/ui/components/pane"
-import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
+import { Field, FieldError } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
 import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
@@ -51,17 +51,20 @@ export function EditOrganizationRoleDialog({
         </Pane.Header>
 
         <Form
-          className="contents"
-          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
+          className="flex min-h-0 min-w-0 flex-1 flex-col"
+          errors={formErrors}
+          noValidate
           onSubmit={onSubmit}
         >
-          <Pane.Panel className="flex flex-col gap-4">
+          <Pane.Panel className="w-full min-w-0">
             <Controller
               control={control}
               name="permission"
               render={({ field }) => (
-                <Field className="gap-3" name="permission">
-                  <FieldLabel>Permissions</FieldLabel>
+                <Field
+                  className="w-full min-w-0 !items-stretch gap-2"
+                  name="permission"
+                >
                   <OrganizationRolePermissions
                     disabled={isPending}
                     onChange={field.onChange}

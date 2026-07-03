@@ -47,22 +47,22 @@ export function CreateOrganizationRoleDialog({
         <Pane.Header>
           <Pane.Title>Create role</Pane.Title>
           <Pane.Description>
-            Name the role, then pick what it can access.
+            Add a custom role with create, read, update, and delete access.
           </Pane.Description>
         </Pane.Header>
 
         <Form
-          className="contents"
+          className="flex min-h-0 min-w-0 flex-1 flex-col"
           errors={formErrors}
           noValidate
           onSubmit={onSubmit}
         >
-          <Pane.Panel className="flex flex-col gap-4">
+          <Pane.Panel className="flex w-full min-w-0 flex-col gap-4">
             <Controller
               control={control}
               name="role"
               render={({ field }) => (
-                <Field name="role">
+                <Field className="w-full items-stretch" name="role">
                   <FieldLabel htmlFor="create-organization-role-name">
                     Role name
                   </FieldLabel>
@@ -87,8 +87,10 @@ export function CreateOrganizationRoleDialog({
               control={control}
               name="permission"
               render={({ field }) => (
-                <Field className="gap-3" name="permission">
-                  <FieldLabel>Permissions</FieldLabel>
+                <Field
+                  className="w-full min-w-0 !items-stretch gap-2"
+                  name="permission"
+                >
                   <OrganizationRolePermissions
                     disabled={isPending}
                     onChange={field.onChange}
