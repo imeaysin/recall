@@ -1,9 +1,28 @@
+import { existsSync } from "node:fs"
+import { dirname, isAbsolute, join, resolve } from "node:path"
 import { createEnv } from "../validate"
 import {
   pickServerDefaults,
   storageEnvSchema,
   type StorageEnv,
 } from "../schemas/server"
+
+function findWorkspaceRoot(startDir = process.cwd()): string {
+  let currentDir = resolve(startDir)
+
+  while (true) {
+    if (
+      existsSync(join(currentDir, "pnpm-workspace.yaml")) ||
+      existsSync(join(currentDir, ".env"))
+    ) {
+      return currentDir
+    }
+
+    const parentDir = dirname(currentDir)
+    if (parentDir === currentDir) return resolve(startDir)
+    currentDir = parentDir
+  }
+}
 
 /** File storage — used by `@workspace/storage` and `apps/api` when wired. */
 export const storageEnv = createEnv(
@@ -20,5 +39,12 @@ export const storageEnv = createEnv(
     "STORAGE_S3_BASE_URL",
   ])
 )
+
+/** Resolve `STORAGE_LOCAL_PATH` from the monorepo root (not `apps/api` cwd). */
+export function resolveStorageLocalPath(
+  path: string = storageEnv.STORAGE_LOCAL_PATH
+): string {
+  return isAbsolute(path) ? path : resolve(findWorkspaceRoot(), path)
+}
 
 export type { StorageEnv }

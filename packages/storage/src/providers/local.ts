@@ -8,7 +8,7 @@ import {
   copyFile,
   rename,
 } from "node:fs/promises"
-import { join, dirname } from "node:path"
+import { join, dirname, resolve, sep } from "node:path"
 import type {
   StorageProvider,
   StorageUploadInput,
@@ -32,15 +32,19 @@ export class LocalStorageProvider implements StorageProvider {
   private readonly baseUrl: string
 
   constructor(config: LocalStorageConfig) {
-    this.basePath = config.basePath.replace(/\/+$/, "")
+    this.basePath = resolve(config.basePath.replace(/\/+$/, ""))
     this.baseUrl = config.baseUrl.replace(/\/+$/, "")
   }
 
   private resolve(path: string): string {
     const normalized = path.replace(/^\/+/, "")
-    const resolved = join(this.basePath, normalized)
+    const resolved = resolve(this.basePath, normalized)
 
-    if (!resolved.startsWith(this.basePath)) {
+    const withinBase =
+      resolved === this.basePath ||
+      resolved.startsWith(`${this.basePath}${sep}`)
+
+    if (!withinBase) {
       throw new StorageError(`Path traversal detected: ${path}`, "INVALID_PATH")
     }
 

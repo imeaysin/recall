@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
@@ -6,8 +6,13 @@ import { LocalStorageProvider } from "../src/providers/local"
 
 describe("LocalStorageProvider", () => {
   let basePath: string
+  let previousCwd: string
 
   afterEach(async () => {
+    if (previousCwd) {
+      process.chdir(previousCwd)
+      previousCwd = ""
+    }
     if (basePath) {
       await rm(basePath, { recursive: true, force: true })
     }
@@ -32,6 +37,32 @@ describe("LocalStorageProvider", () => {
 
     const onDisk = await readFile(join(basePath, "org/user/test.txt"), "utf8")
     expect(onDisk).toBe("hello")
+  })
+
+  it("uploads with a relative basePath like ./uploads", async () => {
+    basePath = await mkdtemp(join(tmpdir(), "theo-storage-"))
+    await mkdir(join(basePath, "uploads"), { recursive: true })
+    previousCwd = process.cwd()
+    process.chdir(basePath)
+
+    const provider = new LocalStorageProvider({
+      provider: "local",
+      basePath: "./uploads",
+      baseUrl: "http://localhost:4000/uploads",
+    })
+
+    const result = await provider.upload({
+      path: "org/user/nested.txt",
+      body: Buffer.from("nested"),
+      contentType: "text/plain",
+    })
+
+    expect(result.path).toBe("org/user/nested.txt")
+    const onDisk = await readFile(
+      join(basePath, "uploads", "org/user/nested.txt"),
+      "utf8"
+    )
+    expect(onDisk).toBe("nested")
   })
 
   it("rejects path traversal", async () => {

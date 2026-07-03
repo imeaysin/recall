@@ -3,7 +3,7 @@ import type { INestApplication } from "@nestjs/common"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { cleanupOpenApiDoc } from "nestjs-zod"
 import { createLogger } from "@workspace/logger"
-import { storageEnv } from "@workspace/config/storage"
+import { storageEnv, resolveStorageLocalPath } from "@workspace/config/storage"
 import compression from "compression"
 import express from "express"
 import helmet from "helmet"
@@ -61,7 +61,7 @@ function applySwagger(app: INestApplication) {
 function applyLocalUploads(app: INestApplication) {
   if (storageEnv.STORAGE_PROVIDER !== "local") return
 
-  app.use("/uploads", express.static(storageEnv.STORAGE_LOCAL_PATH))
+  app.use("/uploads", express.static(resolveStorageLocalPath()))
 }
 
 /** Shared bootstrap used by `main.ts` and e2e tests. */

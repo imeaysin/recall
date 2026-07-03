@@ -1,5 +1,5 @@
 import { Global, Module } from "@nestjs/common"
-import { storageEnv } from "@workspace/config/storage"
+import { storageEnv, resolveStorageLocalPath } from "@workspace/config/storage"
 import { createStorage, type StorageProvider } from "@workspace/storage"
 
 export const STORAGE = Symbol("STORAGE")
@@ -19,7 +19,7 @@ function createStorageProvider(): StorageProvider {
 
   return createStorage({
     provider: "local",
-    basePath: storageEnv.STORAGE_LOCAL_PATH,
+    basePath: resolveStorageLocalPath(),
     baseUrl: storageEnv.STORAGE_LOCAL_URL,
   })
 }
