@@ -30,6 +30,7 @@
     "@nestjs/swagger": "catalog:",
     "@thallesp/nestjs-better-auth": "^2.6.1",
     "@workspace/auth": "workspace:*",
+    "@workspace/cache": "workspace:*",
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/db": "workspace:*",

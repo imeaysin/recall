@@ -4,9 +4,11 @@ import { ZodValidationPipe } from "nestjs-zod"
 import { CqrsModule } from "@nestjs/cqrs"
 import { AuthModule } from "@thallesp/nestjs-better-auth"
 import { getAuth } from "@workspace/auth"
+import type { CacheProvider } from "@workspace/cache"
 import { AuthGuardsModule } from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { CacheModule, CACHE_PROVIDER } from "./common/cache/cache.module"
 import {
   DatabaseModule,
   DATABASE_READY,
@@ -25,6 +27,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
   imports: [
     CqrsModule.forRoot(),
     AuthGuardsModule.register(),
+    CacheModule,
     DatabaseModule,
     JobsModule,
     StorageModule,
@@ -33,11 +36,11 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
     NotesModule,
     UploadsModule,
     AuthModule.forRootAsync({
-      imports: [DatabaseModule],
-      inject: [DATABASE_READY],
+      imports: [DatabaseModule, CacheModule],
+      inject: [DATABASE_READY, CACHE_PROVIDER],
       disableGlobalAuthGuard: true,
-      useFactory: () => ({
-        auth: getAuth(),
+      useFactory: (_dbReady: unknown, cache: CacheProvider) => ({
+        auth: getAuth({ secondaryStorage: cache }),
         bodyParser: {
           json: { limit: "2mb" },
           urlencoded: { limit: "2mb", extended: true },

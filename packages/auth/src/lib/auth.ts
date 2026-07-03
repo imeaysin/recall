@@ -23,6 +23,10 @@ import { getAuthDb, getAuthMongoClient } from "../db/mongo"
 import { findOrganizationMemberRole } from "./organization-role"
 import { ensureSessionActiveOrganization } from "./default-organization"
 
+export type CreateAuthOptions = {
+  secondaryStorage?: Parameters<typeof betterAuth>[0]["secondaryStorage"]
+}
+
 function parseAdminUserIds(raw: string): string[] {
   return raw
     .split(",")
@@ -74,7 +78,9 @@ function socialProviders() {
   return providers
 }
 
-export function createAuth() {
+export function createAuth(options: CreateAuthOptions = {}) {
+  const { secondaryStorage } = options
+
   const auth = betterAuth({
     appName: env.APP_NAME,
     baseURL: env.BETTER_AUTH_URL,
@@ -91,11 +97,17 @@ export function createAuth() {
 
     database: mongodbAdapter(getAuthDb(), { client: getAuthMongoClient() }),
 
+    secondaryStorage,
+
+    session: {
+      storeSessionInDatabase: Boolean(secondaryStorage),
+    },
+
     rateLimit: {
       enabled: true,
       window: 60,
       max: 100,
-      storage: "database",
+      storage: secondaryStorage ? "secondary-storage" : "database",
     },
 
     databaseHooks: {
@@ -208,9 +220,9 @@ export function createAuth() {
 let authInstance: Auth | null = null
 
 /** Lazily creates Better Auth after `connectDb()` — safe for serverless cold starts. */
-export function getAuth(): Auth {
+export function getAuth(options: CreateAuthOptions = {}): Auth {
   if (!authInstance) {
-    authInstance = createAuth()
+    authInstance = createAuth(options)
   }
   return authInstance
 }

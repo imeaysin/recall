@@ -1,5 +1,11 @@
-import type { Auth as BetterAuthInstance } from "better-auth"
+import type { Auth as BetterAuthInstance, betterAuth } from "better-auth"
 
-export declare function createAuth(): BetterAuthInstance
-export declare function getAuth(): BetterAuthInstance
+export type CreateAuthOptions = {
+  secondaryStorage?: Parameters<typeof betterAuth>[0]["secondaryStorage"]
+}
+
+export declare function createAuth(
+  options?: CreateAuthOptions
+): BetterAuthInstance
+export declare function getAuth(options?: CreateAuthOptions): BetterAuthInstance
 export type Auth = BetterAuthInstance
