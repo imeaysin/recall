@@ -1,6 +1,7 @@
 import {
   Building2Icon,
   LayoutDashboardIcon,
+  ShieldIcon,
   StickyNoteIcon,
   UploadIcon,
 } from "lucide-react"
@@ -34,3 +35,10 @@ export const appNavigation: NavItem[] = [
       pathname?.startsWith(routes.organization) ?? false,
   },
 ]
+
+export const adminNavigationItem: NavItem = {
+  name: "Admin",
+  href: routes.adminUsers,
+  icon: ShieldIcon,
+  isCurrent: ({ pathname }) => pathname?.startsWith(routes.admin) ?? false,
+}

@@ -12,8 +12,10 @@ import { dashboardRoutes } from "@/features/dashboard/routes"
 import { notesRoutes } from "@/features/notes/routes"
 import { uploadsRoutes } from "@/features/uploads/routes"
 import { organizationRoutes } from "@/features/organization/routes"
+import { adminRoutes } from "@/features/admin/routes"
 import { homeRoutes } from "@/features/home/routes"
 import { ProtectedRoute } from "@/routing/protected-route"
+import { AdminRoute } from "@/routing/admin-route"
 import { routeSegments, routes } from "@/config/routes"
 
 export const router = createBrowserRouter([
@@ -50,6 +52,10 @@ export const router = createBrowserRouter([
               ...uploadsRoutes,
               ...accountRoutes,
               ...organizationRoutes,
+              {
+                element: <AdminRoute />,
+                children: adminRoutes,
+              },
             ],
           },
         ],

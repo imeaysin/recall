@@ -1,5 +1,6 @@
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom"
 import { CreateOrganizationDialog } from "@workspace/ui/auth"
+import { ImpersonationBanner } from "@workspace/ui/auth"
 import { Shell } from "@workspace/ui/components/shell"
 import type {
   ShellLinkComponent,
@@ -35,6 +36,7 @@ export function AppLayout() {
 
   return (
     <WorkspaceOnboardingGate>
+      <ImpersonationBanner />
       <Shell
         brandLabel={shell.brandLabel}
         commandActions={shell.commandActions}

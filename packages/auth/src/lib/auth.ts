@@ -23,6 +23,13 @@ import { getAuthDb, getAuthMongoClient } from "../db/mongo"
 import { findOrganizationMemberRole } from "./organization-role"
 import { ensureSessionActiveOrganization } from "./default-organization"
 
+function parseAdminUserIds(raw: string): string[] {
+  return raw
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean)
+}
+
 function socialProviders() {
   const providers: Record<string, Record<string, string>> = {}
 
@@ -149,6 +156,7 @@ export function createAuth() {
       admin({
         ...adminPluginOptions,
         defaultRole: "user",
+        adminUserIds: parseAdminUserIds(env.ADMIN_USER_IDS),
       }),
 
       twoFactor({ issuer: env.AUTH_TOTP_ISSUER }),

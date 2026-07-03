@@ -12,6 +12,13 @@ import {
   resolveAssignableOrganizationRoles,
   type OrganizationPermissionCheck,
 } from "../permissions/organization"
+import {
+  checkPlatformPermissionMap,
+  createPlatformPermissionResult,
+  formatPlatformRoleLabel,
+  platformRoleNames,
+  type PlatformPermissionCheck,
+} from "../permissions/platform"
 import { authQueryKeys } from "./query-keys"
 import { useAuthSession } from "./use-auth-session"
 import { unwrapClientResult } from "./utils/client-call"
@@ -410,4 +417,64 @@ export function useAssignableOrganizationRoles(
         invitePermissionPending
       : false,
   }
+}
+
+export function usePlatformPermission(
+  input: PlatformPermissionCheck,
+  client: AuthClient = authClient,
+  options?: { enabled?: boolean }
+) {
+  const { permissions } = input
+  const hookEnabled = options?.enabled ?? true
+  const { data: session, isPending } = useAuthSession(client)
+  const role = session?.user.role ?? ""
+
+  return useQuery({
+    queryKey: authQueryKeys.platformPermission(role, permissions),
+    enabled: hookEnabled && !isPending && !!session && !!role,
+    queryFn: () =>
+      createPlatformPermissionResult(
+        checkPlatformPermissionMap(role, permissions)
+      ),
+    staleTime: Number.POSITIVE_INFINITY,
+  })
+}
+
+export type AdminListUsersQuery = NonNullable<
+  Parameters<AuthClient["admin"]["listUsers"]>[0]
+>["query"]
+
+export type AdminListedUser = NonNullable<
+  NonNullable<
+    Awaited<ReturnType<AuthClient["admin"]["listUsers"]>>["data"]
+  >["users"]
+>[number]
+
+export function useListUsers(
+  query: AdminListUsersQuery = {},
+  client: AuthClient = authClient,
+  options?: { enabled?: boolean }
+) {
+  const { enabled: sessionEnabled } = useAuthenticatedQueryEnabled(client)
+  const normalizedQuery = query ?? {}
+
+  return useQuery({
+    queryKey: authQueryKeys.adminUsers(normalizedQuery),
+    enabled: (options?.enabled ?? true) && sessionEnabled,
+    queryFn: () =>
+      unwrapClientResult(client.admin.listUsers({ query: normalizedQuery })),
+  })
+}
+
+export function usePlatformRoleOptions() {
+  return {
+    roles: [...platformRoleNames],
+    formatPlatformRoleLabel,
+  } as const
+}
+
+export function useImpersonatedBy(client: AuthClient = authClient) {
+  const { data: sessionData } = useAuthSession(client)
+
+  return sessionData?.session.impersonatedBy ?? null
 }

@@ -34,6 +34,7 @@ export type AuthRoutes = {
   organizationSettings: string
   organizationPeople: string
   organizationRoles: string
+  adminUsers: string
   defaultAuthenticated: string
 }
 

@@ -570,3 +570,72 @@ export function useDeleteOrganizationRole(client: AuthClient = authClient) {
     onSuccess: () => invalidate(),
   })
 }
+
+export function useCreateAdminUser(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["admin"]["createUser"]>[0]
+    ) => unwrapClientResult(client.admin.createUser(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useSetUserRole(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (input: Parameters<AuthClient["admin"]["setRole"]>[0]) =>
+      unwrapClientResult(client.admin.setRole(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useBanUser(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (input: Parameters<AuthClient["admin"]["banUser"]>[0]) =>
+      unwrapClientResult(client.admin.banUser(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useUnbanUser(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["admin"]["unbanUser"]>[0]
+    ) => unwrapClientResult(client.admin.unbanUser(input)),
+    onSuccess: () => invalidate(),
+  })
+}
+
+export function useImpersonateUser(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async (
+      input: Parameters<AuthClient["admin"]["impersonateUser"]>[0]
+    ) => unwrapClientResult(client.admin.impersonateUser(input)),
+    onSuccess: async () => {
+      await refreshAuthToken(client)
+      invalidate()
+    },
+  })
+}
+
+export function useStopImpersonating(client: AuthClient = authClient) {
+  const invalidate = useInvalidateAuthQueries()
+
+  return useMutation({
+    mutationFn: async () =>
+      unwrapClientResult(client.admin.stopImpersonating()),
+    onSuccess: async () => {
+      await refreshAuthToken(client)
+      invalidate()
+    },
+  })
+}

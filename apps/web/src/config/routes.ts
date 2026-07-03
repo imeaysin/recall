@@ -18,6 +18,7 @@ export const routeSegments = {
     uploads: "uploads",
     settings: "settings",
     organization: "organization",
+    admin: "admin",
   },
 } as const
 
@@ -72,6 +73,8 @@ export const routes = {
     routeSegments.app.organization,
     "roles"
   ),
+  admin: toPath(routeSegments.app.root, routeSegments.app.admin),
+  adminUsers: toPath(routeSegments.app.root, routeSegments.app.admin, "users"),
 } as const
 
 export const defaultAuthenticatedRoute = routes.dashboard

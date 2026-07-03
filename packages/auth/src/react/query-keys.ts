@@ -1,4 +1,5 @@
 import type { OrganizationPermissionMap } from "../permissions/organization"
+import type { PlatformPermissionMap } from "../permissions/platform"
 
 export const authQueryKeys = {
   all: ["auth"] as const,
@@ -48,4 +49,8 @@ export const authQueryKeys = {
       memberRole,
       permission,
     ] as const,
+  adminUsers: (query: Record<string, unknown>) =>
+    [...authQueryKeys.all, "admin-users", query] as const,
+  platformPermission: (role: string, permission: PlatformPermissionMap) =>
+    [...authQueryKeys.all, "platform-permission", role, permission] as const,
 } as const

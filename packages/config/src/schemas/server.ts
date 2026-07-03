@@ -41,6 +41,7 @@ export const authSchema = z.object({
   MICROSOFT_CLIENT_SECRET: z.string().default(""),
   DISCORD_CLIENT_ID: z.string().default(""),
   DISCORD_CLIENT_SECRET: z.string().default(""),
+  ADMIN_USER_IDS: z.string().default(""),
 })
 
 export const emailSchema = z.object({
@@ -98,6 +99,19 @@ export const serverDefaults = {
   AUTH_JWT_EXPIRATION: "15m",
   AUTH_TOTP_ISSUER: DEFAULT_APP_NAME,
   RESEND_API_KEY: "",
+  GOOGLE_CLIENT_ID: "",
+  GOOGLE_CLIENT_SECRET: "",
+  GITHUB_CLIENT_ID: "",
+  GITHUB_CLIENT_SECRET: "",
+  APPLE_CLIENT_ID: "",
+  APPLE_TEAM_ID: "",
+  APPLE_KEY_ID: "",
+  APPLE_PRIVATE_KEY: "",
+  MICROSOFT_CLIENT_ID: "",
+  MICROSOFT_CLIENT_SECRET: "",
+  DISCORD_CLIENT_ID: "",
+  DISCORD_CLIENT_SECRET: "",
+  ADMIN_USER_IDS: "",
   STORAGE_PROVIDER: "local",
   STORAGE_LOCAL_PATH: "./uploads",
   STORAGE_LOCAL_URL: `${DEV_URLS.API}/uploads`,

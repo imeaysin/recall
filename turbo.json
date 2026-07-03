@@ -6,6 +6,7 @@
   "globalEnv": [
     "MONGODB_URI",
     "BETTER_AUTH_SECRET",
+    "ADMIN_USER_IDS",
     "BETTER_AUTH_URL",
     "RESEND_API_KEY",
     "CLIENT_URL",
