@@ -1,10 +1,10 @@
-import { HttpStatus } from "@nestjs/common"
+import { HttpStatus, HttpException } from "@nestjs/common"
 import type { INestApplication } from "@nestjs/common"
-import { HttpErrorCode } from "@workspace/contracts"
 import { isDbConnected } from "@workspace/db"
-import { createLogger, getRequestId } from "@workspace/logger"
+import { createLogger } from "@workspace/logger"
 import type { Db } from "mongodb"
 import type { NextFunction, Request, Response } from "express"
+import { buildErrorEnvelope } from "../filters/http-exception.utils"
 
 const COLLECTION = "api_rate_limits"
 const logger = createLogger("RateLimit")
@@ -96,16 +96,15 @@ export function applyRateLimit(
       )
 
       if (!allowed) {
-        res.status(HttpStatus.TOO_MANY_REQUESTS).json({
-          success: false,
-          statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          code: HttpErrorCode.TOO_MANY_REQUESTS,
-          message: "Too many requests. Please try again later.",
-          errors: null,
-          path: req.url,
-          requestId: getRequestId(),
-          timestamp: new Date().toISOString(),
-        })
+        const exception = new HttpException(
+          "Too many requests. Please try again later.",
+          HttpStatus.TOO_MANY_REQUESTS
+        )
+        res
+          .status(HttpStatus.TOO_MANY_REQUESTS)
+          .json(
+            buildErrorEnvelope(exception, HttpStatus.TOO_MANY_REQUESTS, req)
+          )
         return
       }
 

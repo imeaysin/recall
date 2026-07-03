@@ -1,14 +1,21 @@
 import { z } from "zod"
+import { findOrganizationMemberRole } from "../../lib/organization-role"
 import { getAuthDb, ensureAuthMongoConnected, toMongoId } from "../../db/mongo"
 import { authCollections } from "../collections"
 import {
   ac,
   authorizeStaticOrganizationRole,
   type OrganizationAction,
+  type OrganizationRequiredPermission,
   type OrganizationResource,
   type OrganizationStatement,
 } from "./index"
 import type { PermissionMapFor } from "../types"
+
+export type OrganizationMemberScope = {
+  organizationId: string
+  userId: string
+}
 
 const permissionRecordSchema = z.record(z.string(), z.array(z.string()))
 
@@ -57,4 +64,24 @@ export async function checkOrganizationPermissionAsync<
   }
 
   return false
+}
+
+/** Resolves the member role from the database — do not rely on JWT `organizationRole`. */
+export async function checkMemberOrganizationPermission<
+  R extends OrganizationResource,
+>(
+  member: OrganizationMemberScope,
+  permission: OrganizationRequiredPermission<R>
+): Promise<boolean> {
+  const organizationRole = await findOrganizationMemberRole(
+    member.organizationId,
+    member.userId
+  )
+
+  return checkOrganizationPermissionAsync(
+    member.organizationId,
+    organizationRole,
+    permission.resource,
+    permission.action
+  )
 }

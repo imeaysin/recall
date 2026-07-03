@@ -5,7 +5,7 @@ import {
   Injectable,
 } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
-import { checkOrganizationPermissionAsync } from "../../permissions/organization/server"
+import { checkMemberOrganizationPermission } from "../../permissions/organization/server"
 import type { OrganizationRequiredPermission } from "../../permissions/organization"
 import type { JwtClaims } from "../../types/auth"
 import { ORG_PERMISSION_KEY } from "./require-org-permission.decorator"
@@ -28,11 +28,9 @@ export class OrgRbacGuard implements CanActivate {
       throw new ForbiddenException("No active organization")
     }
 
-    const allowed = await checkOrganizationPermissionAsync(
-      user.activeOrganizationId,
-      user.organizationRole,
-      required.resource,
-      required.action
+    const allowed = await checkMemberOrganizationPermission(
+      { organizationId: user.activeOrganizationId, userId: user.id },
+      required
     )
     if (!allowed) {
       throw new ForbiddenException("Insufficient organization permissions")

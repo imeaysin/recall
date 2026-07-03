@@ -12,7 +12,7 @@ import { toastManager } from "@workspace/ui/components/toast"
 import {
   createAdminUserSchema,
   type CreateAdminUserInput,
-} from "@/features/auth/schemas"
+} from "@workspace/auth/forms"
 
 export function useCreateUserDialog() {
   const [open, setOpen] = useState(false)

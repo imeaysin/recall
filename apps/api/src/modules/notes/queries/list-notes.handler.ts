@@ -12,10 +12,7 @@ export class ListNotesHandler implements IQueryHandler<ListNotesQuery> {
   constructor(private readonly notesRepository: NotesRepository) {}
 
   async execute(query: ListNotesQuery): Promise<NotesListResponse> {
-    const notes = await this.notesRepository.findByOrganizationAndUser(
-      query.organizationId,
-      query.userId
-    )
+    const notes = await this.notesRepository.findMany(query.scope)
     return NotesListResponseSchema.parse({
       items: notes.map(toNoteResponse),
     })

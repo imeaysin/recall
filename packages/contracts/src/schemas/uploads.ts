@@ -1,6 +1,8 @@
 import { z } from "zod"
 import { apiSuccessResponse } from "../api/envelopes"
 
+export const UPLOAD_MAX_BYTES = 5 * 1024 * 1024
+
 export const UploadResponseSchema = z
   .object({
     path: z.string().meta({

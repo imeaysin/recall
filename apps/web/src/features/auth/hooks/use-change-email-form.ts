@@ -10,10 +10,7 @@ import type { ChangeEmailProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
-import {
-  changeEmailSchema,
-  type ChangeEmailInput,
-} from "@/features/auth/schemas"
+import { changeEmailSchema, type ChangeEmailInput } from "@workspace/auth/forms"
 
 export function useChangeEmailForm(): ChangeEmailProps {
   const config = useAuthUiConfig()

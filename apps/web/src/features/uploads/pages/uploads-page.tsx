@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent } from "react"
 import type { UploadResponse } from "@workspace/contracts"
+import { UPLOAD_MAX_BYTES } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -12,8 +13,6 @@ import { Input } from "@workspace/ui/components/input"
 import { ShellMain } from "@workspace/ui/components/shell"
 import { UploadIcon } from "lucide-react"
 import { useUploadFileMutation } from "@/features/uploads/hooks/use-upload"
-
-const MAX_BYTES = 5 * 1024 * 1024
 
 export function UploadsPage() {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -31,7 +30,7 @@ export function UploadsPage() {
     const file = inputRef.current?.files?.[0]
     if (!file) return
 
-    if (file.size > MAX_BYTES) {
+    if (file.size > UPLOAD_MAX_BYTES) {
       uploadFile.reset()
       return
     }

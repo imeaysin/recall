@@ -24,7 +24,7 @@ export class MeController {
     description: "Returns JWT claims for the bearer token.",
   })
   @ApiOkResponse({ type: MeApiResponseDto })
-  getMe(@CurrentUser() user: JwtClaims) {
+  async getMe(@CurrentUser() user: JwtClaims) {
     return this.meService.getCurrentUser(user)
   }
 }

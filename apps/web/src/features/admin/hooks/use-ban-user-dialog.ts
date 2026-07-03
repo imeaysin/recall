@@ -6,7 +6,7 @@ import { BanUserDialog, type BanUserDialogProps } from "@workspace/ui/auth"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
-import { banUserSchema, type BanUserInput } from "@/features/auth/schemas"
+import { banUserSchema, type BanUserInput } from "@workspace/auth/forms"
 
 export function useBanUserDialog() {
   const [open, setOpen] = useState(false)

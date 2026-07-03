@@ -23,7 +23,7 @@ export class CreateNoteHandler implements ICommandHandler<CreateNoteCommand> {
     })
 
     this.jobQueue.enqueue("note.created", {
-      noteId: note.id,
+      noteId: note._id.toString(),
       organizationId: command.organizationId,
       userId: command.userId,
     })

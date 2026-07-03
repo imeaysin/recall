@@ -4,9 +4,9 @@ import { useAuthSession, useAuthUiConfig } from "@workspace/auth/react"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
 import { Form } from "@workspace/ui/components/form"
-import { Icons } from "@workspace/ui/components/icons"
 import { Input } from "@workspace/ui/components/input"
 import { Controller, useFormState, type Control } from "react-hook-form"
+import { AuthBrandLogo } from "../auth-brand-logo"
 import type { AuthLinkComponent } from "../auth-shell"
 import { AuthPageBody } from "../auth-form"
 import { AuthPageHeader } from "../auth-page-header"
@@ -68,10 +68,6 @@ export function WorkspaceOnboarding({
     config.navigate(config.routes.signOut)
   }
 
-  const logo = (
-    <Icons.LogoSmall className="size-6 text-foreground" aria-hidden="true" />
-  )
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center justify-between px-4 py-4 md:px-6">
@@ -79,7 +75,7 @@ export function WorkspaceOnboarding({
           className="flex items-center transition-opacity hover:opacity-80"
           href={homeHref}
         >
-          {logo}
+          <AuthBrandLogo />
         </Link>
         <Button
           className="text-muted-foreground"

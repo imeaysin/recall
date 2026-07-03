@@ -69,11 +69,11 @@ The API is designed for **stateless, serverless execution** (e.g. Vercel, AWS La
 
 ### Request context (never from client body)
 
-| Context                | Source                                                                  |
-| ---------------------- | ----------------------------------------------------------------------- |
-| User id, platform role | Verified JWT (`@CurrentUser()`)                                         |
-| Active workspace       | JWT `activeOrganizationId` (`@CurrentOrganization()`)                   |
-| Org permissions        | JWT `organizationRole` + DB for dynamic roles (`@RequireOrgPermission`) |
+| Context                | Source                                                           |
+| ---------------------- | ---------------------------------------------------------------- |
+| User id, platform role | Verified JWT (`@CurrentUser()`)                                  |
+| Active workspace       | JWT `activeOrganizationId` (`@CurrentOrganization()`)            |
+| Org permissions        | Member role from DB (`@RequireOrgPermission` via `OrgRbacGuard`) |
 
 Org-scoped routes (notes, uploads) must use `@CurrentOrganization()` — never accept `organizationId` from query/body.
 
@@ -102,4 +102,4 @@ Org-scoped routes (notes, uploads) must use `@CurrentOrganization()` — never a
 JwksGuard → RbacGuard → OrgRbacGuard
 ```
 
-`@Public()` skips JWT. `@RequirePermission` = platform role from JWT. `@RequireOrgPermission` = active org from JWT + permission check.
+`@Public()` skips JWT. `@RequirePermission` = platform role from JWT. `@RequireOrgPermission` = active org from JWT + member role resolved from DB.

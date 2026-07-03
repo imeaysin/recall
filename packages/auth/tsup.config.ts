@@ -50,6 +50,7 @@ export default defineConfig((options): Options | Options[] => [
       "adapters/nestjs/index": "src/adapters/nestjs/index.ts",
       "adapters/mobile/expo-client": "src/adapters/mobile/expo-client.ts",
       "react/index": "src/react/index.ts",
+      "forms/index": "src/forms/index.ts",
     },
     dts: true,
     clean: false,

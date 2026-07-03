@@ -5,14 +5,15 @@ import {
 } from "../../common/exceptions/api.exception"
 import type { NoteEntity } from "./entities/note.entity"
 
+export const NOTE_FORBIDDEN_MESSAGE = "Not allowed to modify this note"
+
 /** When a scoped mutation misses, distinguish 404 (missing/wrong org) from 403 (wrong user). */
 export function assertNoteAccessOrThrow(
   existing: NoteEntity | null,
-  organizationId: string,
-  forbiddenMessage: string
+  organizationId: string
 ): never {
   if (!existing || existing.organizationId !== organizationId) {
     apiNotFound("Note not found", DomainErrorCode.NOTE_NOT_FOUND)
   }
-  apiForbidden(forbiddenMessage, DomainErrorCode.NOTE_FORBIDDEN)
+  apiForbidden(NOTE_FORBIDDEN_MESSAGE, DomainErrorCode.NOTE_FORBIDDEN)
 }

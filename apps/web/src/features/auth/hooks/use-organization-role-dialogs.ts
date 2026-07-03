@@ -16,7 +16,7 @@ import {
   editOrganizationRoleSchema,
   type CreateOrganizationRoleInput,
   type EditOrganizationRoleInput,
-} from "@/features/auth/schemas"
+} from "@workspace/auth/forms"
 
 const emptyPermissions: OrganizationPermissionMap = {}
 

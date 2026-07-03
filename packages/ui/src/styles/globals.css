@@ -4,7 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../apps/**/*.{ts,tsx}";
-@source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
 @theme inline {
@@ -47,7 +46,7 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-code: var(--code);
-  --code-foreground: var(--code-foreground);
+  --color-code-foreground: var(--code-foreground);
   --color-code-highlight: var(--code-highlight);
 
   --font-sans: var(--font-sans, ui-sans-serif, system-ui, sans-serif);

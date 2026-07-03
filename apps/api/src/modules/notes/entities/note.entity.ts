@@ -1,7 +1,7 @@
 import type { ObjectId } from "mongodb"
 
-/** Persistence shape stored in MongoDB. */
-export type NoteRecord = {
+/** MongoDB document shape — maps to {@link NoteResponse} via `toNoteResponse`. */
+export type NoteEntity = {
   _id: ObjectId
   organizationId: string
   userId: string
@@ -11,25 +11,7 @@ export type NoteRecord = {
   updatedAt: Date
 }
 
-/** Feature entity returned from the repository layer. */
-export type NoteEntity = {
-  id: string
-  organizationId: string
-  userId: string
-  title: string
-  body: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-export function toNoteEntity(record: NoteRecord): NoteEntity {
-  return {
-    id: record._id.toString(),
-    organizationId: record.organizationId,
-    userId: record.userId,
-    title: record.title,
-    body: record.body,
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
-  }
-}
+export type NewNoteEntity = Pick<
+  NoteEntity,
+  "organizationId" | "userId" | "title" | "body"
+>

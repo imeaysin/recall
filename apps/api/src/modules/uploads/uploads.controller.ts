@@ -17,6 +17,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import type { JwtClaims } from "@workspace/auth/types"
+import { UPLOAD_MAX_BYTES } from "@workspace/contracts"
 import {
   CurrentOrganization,
   CurrentUser,
@@ -25,8 +26,6 @@ import {
 import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import { UploadFileCommand } from "./commands/upload-file.command"
 import { UploadApiResponseDto } from "./uploads.dto"
-
-const MAX_BYTES = 5 * 1024 * 1024
 
 @ApiTags("uploads")
 @ApiAuthErrorResponses()
@@ -60,7 +59,9 @@ export class UploadsController {
   })
   @ApiCreatedResponse({ type: UploadApiResponseDto })
   @UseInterceptors(
-    FileInterceptor("file", { limits: { fileSize: MAX_BYTES, files: 1 } })
+    FileInterceptor("file", {
+      limits: { fileSize: UPLOAD_MAX_BYTES, files: 1 },
+    })
   )
   upload(
     @CurrentOrganization() organizationId: string,

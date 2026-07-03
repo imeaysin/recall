@@ -1,20 +1,27 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
+import { ObjectId } from "mongodb"
 import { DeleteNoteHandler } from "../../src/modules/notes/commands/delete-note.handler"
 import { DeleteNoteCommand } from "../../src/modules/notes/commands/delete-note.command"
+import { assertNoteAccessOrThrow } from "../../src/modules/notes/notes-access.util"
 import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
 
 describe("DeleteNoteHandler", () => {
   let handler: DeleteNoteHandler
   let repository: {
-    deleteByIdForOrganizationAndUser: jest.Mock
+    delete: jest.Mock
     findById: jest.Mock
+    rejectMutationMiss: jest.Mock
   }
 
   beforeEach(async () => {
     repository = {
-      deleteByIdForOrganizationAndUser: jest.fn(),
+      delete: jest.fn(),
       findById: jest.fn(),
+      rejectMutationMiss: jest.fn(async (scope) => {
+        const existing = await repository.findById(scope.noteId)
+        assertNoteAccessOrThrow(existing, scope.organizationId)
+      }),
     }
 
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -28,7 +35,7 @@ describe("DeleteNoteHandler", () => {
   })
 
   it("deletes when the note belongs to the user in the workspace", async () => {
-    repository.deleteByIdForOrganizationAndUser.mockResolvedValue(true)
+    repository.delete.mockResolvedValue(true)
 
     await expect(
       handler.execute(new DeleteNoteCommand("org-1", "user-1", "note-1"))
@@ -38,7 +45,7 @@ describe("DeleteNoteHandler", () => {
   })
 
   it("throws 404 when the note does not exist", async () => {
-    repository.deleteByIdForOrganizationAndUser.mockResolvedValue(false)
+    repository.delete.mockResolvedValue(false)
     repository.findById.mockResolvedValue(null)
 
     await expect(
@@ -47,9 +54,9 @@ describe("DeleteNoteHandler", () => {
   })
 
   it("throws 404 when the note belongs to another workspace", async () => {
-    repository.deleteByIdForOrganizationAndUser.mockResolvedValue(false)
+    repository.delete.mockResolvedValue(false)
     repository.findById.mockResolvedValue({
-      id: "note-1",
+      _id: new ObjectId("507f1f77bcf86cd799439011"),
       organizationId: "org-2",
       userId: "user-1",
       title: "t",
@@ -64,9 +71,9 @@ describe("DeleteNoteHandler", () => {
   })
 
   it("throws 403 when the note belongs to another user in the same workspace", async () => {
-    repository.deleteByIdForOrganizationAndUser.mockResolvedValue(false)
+    repository.delete.mockResolvedValue(false)
     repository.findById.mockResolvedValue({
-      id: "note-1",
+      _id: new ObjectId("507f1f77bcf86cd799439011"),
       organizationId: "org-1",
       userId: "user-2",
       title: "t",

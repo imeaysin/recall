@@ -15,7 +15,7 @@ import { toastManager } from "@workspace/ui/components/toast"
 import {
   createOrganizationSchema,
   type CreateOrganizationInput,
-} from "@/features/auth/schemas"
+} from "@workspace/auth/forms"
 
 const defaultSlugAvailability: OrganizationSlugAvailabilityState = {
   checking: false,

@@ -145,3 +145,4 @@ export { ImpersonationBanner } from "./admin/impersonation-banner"
 export type { ImpersonationBannerProps } from "./admin/impersonation-banner"
 
 export { platformUiPermissions } from "./admin/ui-permissions"
+export { organizationUiPermissions } from "./organization/ui-permissions"

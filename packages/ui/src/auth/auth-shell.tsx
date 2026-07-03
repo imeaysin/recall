@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Icons } from "@workspace/ui/components/icons"
+import { AuthBrandLogo } from "./auth-brand-logo"
 import { AuthTermsFooter } from "./auth-terms-footer"
 
 export type AuthLinkProps = {
@@ -40,7 +40,7 @@ export function AuthShell({
 }: AuthShellProps) {
   const logo = (
     <div className="size-6">
-      <Icons.LogoSmall className="size-full text-foreground" />
+      <AuthBrandLogo className="size-full" />
     </div>
   )
 

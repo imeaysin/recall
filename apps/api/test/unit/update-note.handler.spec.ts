@@ -1,21 +1,28 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
+import { ObjectId } from "mongodb"
 import type { NoteResponse } from "@workspace/contracts"
 import { UpdateNoteHandler } from "../../src/modules/notes/commands/update-note.handler"
 import { UpdateNoteCommand } from "../../src/modules/notes/commands/update-note.command"
+import { assertNoteAccessOrThrow } from "../../src/modules/notes/notes-access.util"
 import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
 
 describe("UpdateNoteHandler", () => {
   let handler: UpdateNoteHandler
   let repository: {
-    updateByIdForOrganizationAndUser: jest.Mock
+    update: jest.Mock
     findById: jest.Mock
+    rejectMutationMiss: jest.Mock
   }
 
   beforeEach(async () => {
     repository = {
-      updateByIdForOrganizationAndUser: jest.fn(),
+      update: jest.fn(),
       findById: jest.fn(),
+      rejectMutationMiss: jest.fn(async (scope) => {
+        const existing = await repository.findById(scope.noteId)
+        assertNoteAccessOrThrow(existing, scope.organizationId)
+      }),
     }
 
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -30,8 +37,9 @@ describe("UpdateNoteHandler", () => {
 
   it("updates and returns the note when scoped correctly", async () => {
     const now = new Date("2026-01-01T00:00:00.000Z")
+    const noteId = new ObjectId("507f1f77bcf86cd799439011")
     const updated = {
-      id: "note-1",
+      _id: noteId,
       organizationId: "org-1",
       userId: "user-1",
       title: "Updated",
@@ -39,7 +47,7 @@ describe("UpdateNoteHandler", () => {
       createdAt: now,
       updatedAt: now,
     }
-    repository.updateByIdForOrganizationAndUser.mockResolvedValue(updated)
+    repository.update.mockResolvedValue(updated)
 
     const result = await handler.execute(
       new UpdateNoteCommand("org-1", "user-1", "note-1", {
@@ -49,7 +57,7 @@ describe("UpdateNoteHandler", () => {
 
     expect(repository.findById).not.toHaveBeenCalled()
     expect(result).toEqual({
-      id: "note-1",
+      id: noteId.toString(),
       organizationId: "org-1",
       userId: "user-1",
       title: "Updated",
@@ -60,7 +68,7 @@ describe("UpdateNoteHandler", () => {
   })
 
   it("throws 404 when the note does not exist", async () => {
-    repository.updateByIdForOrganizationAndUser.mockResolvedValue(null)
+    repository.update.mockResolvedValue(null)
     repository.findById.mockResolvedValue(null)
 
     await expect(
@@ -71,9 +79,9 @@ describe("UpdateNoteHandler", () => {
   })
 
   it("throws 403 when the note belongs to another user in the same workspace", async () => {
-    repository.updateByIdForOrganizationAndUser.mockResolvedValue(null)
+    repository.update.mockResolvedValue(null)
     repository.findById.mockResolvedValue({
-      id: "note-1",
+      _id: new ObjectId("507f1f77bcf86cd799439011"),
       organizationId: "org-1",
       userId: "user-2",
       title: "t",

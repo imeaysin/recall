@@ -79,7 +79,6 @@ async function executeFetch<T>(
   const response = await fetch(`${env.apiUrl}${path}`, {
     ...requestInit,
     headers,
-    credentials: "include",
   })
 
   if (!response.ok) {

@@ -8,7 +8,6 @@ import {
 import { jobsEnv } from "@workspace/config/jobs"
 import { createJobQueue, type JobQueue } from "@workspace/jobs"
 import { createLogger } from "@workspace/logger"
-import { registerJobHandlers } from "./job-handlers"
 
 export const JOB_QUEUE = Symbol("JOB_QUEUE")
 
@@ -33,7 +32,6 @@ export class JobsModule implements OnModuleInit, OnModuleDestroy {
   constructor(@Inject(JOB_QUEUE) private readonly jobQueue: JobQueue) {}
 
   onModuleInit() {
-    registerJobHandlers(this.jobQueue)
     createLogger("Jobs").info(
       { provider: jobsEnv.JOBS_PROVIDER },
       "job queue ready"

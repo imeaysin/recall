@@ -12,7 +12,7 @@ import { toastManager } from "@workspace/ui/components/toast"
 import {
   updateOrganizationSchema,
   type UpdateOrganizationInput,
-} from "@/features/auth/schemas"
+} from "@workspace/auth/forms"
 
 const defaultSlugAvailability: OrganizationSlugAvailabilityState = {
   checking: false,

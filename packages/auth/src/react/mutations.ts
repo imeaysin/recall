@@ -586,8 +586,16 @@ export function useSetUserRole(client: AuthClient = authClient) {
   const invalidate = useInvalidateAuthQueries()
 
   return useMutation({
-    mutationFn: async (input: Parameters<AuthClient["admin"]["setRole"]>[0]) =>
-      unwrapClientResult(client.admin.setRole(input)),
+    mutationFn: async (
+      input: Parameters<AuthClient["admin"]["setRole"]>[0]
+    ) => {
+      const result = await unwrapClientResult(client.admin.setRole(input))
+      const currentUserId = client.useSession.get().data?.user.id
+      if (currentUserId && input.userId === currentUserId) {
+        await refreshAuthToken(client)
+      }
+      return result
+    },
     onSuccess: () => invalidate(),
   })
 }

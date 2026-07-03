@@ -1,9 +1,9 @@
 import {
   countOrganizationPermissions,
   isReservedOrganizationRoleName,
-} from "@workspace/auth/permissions/organization"
-import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
-import { platformRoleNames } from "@workspace/auth/permissions"
+  type OrganizationPermissionMap,
+} from "../permissions/organization"
+import { platformRoleNames } from "../permissions/platform"
 import { z } from "zod"
 
 const organizationSlugSchema = z

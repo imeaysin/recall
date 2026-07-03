@@ -12,7 +12,7 @@ import { toastManager } from "@workspace/ui/components/toast"
 import {
   inviteMemberSchema,
   type InviteMemberInput,
-} from "@/features/auth/schemas"
+} from "@workspace/auth/forms"
 
 export function useInviteMemberDialog() {
   const [open, setOpen] = useState(false)

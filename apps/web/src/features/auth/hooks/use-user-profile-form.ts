@@ -6,7 +6,7 @@ import type { UserProfileProps } from "@workspace/ui/auth"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toastManager } from "@workspace/ui/components/toast"
-import { userNameSchema, type UserNameInput } from "@/features/auth/schemas"
+import { userNameSchema, type UserNameInput } from "@workspace/auth/forms"
 
 export function useUserProfileForm(): UserProfileProps {
   const { data: session } = useAuthSession()

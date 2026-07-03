@@ -1,5 +1,5 @@
-import { CommandHandler } from "@nestjs/cqrs"
 import { Test, type TestingModule } from "@nestjs/testing"
+import { ObjectId } from "mongodb"
 import type { NoteResponse } from "@workspace/contracts"
 import { JOB_QUEUE } from "../../src/common/jobs/jobs.module"
 import { CreateNoteHandler } from "../../src/modules/notes/commands/create-note.handler"
@@ -28,8 +28,9 @@ describe("CreateNoteHandler", () => {
 
   it("inserts a note scoped to workspace and user", async () => {
     const now = new Date("2026-01-01T00:00:00.000Z")
+    const noteId = new ObjectId("507f1f77bcf86cd799439011")
     const created = {
-      id: "note-1",
+      _id: noteId,
       organizationId: "org-1",
       userId: "user-1",
       title: "Hello",
@@ -53,7 +54,7 @@ describe("CreateNoteHandler", () => {
       body: "World",
     })
     expect(result).toEqual({
-      id: "note-1",
+      id: noteId.toString(),
       organizationId: "org-1",
       userId: "user-1",
       title: "Hello",
@@ -62,7 +63,7 @@ describe("CreateNoteHandler", () => {
       updatedAt: now.toISOString(),
     } satisfies NoteResponse)
     expect(jobQueue.enqueue).toHaveBeenCalledWith("note.created", {
-      noteId: "note-1",
+      noteId: noteId.toString(),
       organizationId: "org-1",
       userId: "user-1",
     })

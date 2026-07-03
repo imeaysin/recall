@@ -56,6 +56,11 @@
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
       "require": "./dist/react/index.cjs"
+    },
+    "./forms": {
+      "types": "./dist/forms/index.d.ts",
+      "import": "./dist/forms/index.js",
+      "require": "./dist/forms/index.cjs"
     }
   },
   "scripts": {
