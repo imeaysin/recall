@@ -7,6 +7,7 @@ export default defineConfig((options) => ({
     "server/database": "src/server/database.ts",
     "server/email": "src/server/email.ts",
     "server/storage": "src/server/storage.ts",
+    "server/jobs": "src/server/jobs.ts",
     "client/index": "src/client/index.ts",
   },
   format: ["esm", "cjs"],

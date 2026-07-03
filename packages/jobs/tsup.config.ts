@@ -9,5 +9,5 @@ export default defineConfig((options) => ({
   sourcemap: true,
   minify: false,
   treeshake: true,
-  external: ["@workspace/logger"],
+  external: ["@workspace/logger", "bullmq"],
 }))

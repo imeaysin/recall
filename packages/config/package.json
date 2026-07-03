@@ -32,6 +32,11 @@
       "import": "./dist/server/storage.js",
       "require": "./dist/server/storage.cjs"
     },
+    "./jobs": {
+      "types": "./dist/server/jobs.d.ts",
+      "import": "./dist/server/jobs.js",
+      "require": "./dist/server/jobs.cjs"
+    },
     "./client": {
       "types": "./dist/client/index.d.ts",
       "import": "./dist/client/index.js",

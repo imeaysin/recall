@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "description": "Lightweight in-process job queue for async side effects",
+  "description": "Job queue providers — inline (dev) and Redis via BullMQ (production)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -28,7 +28,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@workspace/logger": "workspace:*"
+    "@workspace/logger": "workspace:*",
+    "bullmq": "catalog:"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

@@ -59,6 +59,9 @@
     "RATE_LIMIT_ENABLED",
     "RATE_LIMIT_WINDOW_MS",
     "RATE_LIMIT_MAX",
+    "JOBS_PROVIDER",
+    "REDIS_URL",
+    "JOBS_QUEUE_NAME",
     "EXPO_OS"
   ],
   "tasks": {

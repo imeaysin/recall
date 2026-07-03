@@ -21,17 +21,17 @@ modules/<feature>/
 
 ## Cross-cutting (`src/common/`)
 
-| Path                          | Role                                                                              |
-| ----------------------------- | --------------------------------------------------------------------------------- |
-| `configure-app.ts`            | CORS, helmet, versioning, swagger (`cleanupOpenApiDoc`), static uploads           |
-| `interceptors/`               | HTTP logging (with `requestId`), success envelope transform                       |
-| `middleware/`                 | Request ID propagation, MongoDB-backed `/v1/*` rate limiting                      |
-| `jobs/`                       | In-process job queue (`@workspace/jobs`) — register handlers in `job-handlers.ts` |
-| `filters/`                    | Global exception handler (machine-readable `code`)                                |
-| `decorators/`                 | Auth re-exports, `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()`        |
-| `exceptions/`                 | `apiNotFound` / `apiForbidden` / `apiBadRequest` (typed `DomainErrorCode`)        |
-| `storage/storage.module.ts`   | `STORAGE` provider from `@workspace/storage`                                      |
-| `database/database.module.ts` | Global `DATABASE_READY` + injectable `MONGO_DB` (native driver `Db`)              |
+| Path                          | Role                                                                       |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `configure-app.ts`            | CORS, helmet, versioning, swagger (`cleanupOpenApiDoc`), static uploads    |
+| `interceptors/`               | HTTP logging (with `requestId`), success envelope transform                |
+| `middleware/`                 | Request ID propagation, MongoDB-backed `/v1/*` rate limiting               |
+| `jobs/`                       | Job queue provider (`@workspace/jobs`) — `inline` or `redis` (BullMQ)      |
+| `filters/`                    | Global exception handler (machine-readable `code`)                         |
+| `decorators/`                 | Auth re-exports, `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()` |
+| `exceptions/`                 | `apiNotFound` / `apiForbidden` / `apiBadRequest` (typed `DomainErrorCode`) |
+| `storage/storage.module.ts`   | `STORAGE` provider from `@workspace/storage`                               |
+| `database/database.module.ts` | Global `DATABASE_READY` + injectable `MONGO_DB` (native driver `Db`)       |
 
 ## Testing
 

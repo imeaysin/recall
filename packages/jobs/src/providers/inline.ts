@@ -1,5 +1,5 @@
 import { createLogger } from "@workspace/logger"
-import type { JobHandler, JobPayload, JobQueue } from "./types"
+import type { JobHandler, JobPayload, JobQueue } from "../types"
 
 export function createInlineJobQueue(): JobQueue {
   const logger = createLogger("Jobs")
@@ -24,6 +24,10 @@ export function createInlineJobQueue(): JobQueue {
           logger.error({ err, job: name }, "job failed")
         }
       })
+    },
+
+    async close() {
+      // in-process only — nothing to tear down
     },
   }
 }
