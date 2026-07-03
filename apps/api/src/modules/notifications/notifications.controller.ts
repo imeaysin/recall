@@ -43,10 +43,6 @@ export class NotificationsController {
     private readonly queryBus: QueryBus
   ) {}
 
-  // -----------------------------------------------------------------------
-  // In-app notifications
-  // -----------------------------------------------------------------------
-
   @Get()
   @ApiBearerAuth("bearer")
   @ApiOperation({
@@ -115,10 +111,6 @@ export class NotificationsController {
   remove(@CurrentUser() user: JwtClaims, @Param("id") id: string) {
     return this.commandBus.execute(new DeleteNotificationCommand(user.id, id))
   }
-
-  // -----------------------------------------------------------------------
-  // Device tokens
-  // -----------------------------------------------------------------------
 
   @Post("device-tokens")
   @HttpCode(HttpStatus.NO_CONTENT)

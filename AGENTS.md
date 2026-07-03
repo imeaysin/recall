@@ -11,12 +11,20 @@ apps/
   marketing/    Next.js 16 landing — see apps/marketing/AGENTS.md
   mobile/       Expo — do not modify unless explicitly asked
 packages/
-  auth/         Better Auth server + Nest guards
-  config/       Root .env validation (Zod)
-  contracts/    Shared Zod schemas (API + clients)
-  logger/       Structured logging (pino)
-  storage/      File upload providers (local / S3)
-  ui/           Shared React components
+  auth/           Better Auth server + Nest guards + React hooks
+  cache/          Cache abstraction (memory / Redis)
+  config/         Root .env validation (Zod)
+  contracts/      Shared Zod schemas (API + clients)
+  dates/          Date formatting helpers (date-fns)
+  db/             MongoDB connection layer (Mongoose)
+  email/          Transactional email (Resend + React Email)
+  jobs/           Job queue (inline / BullMQ)
+  logger/         Structured logging (pino)
+  notifications/  Push delivery (Expo / console)
+  realtime/       Event bus (memory / Redis pub/sub)
+  redis/          ioredis client factory
+  storage/        File upload providers (local / S3)
+  ui/             Shared React components + auth UI + app shell
 tooling/        eslint-config, typescript-config, vitest-config
 docs/           Human docs (architecture, features, deployment)
 ```

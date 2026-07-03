@@ -10,7 +10,6 @@ import {
   type ApiSuccessResponse,
 } from "@workspace/contracts"
 
-const JWT_STORAGE_KEY = DEFAULT_JWT_STORAGE_KEY
 const RETRYABLE_AUTH_STATUSES = new Set([401, 403])
 
 type InternalFetchInit = RequestInit & { __retried?: boolean }
@@ -62,7 +61,7 @@ async function executeFetch<T>(
   init: InternalFetchInit = {}
 ): Promise<T> {
   const { __retried, ...requestInit } = init
-  const token = await getBearerToken(authClient, JWT_STORAGE_KEY)
+  const token = await getBearerToken(authClient, DEFAULT_JWT_STORAGE_KEY)
   const headers = new Headers(requestInit.headers)
 
   if (
@@ -93,9 +92,13 @@ async function executeFetch<T>(
       })
 
       if (!__retried && RETRYABLE_AUTH_STATUSES.has(apiError.status) && token) {
-        const refreshed = await getBearerToken(authClient, JWT_STORAGE_KEY, {
-          forceRefresh: true,
-        })
+        const refreshed = await getBearerToken(
+          authClient,
+          DEFAULT_JWT_STORAGE_KEY,
+          {
+            forceRefresh: true,
+          }
+        )
         if (refreshed && refreshed !== token) {
           return executeFetch<T>(path, { ...requestInit, __retried: true })
         }
