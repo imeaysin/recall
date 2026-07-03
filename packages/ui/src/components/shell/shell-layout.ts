@@ -8,12 +8,12 @@ export const shellMobileFabInset = "1rem"
 
 export const shellContentClassName = cn(
   "max-w-full flex-1 overflow-x-hidden overflow-y-auto",
-  "px-4 py-4 sm:px-6 md:px-8 lg:py-6"
+  "px-4 pt-4 sm:px-6 md:px-8 md:pb-4 lg:py-6"
 )
 
 export const shellMobileBottomSpacerClassName = cn(
   "pointer-events-none shrink-0 md:hidden",
-  "min-h-[calc(var(--shell-mobile-bottom-nav-height)+env(safe-area-inset-bottom,0px))]"
+  "h-[calc(var(--shell-mobile-bottom-nav-height)+env(safe-area-inset-bottom,0px))]"
 )
 
 export const shellMobileBottomNavClassName = cn(
@@ -59,7 +59,4 @@ export function getShellMainSectionClassName(compact: boolean): string {
 export const shellPageStackClassName = "flex flex-col gap-5 sm:gap-6"
 
 /** Prevents scrollable content from sitting under the mobile FAB. */
-export const shellMainContentWithCtaClassName = cn(
-  "pb-[calc(var(--shell-mobile-bottom-nav-height)+env(safe-area-inset-bottom,0px)+3.75rem)]",
-  "md:pb-0"
-)
+export const shellMainContentWithCtaClassName = cn("pb-[3.75rem]", "md:pb-0")
