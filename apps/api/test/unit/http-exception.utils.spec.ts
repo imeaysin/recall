@@ -5,8 +5,9 @@ import {
   NotFoundException,
 } from "@nestjs/common"
 import { ZodValidationException } from "nestjs-zod"
-import { z } from "zod"
+import { z, ZodError } from "zod"
 import { DomainErrorCode, HttpErrorCode } from "@workspace/contracts"
+import { StorageError } from "@workspace/storage"
 import {
   buildErrorEnvelope,
   resolveClientMessage,
@@ -23,7 +24,10 @@ describe("http-exception.utils", () => {
     try {
       schema.parse({ title: "" })
     } catch (error) {
-      exception = new ZodValidationException(error as z.ZodError)
+      if (!(error instanceof ZodError)) {
+        throw error
+      }
+      exception = new ZodValidationException(error)
     }
 
     expect(exception).toBeDefined()
@@ -67,7 +71,7 @@ describe("http-exception.utils", () => {
 
     const envelope = buildErrorEnvelope(exception, HttpStatus.BAD_REQUEST, {
       url: "/v1/uploads",
-    } as never)
+    })
 
     expect(envelope).toMatchObject({
       success: false,
@@ -84,7 +88,7 @@ describe("http-exception.utils", () => {
     const envelope = buildErrorEnvelope(
       new Error("database timeout"),
       HttpStatus.INTERNAL_SERVER_ERROR,
-      { url: "/v1/notes" } as never
+      { url: "/v1/notes" }
     )
 
     expect(envelope).toMatchObject({
@@ -94,5 +98,29 @@ describe("http-exception.utils", () => {
       message: "An unexpected server error occurred.",
       errors: null,
     })
+  })
+
+  it("maps StorageError INVALID_PATH to 400 with domain code", () => {
+    const exception = new StorageError(
+      "Path traversal detected",
+      "INVALID_PATH"
+    )
+
+    expect(resolveHttpStatus(exception)).toBe(HttpStatus.BAD_REQUEST)
+    expect(resolveErrorCode(exception, HttpStatus.BAD_REQUEST)).toBe(
+      DomainErrorCode.INVALID_FILE_PATH
+    )
+    expect(resolveClientMessage(exception, HttpStatus.BAD_REQUEST)).toBe(
+      "Path traversal detected"
+    )
+  })
+
+  it("maps StorageError FILE_NOT_FOUND to 404", () => {
+    const exception = new StorageError("File not found", "FILE_NOT_FOUND")
+
+    expect(resolveHttpStatus(exception)).toBe(HttpStatus.NOT_FOUND)
+    expect(resolveErrorCode(exception, HttpStatus.NOT_FOUND)).toBe(
+      DomainErrorCode.FILE_NOT_FOUND
+    )
   })
 })

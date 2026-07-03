@@ -1,13 +1,16 @@
 import { HttpException, HttpStatus } from "@nestjs/common"
 import {
+  DomainErrorCode,
   HttpErrorCode,
+  isApiErrorCode,
   type ApiErrorResponse,
   type ApiErrorCode,
   type ApiFieldError,
 } from "@workspace/contracts"
+import { StorageError, type StorageErrorCode } from "@workspace/storage"
 import type { Request } from "express"
 import { ZodValidationException } from "nestjs-zod"
-import type { ZodIssue } from "zod"
+import { z, ZodError } from "zod"
 
 const STATUS_TO_CODE: Record<number, HttpErrorCode> = {
   [HttpStatus.BAD_REQUEST]: HttpErrorCode.BAD_REQUEST,
@@ -22,61 +25,100 @@ const STATUS_TO_CODE: Record<number, HttpErrorCode> = {
 
 const INTERNAL_ERROR_MESSAGE = "An unexpected server error occurred."
 
+const STORAGE_STATUS: Record<StorageErrorCode, number> = {
+  INVALID_PATH: HttpStatus.BAD_REQUEST,
+  FILE_NOT_FOUND: HttpStatus.NOT_FOUND,
+  UNSUPPORTED_OPERATION: HttpStatus.BAD_REQUEST,
+  UPLOAD_FAILED: HttpStatus.INTERNAL_SERVER_ERROR,
+  DELETE_FAILED: HttpStatus.INTERNAL_SERVER_ERROR,
+  COPY_FAILED: HttpStatus.INTERNAL_SERVER_ERROR,
+  MOVE_FAILED: HttpStatus.INTERNAL_SERVER_ERROR,
+  LIST_FAILED: HttpStatus.INTERNAL_SERVER_ERROR,
+  PROVIDER_ERROR: HttpStatus.INTERNAL_SERVER_ERROR,
+}
+
+const STORAGE_DOMAIN_CODE: Partial<Record<StorageErrorCode, DomainErrorCode>> =
+  {
+    INVALID_PATH: DomainErrorCode.INVALID_FILE_PATH,
+    FILE_NOT_FOUND: DomainErrorCode.FILE_NOT_FOUND,
+  }
+
 export function resolveHttpStatus(exception: unknown): number {
   if (exception instanceof HttpException) {
     return exception.getStatus()
   }
+  if (exception instanceof StorageError) {
+    return STORAGE_STATUS[exception.code]
+  }
   return HttpStatus.INTERNAL_SERVER_ERROR
 }
 
-function formatZodPath(path: PropertyKey[]): string {
-  if (path.length === 0) return "body"
-
-  return path.reduce<string>((formatted, segment, index) => {
-    if (typeof segment === "number") {
-      return `${formatted}[${segment}]`
-    }
-
-    return index === 0 ? String(segment) : `${formatted}.${String(segment)}`
-  }, "")
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
 }
 
-function flattenZodIssues(issues: ZodIssue[]): ApiFieldError[] {
+function flattenZodIssues(issues: z.core.$ZodIssue[]): ApiFieldError[] {
   return issues.map((issue) => ({
-    field: formatZodPath(issue.path),
+    field: z.core.toDotPath(issue.path) || "body",
     message: issue.message,
   }))
+}
+
+function isZodIssue(value: unknown): value is z.core.$ZodIssue {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "path" in value &&
+    Array.isArray(value.path) &&
+    "message" in value &&
+    typeof value.message === "string"
+  )
 }
 
 function readResponseErrors(
   exception: HttpException
 ): ApiFieldError[] | undefined {
   const response = exception.getResponse()
-  if (typeof response !== "object" || response === null) return undefined
+  if (!isRecord(response)) return undefined
 
-  const { errors } = response as { errors?: unknown }
+  const { errors } = response
   if (!Array.isArray(errors) || errors.length === 0) return undefined
 
-  if (
-    errors.every(
-      (item) =>
-        typeof item === "object" &&
-        item !== null &&
-        "path" in item &&
-        "message" in item
-    )
-  ) {
-    return flattenZodIssues(errors as ZodIssue[])
+  if (errors.every(isZodIssue)) {
+    return flattenZodIssues(errors)
   }
 
   return undefined
 }
 
 function readErrorCode(exception: HttpException): ApiErrorCode | undefined {
-  if (typeof exception.cause !== "string" || exception.cause.length === 0) {
+  const { cause } = exception
+  if (typeof cause !== "string" || cause.length === 0) {
     return undefined
   }
-  return exception.cause as ApiErrorCode
+  return isApiErrorCode(cause) ? cause : undefined
+}
+
+function readHttpExceptionMessage(response: unknown): string | undefined {
+  if (typeof response === "string" && response.length > 0) {
+    return response
+  }
+
+  if (!isRecord(response) || !("message" in response)) {
+    return undefined
+  }
+
+  const { message } = response
+  if (Array.isArray(message)) {
+    return message
+      .filter((item): item is string => typeof item === "string")
+      .join(", ")
+  }
+  if (typeof message === "string" && message.length > 0) {
+    return message
+  }
+
+  return undefined
 }
 
 export function resolveErrorCode(
@@ -85,6 +127,14 @@ export function resolveErrorCode(
 ): ApiErrorCode {
   if (exception instanceof ZodValidationException) {
     return HttpErrorCode.VALIDATION_FAILED
+  }
+
+  if (exception instanceof StorageError) {
+    return (
+      STORAGE_DOMAIN_CODE[exception.code] ??
+      STATUS_TO_CODE[status] ??
+      HttpErrorCode.HTTP_ERROR
+    )
   }
 
   if (exception instanceof HttpException) {
@@ -107,26 +157,13 @@ export function resolveClientMessage(
     return "Validation failed"
   }
 
+  if (exception instanceof StorageError) {
+    return exception.message
+  }
+
   if (exception instanceof HttpException) {
-    const response = exception.getResponse()
-
-    if (typeof response === "string" && response.length > 0) {
-      return response
-    }
-
-    if (
-      typeof response === "object" &&
-      response !== null &&
-      "message" in response
-    ) {
-      const { message } = response as { message: string | string[] }
-      if (Array.isArray(message)) {
-        return message.join(", ")
-      }
-      if (typeof message === "string" && message.length > 0) {
-        return message
-      }
-    }
+    const message = readHttpExceptionMessage(exception.getResponse())
+    if (message) return message
   }
 
   return STATUS_TO_CODE[status] ?? HttpErrorCode.HTTP_ERROR
@@ -135,8 +172,8 @@ export function resolveClientMessage(
 export function resolveFieldErrors(exception: unknown): ApiFieldError[] | null {
   if (exception instanceof ZodValidationException) {
     const zodError = exception.getZodError()
-    if (zodError && typeof zodError === "object" && "issues" in zodError) {
-      return flattenZodIssues((zodError as { issues: ZodIssue[] }).issues)
+    if (zodError instanceof ZodError) {
+      return flattenZodIssues(zodError.issues)
     }
   }
 
@@ -150,7 +187,7 @@ export function resolveFieldErrors(exception: unknown): ApiFieldError[] | null {
 export function buildErrorEnvelope(
   exception: unknown,
   status: number,
-  request: Request
+  request: Pick<Request, "url">
 ): ApiErrorResponse {
   return {
     success: false,

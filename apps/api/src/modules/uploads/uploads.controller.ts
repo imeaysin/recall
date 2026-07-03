@@ -3,6 +3,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common"
@@ -20,7 +21,6 @@ import type { JwtClaims } from "@workspace/auth/types"
 import { DomainErrorCode } from "@workspace/contracts"
 import {
   CurrentOrganization,
-  CurrentUser,
   RequireOrgPermission,
 } from "../../common/decorators"
 import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
@@ -66,7 +66,7 @@ export class UploadsController {
   )
   upload(
     @CurrentOrganization() organizationId: string,
-    @CurrentUser() user: JwtClaims,
+    @Req() req: { user: JwtClaims },
     @UploadedFile()
     file?: {
       buffer: Buffer
@@ -81,7 +81,7 @@ export class UploadsController {
     }
 
     return this.commandBus.execute(
-      new UploadFileCommand(organizationId, user.id, uploaded)
+      new UploadFileCommand(organizationId, req.user.id, uploaded)
     )
   }
 }

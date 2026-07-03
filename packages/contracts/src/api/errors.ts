@@ -17,9 +17,20 @@ export const DomainErrorCode = {
   NOTE_NOT_FOUND: "NOTE_NOT_FOUND",
   NOTE_FORBIDDEN: "NOTE_FORBIDDEN",
   FILE_REQUIRED: "FILE_REQUIRED",
+  INVALID_FILE_PATH: "INVALID_FILE_PATH",
+  FILE_NOT_FOUND: "FILE_NOT_FOUND",
 } as const
 
 export type HttpErrorCode = (typeof HttpErrorCode)[keyof typeof HttpErrorCode]
 export type DomainErrorCode =
   (typeof DomainErrorCode)[keyof typeof DomainErrorCode]
 export type ApiErrorCode = HttpErrorCode | DomainErrorCode
+
+const API_ERROR_CODES = new Set<string>([
+  ...Object.values(HttpErrorCode),
+  ...Object.values(DomainErrorCode),
+])
+
+export function isApiErrorCode(value: string): value is ApiErrorCode {
+  return API_ERROR_CODES.has(value)
+}
