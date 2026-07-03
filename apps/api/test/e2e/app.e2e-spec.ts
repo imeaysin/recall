@@ -46,16 +46,7 @@ describe("AppController (e2e)", () => {
       })
   })
 
-  it("GET /v1/me returns e2e user claims", () => {
-    return request(app.getHttpServer())
-      .get("/v1/me")
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.data).toMatchObject({
-          id: "e2e-user",
-          email: "e2e@example.com",
-          activeOrganizationId: "e2e-org",
-        })
-      })
+  it("GET /v1/me without bearer returns 401", () => {
+    return request(app.getHttpServer()).get("/v1/me").expect(401)
   })
 })

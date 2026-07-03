@@ -101,7 +101,7 @@ await authClient.organization.updateMemberRole({ memberId, role: "moderator" })
 
 ## NestJS guards
 
-Registered globally in `apps/api/src/app.module.ts`:
+Registered globally via `AuthGuardsModule` (`APP_GUARD` + `useExisting` — see [Nest testing: overriding globally registered enhancers](https://docs.nestjs.com/fundamentals/testing#overriding-globally-registered-enhancers)):
 
 ```
 JwksGuard → RbacGuard → OrgRbacGuard

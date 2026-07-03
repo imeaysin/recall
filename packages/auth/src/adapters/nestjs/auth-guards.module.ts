@@ -4,6 +4,11 @@ import { JwksGuard } from "./jwks.guard"
 import { OrgRbacGuard } from "./org-rbac.guard"
 import { RbacGuard } from "./rbac.guard"
 
+/**
+ * Global auth guards. Each guard is registered as a provider, then wired to
+ * APP_GUARD with useExisting so Nest can inject dependencies and tests can
+ * override providers when needed (see Nest testing docs).
+ */
 @Module({})
 export class AuthGuardsModule {
   static register(): DynamicModule {
@@ -29,7 +34,6 @@ export class AuthGuardsModule {
         { provide: APP_GUARD, useExisting: RbacGuard },
         { provide: APP_GUARD, useExisting: OrgRbacGuard },
       ],
-      exports: [JwksGuard, RbacGuard, OrgRbacGuard],
     }
   }
 }
