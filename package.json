@@ -14,6 +14,7 @@
     "setup": "cp -n .env.example .env && pnpm install && pnpm db:up",
     "lint": "turbo lint",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "test:e2e": "turbo test:e2e --filter=api",

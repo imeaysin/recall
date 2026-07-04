@@ -5,6 +5,8 @@
 **/coverage/
 **/out/
 **/build/
+**/.expo/
+**/.vercel/
 .agents/
 pnpm-lock.yaml
 .pnpm-store/
