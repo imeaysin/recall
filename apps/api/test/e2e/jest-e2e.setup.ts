@@ -1,9 +1,8 @@
-import "reflect-metadata"
-import "../support/mocks/register"
+/// <reference types="jest" />
 
-jest.mock("@workspace/auth", () => ({
-  getAuth: jest.fn(() => ({})),
-}))
+import "reflect-metadata"
+import "../jest-setup"
+import "../support/mocks/register"
 
 jest.mock("@thallesp/nestjs-better-auth", () => ({
   AuthModule: {

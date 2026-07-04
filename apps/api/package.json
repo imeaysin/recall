@@ -13,10 +13,9 @@
     "start:prod": "node dist/main",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test": "jest --config jest.config.cjs",
+    "test:watch": "jest --config jest.config.cjs --watch",
+    "test:cov": "jest --config jest.config.cjs --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:integration": "SKIP_ENV_VALIDATION=true jest --config ./test/jest-integration.json --runInBand",
     "seed": "SKIP_ENV_VALIDATION=true ts-node --transpile-only scripts/seed.ts",
@@ -68,30 +67,5 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "catalog:"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": ".",
-    "testMatch": [
-      "<rootDir>/test/unit/**/*.spec.ts"
-    ],
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "coverage",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/jest-setup.ts"
-    ],
-    "moduleNameMapper": {
-      "^expo-server-sdk$": "<rootDir>/test/mocks/expo-server-sdk.ts"
-    }
   }
 }
