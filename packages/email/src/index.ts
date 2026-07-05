@@ -1,12 +1,11 @@
-export {
-  resend,
-  sendWelcomeEmail,
-  sendVerificationEmail,
-  sendResetPasswordEmail,
-  sendMagicLinkEmail,
-  sendOtpEmail,
-  sendOrganizationInvitationEmail,
-} from "./client"
+export type {
+  EmailProvider,
+  EmailConfig,
+  MockEmailConfig,
+  ResendEmailConfig,
+} from "./types"
+export { createEmailProvider } from "./factory"
+
 export { WelcomeEmail } from "./templates/welcome"
 export { VerificationEmail } from "./templates/verification-email"
 export { VerificationEmail as EmailVerificationEmail } from "./templates/verification-email"

@@ -1,5 +1,3 @@
-export { createInlineJobQueue } from "./providers/inline"
-export { createRedisJobQueue } from "./providers/redis"
 export type {
   InlineJobQueueConfig,
   JobHandler,
@@ -8,3 +6,4 @@ export type {
   JobQueueConfig,
   RedisJobQueueConfig,
 } from "./types"
+export { createJobQueue } from "./factory"

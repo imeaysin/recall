@@ -2,9 +2,9 @@ import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { LocalStorageProvider } from "../src/providers/local"
+import { LocalStorageAdapter } from "../src/adapters/local"
 
-describe("LocalStorageProvider", () => {
+describe("LocalStorageAdapter", () => {
   let basePath: string
   let previousCwd: string
 
@@ -20,7 +20,7 @@ describe("LocalStorageProvider", () => {
 
   it("uploads a file and returns a public URL", async () => {
     basePath = await mkdtemp(join(tmpdir(), "theo-storage-"))
-    const provider = new LocalStorageProvider({
+    const provider = new LocalStorageAdapter({
       provider: "local",
       basePath,
       baseUrl: "http://localhost:4000/uploads",
@@ -45,7 +45,7 @@ describe("LocalStorageProvider", () => {
     previousCwd = process.cwd()
     process.chdir(basePath)
 
-    const provider = new LocalStorageProvider({
+    const provider = new LocalStorageAdapter({
       provider: "local",
       basePath: "./uploads",
       baseUrl: "http://localhost:4000/uploads",
@@ -67,7 +67,7 @@ describe("LocalStorageProvider", () => {
 
   it("rejects path traversal", async () => {
     basePath = await mkdtemp(join(tmpdir(), "theo-storage-"))
-    const provider = new LocalStorageProvider({
+    const provider = new LocalStorageAdapter({
       provider: "local",
       basePath,
       baseUrl: "http://localhost:4000/uploads",

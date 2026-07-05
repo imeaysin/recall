@@ -1,15 +1,11 @@
 import { Global, Module } from "@nestjs/common"
 import { resolveStorageLocalPath, storageEnv } from "@workspace/config/storage"
-import {
-  S3StorageProvider,
-  LocalStorageProvider,
-  type StorageProvider,
-} from "@workspace/storage"
+import { createStorage, type StorageProvider } from "@workspace/storage"
 import { STORAGE } from "./storage.constants"
 
 function createStorageProvider(): StorageProvider {
   if (storageEnv.STORAGE_PROVIDER === "s3") {
-    return new S3StorageProvider({
+    return createStorage({
       provider: "s3",
       bucket: storageEnv.STORAGE_S3_BUCKET,
       region: storageEnv.STORAGE_S3_REGION,
@@ -20,7 +16,7 @@ function createStorageProvider(): StorageProvider {
     })
   }
 
-  return new LocalStorageProvider({
+  return createStorage({
     provider: "local",
     basePath: resolveStorageLocalPath(),
     baseUrl: storageEnv.STORAGE_LOCAL_URL,

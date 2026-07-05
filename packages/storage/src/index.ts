@@ -1,5 +1,6 @@
-export { StorageError, type StorageErrorCode } from "./types"
+export { StorageError } from "./types"
 export type {
+  StorageErrorCode,
   StorageProvider,
   StorageConfig,
   StorageUploadInput,
@@ -19,5 +20,4 @@ export type {
   S3StorageConfig,
 } from "./types"
 
-export { LocalStorageProvider } from "./providers/local"
-export { S3StorageProvider } from "./providers/s3"
+export { createStorage } from "./factory"

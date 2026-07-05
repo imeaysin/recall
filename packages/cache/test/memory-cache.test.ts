@@ -1,35 +1,35 @@
 import { describe, expect, it, vi } from "vitest"
 import { createCache } from "../src/index"
-import { createMemoryCache } from "../src/providers/memory"
+import { MemoryCacheAdapter } from "../src/adapters/memory"
 
-describe("createMemoryCache", () => {
+describe("MemoryCacheAdapter", () => {
   it("returns null for missing keys", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     expect(await cache.get("missing")).toBeNull()
   })
 
   it("stores and retrieves values", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     await cache.set("key", "value")
     expect(await cache.get("key")).toBe("value")
   })
 
   it("overwrites existing values", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     await cache.set("key", "first")
     await cache.set("key", "second")
     expect(await cache.get("key")).toBe("second")
   })
 
   it("deletes keys", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     await cache.set("key", "value")
     await cache.delete("key")
     expect(await cache.get("key")).toBeNull()
   })
 
   it("checks existence with has()", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     expect(await cache.has("key")).toBe(false)
     await cache.set("key", "value")
     expect(await cache.has("key")).toBe(true)
@@ -37,7 +37,7 @@ describe("createMemoryCache", () => {
 
   it("expires entries after TTL", async () => {
     vi.useFakeTimers()
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
 
     await cache.set("key", "value", 5)
     expect(await cache.get("key")).toBe("value")
@@ -53,7 +53,7 @@ describe("createMemoryCache", () => {
 
   it("has() returns false for expired entries", async () => {
     vi.useFakeTimers()
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
 
     await cache.set("key", "value", 1)
     vi.advanceTimersByTime(2_000)
@@ -64,7 +64,7 @@ describe("createMemoryCache", () => {
 
   it("stores indefinitely when TTL is omitted", async () => {
     vi.useFakeTimers()
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
 
     await cache.set("key", "value")
     vi.advanceTimersByTime(1_000_000_000)
@@ -74,7 +74,7 @@ describe("createMemoryCache", () => {
   })
 
   it("clears all entries on close()", async () => {
-    const cache = createMemoryCache()
+    const cache = new MemoryCacheAdapter()
     await cache.set("a", "1")
     await cache.set("b", "2")
     await cache.close()

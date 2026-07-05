@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from "vitest"
-import { logDevEmail } from "../src/dev-log"
+import { MockEmailAdapter } from "../src/adapters/mock"
 
-describe("logDevEmail", () => {
-  it("logs email payload to stdout in dev", () => {
+describe("MockEmailAdapter", () => {
+  it("logs email payload to stdout in dev", async () => {
     const info = vi.spyOn(console, "info").mockImplementation(() => undefined)
 
-    logDevEmail({
-      to: "user@example.com",
-      subject: "Verify your email",
-      lines: ["Verification link: http://localhost/verify"],
-    })
+    const adapter = new MockEmailAdapter()
+    await adapter.sendVerificationEmail(
+      "user@example.com",
+      "http://localhost/verify"
+    )
 
     expect(info).toHaveBeenCalledWith(
       expect.stringContaining("user@example.com")

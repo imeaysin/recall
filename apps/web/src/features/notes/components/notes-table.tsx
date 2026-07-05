@@ -1,5 +1,5 @@
 import type { NoteResponse } from "@workspace/contracts"
-import { relativeTime } from "@workspace/dates"
+import { dates } from "@/lib/dates"
 import { Button } from "@workspace/ui/components/button"
 import { Card } from "@workspace/ui/components/card"
 import {
@@ -47,7 +47,7 @@ const columns: DataListColumn<NoteResponse>[] = [
     key: "updatedAt",
     header: "Updated",
     className: "text-muted-foreground tabular-nums",
-    render: (note) => relativeTime(note.updatedAt),
+    render: (note) => dates.relativeTime(note.updatedAt),
   },
 ]
 
@@ -119,7 +119,7 @@ function NoteCard({
       </button>
       <div className="flex items-center justify-between border-t px-4 py-2">
         <span className="text-xs text-muted-foreground tabular-nums">
-          {relativeTime(note.updatedAt)}
+          {dates.relativeTime(note.updatedAt)}
         </span>
         <NoteActions
           disabled={disabled}

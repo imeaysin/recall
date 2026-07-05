@@ -4,7 +4,6 @@ export type JobHandler<T extends JobPayload = JobPayload> = (
   payload: T
 ) => Promise<void> | void
 
-/** Provider interface — same role as `StorageProvider` in `@workspace/storage`. */
 export type JobQueue = {
   register<T extends JobPayload>(name: string, handler: JobHandler<T>): void
   enqueue<T extends JobPayload>(name: string, payload: T): void

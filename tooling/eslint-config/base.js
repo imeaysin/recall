@@ -28,7 +28,7 @@ export const config = [
     },
     rules: {
       "turbo/no-undeclared-env-vars": "warn",
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+      "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

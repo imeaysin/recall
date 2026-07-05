@@ -27,7 +27,7 @@ import type {
 } from "../types"
 import { StorageError } from "../types"
 
-export class LocalStorageProvider implements StorageProvider {
+export class LocalStorageAdapter implements StorageProvider {
   private readonly basePath: string
   private readonly baseUrl: string
 

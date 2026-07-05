@@ -28,7 +28,7 @@ import { StorageError } from "../types"
 
 const DEFAULT_SIGNED_URL_EXPIRATION_SECONDS = 3600
 
-export class S3StorageProvider implements StorageProvider {
+export class S3StorageAdapter implements StorageProvider {
   private readonly client: S3Client
   private readonly bucket: string
   private readonly region: string

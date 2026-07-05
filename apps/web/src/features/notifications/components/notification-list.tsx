@@ -1,5 +1,5 @@
 import type { NotificationResponse } from "@workspace/contracts"
-import { relativeTime } from "@workspace/dates"
+import { dates } from "@/lib/dates"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
 import { CheckIcon, ExternalLinkIcon, Trash2Icon } from "lucide-react"
@@ -41,7 +41,7 @@ function NotificationItem({
           </p>
         ) : null}
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-          <time>{relativeTime(notification.createdAt)}</time>
+          <time>{dates.relativeTime(notification.createdAt)}</time>
           {notification.actionUrl ? (
             <Link
               className="inline-flex items-center gap-1 text-primary hover:underline"

@@ -9,13 +9,8 @@ import { emailOTP } from "better-auth/plugins/email-otp"
 import { organization } from "better-auth/plugins/organization"
 import { passkey } from "@better-auth/passkey"
 import { env } from "@workspace/config"
-import {
-  sendVerificationEmail,
-  sendResetPasswordEmail,
-  sendMagicLinkEmail,
-  sendOtpEmail,
-  sendOrganizationInvitationEmail,
-} from "@workspace/email"
+import { getEmailProviderConfig } from "@workspace/config/email"
+import { createEmailProvider } from "@workspace/email"
 import { adminPluginOptions } from "../config/admin-plugin"
 import { organizationPluginOptions } from "../config/organization-plugin"
 import type { JwtPayload } from "../config/jwt"
@@ -26,6 +21,8 @@ import { ensureSessionActiveOrganization } from "./default-organization"
 export type CreateAuthOptions = {
   secondaryStorage?: Parameters<typeof betterAuth>[0]["secondaryStorage"]
 }
+
+const emailProvider = createEmailProvider(getEmailProviderConfig())
 
 function parseAdminUserIds(raw: string): string[] {
   return raw
@@ -123,13 +120,13 @@ export function createAuth(options: CreateAuthOptions = {}) {
       enabled: true,
       requireEmailVerification: true,
       sendResetPassword: async ({ user, url }) => {
-        await sendResetPasswordEmail(user.email, url)
+        await emailProvider.sendResetPasswordEmail(user.email, url)
       },
     },
 
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
-        await sendVerificationEmail(user.email, url)
+        await emailProvider.sendVerificationEmail(user.email, url)
       },
       autoSignInAfterVerification: true,
     },
@@ -183,13 +180,13 @@ export function createAuth(options: CreateAuthOptions = {}) {
 
       magicLink({
         sendMagicLink: async ({ email, url }) => {
-          await sendMagicLinkEmail(email, url)
+          await emailProvider.sendMagicLinkEmail(email, url)
         },
       }),
 
       emailOTP({
-        sendVerificationOTP: async ({ email, otp, type }) => {
-          await sendOtpEmail(email, otp, type)
+        async sendVerificationOTP({ email, otp, type }) {
+          await emailProvider.sendOtpEmail(email, otp, type)
         },
       }),
 
@@ -205,7 +202,7 @@ export function createAuth(options: CreateAuthOptions = {}) {
         },
         sendInvitationEmail: async (data) => {
           const url = `${env.CLIENT_URL}/accept-invitation?id=${data.id}`
-          await sendOrganizationInvitationEmail(
+          await emailProvider.sendOrganizationInvitationEmail(
             data.email,
             data.organization.name,
             data.inviter.user.name ?? "A team member",

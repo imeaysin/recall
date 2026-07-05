@@ -45,6 +45,7 @@ const authSchema = z.object({
 })
 
 const emailSchema = z.object({
+  EMAIL_PROVIDER: z.enum(["resend", "mock"]).default("mock"),
   RESEND_API_KEY: z.string().default(""),
   EMAIL_FROM: z.string().min(1).optional(),
 })
@@ -114,6 +115,7 @@ export const serverDefaults = {
     "j6K#v9$e8f7037b453c8a6b455a6fe9cc7e5d1438af032e3bf8731affcea1e9967481d7!z8*Nq5&W3tY7uB9xCcE1",
   AUTH_JWT_EXPIRATION: "15m",
   AUTH_TOTP_ISSUER: DEFAULT_APP_NAME,
+  EMAIL_PROVIDER: "mock",
   RESEND_API_KEY: "",
   GOOGLE_CLIENT_ID: "",
   GOOGLE_CLIENT_SECRET: "",
@@ -150,6 +152,7 @@ export const serverDefaults = {
 export const databaseEnvSchema = serverSchema.pick({ MONGODB_URI: true })
 
 export const emailEnvSchema = serverSchema.pick({
+  EMAIL_PROVIDER: true,
   RESEND_API_KEY: true,
   EMAIL_FROM: true,
   APP_NAME: true,

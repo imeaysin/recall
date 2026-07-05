@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest"
-import { createInlineJobQueue } from "../src/providers/inline"
+import { InlineJobQueueAdapter } from "../src/adapters/inline"
 
-describe("createInlineJobQueue", () => {
+describe("InlineJobQueueAdapter", () => {
   it("runs registered handlers asynchronously", async () => {
-    const queue = createInlineJobQueue()
+    const queue = new InlineJobQueueAdapter()
     const handler = vi.fn()
 
     queue.register("ping", handler)
@@ -17,7 +17,7 @@ describe("createInlineJobQueue", () => {
   })
 
   it("swallows handler errors without throwing from enqueue", async () => {
-    const queue = createInlineJobQueue()
+    const queue = new InlineJobQueueAdapter()
 
     queue.register("fail", () => {
       throw new Error("boom")
@@ -29,9 +29,9 @@ describe("createInlineJobQueue", () => {
   })
 })
 
-describe("createInlineJobQueue factory", () => {
+describe("InlineJobQueueAdapter factory", () => {
   it("returns inline provider by default", () => {
-    const queue = createInlineJobQueue()
+    const queue = new InlineJobQueueAdapter()
     expect(queue).toHaveProperty("enqueue")
     expect(queue).toHaveProperty("register")
     expect(queue).toHaveProperty("close")
