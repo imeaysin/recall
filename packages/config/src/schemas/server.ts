@@ -6,7 +6,7 @@ import {
   DEV_URLS,
 } from "../constants"
 
-export const sharedSchema = z.object({
+const sharedSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
@@ -14,18 +14,18 @@ export const sharedSchema = z.object({
   PORT: z.coerce.number().int().positive().default(DEFAULT_PORT),
 })
 
-export const databaseSchema = z.object({
+const databaseSchema = z.object({
   MONGODB_URI: z.string().min(1),
 })
 
-export const urlsSchema = z.object({
+const urlsSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
   CLIENT_URL: z.string().url(),
   MARKETING_URL: z.string().url(),
   ALLOWED_ORIGINS: z.string().min(1),
 })
 
-export const authSchema = z.object({
+const authSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
   AUTH_JWT_EXPIRATION: z.string().default("15m"),
   AUTH_TOTP_ISSUER: z.string().default("Theo"),
@@ -44,12 +44,12 @@ export const authSchema = z.object({
   ADMIN_USER_IDS: z.string().default(""),
 })
 
-export const emailSchema = z.object({
+const emailSchema = z.object({
   RESEND_API_KEY: z.string().default(""),
   EMAIL_FROM: z.string().min(1).optional(),
 })
 
-export const storageSchema = z.object({
+const storageSchema = z.object({
   STORAGE_PROVIDER: z.enum(["local", "s3"]).default("local"),
   STORAGE_LOCAL_PATH: z.string().default("./uploads"),
   STORAGE_LOCAL_URL: z.string().default(`${DEV_URLS.API}/uploads`),
@@ -61,26 +61,26 @@ export const storageSchema = z.object({
   STORAGE_S3_BASE_URL: z.string().default(""),
 })
 
-export const jobsSchema = z.object({
+const jobsSchema = z.object({
   JOBS_PROVIDER: z.enum(["inline", "redis"]).default("inline"),
   REDIS_URL: z.string().default("redis://localhost:6379"),
   JOBS_QUEUE_NAME: z.string().min(1).default("theo"),
 })
 
-export const pushSchema = z.object({
+const pushSchema = z.object({
   PUSH_PROVIDER: z.enum(["expo", "console"]).default("console"),
   EXPO_ACCESS_TOKEN: z.string().default(""),
 })
 
-export const realtimeSchema = z.object({
+const realtimeSchema = z.object({
   REALTIME_PROVIDER: z.enum(["memory", "redis"]).default("memory"),
 })
 
-export const cacheSchema = z.object({
+const cacheSchema = z.object({
   CACHE_PROVIDER: z.enum(["memory", "redis"]).default("memory"),
 })
 
-export const rateLimitSchema = z.object({
+const rateLimitSchema = z.object({
   RATE_LIMIT_ENABLED: z
     .enum(["true", "false"])
     .default("true")

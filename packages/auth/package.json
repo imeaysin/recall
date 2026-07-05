@@ -112,7 +112,6 @@
     }
   },
   "devDependencies": {
-    "auth": "catalog:",
     "@types/react": "catalog:",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
