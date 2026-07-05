@@ -158,6 +158,8 @@ export function createAuth(options: CreateAuthOptions = {}) {
               name: user.name,
               activeOrganizationId,
               organizationRole,
+              banned: user.banned,
+              emailVerified: user.emailVerified,
             } satisfies JwtPayload
           },
         },

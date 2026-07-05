@@ -7,4 +7,6 @@ export type JwtPayload = {
   name: string
   activeOrganizationId: string | null
   organizationRole: string | null
+  banned?: boolean
+  emailVerified: boolean
 }

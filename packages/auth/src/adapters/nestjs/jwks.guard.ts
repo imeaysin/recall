@@ -27,7 +27,17 @@ export class JwksGuard implements CanActivate {
     if (!token) throw new UnauthorizedException("Missing bearer token")
 
     try {
-      req.user = await verifyAccessToken(token)
+      const claims = await verifyAccessToken(token)
+
+      if (claims.banned) {
+        throw new UnauthorizedException("User is banned")
+      }
+
+      if (!claims.emailVerified) {
+        throw new UnauthorizedException("Email is not verified")
+      }
+
+      req.user = claims
       return true
     } catch (error: unknown) {
       if (isJwtExpiredError(error)) {
