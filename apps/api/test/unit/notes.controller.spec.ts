@@ -14,6 +14,7 @@ describe("NotesController", () => {
   const user = {
     id: "user-1",
     email: "user@example.com",
+    emailVerified: true,
     role: "user",
     name: "User",
     activeOrganizationId: organizationId,

@@ -14,6 +14,7 @@ describe("MeService", () => {
   const claims = {
     id: "user-1",
     email: "user@example.com",
+    emailVerified: true,
     role: "user",
     name: "User",
     activeOrganizationId: "org-1",
