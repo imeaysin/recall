@@ -5,7 +5,6 @@ import {
   type EmailEnv,
 } from "../schemas/server"
 
-/** Email delivery — used by `@workspace/email`. */
 export const emailEnv = createEnv(
   emailEnvSchema,
   pickServerDefaults([
@@ -22,7 +21,6 @@ export function getEmailFromAddress(config: EmailEnv = emailEnv): string {
   return `${config.APP_NAME} <no-reply@${domain}>`
 }
 
-/** Builds the discriminated configuration object required by `@workspace/email`'s factory. */
 export function getEmailProviderConfig() {
   if (emailEnv.EMAIL_PROVIDER === "resend") {
     return {
