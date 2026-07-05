@@ -65,12 +65,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "@types/node": "catalog:",
     "eslint": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"

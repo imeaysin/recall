@@ -13,8 +13,12 @@ function formatMessage(message: unknown): string {
 
 /** Routes NestJS framework logs through `@workspace/logger` (pino). */
 export class NestLoggerService implements LoggerService {
+  private getLogger(context?: string) {
+    return createLogger(context ?? "Nest")
+  }
+
   log(message: unknown, context?: string): void {
-    const logger = createLogger(context ?? "Nest")
+    const logger = this.getLogger(context)
     const msg = formatMessage(message)
     if (isNestVerboseContext(context)) {
       logger.debug(msg)
@@ -24,7 +28,7 @@ export class NestLoggerService implements LoggerService {
   }
 
   error(message: unknown, stack?: string, context?: string): void {
-    const logger = createLogger(context ?? "Nest")
+    const logger = this.getLogger(context)
     const err = message instanceof Error ? message : undefined
     logger.error(
       {
@@ -36,19 +40,19 @@ export class NestLoggerService implements LoggerService {
   }
 
   warn(message: unknown, context?: string): void {
-    createLogger(context ?? "Nest").warn(formatMessage(message))
+    this.getLogger(context).warn(formatMessage(message))
   }
 
   debug(message: unknown, context?: string): void {
-    createLogger(context ?? "Nest").debug(formatMessage(message))
+    this.getLogger(context).debug(formatMessage(message))
   }
 
   verbose(message: unknown, context?: string): void {
-    createLogger(context ?? "Nest").trace(formatMessage(message))
+    this.getLogger(context).trace(formatMessage(message))
   }
 
   fatal(message: unknown, context?: string): void {
-    createLogger(context ?? "Nest").fatal(formatMessage(message))
+    this.getLogger(context).fatal(formatMessage(message))
   }
 
   setLogLevels(_levels: unknown): void {

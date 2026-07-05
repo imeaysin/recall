@@ -15,6 +15,7 @@
   "dependencies": {
     "@expo/ui": "~56.0.18",
     "@workspace/auth": "workspace:*",
+    "@workspace/config": "workspace:*",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
     "expo-device": "~56.0.4",

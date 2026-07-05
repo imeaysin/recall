@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { createEventBus, createMemoryEventBus } from "../src"
+import { createMemoryEventBus } from "../src"
 
 describe("memory event bus", () => {
   it("delivers messages to subscribers", async () => {
@@ -64,9 +64,9 @@ describe("memory event bus", () => {
   })
 })
 
-describe("createEventBus factory", () => {
+describe("createMemoryEventBus factory", () => {
   it("creates memory provider", () => {
-    const bus = createEventBus({ provider: "memory" })
+    const bus = createMemoryEventBus()
     expect(bus).toBeDefined()
     expect(bus.publish).toBeInstanceOf(Function)
     expect(bus.subscribe).toBeInstanceOf(Function)

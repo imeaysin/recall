@@ -27,6 +27,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@react-email/components": "^1.0.12",
     "@workspace/config": "workspace:*",
     "react": "catalog:",
     "resend": "^6.12.3"

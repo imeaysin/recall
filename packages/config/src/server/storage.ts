@@ -1,5 +1,4 @@
-import { existsSync } from "node:fs"
-import { dirname, isAbsolute, join, resolve } from "node:path"
+import { isAbsolute, resolve } from "node:path"
 import { createEnv } from "../validate"
 import {
   pickServerDefaults,
@@ -7,23 +6,7 @@ import {
   type StorageEnv,
 } from "../schemas/server"
 
-function findWorkspaceRoot(startDir = process.cwd()): string {
-  let currentDir = resolve(startDir)
-
-  while (true) {
-    if (
-      existsSync(join(currentDir, "pnpm-workspace.yaml")) ||
-      existsSync(join(currentDir, ".env"))
-    ) {
-      return currentDir
-    }
-
-    const parentDir = dirname(currentDir)
-    if (parentDir === currentDir) return resolve(startDir)
-    currentDir = parentDir
-  }
-}
-
+import { findWorkspaceRoot } from "../utils/workspace-root"
 /** File storage — used by `@workspace/storage` and `apps/api` when wired. */
 export const storageEnv = createEnv(
   storageEnvSchema,

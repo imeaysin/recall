@@ -26,6 +26,8 @@ import type {
 } from "../types"
 import { StorageError } from "../types"
 
+const DEFAULT_SIGNED_URL_EXPIRATION_SECONDS = 3600
+
 export class S3StorageProvider implements StorageProvider {
   private readonly client: S3Client
   private readonly bucket: string
@@ -170,17 +172,17 @@ export class S3StorageProvider implements StorageProvider {
       )
 
       const files: StorageListEntry[] = (response.Contents ?? [])
-        .filter((obj) => obj.Key)
+        .filter((obj): obj is { Key: string } & typeof obj => !!obj.Key)
         .map((obj) => ({
-          path: obj.Key!,
+          path: obj.Key,
           size: obj.Size ?? 0,
           lastModified: obj.LastModified ?? new Date(0),
           etag: obj.ETag,
         }))
 
       const prefixes: string[] = (response.CommonPrefixes ?? [])
-        .filter((cp) => cp.Prefix)
-        .map((cp) => cp.Prefix!)
+        .filter((cp): cp is { Prefix: string } & typeof cp => !!cp.Prefix)
+        .map((cp) => cp.Prefix)
 
       return {
         files,
@@ -235,7 +237,8 @@ export class S3StorageProvider implements StorageProvider {
       })
 
       return getSignedUrl(this.client, command, {
-        expiresIn: options?.expiresInSeconds ?? 3600,
+        expiresIn:
+          options?.expiresInSeconds ?? DEFAULT_SIGNED_URL_EXPIRATION_SECONDS,
       })
     } catch (cause) {
       throw new StorageError(
@@ -258,7 +261,8 @@ export class S3StorageProvider implements StorageProvider {
       })
 
       return getSignedUrl(this.client, command, {
-        expiresIn: options?.expiresInSeconds ?? 3600,
+        expiresIn:
+          options?.expiresInSeconds ?? DEFAULT_SIGNED_URL_EXPIRATION_SECONDS,
       })
     } catch (cause) {
       throw new StorageError(

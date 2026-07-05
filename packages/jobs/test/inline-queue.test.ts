@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest"
-import { createJobQueue } from "../src/index"
 import { createInlineJobQueue } from "../src/providers/inline"
 
 describe("createInlineJobQueue", () => {
@@ -30,9 +29,9 @@ describe("createInlineJobQueue", () => {
   })
 })
 
-describe("createJobQueue", () => {
+describe("createInlineJobQueue factory", () => {
   it("returns inline provider by default", () => {
-    const queue = createJobQueue({ provider: "inline" })
+    const queue = createInlineJobQueue()
     expect(queue).toHaveProperty("enqueue")
     expect(queue).toHaveProperty("register")
     expect(queue).toHaveProperty("close")

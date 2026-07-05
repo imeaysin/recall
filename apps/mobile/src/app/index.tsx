@@ -3,6 +3,7 @@ import * as Device from "expo-device"
 import { Platform, StyleSheet } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { mobileAuthClient } from "@workspace/auth/mobile"
+import { parseMobileEnv } from "@workspace/config/client"
 
 import { AnimatedIcon } from "@/components/animated-icon"
 import { HintRow } from "@/components/hint-row"
@@ -39,8 +40,9 @@ export default function HomeScreen() {
     })
   }, [])
 
-  const appName = process.env.EXPO_PUBLIC_APP_NAME ?? "Theo"
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4000"
+  const env = parseMobileEnv(process.env)
+  const appName = env.appName
+  const apiUrl = env.apiUrl
 
   return (
     <ThemedView style={styles.container}>

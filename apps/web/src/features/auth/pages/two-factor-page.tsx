@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { Controller, useForm, useFormState } from "react-hook-form"
-import { twoFactorSchema, type TwoFactorInput } from "@workspace/contracts"
+import { TwoFactorSchema, type TwoFactorInput } from "@workspace/contracts"
 import { AuthOtpInput, AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import {
   Field,
@@ -27,7 +27,7 @@ export function TwoFactorPage() {
   const verifyTotp = useVerifyTotp()
 
   const form = useForm<TwoFactorInput>({
-    resolver: zodResolver(twoFactorSchema),
+    resolver: zodResolver(TwoFactorSchema),
     defaultValues: { code: "" },
   })
   const { errors } = useFormState({ control: form.control })

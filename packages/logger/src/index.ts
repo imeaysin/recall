@@ -1,4 +1,23 @@
 import pino, { type Logger, type LoggerOptions } from "pino"
+import { z } from "zod"
+
+const loggerEnvSchema = z.object({
+  LOG_LEVEL: z
+    .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
+    .default("info"),
+  LOG_PRETTY: z.enum(["true", "false"]).optional(),
+  CI: z.string().optional(),
+  JEST_WORKER_ID: z.string().optional(),
+  NODE_ENV: z.string().optional(),
+})
+
+const env = loggerEnvSchema.parse({
+  LOG_LEVEL: process.env.LOG_LEVEL?.trim(),
+  LOG_PRETTY: process.env.LOG_PRETTY?.trim(),
+  CI: process.env.CI?.trim(),
+  JEST_WORKER_ID: process.env.JEST_WORKER_ID?.trim(),
+  NODE_ENV: process.env.NODE_ENV?.trim(),
+})
 
 /** Nest internals that spam the console on every boot — kept at debug. */
 const NEST_VERBOSE_CONTEXTS = new Set([
@@ -9,18 +28,15 @@ const NEST_VERBOSE_CONTEXTS = new Set([
 ])
 
 function resolveLogLevel(): pino.LevelWithSilent {
-  const configured = process.env.LOG_LEVEL?.trim()
-  if (configured) return configured as pino.LevelWithSilent
-  return "info"
+  return env.LOG_LEVEL as pino.LevelWithSilent
 }
 
 function isPrettyEnabled(): boolean {
-  const flag = process.env.LOG_PRETTY?.trim()
-  if (flag === "true") return true
-  if (flag === "false") return false
-  if (process.env.CI === "true") return false
-  if (process.env.JEST_WORKER_ID !== undefined) return false
-  return process.env.NODE_ENV !== "production"
+  if (env.LOG_PRETTY === "true") return true
+  if (env.LOG_PRETTY === "false") return false
+  if (env.CI === "true") return false
+  if (env.JEST_WORKER_ID !== undefined) return false
+  return env.NODE_ENV !== "production"
 }
 
 function createRootLogger(): Logger {

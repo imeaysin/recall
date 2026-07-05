@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs"
 import { UploadResponseSchema, type UploadResponse } from "@workspace/contracts"
 import { DomainErrorCode } from "@workspace/contracts"
-import { apiBadRequest } from "../../../common/exceptions/api.exception"
+import { apiBadRequest } from "@/common/exceptions/api.exception"
 import { StorageRepository } from "../repositories/storage.repository"
 import { UploadFileCommand } from "./upload-file.command"
 

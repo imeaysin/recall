@@ -44,7 +44,7 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
                   className="flex flex-col items-center gap-2"
                   key={item.value}
                 >
-                  <Skeleton className="h-[70px] w-[88px] rounded-lg" />
+                  <Skeleton className="h-16 w-20 rounded-lg" />
                   <Skeleton className="h-4 w-12" />
                 </div>
               ))}
@@ -72,7 +72,7 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
                         className="peer sr-only absolute"
                         value={item.value}
                       />
-                      <span className="relative block h-[70px] w-[88px] overflow-hidden rounded-lg shadow-xs transition-shadow not-peer-data-checked:opacity-80 peer-data-checked:ring-2 peer-data-checked:ring-primary/48 peer-data-checked:ring-offset-1 peer-data-checked:ring-offset-background peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-64">
+                      <span className="relative block h-16 w-20 overflow-hidden rounded-lg shadow-xs transition-shadow not-peer-data-checked:opacity-80 peer-data-checked:ring-2 peer-data-checked:ring-primary/48 peer-data-checked:ring-offset-1 peer-data-checked:ring-offset-background peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-64">
                         {themePreviews[item.value]}
                       </span>
                       <span className="not-peer-data-checked:text-muted-foreground/70">

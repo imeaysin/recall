@@ -6,21 +6,25 @@ import {
   type OnModuleInit,
 } from "@nestjs/common"
 import { jobsEnv } from "@workspace/config/jobs"
-import { createJobQueue, type JobQueue } from "@workspace/jobs"
+import {
+  createRedisJobQueue,
+  createInlineJobQueue,
+  type JobQueue,
+} from "@workspace/jobs"
 import { createLogger } from "@workspace/logger"
 
 export const JOB_QUEUE = Symbol("JOB_QUEUE")
 
 function createJobQueueProvider(): JobQueue {
   if (jobsEnv.JOBS_PROVIDER === "redis") {
-    return createJobQueue({
+    return createRedisJobQueue({
       provider: "redis",
       redisUrl: jobsEnv.REDIS_URL,
       queueName: jobsEnv.JOBS_QUEUE_NAME,
     })
   }
 
-  return createJobQueue({ provider: "inline" })
+  return createInlineJobQueue()
 }
 
 @Global()

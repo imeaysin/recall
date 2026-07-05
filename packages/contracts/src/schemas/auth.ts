@@ -1,20 +1,22 @@
 import { z } from "zod"
 
-export const signInSchema = z.object({
+export const passwordFieldSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .max(128, "Password must be at most 128 characters")
+
+export const SignInSchema = z.object({
   email: z.email("Enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 })
 
-export type SignInInput = z.infer<typeof signInSchema>
+export type SignInInput = z.infer<typeof SignInSchema>
 
-export const signUpSchema = z
+export const SignUpSchema = z
   .object({
     name: z.string().min(1, "Name is required"),
     email: z.email("Enter a valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(128, "Password must be at most 128 characters"),
+    password: passwordFieldSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -22,20 +24,17 @@ export const signUpSchema = z
     path: ["confirmPassword"],
   })
 
-export type SignUpInput = z.infer<typeof signUpSchema>
+export type SignUpInput = z.infer<typeof SignUpSchema>
 
-export const forgotPasswordSchema = z.object({
+export const ForgotPasswordSchema = z.object({
   email: z.email("Enter a valid email address"),
 })
 
-export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
 
-export const resetPasswordSchema = z
+export const ResetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(128, "Password must be at most 128 characters"),
+    password: passwordFieldSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -43,15 +42,12 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   })
 
-export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
 
-export const changePasswordSchema = z
+export const ChangePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(128, "Password must be at most 128 characters"),
+    newPassword: passwordFieldSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -59,13 +55,13 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   })
 
-export type ChangePasswordInput = z.infer<typeof changePasswordSchema>
+export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>
 
-export const twoFactorSchema = z.object({
+export const TwoFactorSchema = z.object({
   code: z
     .string()
     .length(6, "Enter the 6-digit code")
     .regex(/^\d+$/, "Code must contain only numbers"),
 })
 
-export type TwoFactorInput = z.infer<typeof twoFactorSchema>
+export type TwoFactorInput = z.infer<typeof TwoFactorSchema>

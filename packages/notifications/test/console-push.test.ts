@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   createConsolePush,
-  createPush,
+  createExpoPush,
   getInvalidTokens,
   getSuccessTicketIds,
 } from "../src"
@@ -46,9 +46,9 @@ describe("console push provider", () => {
   })
 })
 
-describe("createPush factory", () => {
+describe("push provider factories", () => {
   it("creates console provider", () => {
-    const provider = createPush({ provider: "console" })
+    const provider = createConsolePush()
     expect(provider).toBeDefined()
     expect(provider.send).toBeInstanceOf(Function)
     expect(provider.getReceipts).toBeInstanceOf(Function)
@@ -56,7 +56,7 @@ describe("createPush factory", () => {
   })
 
   it("creates expo provider", () => {
-    const provider = createPush({ provider: "expo" })
+    const provider = createExpoPush({ provider: "expo" })
     expect(provider).toBeDefined()
     expect(provider.send).toBeInstanceOf(Function)
     expect(provider.getReceipts).toBeInstanceOf(Function)

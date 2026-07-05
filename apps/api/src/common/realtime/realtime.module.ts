@@ -5,7 +5,11 @@ import {
   type OnModuleDestroy,
   type OnModuleInit,
 } from "@nestjs/common"
-import { createEventBus, type EventBus } from "@workspace/realtime"
+import {
+  createRedisEventBus,
+  createMemoryEventBus,
+  type EventBus,
+} from "@workspace/realtime"
 import { realtimeEnv } from "@workspace/config/realtime"
 import { createLogger } from "@workspace/logger"
 
@@ -13,13 +17,13 @@ export const EVENT_BUS = Symbol("EVENT_BUS")
 
 function createEventBusProvider(): EventBus {
   if (realtimeEnv.REALTIME_PROVIDER === "redis") {
-    return createEventBus({
+    return createRedisEventBus({
       provider: "redis",
       redisUrl: realtimeEnv.REDIS_URL,
     })
   }
 
-  return createEventBus({ provider: "memory" })
+  return createMemoryEventBus()
 }
 
 @Global()

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom"
 import { Controller, useForm, useFormState } from "react-hook-form"
-import { signInSchema, type SignInInput } from "@workspace/contracts"
+import { SignInSchema, type SignInInput } from "@workspace/contracts"
 import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -43,7 +43,7 @@ export function SignInPage() {
   const { data: session, isPending } = useAuthSession()
   const signIn = useSignInEmail()
   const form = useForm<SignInInput>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(SignInSchema),
     defaultValues: { email: "", password: "" },
   })
   const { errors } = useFormState({ control: form.control })

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useChangePassword, useAuthSession } from "@workspace/auth/react"
 import {
-  changePasswordSchema,
+  ChangePasswordSchema,
   type ChangePasswordInput,
 } from "@workspace/contracts"
 import type { ChangePasswordFormProps } from "@workspace/ui/auth"
@@ -13,7 +13,7 @@ export function useChangePasswordForm(): ChangePasswordFormProps {
   const { mutate: changePassword, isPending } = useChangePassword()
 
   const form = useForm<ChangePasswordInput>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(ChangePasswordSchema),
     defaultValues: {
       currentPassword: "",
       newPassword: "",

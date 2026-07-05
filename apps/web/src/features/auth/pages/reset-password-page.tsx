@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { Controller, useForm, useFormState } from "react-hook-form"
 import {
-  resetPasswordSchema,
+  ResetPasswordSchema,
   type ResetPasswordInput,
 } from "@workspace/contracts"
 import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
@@ -25,7 +25,7 @@ export function ResetPasswordPage() {
   const token = searchParams.get("token") ?? ""
   const resetPassword = useResetPassword()
   const form = useForm<ResetPasswordInput>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(ResetPasswordSchema),
     defaultValues: { password: "", confirmPassword: "" },
   })
   const { errors } = useFormState({ control: form.control })

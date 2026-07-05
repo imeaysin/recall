@@ -167,17 +167,22 @@ This template follows official patterns for each layer of the stack.
 
 ### Shared packages
 
-| Package                | Role                                                                                               |
-| ---------------------- | -------------------------------------------------------------------------------------------------- |
-| `@workspace/config`    | Single root `.env`, Zod validation, dev URL constants                                              |
-| `@workspace/contracts` | Zod schemas shared by API + clients                                                                |
-| `@workspace/auth`      | Better Auth config + Nest/Next/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
-| `@workspace/ui`        | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                 |
-| `@workspace/db`        | Shared Mongoose connection for API and auth                                                        |
-| `@workspace/email`     | Resend + React Email templates for auth emails                                                     |
-| `@workspace/storage`   | File upload providers (local / S3)                                                                 |
-| `@workspace/logger`    | Structured logging (pino)                                                                          |
-| `@workspace/dates`     | Shared date formatting helpers                                                                     |
+| Package                    | Role                                                                                               |
+| -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `@workspace/config`        | Single root `.env`, Zod validation, dev URL constants                                              |
+| `@workspace/contracts`     | Zod schemas shared by API + clients                                                                |
+| `@workspace/auth`          | Better Auth config + Nest/Next/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
+| `@workspace/ui`            | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                 |
+| `@workspace/db`            | Shared Mongoose connection for API and auth                                                        |
+| `@workspace/cache`         | Cache abstraction (memory / Redis)                                                                 |
+| `@workspace/jobs`          | Job queue abstraction (inline / redis)                                                             |
+| `@workspace/notifications` | Push delivery (console / expo)                                                                     |
+| `@workspace/realtime`      | Event bus (memory / redis pub/sub)                                                                 |
+| `@workspace/redis`         | ioredis client factory                                                                             |
+| `@workspace/email`         | Resend + React Email templates for auth emails                                                     |
+| `@workspace/storage`       | File upload providers (local / S3)                                                                 |
+| `@workspace/logger`        | Structured logging (pino)                                                                          |
+| `@workspace/dates`         | Shared date formatting helpers                                                                     |
 
 ## CI
 

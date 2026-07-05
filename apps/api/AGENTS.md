@@ -42,7 +42,6 @@ Follow the [NestJS testing guide](https://docs.nestjs.com/fundamentals/testing):
 | **Unit**                   | `test/unit/**/*.spec.ts`                    | `pnpm test`                                 |
 | **E2E**                    | `test/e2e/**/*.e2e-spec.ts`                 | `pnpm test:e2e` (MongoDB required)          |
 | **Integration (live API)** | `test/integration/**/*.integration-spec.ts` | `pnpm test:integration` with `pnpm dev:api` |
-| **Auth smoke**             | `scripts/auth-flow-test.sh`                 | optional, against running API               |
 
 **E2E helpers**
 

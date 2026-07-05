@@ -6,6 +6,7 @@ const logger = createLogger("DB")
 
 const RETRY_ATTEMPTS = 5
 const RETRY_DELAY_MS = 3000
+const SERVER_SELECTION_TIMEOUT_MS = 5000
 
 function isConnectionReady() {
   return mongoose.connection.readyState === 1
@@ -34,7 +35,7 @@ export async function connectDb(uri: string = databaseEnv.MONGODB_URI) {
   for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt++) {
     try {
       const instance = await mongoose.connect(uri, {
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: SERVER_SELECTION_TIMEOUT_MS,
       })
       logger.info({ attempt }, "Connected to MongoDB")
       return instance

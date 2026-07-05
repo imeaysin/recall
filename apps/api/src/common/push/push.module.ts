@@ -5,7 +5,11 @@ import {
   type OnModuleDestroy,
   type OnModuleInit,
 } from "@nestjs/common"
-import { createPush, type PushProvider } from "@workspace/notifications"
+import {
+  createConsolePush,
+  createExpoPush,
+  type PushProvider,
+} from "@workspace/notifications"
 import { pushEnv } from "@workspace/config/push"
 import { createLogger } from "@workspace/logger"
 
@@ -13,13 +17,13 @@ export const PUSH_PROVIDER = Symbol("PUSH_PROVIDER")
 
 function createPushProvider(): PushProvider {
   if (pushEnv.PUSH_PROVIDER === "expo") {
-    return createPush({
+    return createExpoPush({
       provider: "expo",
-      accessToken: pushEnv.EXPO_ACCESS_TOKEN || undefined,
+      accessToken: pushEnv.EXPO_ACCESS_TOKEN,
     })
   }
 
-  return createPush({ provider: "console" })
+  return createConsolePush()
 }
 
 @Global()

@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "react-router-dom"
 import { Controller, useForm, useFormState } from "react-hook-form"
 import {
-  forgotPasswordSchema,
+  ForgotPasswordSchema,
   type ForgotPasswordInput,
 } from "@workspace/contracts"
 import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
@@ -17,7 +17,7 @@ import { absoluteAppUrl, routes } from "@/config/routes"
 export function ForgotPasswordPage() {
   const forgotPassword = useRequestPasswordReset()
   const form = useForm<ForgotPasswordInput>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: { email: "" },
   })
   const { errors } = useFormState({ control: form.control })

@@ -25,7 +25,7 @@ import {
 } from "../../common/decorators"
 import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
 import { UploadFileCommand } from "./commands/upload-file.command"
-import { UploadApiResponseDto } from "./uploads.dto"
+import { UploadApiResponseDto, type FileMetadata } from "./uploads.dto"
 
 @ApiTags("uploads")
 @ApiAuthErrorResponses()
@@ -67,12 +67,7 @@ export class UploadsController {
     @CurrentOrganization() organizationId: string,
     @CurrentUser() user: JwtClaims,
     @UploadedFile()
-    file?: {
-      buffer: Buffer
-      originalname: string
-      mimetype: string
-      size: number
-    }
+    file?: FileMetadata
   ) {
     return this.commandBus.execute(
       new UploadFileCommand(organizationId, user.id, file)

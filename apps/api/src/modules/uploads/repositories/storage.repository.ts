@@ -1,17 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common"
 import type { StorageProvider, StorageUploadResult } from "@workspace/storage"
 import { randomUUID } from "node:crypto"
-import { STORAGE } from "../../../common/storage/storage.module"
+import { STORAGE } from "@/common/storage/storage.constants"
+import type { FileMetadata } from "../uploads.dto"
 
 export type UploadUserFileInput = {
   organizationId: string
   userId: string
-  file: {
-    buffer: Buffer
-    originalname: string
-    mimetype: string
-    size: number
-  }
+  file: FileMetadata
 }
 
 @Injectable()

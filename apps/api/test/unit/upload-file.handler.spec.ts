@@ -1,7 +1,7 @@
 import { BadRequestException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
 import type { UploadResponse } from "@workspace/contracts"
-import { STORAGE } from "../../src/common/storage/storage.module"
+import { STORAGE } from "../../src/common/storage/storage.constants"
 import { UploadFileHandler } from "../../src/modules/uploads/commands/upload-file.handler"
 import { UploadFileCommand } from "../../src/modules/uploads/commands/upload-file.command"
 import { StorageRepository } from "../../src/modules/uploads/repositories/storage.repository"
