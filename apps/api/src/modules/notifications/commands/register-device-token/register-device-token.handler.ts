@@ -1,7 +1,7 @@
 import { CommandHandler, type ICommandHandler } from "@nestjs/cqrs"
 import { Expo } from "@workspace/notifications"
 import { DomainErrorCode } from "@workspace/contracts"
-import { apiBadRequest } from "../../../../common/exceptions/api.exception"
+import { apiBadRequest } from "@/common/exceptions/api.exception"
 import { DeviceTokenRepository } from "../../repositories/device-token.repository"
 import { RegisterDeviceTokenCommand } from "./register-device-token.command"
 

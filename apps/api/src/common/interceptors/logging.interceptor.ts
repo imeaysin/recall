@@ -50,9 +50,7 @@ export class LoggingInterceptor implements NestInterceptor {
         error: (err: unknown) => {
           const statusCode =
             err instanceof HttpException ? err.getStatus() : 500
-          if (statusCode < 500) {
-            log(statusCode, err)
-          }
+          if (statusCode < 500) log(statusCode, err)
         },
       })
     )

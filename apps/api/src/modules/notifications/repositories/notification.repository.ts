@@ -1,6 +1,6 @@
 import { Inject, Injectable, type OnModuleInit } from "@nestjs/common"
 import { ObjectId, type Db } from "mongodb"
-import { MONGO_DB } from "../../../common/database/database.module"
+import { MONGO_DB } from "@/common/database/database.module"
 import type {
   NewNotificationEntity,
   NotificationEntity,

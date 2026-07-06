@@ -8,8 +8,8 @@ import {
   type PushProvider,
 } from "@workspace/notifications"
 import type { EventBus } from "@workspace/realtime"
-import { PUSH_PROVIDER } from "../../../../common/push/push.module"
-import { EVENT_BUS } from "../../../../common/realtime/realtime.module"
+import { PUSH_PROVIDER } from "@/common/push/push.module"
+import { EVENT_BUS } from "@/common/realtime/realtime.module"
 import { DeviceTokenRepository } from "../../repositories/device-token.repository"
 import { NotificationRepository } from "../../repositories/notification.repository"
 import { SendNotificationCommand } from "./send-notification.command"

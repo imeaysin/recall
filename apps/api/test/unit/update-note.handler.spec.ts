@@ -2,10 +2,10 @@ import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
 import { ObjectId } from "mongodb"
 import type { NoteResponse } from "@workspace/contracts"
-import { UpdateNoteHandler } from "../../src/modules/notes/commands/update-note.handler"
-import { UpdateNoteCommand } from "../../src/modules/notes/commands/update-note.command"
-import { assertNoteAccessOrThrow } from "../../src/modules/notes/notes-access.util"
-import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
+import { UpdateNoteHandler } from "@/modules/notes/commands/update-note.handler"
+import { UpdateNoteCommand } from "@/modules/notes/commands/update-note.command"
+import { assertNoteAccessOrThrow } from "@/modules/notes/notes-access.util"
+import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 
 describe("UpdateNoteHandler", () => {
   let handler: UpdateNoteHandler

@@ -1,7 +1,8 @@
 import { Global, Module } from "@nestjs/common"
 import { resolveStorageLocalPath, storageEnv } from "@workspace/config/storage"
 import { createStorage, type StorageProvider } from "@workspace/storage"
-import { STORAGE } from "./storage.constants"
+
+export const STORAGE = Symbol("STORAGE")
 
 function createStorageProvider(): StorageProvider {
   if (storageEnv.STORAGE_PROVIDER === "s3") {

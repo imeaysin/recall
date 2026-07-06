@@ -1,6 +1,6 @@
 import { findOrganizationMemberRole } from "@workspace/auth/nestjs"
 import type { JwtClaims } from "@workspace/auth/types"
-import { MeService } from "../../src/modules/me/me.service"
+import { MeService } from "@/modules/me/me.service"
 
 jest.mock("@workspace/auth/nestjs", () => ({
   findOrganizationMemberRole: jest.fn(),

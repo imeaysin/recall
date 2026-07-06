@@ -1,9 +1,9 @@
 import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import { Test, type TestingModule } from "@nestjs/testing"
 import type { JwtClaims } from "@workspace/auth/types"
-import { CreateNoteCommand } from "../../src/modules/notes/commands/create-note.command"
-import { NotesController } from "../../src/modules/notes/notes.controller"
-import { ListNotesQuery } from "../../src/modules/notes/queries/list-notes.query"
+import { CreateNoteCommand } from "@/modules/notes/commands/create-note.command"
+import { NotesController } from "@/modules/notes/notes.controller"
+import { ListNotesQuery } from "@/modules/notes/queries/list-notes.query"
 
 describe("NotesController", () => {
   let controller: NotesController

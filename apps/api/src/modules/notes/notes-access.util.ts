@@ -1,8 +1,5 @@
 import { DomainErrorCode } from "@workspace/contracts"
-import {
-  apiForbidden,
-  apiNotFound,
-} from "../../common/exceptions/api.exception"
+import { apiForbidden, apiNotFound } from "@/common/exceptions/api.exception"
 import type { NoteEntity } from "./entities/note.entity"
 
 export const NOTE_FORBIDDEN_MESSAGE = "Not allowed to modify this note"

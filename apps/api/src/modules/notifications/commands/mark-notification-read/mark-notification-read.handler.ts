@@ -1,6 +1,6 @@
 import { CommandHandler, type ICommandHandler } from "@nestjs/cqrs"
 import { DomainErrorCode } from "@workspace/contracts"
-import { apiNotFound } from "../../../../common/exceptions/api.exception"
+import { apiNotFound } from "@/common/exceptions/api.exception"
 import { NotificationRepository } from "../../repositories/notification.repository"
 import { MarkNotificationReadCommand } from "./mark-notification-read.command"
 

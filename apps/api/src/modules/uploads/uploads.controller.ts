@@ -22,8 +22,8 @@ import {
   CurrentOrganization,
   CurrentUser,
   RequireOrgPermission,
-} from "../../common/decorators"
-import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
+} from "@/common/decorators"
+import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { UploadFileCommand } from "./commands/upload-file.command"
 import { UploadApiResponseDto, type FileMetadata } from "./uploads.dto"
 

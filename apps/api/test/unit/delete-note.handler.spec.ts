@@ -1,10 +1,10 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
 import { ObjectId } from "mongodb"
-import { DeleteNoteHandler } from "../../src/modules/notes/commands/delete-note.handler"
-import { DeleteNoteCommand } from "../../src/modules/notes/commands/delete-note.command"
-import { assertNoteAccessOrThrow } from "../../src/modules/notes/notes-access.util"
-import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
+import { DeleteNoteHandler } from "@/modules/notes/commands/delete-note.handler"
+import { DeleteNoteCommand } from "@/modules/notes/commands/delete-note.command"
+import { assertNoteAccessOrThrow } from "@/modules/notes/notes-access.util"
+import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 
 describe("DeleteNoteHandler", () => {
   let handler: DeleteNoteHandler

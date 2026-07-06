@@ -49,9 +49,7 @@ async function isAllowed(
     return true
   }
 
-  if (existing.count >= max) {
-    return false
-  }
+  if (existing.count >= max) return false
 
   await col.updateOne({ _id: key }, { $inc: { count: 1 } })
   return true

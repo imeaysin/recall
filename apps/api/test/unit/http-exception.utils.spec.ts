@@ -14,7 +14,7 @@ import {
   resolveErrorCode,
   resolveFieldErrors,
   resolveHttpStatus,
-} from "../../src/common/filters/http-exception.utils"
+} from "@/common/filters/http-exception.utils"
 
 describe("http-exception.utils", () => {
   it("maps Zod validation failures to VALIDATION_FAILED with field errors", () => {

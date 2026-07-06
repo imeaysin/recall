@@ -6,9 +6,8 @@ import {
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger"
-import { ApiErrorResponseDto } from "../dto/api-error.dto"
+import { ApiErrorResponseDto } from "@/common/dto/api-error.dto"
 
-/** Standard error responses for authenticated endpoints. */
 export function ApiAuthErrorResponses() {
   return applyDecorators(
     ApiBadRequestResponse({
@@ -22,7 +21,6 @@ export function ApiAuthErrorResponses() {
   )
 }
 
-/** Standard error responses for public endpoints. */
 export function ApiPublicErrorResponses() {
   return applyDecorators(
     ApiBadRequestResponse({

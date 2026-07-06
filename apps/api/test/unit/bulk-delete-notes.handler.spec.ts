@@ -1,11 +1,11 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common"
 import { Test, type TestingModule } from "@nestjs/testing"
 import { ObjectId } from "mongodb"
-import { BulkDeleteNotesHandler } from "../../src/modules/notes/commands/bulk-delete-notes.handler"
-import { BulkDeleteNotesCommand } from "../../src/modules/notes/commands/bulk-delete-notes.command"
-import { assertNoteAccessOrThrow } from "../../src/modules/notes/notes-access.util"
-import type { BulkNoteMutationScope } from "../../src/modules/notes/note.scope"
-import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
+import { BulkDeleteNotesHandler } from "@/modules/notes/commands/bulk-delete-notes.handler"
+import { BulkDeleteNotesCommand } from "@/modules/notes/commands/bulk-delete-notes.command"
+import { assertNoteAccessOrThrow } from "@/modules/notes/notes-access.util"
+import type { BulkNoteMutationScope } from "@/modules/notes/note.scope"
+import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 
 describe("BulkDeleteNotesHandler", () => {
   let handler: BulkDeleteNotesHandler

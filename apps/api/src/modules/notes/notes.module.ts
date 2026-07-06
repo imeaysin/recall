@@ -1,7 +1,7 @@
 import { Module, Inject, type OnModuleInit } from "@nestjs/common"
 import { CqrsModule } from "@nestjs/cqrs"
 import type { JobQueue } from "@workspace/jobs"
-import { JOB_QUEUE } from "../../common/jobs/jobs.module"
+import { JOB_QUEUE } from "@/common/jobs/jobs.module"
 import { CreateNoteHandler } from "./commands/create-note.handler"
 import { BulkDeleteNotesHandler } from "./commands/bulk-delete-notes.handler"
 import { DeleteNoteHandler } from "./commands/delete-note.handler"

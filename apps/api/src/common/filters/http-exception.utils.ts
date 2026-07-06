@@ -45,12 +45,9 @@ const STORAGE_DOMAIN_CODE: Partial<Record<StorageErrorCode, DomainErrorCode>> =
   }
 
 export function resolveHttpStatus(exception: unknown): number {
-  if (exception instanceof HttpException) {
-    return exception.getStatus()
-  }
-  if (exception instanceof StorageError) {
-    return STORAGE_STATUS[exception.code]
-  }
+  if (exception instanceof HttpException) return exception.getStatus()
+  if (exception instanceof StorageError) return STORAGE_STATUS[exception.code]
+
   return HttpStatus.INTERNAL_SERVER_ERROR
 }
 
@@ -85,9 +82,7 @@ function readResponseErrors(
   const { errors } = response
   if (!Array.isArray(errors) || errors.length === 0) return undefined
 
-  if (errors.every(isZodIssue)) {
-    return flattenZodIssues(errors)
-  }
+  if (errors.every(isZodIssue)) return flattenZodIssues(errors)
 
   return undefined
 }
@@ -101,13 +96,8 @@ function readErrorCode(exception: HttpException): ApiErrorCode | undefined {
 }
 
 function readHttpExceptionMessage(response: unknown): string | undefined {
-  if (typeof response === "string" && response.length > 0) {
-    return response
-  }
-
-  if (!isRecord(response) || !("message" in response)) {
-    return undefined
-  }
+  if (typeof response === "string" && response.length > 0) return response
+  if (!isRecord(response) || !("message" in response)) return undefined
 
   const { message } = response
   if (Array.isArray(message)) {
@@ -115,9 +105,7 @@ function readHttpExceptionMessage(response: unknown): string | undefined {
       .filter((item): item is string => typeof item === "string")
       .join(", ")
   }
-  if (typeof message === "string" && message.length > 0) {
-    return message
-  }
+  if (typeof message === "string" && message.length > 0) return message
 
   return undefined
 }
@@ -150,17 +138,9 @@ export function resolveClientMessage(
   exception: unknown,
   status: number
 ): string {
-  if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
-    return INTERNAL_ERROR_MESSAGE
-  }
-
-  if (exception instanceof ZodValidationException) {
-    return "Validation failed"
-  }
-
-  if (exception instanceof StorageError) {
-    return exception.message
-  }
+  if (status >= HttpStatus.INTERNAL_SERVER_ERROR) return INTERNAL_ERROR_MESSAGE
+  if (exception instanceof ZodValidationException) return "Validation failed"
+  if (exception instanceof StorageError) return exception.message
 
   if (exception instanceof HttpException) {
     const message = readHttpExceptionMessage(exception.getResponse())
@@ -173,9 +153,7 @@ export function resolveClientMessage(
 export function resolveFieldErrors(exception: unknown): ApiFieldError[] | null {
   if (exception instanceof ZodValidationException) {
     const zodError = exception.getZodError()
-    if (zodError instanceof ZodError) {
-      return flattenZodIssues(zodError.issues)
-    }
+    if (zodError instanceof ZodError) return flattenZodIssues(zodError.issues)
   }
 
   if (exception instanceof HttpException) {

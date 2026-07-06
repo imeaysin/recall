@@ -4,9 +4,9 @@ import type { JwtClaims } from "@workspace/auth/types"
 import { createLogger } from "@workspace/logger"
 import type { EventBus, Unsubscribe } from "@workspace/realtime"
 import { Observable } from "rxjs"
-import { CurrentUser } from "../../common/decorators"
-import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
-import { EVENT_BUS } from "../../common/realtime/realtime.module"
+import { CurrentUser } from "@/common/decorators"
+import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
+import { EVENT_BUS } from "@/common/realtime/realtime.module"
 
 const logger = createLogger("Events")
 

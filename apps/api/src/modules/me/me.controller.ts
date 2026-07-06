@@ -6,8 +6,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import type { JwtClaims } from "@workspace/auth/types"
-import { CurrentUser } from "../../common/decorators"
-import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
+import { CurrentUser } from "@/common/decorators"
+import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { MeApiResponseDto } from "./me.dto"
 import { MeService } from "./me.service"
 

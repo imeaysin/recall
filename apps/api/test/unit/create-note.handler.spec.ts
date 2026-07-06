@@ -1,10 +1,10 @@
 import { Test, type TestingModule } from "@nestjs/testing"
 import { ObjectId } from "mongodb"
 import type { NoteResponse } from "@workspace/contracts"
-import { JOB_QUEUE } from "../../src/common/jobs/jobs.module"
-import { CreateNoteHandler } from "../../src/modules/notes/commands/create-note.handler"
-import { CreateNoteCommand } from "../../src/modules/notes/commands/create-note.command"
-import { NotesRepository } from "../../src/modules/notes/repositories/notes.repository"
+import { JOB_QUEUE } from "@/common/jobs/jobs.module"
+import { CreateNoteHandler } from "@/modules/notes/commands/create-note.handler"
+import { CreateNoteCommand } from "@/modules/notes/commands/create-note.command"
+import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 
 describe("CreateNoteHandler", () => {
   let handler: CreateNoteHandler

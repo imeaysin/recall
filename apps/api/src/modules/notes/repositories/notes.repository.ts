@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { DomainErrorCode } from "@workspace/contracts"
 import { ObjectId, type Db } from "mongodb"
-import { MONGO_DB } from "../../../common/database/database.module"
-import { apiNotFound } from "../../../common/exceptions/api.exception"
+import { MONGO_DB } from "@/common/database/database.module"
+import { apiNotFound } from "@/common/exceptions/api.exception"
 import type { NewNoteEntity, NoteEntity } from "../entities/note.entity"
 import { assertNoteAccessOrThrow } from "../notes-access.util"
 import type {

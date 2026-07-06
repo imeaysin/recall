@@ -18,8 +18,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import type { JwtClaims } from "@workspace/auth/types"
-import { CurrentUser } from "../../common/decorators"
-import { ApiAuthErrorResponses } from "../../common/decorators/api-error-responses.decorator"
+import { CurrentUser } from "@/common/decorators"
+import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { DeleteNotificationCommand } from "./commands/delete-notification/delete-notification.command"
 import { MarkAllNotificationsReadCommand } from "./commands/mark-all-notifications-read/mark-all-notifications-read.command"
 import { MarkNotificationReadCommand } from "./commands/mark-notification-read/mark-notification-read.command"

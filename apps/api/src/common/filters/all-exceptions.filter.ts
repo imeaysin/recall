@@ -6,7 +6,10 @@ import {
 } from "@nestjs/common"
 import { createLogger, getRequestId } from "@workspace/logger"
 import type { Request, Response } from "express"
-import { buildErrorEnvelope, resolveHttpStatus } from "./http-exception.utils"
+import {
+  buildErrorEnvelope,
+  resolveHttpStatus,
+} from "@/common/filters/http-exception.utils"
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -27,15 +30,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   private logServerError(request: Request, exception: unknown) {
+    const err =
+      exception instanceof Error ? exception : { message: String(exception) }
+
     this.logger.error(
       {
         requestId: getRequestId(),
         method: request.method,
         url: request.url,
-        err:
-          exception instanceof Error
-            ? exception
-            : { message: String(exception) },
+        err,
       },
       "unhandled server error"
     )
