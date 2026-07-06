@@ -2,6 +2,31 @@
   "name": "theo",
   "version": "0.0.1",
   "private": true,
+  "description": "Full-stack monorepo template: NestJS 11 API, Vite React SPA, Next.js 16 marketing site, Expo mobile app, and shared Better Auth, Mongoose database, and Turborepo.",
+  "keywords": [
+    "monorepo",
+    "nestjs",
+    "vite",
+    "react",
+    "nextjs",
+    "expo",
+    "react-native",
+    "better-auth",
+    "mongodb",
+    "turborepo",
+    "typescript",
+    "template"
+  ],
+  "author": "Eaysin <https://github.com/imeaysin>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imeaysin/theo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imeaysin/theo/issues"
+  },
+  "homepage": "https://github.com/imeaysin/theo#readme",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
