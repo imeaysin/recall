@@ -147,7 +147,7 @@ export function resolveClientMessage(
     if (message) return message
   }
 
-  return STATUS_TO_CODE[status] ?? HttpErrorCode.HTTP_ERROR
+  return "An unexpected error occurred."
 }
 
 export function resolveFieldErrors(exception: unknown): ApiFieldError[] | null {
