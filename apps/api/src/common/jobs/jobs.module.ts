@@ -1,44 +1,41 @@
-import {
-  Global,
-  Inject,
-  Module,
-  type OnModuleDestroy,
-  type OnModuleInit,
-} from "@nestjs/common"
+import { Global, Module, type OnModuleInit } from "@nestjs/common"
+import { BullModule } from "@nestjs/bullmq"
+import { ScheduleModule } from "@nestjs/schedule"
 import { jobsEnv } from "@workspace/config/jobs"
-import { createJobQueue, type JobQueue } from "@workspace/jobs"
 import { createLogger } from "@workspace/logger"
 
-export const JOB_QUEUE = Symbol("JOB_QUEUE")
-
-function createJobQueueProvider(): JobQueue {
-  if (jobsEnv.JOBS_PROVIDER === "redis") {
-    return createJobQueue({
-      provider: "redis",
-      redisUrl: jobsEnv.REDIS_URL,
-      queueName: jobsEnv.JOBS_QUEUE_NAME,
-    })
-  }
-
-  return createJobQueue({ provider: "inline" })
-}
+const logger = createLogger("Jobs")
 
 @Global()
 @Module({
-  providers: [{ provide: JOB_QUEUE, useFactory: createJobQueueProvider }],
-  exports: [JOB_QUEUE],
+  imports: [
+    ScheduleModule.forRoot(),
+    BullModule.forRootAsync({
+      useFactory: () => {
+        const url = new URL(jobsEnv.REDIS_URL)
+        return {
+          connection: {
+            host: url.hostname,
+            port: parseInt(url.port, 10) || 6379,
+            username: url.username || undefined,
+            password: url.password || undefined,
+            maxRetriesPerRequest: null,
+            retryStrategy: (times) => {
+              if (process.env.NODE_ENV === "test") return null
+              return Math.max(Math.min(Math.exp(times), 20000), 1000)
+            },
+          },
+        }
+      },
+    }),
+    BullModule.registerQueue({
+      name: jobsEnv.JOBS_QUEUE_NAME,
+    }),
+  ],
+  exports: [BullModule],
 })
-export class JobsModule implements OnModuleInit, OnModuleDestroy {
-  constructor(@Inject(JOB_QUEUE) private readonly jobQueue: JobQueue) {}
-
+export class JobsModule implements OnModuleInit {
   onModuleInit() {
-    createLogger("Jobs").info(
-      { provider: jobsEnv.JOBS_PROVIDER },
-      "job queue ready"
-    )
-  }
-
-  onModuleDestroy() {
-    void this.jobQueue.close()
+    logger.info({ provider: jobsEnv.JOBS_PROVIDER }, "job queue ready")
   }
 }

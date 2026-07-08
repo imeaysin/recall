@@ -1,4 +1,3 @@
-import { Inject } from "@nestjs/common"
 import { CommandHandler, type ICommandHandler } from "@nestjs/cqrs"
 import type { SendNotificationResponse } from "@workspace/contracts"
 import { createLogger } from "@workspace/logger"
@@ -7,12 +6,12 @@ import {
   type ExpoPushMessage,
   type PushProvider,
 } from "@workspace/notifications"
-import type { EventBus } from "@workspace/realtime"
 import { PUSH_PROVIDER } from "@/common/push/push.module"
-import { EVENT_BUS } from "@/common/realtime/realtime.module"
+import { RealtimeGateway } from "@/common/realtime/realtime.gateway"
 import { DeviceTokenRepository } from "../../repositories/device-token.repository"
 import { NotificationRepository } from "../../repositories/notification.repository"
 import { SendNotificationCommand } from "./send-notification.command"
+import { Inject } from "@nestjs/common"
 
 const logger = createLogger("Notifications")
 
@@ -22,7 +21,7 @@ export class SendNotificationHandler implements ICommandHandler<SendNotification
     private readonly deviceTokens: DeviceTokenRepository,
     private readonly notifications: NotificationRepository,
     @Inject(PUSH_PROVIDER) private readonly push: PushProvider,
-    @Inject(EVENT_BUS) private readonly eventBus: EventBus
+    private readonly realtimeGateway: RealtimeGateway
   ) {}
 
   async execute(
@@ -74,16 +73,15 @@ export class SendNotificationHandler implements ICommandHandler<SendNotification
     }
 
     for (const userId of input.userIds) {
-      this.eventBus
-        .publish(
-          `user:${userId}`,
-          JSON.stringify({
-            type: "notification.created",
-            title: input.title,
-            notificationType: input.type,
-          })
-        )
-        .catch((err) => logger.error({ err, userId }, "event publish failed"))
+      try {
+        this.realtimeGateway.broadcastEvent(`user:${userId}`, {
+          type: "notification.created",
+          title: input.title,
+          notificationType: input.type,
+        })
+      } catch (err) {
+        logger.error({ err, userId }, "event publish failed")
+      }
     }
 
     return { sent, pushDelivered, invalidTokensRemoved }

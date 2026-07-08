@@ -1,7 +1,8 @@
 import { Test, type TestingModule } from "@nestjs/testing"
 import { ObjectId } from "mongodb"
 import type { NoteResponse } from "@workspace/contracts"
-import { JOB_QUEUE } from "@/common/jobs/jobs.module"
+import { getQueueToken } from "@nestjs/bullmq"
+import { jobsEnv } from "@workspace/config/jobs"
 import { CreateNoteHandler } from "@/modules/notes/commands/create-note.handler"
 import { CreateNoteCommand } from "@/modules/notes/commands/create-note.command"
 import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
@@ -9,17 +10,17 @@ import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 describe("CreateNoteHandler", () => {
   let handler: CreateNoteHandler
   let repository: { insert: jest.Mock }
-  let jobQueue: { enqueue: jest.Mock }
+  let jobQueue: { add: jest.Mock }
 
   beforeEach(async () => {
     repository = { insert: jest.fn() }
-    jobQueue = { enqueue: jest.fn() }
+    jobQueue = { add: jest.fn() }
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       providers: [
         CreateNoteHandler,
         { provide: NotesRepository, useValue: repository },
-        { provide: JOB_QUEUE, useValue: jobQueue },
+        { provide: getQueueToken(jobsEnv.JOBS_QUEUE_NAME), useValue: jobQueue },
       ],
     }).compile()
 
@@ -62,10 +63,14 @@ describe("CreateNoteHandler", () => {
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     } satisfies NoteResponse)
-    expect(jobQueue.enqueue).toHaveBeenCalledWith("note.created", {
-      noteId: noteId.toString(),
-      organizationId: "org-1",
-      userId: "user-1",
-    })
+    expect(jobQueue.add).toHaveBeenCalledWith(
+      "note.created",
+      {
+        type: "note.created",
+        noteId: noteId.toString(),
+        authorId: "user-1",
+      },
+      expect.any(Object)
+    )
   })
 })

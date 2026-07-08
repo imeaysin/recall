@@ -11,18 +11,30 @@ function mockAccessControl() {
   }
 }
 
-jest.mock("better-auth/plugins/access", () => ({
-  createAccessControl: () => mockAccessControl(),
-  role: () => mockRole(),
-}))
+jest.mock(
+  "better-auth/plugins/access",
+  () => ({
+    createAccessControl: () => mockAccessControl(),
+    role: () => mockRole(),
+  }),
+  { virtual: true }
+)
 
-jest.mock("better-auth/plugins/admin/access", () => ({
-  defaultStatements: {},
-  adminAc: mockAccessControl(),
-}))
+jest.mock(
+  "better-auth/plugins/admin/access",
+  () => ({
+    defaultStatements: {},
+    adminAc: mockAccessControl(),
+  }),
+  { virtual: true }
+)
 
-jest.mock("better-auth/plugins/organization/access", () => ({
-  ownerAc: mockAccessControl(),
-  adminAc: mockAccessControl(),
-  memberAc: mockAccessControl(),
-}))
+jest.mock(
+  "better-auth/plugins/organization/access",
+  () => ({
+    ownerAc: mockAccessControl(),
+    adminAc: mockAccessControl(),
+    memberAc: mockAccessControl(),
+  }),
+  { virtual: true }
+)
