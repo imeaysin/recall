@@ -1,7 +1,13 @@
 import type { RouteObject } from "react-router-dom"
-import { DashboardPage } from "@/features/dashboard/pages/dashboard-page"
 import { routeSegments } from "@/config/routes"
 
 export const dashboardRoutes: RouteObject[] = [
-  { path: routeSegments.app.dashboard, element: <DashboardPage /> },
+  {
+    path: routeSegments.app.dashboard,
+    async lazy() {
+      const { DashboardPage } =
+        await import("@/features/dashboard/pages/dashboard-page")
+      return { Component: DashboardPage }
+    },
+  },
 ]

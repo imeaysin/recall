@@ -13,10 +13,10 @@ export default defineConfig({
       "@": path.join(rootDir, "src"),
     },
   },
+  envDir: path.join(rootDir, "../.."),
   server: {
     fs: {
       allow: [path.join(rootDir, "../..")],
     },
   },
-  envDir: path.join(rootDir, "../.."),
 })

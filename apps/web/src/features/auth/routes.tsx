@@ -1,21 +1,61 @@
 import type { RouteObject } from "react-router-dom"
-import { ForgotPasswordPage } from "@/features/auth/pages/forgot-password-page"
-import { ResetPasswordPage } from "@/features/auth/pages/reset-password-page"
-import { SignInPage } from "@/features/auth/pages/sign-in-page"
-import { SignOutPage } from "@/features/auth/pages/sign-out-page"
-import { SignUpPage } from "@/features/auth/pages/sign-up-page"
-import { TwoFactorPage } from "@/features/auth/pages/two-factor-page"
-import { VerifyEmailPage } from "@/features/auth/pages/verify-email-page"
 import { routeSegments } from "@/config/routes"
 
 const { auth } = routeSegments
 
 export const authRoutes: RouteObject[] = [
-  { path: auth.signIn, element: <SignInPage /> },
-  { path: auth.signUp, element: <SignUpPage /> },
-  { path: auth.signOut, element: <SignOutPage /> },
-  { path: auth.forgotPassword, element: <ForgotPasswordPage /> },
-  { path: auth.resetPassword, element: <ResetPasswordPage /> },
-  { path: auth.verifyEmail, element: <VerifyEmailPage /> },
-  { path: auth.twoFactor, element: <TwoFactorPage /> },
+  {
+    path: auth.signIn,
+    async lazy() {
+      const { SignInPage } = await import("@/features/auth/pages/sign-in-page")
+      return { Component: SignInPage }
+    },
+  },
+  {
+    path: auth.signUp,
+    async lazy() {
+      const { SignUpPage } = await import("@/features/auth/pages/sign-up-page")
+      return { Component: SignUpPage }
+    },
+  },
+  {
+    path: auth.signOut,
+    async lazy() {
+      const { SignOutPage } =
+        await import("@/features/auth/pages/sign-out-page")
+      return { Component: SignOutPage }
+    },
+  },
+  {
+    path: auth.forgotPassword,
+    async lazy() {
+      const { ForgotPasswordPage } =
+        await import("@/features/auth/pages/forgot-password-page")
+      return { Component: ForgotPasswordPage }
+    },
+  },
+  {
+    path: auth.resetPassword,
+    async lazy() {
+      const { ResetPasswordPage } =
+        await import("@/features/auth/pages/reset-password-page")
+      return { Component: ResetPasswordPage }
+    },
+  },
+  {
+    path: auth.verifyEmail,
+    async lazy() {
+      const { VerifyEmailPage } =
+        await import("@/features/auth/pages/verify-email-page")
+      return { Component: VerifyEmailPage }
+    },
+  },
+  {
+    path: auth.twoFactor,
+    async lazy() {
+      const { TwoFactorPage } =
+        await import("@/features/auth/pages/two-factor-page")
+      return { Component: TwoFactorPage }
+    },
+  },
 ]
