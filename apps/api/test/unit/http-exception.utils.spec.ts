@@ -6,7 +6,11 @@ import {
 } from "@nestjs/common"
 import { ZodValidationException } from "nestjs-zod"
 import { z, ZodError } from "zod"
-import { DomainErrorCode, HttpErrorCode } from "@workspace/contracts"
+import {
+  NoteErrorCode,
+  FileErrorCode,
+  HttpErrorCode,
+} from "@workspace/contracts"
 import { StorageError } from "@workspace/storage"
 import {
   buildErrorEnvelope,
@@ -45,11 +49,11 @@ describe("http-exception.utils", () => {
 
   it("reads machine-readable codes from HttpException cause", () => {
     const exception = new NotFoundException("Note not found", {
-      cause: DomainErrorCode.NOTE_NOT_FOUND,
+      cause: NoteErrorCode.NOT_FOUND,
     })
 
     expect(resolveErrorCode(exception, HttpStatus.NOT_FOUND)).toBe(
-      DomainErrorCode.NOTE_NOT_FOUND
+      NoteErrorCode.NOT_FOUND
     )
     expect(resolveClientMessage(exception, HttpStatus.NOT_FOUND)).toBe(
       "Note not found"
@@ -66,7 +70,7 @@ describe("http-exception.utils", () => {
 
   it("builds the unified error envelope", () => {
     const exception = new BadRequestException("File is required", {
-      cause: DomainErrorCode.FILE_REQUIRED,
+      cause: FileErrorCode.REQUIRED,
     })
 
     const envelope = buildErrorEnvelope(exception, HttpStatus.BAD_REQUEST, {
@@ -76,7 +80,7 @@ describe("http-exception.utils", () => {
     expect(envelope).toMatchObject({
       success: false,
       statusCode: 400,
-      code: DomainErrorCode.FILE_REQUIRED,
+      code: FileErrorCode.REQUIRED,
       message: "File is required",
       path: "/v1/uploads",
       errors: null,
@@ -108,7 +112,7 @@ describe("http-exception.utils", () => {
 
     expect(resolveHttpStatus(exception)).toBe(HttpStatus.BAD_REQUEST)
     expect(resolveErrorCode(exception, HttpStatus.BAD_REQUEST)).toBe(
-      DomainErrorCode.INVALID_FILE_PATH
+      FileErrorCode.INVALID_PATH
     )
     expect(resolveClientMessage(exception, HttpStatus.BAD_REQUEST)).toBe(
       "Path traversal detected"
@@ -120,7 +124,7 @@ describe("http-exception.utils", () => {
 
     expect(resolveHttpStatus(exception)).toBe(HttpStatus.NOT_FOUND)
     expect(resolveErrorCode(exception, HttpStatus.NOT_FOUND)).toBe(
-      DomainErrorCode.FILE_NOT_FOUND
+      FileErrorCode.NOT_FOUND
     )
   })
 })

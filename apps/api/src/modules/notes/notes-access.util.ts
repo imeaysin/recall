@@ -1,4 +1,4 @@
-import { DomainErrorCode } from "@workspace/contracts"
+import { NoteErrorCode } from "@workspace/contracts"
 import { apiForbidden, apiNotFound } from "@/common/exceptions/api.exception"
 import type { NoteEntity } from "./entities/note.entity"
 
@@ -10,7 +10,7 @@ export function assertNoteAccessOrThrow(
   organizationId: string
 ): never {
   if (!existing || existing.organizationId !== organizationId) {
-    apiNotFound("Note not found", DomainErrorCode.NOTE_NOT_FOUND)
+    apiNotFound("Note not found", NoteErrorCode.NOT_FOUND)
   }
-  apiForbidden(NOTE_FORBIDDEN_MESSAGE, DomainErrorCode.NOTE_FORBIDDEN)
+  apiForbidden(NOTE_FORBIDDEN_MESSAGE, NoteErrorCode.FORBIDDEN)
 }

@@ -1,6 +1,6 @@
 import { CommandHandler, type ICommandHandler } from "@nestjs/cqrs"
 import { Expo } from "@workspace/notifications"
-import { DomainErrorCode } from "@workspace/contracts"
+import { NotificationErrorCode } from "@workspace/contracts"
 import { apiBadRequest } from "@/common/exceptions/api.exception"
 import { DeviceTokenRepository } from "../../repositories/device-token.repository"
 import { RegisterDeviceTokenCommand } from "./register-device-token.command"
@@ -13,7 +13,7 @@ export class RegisterDeviceTokenHandler implements ICommandHandler<RegisterDevic
     if (!Expo.isExpoPushToken(command.input.token)) {
       apiBadRequest(
         "Invalid Expo push token format",
-        DomainErrorCode.INVALID_PUSH_TOKEN
+        NotificationErrorCode.INVALID_PUSH_TOKEN
       )
     }
 

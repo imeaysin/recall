@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { DomainErrorCode } from "@workspace/contracts"
+import { NoteErrorCode } from "@workspace/contracts"
 import { ObjectId, type Db } from "mongodb"
 import { MONGO_DB } from "@/common/database/database.module"
 import { BaseMongoRepository } from "@/common/database/repositories"
@@ -160,7 +160,7 @@ export class NotesRepository
       const existing = await this.findById(id)
       assertNoteAccessOrThrow(existing, scope.organizationId)
     }
-    apiNotFound("Note not found", DomainErrorCode.NOTE_NOT_FOUND)
+    apiNotFound("Note not found", NoteErrorCode.NOT_FOUND)
   }
 
   async rejectMutationMiss(scope: NoteMutationScope): Promise<never> {

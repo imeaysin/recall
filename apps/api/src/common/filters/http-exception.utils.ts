@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common"
 import {
-  DomainErrorCode,
+  FileErrorCode,
   HttpErrorCode,
   isApiErrorCode,
   type ApiErrorResponse,
@@ -38,11 +38,10 @@ const STORAGE_STATUS: Record<StorageErrorCode, number> = {
   PROVIDER_ERROR: HttpStatus.INTERNAL_SERVER_ERROR,
 }
 
-const STORAGE_DOMAIN_CODE: Partial<Record<StorageErrorCode, DomainErrorCode>> =
-  {
-    INVALID_PATH: DomainErrorCode.INVALID_FILE_PATH,
-    FILE_NOT_FOUND: DomainErrorCode.FILE_NOT_FOUND,
-  }
+const STORAGE_DOMAIN_CODE: Partial<Record<StorageErrorCode, FileErrorCode>> = {
+  INVALID_PATH: FileErrorCode.INVALID_PATH,
+  FILE_NOT_FOUND: FileErrorCode.NOT_FOUND,
+}
 
 export function resolveHttpStatus(exception: unknown): number {
   if (exception instanceof HttpException) return exception.getStatus()
