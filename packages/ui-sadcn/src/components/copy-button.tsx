@@ -2,9 +2,9 @@
 
 import { Check, Copy } from "lucide-react"
 
-import { cn } from "@workspace/ui/lib/utils"
-import { useCopyToClipboard } from "@workspace/ui/hooks/use-copy-to-clipboard"
-import { Button } from "@workspace/ui/components/button"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { useCopyToClipboard } from "@workspace/ui-shadcn/hooks/use-copy-to-clipboard"
+import { Button } from "@workspace/ui-shadcn/components/button"
 
 type CopyButtonProps = {
   content: string

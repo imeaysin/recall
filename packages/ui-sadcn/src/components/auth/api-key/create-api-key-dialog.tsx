@@ -18,13 +18,13 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
-import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { apiKeyPlugin } from "@workspace/ui/lib/auth/api-key-plugin"
+} from "@workspace/ui-shadcn/components/alert-dialog"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { apiKeyPlugin } from "@workspace/ui-shadcn/lib/auth/api-key-plugin"
 import { NewApiKeyDialog } from "./new-api-key-dialog"
 
 export type CreateApiKeyDialogProps = {

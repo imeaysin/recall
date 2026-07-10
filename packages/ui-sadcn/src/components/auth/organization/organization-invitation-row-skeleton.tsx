@@ -1,5 +1,5 @@
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { TableCell, TableRow } from "@workspace/ui/components/table"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
+import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 
 /**
  * Placeholder row matching `OrganizationInvitationRow` while invitations load.

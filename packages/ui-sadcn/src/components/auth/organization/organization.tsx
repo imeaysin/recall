@@ -16,9 +16,9 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@workspace/ui/components/tabs"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/tabs"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { OrganizationPeople } from "./organization-people"
 import { OrganizationSettings } from "./organization-settings"
 

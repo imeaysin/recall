@@ -6,7 +6,7 @@ import {
 } from "@better-auth-ui/core/plugins"
 import { Briefcase } from "lucide-react"
 
-import { OrganizationsSettings } from "@workspace/ui/components/auth/organization/organizations-settings"
+import { OrganizationsSettings } from "@workspace/ui-shadcn/components/auth/organization/organizations-settings"
 
 export const organizationPlugin = createAuthPlugin(
   coreOrganizationPlugin.id,

@@ -3,18 +3,18 @@ import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
 import { Trash2, Upload } from "lucide-react"
 import { type ChangeEvent, useRef, useState } from "react"
 import { toast } from "sonner"
-import { UserAvatar } from "@workspace/ui/components/auth/user/user-avatar"
-import { Button, buttonVariants } from "@workspace/ui/components/button"
+import { UserAvatar } from "@workspace/ui-shadcn/components/auth/user/user-avatar"
+import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Field } from "@workspace/ui/components/field"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { Field } from "@workspace/ui-shadcn/components/field"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type ChangeAvatarProps = {
   className?: string

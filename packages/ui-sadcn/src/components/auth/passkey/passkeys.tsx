@@ -8,11 +8,11 @@ import {
 } from "@better-auth-ui/react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { Separator } from "@workspace/ui/components/separator"
-import { passkeyPlugin } from "@workspace/ui/lib/auth/passkey-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { passkeyPlugin } from "@workspace/ui-shadcn/lib/auth/passkey-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 import { AddPasskeyDialog } from "./add-passkey-dialog"
 import { Passkey } from "./passkey"

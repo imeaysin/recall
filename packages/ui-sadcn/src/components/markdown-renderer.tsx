@@ -2,8 +2,8 @@ import React, { Suspense } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
-import { cn } from "@workspace/ui/lib/utils"
-import { CopyButton } from "@workspace/ui/components/copy-button"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { CopyButton } from "@workspace/ui-shadcn/components/copy-button"
 
 interface MarkdownRendererProps {
   children: string
@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
 export function MarkdownRenderer({ children }: MarkdownRendererProps) {
   return (
     <div className="space-y-3">
-      <Markdown remarkPlugins={[remarkGfm]} components={COMPONENTS}>
+      <Markdown remarkPlugins={[remarkGfm]} components={COMPONENTS as any}>
         {children}
       </Markdown>
     </div>

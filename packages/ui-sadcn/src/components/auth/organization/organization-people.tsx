@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { OrganizationInvitations } from "./organization-invitations"
 import { OrganizationMembers } from "./organization-members"
 

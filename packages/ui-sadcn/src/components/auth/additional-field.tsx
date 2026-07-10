@@ -8,9 +8,9 @@ import { CalendarIcon, Check, ChevronDownIcon, Copy } from "lucide-react"
 import { type ComponentType, useRef, useState } from "react"
 import { toast } from "sonner"
 
-import { buttonVariants } from "@workspace/ui/components/button"
-import { Calendar } from "@workspace/ui/components/calendar"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+import { buttonVariants } from "@workspace/ui-shadcn/components/button"
+import { Calendar } from "@workspace/ui-shadcn/components/calendar"
+import { Checkbox } from "@workspace/ui-shadcn/components/checkbox"
 import {
   Combobox,
   ComboboxContent,
@@ -18,37 +18,37 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@workspace/ui/components/combobox"
+} from "@workspace/ui-shadcn/components/combobox"
 import {
   Field,
   FieldContent,
   FieldError,
   FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
+} from "@workspace/ui-shadcn/components/field"
+import { Input } from "@workspace/ui-shadcn/components/input"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@workspace/ui/components/input-group"
-import { Label } from "@workspace/ui/components/label"
+} from "@workspace/ui-shadcn/components/input-group"
+import { Label } from "@workspace/ui-shadcn/components/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@workspace/ui/components/popover"
+} from "@workspace/ui-shadcn/components/popover"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select"
-import { Slider } from "@workspace/ui/components/slider"
-import { Switch } from "@workspace/ui/components/switch"
-import { Textarea } from "@workspace/ui/components/textarea"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/select"
+import { Slider } from "@workspace/ui-shadcn/components/slider"
+import { Switch } from "@workspace/ui-shadcn/components/switch"
+import { Textarea } from "@workspace/ui-shadcn/components/textarea"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type AdditionalFieldProps = {
   name: string

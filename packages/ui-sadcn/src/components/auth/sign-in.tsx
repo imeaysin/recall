@@ -5,25 +5,25 @@ import { useAuth, useFetchOptions, useSignInEmail } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@workspace/ui-shadcn/components/button"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+} from "@workspace/ui-shadcn/components/card"
+import { Checkbox } from "@workspace/ui-shadcn/components/checkbox"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldSeparator,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/field"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignInProps = {

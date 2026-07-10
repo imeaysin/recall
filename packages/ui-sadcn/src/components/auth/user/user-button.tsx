@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { isValidElement, type ReactElement, type ReactNode } from "react"
 
-import { buttonVariants } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,8 +24,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
 

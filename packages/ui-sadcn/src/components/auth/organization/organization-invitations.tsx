@@ -9,21 +9,21 @@ import {
 import { ChevronUp, Filter, Search, X } from "lucide-react"
 import { type ComponentProps, type ReactNode, useMemo, useState } from "react"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { buttonVariants } from "@workspace/ui/components/button"
-import { Card } from "@workspace/ui/components/card"
+import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { buttonVariants } from "@workspace/ui-shadcn/components/button"
+import { Card } from "@workspace/ui-shadcn/components/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@workspace/ui/components/input-group"
+} from "@workspace/ui-shadcn/components/input-group"
 import {
   Table,
   TableBody,
@@ -31,9 +31,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/table"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { OrganizationInvitationRow } from "./organization-invitation-row"
 import { OrganizationInvitationRowSkeleton } from "./organization-invitation-row-skeleton"

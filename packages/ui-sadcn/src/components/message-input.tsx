@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowUp, Info, Loader2, Mic, Paperclip, Square, X } from "lucide-react"
 import { omit } from "remeda"
 
-import { cn } from "@workspace/ui/lib/utils"
-import { useAudioRecording } from "@workspace/ui/hooks/use-audio-recording"
-import { useAutosizeTextArea } from "@workspace/ui/hooks/use-autosize-textarea"
-import { AudioVisualizer } from "@workspace/ui/components/audio-visualizer"
-import { Button } from "@workspace/ui/components/button"
-import { FilePreview } from "@workspace/ui/components/file-preview"
-import { InterruptPrompt } from "@workspace/ui/components/interrupt-prompt"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { useAudioRecording } from "@workspace/ui-shadcn/hooks/use-audio-recording"
+import { useAutosizeTextArea } from "@workspace/ui-shadcn/hooks/use-autosize-textarea"
+import { AudioVisualizer } from "@workspace/ui-shadcn/components/audio-visualizer"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { FilePreview } from "@workspace/ui-shadcn/components/file-preview"
+import { InterruptPrompt } from "@workspace/ui-shadcn/components/interrupt-prompt"
 
 interface MessageInputBaseProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   value: string

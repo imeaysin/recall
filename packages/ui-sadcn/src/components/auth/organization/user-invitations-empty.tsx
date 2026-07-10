@@ -3,7 +3,7 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { Send } from "lucide-react"
 
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 
 /**
  * Empty state for `UserInvitations`.

@@ -1,4 +1,4 @@
-import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 
 /**
  * Placeholder row matching `UserInvitationRow` while invitations load.

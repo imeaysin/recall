@@ -13,14 +13,18 @@ import {
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent, CardFooter } from "@workspace/ui/components/card"
-import { Field, FieldError } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Skeleton } from "@workspace/ui/components/skeleton"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "@workspace/ui-shadcn/components/card"
+import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { AdditionalField } from "../../additional-field"
 import { ChangeAvatar } from "./change-avatar"
 

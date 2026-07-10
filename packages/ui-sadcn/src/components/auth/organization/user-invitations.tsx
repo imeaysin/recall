@@ -5,9 +5,9 @@ import {
   useListUserInvitations,
 } from "@better-auth-ui/react"
 
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { Separator } from "@workspace/ui/components/separator"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 import { UserInvitationRow } from "./user-invitation-row"
 import { UserInvitationRowSkeleton } from "./user-invitation-row-skeleton"
 import { UserInvitationsEmpty } from "./user-invitations-empty"

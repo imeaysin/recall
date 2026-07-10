@@ -10,12 +10,12 @@ import {
 import type { Invitation } from "better-auth/client"
 import { X } from "lucide-react"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { TableCell, TableRow } from "@workspace/ui/components/table"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { OrganizationInvitationRowSkeleton } from "./organization-invitation-row-skeleton"
 
 export type OrganizationInvitationRowProps = {

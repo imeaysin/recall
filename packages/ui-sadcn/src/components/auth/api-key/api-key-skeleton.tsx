@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 
 export function ApiKeySkeleton() {
   return (

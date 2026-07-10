@@ -6,9 +6,9 @@ import {
 import { Key, X } from "lucide-react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { apiKeyPlugin } from "@workspace/ui/lib/auth/api-key-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { apiKeyPlugin } from "@workspace/ui-shadcn/lib/auth/api-key-plugin"
 import { DeleteApiKeyDialog } from "./delete-api-key-dialog"
 
 export type ApiKeyProps = {

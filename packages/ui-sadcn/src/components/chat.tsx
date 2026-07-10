@@ -9,14 +9,14 @@ import {
 } from "react"
 import { ArrowDown, ThumbsDown, ThumbsUp } from "lucide-react"
 
-import { cn } from "@workspace/ui/lib/utils"
-import { useAutoScroll } from "@workspace/ui/hooks/use-auto-scroll"
-import { Button } from "@workspace/ui/components/button"
-import { type Message } from "@workspace/ui/components/chat-message"
-import { CopyButton } from "@workspace/ui/components/copy-button"
-import { MessageInput } from "@workspace/ui/components/message-input"
-import { MessageList } from "@workspace/ui/components/message-list"
-import { PromptSuggestions } from "@workspace/ui/components/prompt-suggestions"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { useAutoScroll } from "@workspace/ui-shadcn/hooks/use-auto-scroll"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { type Message } from "@workspace/ui-shadcn/components/chat-message"
+import { CopyButton } from "@workspace/ui-shadcn/components/copy-button"
+import { MessageInput } from "@workspace/ui-shadcn/components/message-input"
+import { MessageList } from "@workspace/ui-shadcn/components/message-list"
+import { PromptSuggestions } from "@workspace/ui-shadcn/components/prompt-suggestions"
 
 interface ChatPropsBase {
   handleSubmit: (

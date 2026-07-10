@@ -14,27 +14,27 @@ import { type SyntheticEvent, useState } from "react"
 import {
   ProviderButtons,
   type SocialLayout,
-} from "@workspace/ui/components/auth/provider-buttons"
-import { Button } from "@workspace/ui/components/button"
+} from "@workspace/ui-shadcn/components/auth/provider-buttons"
+import { Button } from "@workspace/ui-shadcn/components/button"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { Checkbox } from "@workspace/ui/components/checkbox"
+} from "@workspace/ui-shadcn/components/card"
+import { Checkbox } from "@workspace/ui-shadcn/components/checkbox"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldSeparator,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { usernamePlugin } from "@workspace/ui/lib/auth/username-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/field"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { usernamePlugin } from "@workspace/ui-shadcn/lib/auth/username-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type SignInUsernameProps = {
   className?: string

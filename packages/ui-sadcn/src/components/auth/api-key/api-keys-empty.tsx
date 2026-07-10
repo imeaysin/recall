@@ -3,9 +3,9 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { Key } from "lucide-react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { apiKeyPlugin } from "@workspace/ui/lib/auth/api-key-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { apiKeyPlugin } from "@workspace/ui-shadcn/lib/auth/api-key-plugin"
 
 export type ApiKeysEmptyProps = {
   onCreatePress: () => void

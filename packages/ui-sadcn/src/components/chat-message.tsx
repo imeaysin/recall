@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { motion } from "framer-motion"
 import { Ban, ChevronRight, Code2, Loader2, Terminal } from "lucide-react"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@workspace/ui/components/collapsible"
-import { FilePreview } from "@workspace/ui/components/file-preview"
-import { MarkdownRenderer } from "@workspace/ui/components/markdown-renderer"
+} from "@workspace/ui-shadcn/components/collapsible"
+import { FilePreview } from "@workspace/ui-shadcn/components/file-preview"
+import { MarkdownRenderer } from "@workspace/ui-shadcn/components/markdown-renderer"
 
 const chatBubbleVariants = cva(
   "group/message relative rounded-lg p-3 text-sm break-words sm:max-w-[70%]",
@@ -299,7 +299,7 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
             <span>Thinking</span>
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent forceMount>
+        <CollapsibleContent>
           <motion.div
             initial={false}
             animate={isOpen ? "open" : "closed"}

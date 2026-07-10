@@ -7,16 +7,16 @@ import {
 import { useDebouncer } from "@tanstack/react-pacer"
 import { Check, X } from "lucide-react"
 import { useState } from "react"
-import type { AdditionalFieldProps } from "@workspace/ui/components/auth/additional-field"
-import { Field, FieldError } from "@workspace/ui/components/field"
+import type { AdditionalFieldProps } from "@workspace/ui-shadcn/components/auth/additional-field"
+import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@workspace/ui/components/input-group"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { usernamePlugin } from "@workspace/ui/lib/auth/username-plugin"
+} from "@workspace/ui-shadcn/components/input-group"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { usernamePlugin } from "@workspace/ui-shadcn/lib/auth/username-plugin"
 
 /**
  * Renderer for the `username` additional field. Owns availability checking,

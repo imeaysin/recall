@@ -11,18 +11,18 @@ import {
 } from "@better-auth-ui/react"
 import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
-import { UserView } from "@workspace/ui/components/auth/user/user-view"
-import { Button, buttonVariants } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
+import { UserView } from "@workspace/ui-shadcn/components/auth/user/user-view"
+import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { multiSessionPlugin } from "@workspace/ui/lib/auth/multi-session-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { multiSessionPlugin } from "@workspace/ui-shadcn/lib/auth/multi-session-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type ManageAccountProps = {
   deviceSession?: ListDeviceSession | null

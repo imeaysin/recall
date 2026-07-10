@@ -1,6 +1,6 @@
 "use client"
 
-import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 
 /**
  * Placeholder matching `DeleteOrganization` while the delete permission resolves.

@@ -10,8 +10,8 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@workspace/ui/components/tabs"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/tabs"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { AccountSettings } from "./account/account-settings"
 import { SecuritySettings } from "./security/security-settings"
 

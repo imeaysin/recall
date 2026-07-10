@@ -8,15 +8,15 @@ import { useDebouncer } from "@tanstack/react-pacer"
 import { Check, X } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { Field, FieldError } from "@workspace/ui/components/field"
+import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@workspace/ui/components/input-group"
-import { Label } from "@workspace/ui/components/label"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+} from "@workspace/ui-shadcn/components/input-group"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 
 /** Props for the `SlugField` component. */
 export type SlugFieldProps = {

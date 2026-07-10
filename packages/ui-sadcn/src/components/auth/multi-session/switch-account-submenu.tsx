@@ -4,8 +4,8 @@ import { ArrowLeftRight } from "lucide-react"
 import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { multiSessionPlugin } from "@workspace/ui/lib/auth/multi-session-plugin"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { multiSessionPlugin } from "@workspace/ui-shadcn/lib/auth/multi-session-plugin"
 import { SwitchAccountSubmenuContent } from "./switch-account-submenu-content"
 
 export type SwitchAccountSubmenuProps = {

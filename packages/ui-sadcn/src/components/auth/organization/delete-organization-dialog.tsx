@@ -18,11 +18,11 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+} from "@workspace/ui-shadcn/components/alert-dialog"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 import { OrganizationView } from "./organization-view"
 
 export type DeleteOrganizationDialogProps = {

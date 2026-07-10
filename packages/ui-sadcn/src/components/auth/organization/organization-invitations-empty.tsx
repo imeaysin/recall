@@ -3,8 +3,8 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { Send } from "lucide-react"
 
-import { Button } from "@workspace/ui/components/button"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 
 export type OrganizationInvitationsEmptyProps = {
   onInvitePress: () => void

@@ -8,13 +8,13 @@ import {
   useSession,
 } from "@better-auth-ui/react"
 import { Check, CirclePlus } from "lucide-react"
-import { UserView } from "@workspace/ui/components/auth/user/user-view"
+import { UserView } from "@workspace/ui-shadcn/components/auth/user/user-view"
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuSubContent,
-} from "@workspace/ui/components/dropdown-menu"
-import { multiSessionPlugin } from "@workspace/ui/lib/auth/multi-session-plugin"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { multiSessionPlugin } from "@workspace/ui-shadcn/lib/auth/multi-session-plugin"
 import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
 
 /**

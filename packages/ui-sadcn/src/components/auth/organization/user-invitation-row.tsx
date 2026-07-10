@@ -10,10 +10,10 @@ import {
 import type { Invitation } from "better-auth/client"
 import { Check, Clock, X } from "lucide-react"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 
 export type UserInvitationRowProps = {
   invitation: Invitation & { organizationName?: string }

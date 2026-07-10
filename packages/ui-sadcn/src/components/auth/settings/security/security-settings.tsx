@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
 import { LinkedAccounts } from "./linked-accounts"

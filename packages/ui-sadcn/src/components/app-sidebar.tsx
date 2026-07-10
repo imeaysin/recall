@@ -2,17 +2,17 @@
 
 import * as React from "react"
 
-import { NavMain } from "@workspace/ui/components/nav-main"
-import { NavProjects } from "@workspace/ui/components/nav-projects"
-import { NavUser } from "@workspace/ui/components/nav-user"
-import { TeamSwitcher } from "@workspace/ui/components/team-switcher"
+import { NavMain } from "@workspace/ui-shadcn/components/nav-main"
+import { NavProjects } from "@workspace/ui-shadcn/components/nav-projects"
+import { NavUser } from "@workspace/ui-shadcn/components/nav-user"
+import { TeamSwitcher } from "@workspace/ui-shadcn/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@workspace/ui/components/sidebar"
+} from "@workspace/ui-shadcn/components/sidebar"
 import {
   GalleryVerticalEndIcon,
   AudioLinesIcon,

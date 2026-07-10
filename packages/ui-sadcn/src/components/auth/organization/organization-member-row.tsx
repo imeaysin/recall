@@ -11,17 +11,17 @@ import { LogOut, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { Button, buttonVariants } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { TableCell, TableRow } from "@workspace/ui/components/table"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/dropdown-menu"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { UserView } from "../user/user-view"
 import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 import { OrganizationMemberRowSkeleton } from "./organization-member-row-skeleton"

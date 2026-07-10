@@ -9,20 +9,20 @@ import {
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { Card, CardContent } from "@workspace/ui/components/card"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import {
   Field,
   FieldContent,
   FieldLabel,
   FieldTitle,
-} from "@workspace/ui/components/field"
-import { Label } from "@workspace/ui/components/label"
+} from "@workspace/ui-shadcn/components/field"
+import { Label } from "@workspace/ui-shadcn/components/label"
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@workspace/ui/components/radio-group"
-import { themePlugin } from "@workspace/ui/lib/auth/theme-plugin"
-import { cn } from "@workspace/ui/lib/utils"
+} from "@workspace/ui-shadcn/components/radio-group"
+import { themePlugin } from "@workspace/ui-shadcn/lib/auth/theme-plugin"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type AppearanceProps = {
   className?: string

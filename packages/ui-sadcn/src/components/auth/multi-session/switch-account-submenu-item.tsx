@@ -4,9 +4,9 @@ import {
   useAuth,
   useSetActiveSession,
 } from "@better-auth-ui/react"
-import { UserView } from "@workspace/ui/components/auth/user/user-view"
-import { DropdownMenuItem } from "@workspace/ui/components/dropdown-menu"
-import { Spinner } from "@workspace/ui/components/spinner"
+import { UserView } from "@workspace/ui-shadcn/components/auth/user/user-view"
+import { DropdownMenuItem } from "@workspace/ui-shadcn/components/dropdown-menu"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 
 export type SwitchAccountSubmenuItemProps = {
   deviceSession: ListDeviceSession

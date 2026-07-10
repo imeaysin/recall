@@ -2,9 +2,9 @@ import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent } from "@workspace/ui/components/card"
-import { passkeyPlugin } from "@workspace/ui/lib/auth/passkey-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import { passkeyPlugin } from "@workspace/ui-shadcn/lib/auth/passkey-plugin"
 
 import {
   DeletePasskeyDialog,

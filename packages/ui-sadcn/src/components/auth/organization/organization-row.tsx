@@ -9,9 +9,9 @@ import {
 import type { Organization } from "better-auth/client"
 import { Settings as SettingsIcon } from "lucide-react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Spinner } from "@workspace/ui/components/spinner"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 import { OrganizationView } from "./organization-view"
 
 export type OrganizationRowProps = {

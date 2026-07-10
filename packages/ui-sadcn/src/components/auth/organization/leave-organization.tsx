@@ -6,8 +6,8 @@ import {
 } from "@better-auth-ui/react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
-import { organizationPlugin } from "@workspace/ui/lib/auth/organization-plugin"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { organizationPlugin } from "@workspace/ui-shadcn/lib/auth/organization-plugin"
 import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 
 /**

@@ -1,7 +1,7 @@
 import { useAuth } from "@better-auth-ui/react"
 import type { ComponentProps } from "react"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { ChangeEmail } from "./change-email"
 import { UserProfile } from "./user-profile"
 

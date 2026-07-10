@@ -2,9 +2,13 @@ import { useAuthPlugin } from "@better-auth-ui/react"
 import { Monitor, Moon, PaletteIcon, Sun } from "lucide-react"
 import { useRef } from "react"
 
-import { DropdownMenuItem } from "@workspace/ui/components/dropdown-menu"
-import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { themePlugin } from "@workspace/ui/lib/auth/theme-plugin"
+import { DropdownMenuItem } from "@workspace/ui-shadcn/components/dropdown-menu"
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui-shadcn/components/tabs"
+import { themePlugin } from "@workspace/ui-shadcn/lib/auth/theme-plugin"
 
 /**
  * Theme toggle dropdown item used inside `UserButton`. Callers are responsible
