@@ -1,13 +1,13 @@
 import type { ComponentType } from "react"
-import { FaGithub, FaGoogle } from "react-icons/fa"
 import { Plug } from "lucide-react"
+import { Icons } from "../../components/icons"
 
 export const providerIcons: Record<
   string,
   ComponentType<{ className?: string }>
 > = {
-  google: FaGoogle,
-  github: FaGithub,
+  google: Icons.Google,
+  github: Icons.Github,
 }
 
 export function getProviderName(provider: string): string {
