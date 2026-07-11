@@ -2,8 +2,8 @@ import {
   ChatMessage,
   type ChatMessageProps,
   type Message,
-} from "@workspace/ui-shadcn/components/chat-message"
-import { TypingIndicator } from "@workspace/ui-shadcn/components/typing-indicator"
+} from "@workspace/ui-shadcn/components/ai/chat-message"
+import { TypingIndicator } from "@workspace/ui-shadcn/components/ai/typing-indicator"
 
 type AdditionalMessageOptions = Omit<ChatMessageProps, keyof Message>
 
