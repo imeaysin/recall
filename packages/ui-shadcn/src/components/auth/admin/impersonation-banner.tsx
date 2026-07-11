@@ -25,7 +25,7 @@ export function ImpersonationBanner({ className }: ImpersonationBannerProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 border-b border-amber-500/30 bg-amber-500/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-3 border-b border-yellow-500/30 bg-yellow-500/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
         className
       )}
     >
