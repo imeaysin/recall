@@ -9,6 +9,7 @@ import type { OrganizationInvitation } from "@workspace/auth/types/organization"
 import { X } from "lucide-react"
 import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 import { organizationUiPermissions } from "./ui-permissions"
 
@@ -17,9 +18,9 @@ export type OrganizationInvitationRowProps = {
 }
 
 const invitationStatusVariant = {
-  pending: "warning",
-  accepted: "success",
-  rejected: "error",
+  pending: "outline",
+  accepted: "default",
+  rejected: "destructive",
   canceled: "secondary",
 } as const
 
@@ -66,13 +67,16 @@ export function OrganizationInvitationRow({
           <Button
             aria-label="Cancel invitation"
             disabled={cancelPending}
-            loading={cancelPending}
             onClick={() => cancelInvitation({ invitationId: invitation.id })}
             size="icon"
             type="button"
             variant="ghost"
           >
-            <X className="size-4 text-destructive" />
+            {cancelPending ? (
+              <Spinner data-icon="inline-start" />
+            ) : (
+              <X className="size-4 text-destructive" />
+            )}
           </Button>
         ) : null}
       </TableCell>

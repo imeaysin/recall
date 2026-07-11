@@ -9,7 +9,7 @@ import {
 } from "@workspace/auth/react"
 import { Link2, Link2Off } from "lucide-react"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -71,7 +71,6 @@ function LinkedAccountRow({
         <span className="text-sm leading-tight font-medium">
           {providerName}
         </span>
-
         {account && isLoadingInfo ? (
           <Skeleton className="my-0.5 h-3 w-24" />
         ) : (
@@ -85,7 +84,7 @@ function LinkedAccountRow({
         <Button
           aria-label={`Unlink ${providerName}`}
           className="ml-auto shrink-0"
-          loading={isUnlinking}
+          disabled={isUnlinking}
           onClick={() =>
             unlinkAccount(
               { providerId: account.providerId },
@@ -117,7 +116,7 @@ function LinkedAccountRow({
         <Button
           aria-label={`Link ${providerName}`}
           className="ml-auto shrink-0"
-          loading={isLinking}
+          disabled={isLinking}
           onClick={() =>
             linkSocial({
               provider,
@@ -184,7 +183,7 @@ export function LinkedAccounts({ className }: LinkedAccountsProps) {
       <h2 className="mb-3 text-sm font-semibold">Linked accounts</h2>
 
       <Card className={cn("p-0", className)}>
-        <CardPanel className="p-0">
+        <CardContent className="p-0">
           {isPending
             ? socialProviders.map((provider, index) => (
                 <div key={provider}>
@@ -201,7 +200,7 @@ export function LinkedAccounts({ className }: LinkedAccountsProps) {
                   />
                 </div>
               ))}
-        </CardPanel>
+        </CardContent>
       </Card>
     </div>
   )

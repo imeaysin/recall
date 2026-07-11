@@ -28,7 +28,7 @@ export function OrganizationInvitations({
       <h3 className="truncate text-sm font-semibold">Invitations</h3>
 
       <Card className="p-0">
-        <Table aria-label="Workspace invitations" variant="card">
+        <Table aria-label="Workspace invitations">
           <TableHeader>
             <TableRow>
               <TableHead>Email</TableHead>

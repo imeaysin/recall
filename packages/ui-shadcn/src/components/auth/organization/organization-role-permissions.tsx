@@ -85,7 +85,7 @@ export function OrganizationRolePermissions({
 
   return (
     <Card className={cn("w-full self-stretch p-0", className)}>
-      <Table aria-label="Role permissions" className="w-full" variant="card">
+      <Table aria-label="Role permissions" className="w-full">
         <TableHeader>
           <TableRow>
             <TableHead className="ps-4">Resource</TableHead>

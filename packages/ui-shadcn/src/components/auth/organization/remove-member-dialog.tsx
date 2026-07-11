@@ -5,9 +5,18 @@ import { useRemoveMember } from "@workspace/auth/react"
 import type { OrganizationMember } from "@workspace/auth/types/organization"
 import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@workspace/ui-shadcn/components/alert-dialog"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { AuthUserView } from "../auth-user-view"
 
 export type RemoveMemberDialogProps = {
@@ -24,36 +33,30 @@ export function RemoveMemberDialog({
   const { mutate: removeMember, isPending } = useRemoveMember()
 
   return (
-    <Pane.Alert onOpenChange={onOpenChange} open={open}>
-      <Pane.Alert.Content>
-        <Pane.Alert.Header>
-          <Pane.Alert.Title>Remove member</Pane.Alert.Title>
-          <Pane.Alert.Description>
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove member</AlertDialogTitle>
+          <AlertDialogDescription>
             This member will lose access to the workspace.
-          </Pane.Alert.Description>
-        </Pane.Alert.Header>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
         <div className="px-6 pb-2">
           <Card>
-            <CardPanel className="flex flex-row items-center justify-between gap-2">
+            <CardContent className="flex items-center justify-between p-4">
               <AuthUserView user={member.user} />
               <Badge variant="outline">
                 {formatOrganizationRoleLabel(member.role)}
               </Badge>
-            </CardPanel>
+            </CardContent>
           </Card>
         </div>
 
-        <Pane.Alert.Footer>
-          <Pane.Alert.Close
-            render={
-              <Button disabled={isPending} type="button" variant="outline" />
-            }
-          >
-            Cancel
-          </Pane.Alert.Close>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <Button
-            loading={isPending}
+            disabled={isPending}
             onClick={() =>
               removeMember(
                 { memberId: member.id },
@@ -79,10 +82,11 @@ export function RemoveMemberDialog({
             type="button"
             variant="destructive"
           >
+            {isPending ? <Spinner data-icon="inline-start" /> : null}
             Remove member
           </Button>
-        </Pane.Alert.Footer>
-      </Pane.Alert.Content>
-    </Pane.Alert>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

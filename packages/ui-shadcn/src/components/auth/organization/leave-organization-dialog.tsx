@@ -4,8 +4,17 @@ import { useAuthUiConfig, useLeaveOrganization } from "@workspace/auth/react"
 import type { Organization } from "@workspace/auth/types/organization"
 import { LogOut } from "lucide-react"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@workspace/ui-shadcn/components/alert-dialog"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
 import { OrganizationView } from "./organization-view"
 
@@ -24,33 +33,27 @@ export function LeaveOrganizationDialog({
   const { mutate: leaveOrganization, isPending } = useLeaveOrganization()
 
   return (
-    <Pane.Alert onOpenChange={onOpenChange} open={open}>
-      <Pane.Alert.Content>
-        <Pane.Alert.Header>
-          <Pane.Alert.Title>Leave workspace</Pane.Alert.Title>
-          <Pane.Alert.Description>
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Leave workspace</AlertDialogTitle>
+          <AlertDialogDescription>
             You will lose access to this workspace and its resources.
-          </Pane.Alert.Description>
-        </Pane.Alert.Header>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
         <div className="px-6 pb-2">
           <Card>
-            <CardPanel>
+            <CardContent className="p-4">
               <OrganizationView organization={organization} />
-            </CardPanel>
+            </CardContent>
           </Card>
         </div>
 
-        <Pane.Alert.Footer>
-          <Pane.Alert.Close
-            render={
-              <Button disabled={isPending} type="button" variant="outline" />
-            }
-          >
-            Cancel
-          </Pane.Alert.Close>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <Button
-            loading={isPending}
+            disabled={isPending}
             onClick={() =>
               leaveOrganization(
                 { organizationId: organization.id },
@@ -79,11 +82,15 @@ export function LeaveOrganizationDialog({
             type="button"
             variant="destructive"
           >
-            <LogOut />
+            {isPending ? (
+              <Spinner data-icon="inline-start" />
+            ) : (
+              <LogOut className="size-4" data-icon="inline-start" />
+            )}
             Leave workspace
           </Button>
-        </Pane.Alert.Footer>
-      </Pane.Alert.Content>
-    </Pane.Alert>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

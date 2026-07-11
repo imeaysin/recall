@@ -11,11 +11,11 @@ import { LogOut, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
-  Menu,
-  MenuItem,
-  MenuPopup,
-  MenuTrigger,
-} from "@workspace/ui-shadcn/components/menu"
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@workspace/ui-shadcn/components/dropdown-menu"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -72,8 +72,8 @@ export function OrganizationMemberRow({
       <TableCell>
         <div className="flex items-center justify-end gap-1">
           {hasUpdatePermission?.success ? (
-            <Menu>
-              <MenuTrigger
+            <DropdownMenu>
+              <DropdownMenuTrigger
                 aria-label="Change member role"
                 className={cn(
                   buttonVariants({ size: "icon", variant: "ghost" }),
@@ -83,10 +83,10 @@ export function OrganizationMemberRow({
                 render={<button type="button" />}
               >
                 {isUpdatingRole ? <Spinner /> : <Pencil className="size-4" />}
-              </MenuTrigger>
-              <MenuPopup align="end">
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
                 {assignableRoles.map((role) => (
-                  <MenuItem
+                  <DropdownMenuItem
                     key={role}
                     disabled={member.role === role}
                     onClick={() =>
@@ -115,10 +115,10 @@ export function OrganizationMemberRow({
                     }
                   >
                     {formatRole(role)}
-                  </MenuItem>
+                  </DropdownMenuItem>
                 ))}
-              </MenuPopup>
-            </Menu>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : null}
 
           {isCurrentUser ? (

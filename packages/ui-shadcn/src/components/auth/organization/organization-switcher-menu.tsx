@@ -11,11 +11,11 @@ import type { OrganizationSummary } from "@workspace/auth/types/organization"
 import { Check, PlusCircle, Settings } from "lucide-react"
 import type { ReactNode } from "react"
 import {
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuSeparator,
-} from "@workspace/ui-shadcn/components/menu"
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@workspace/ui-shadcn/components/dropdown-menu"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
 import { AuthUserView } from "../auth-user-view"
 import { OrganizationLogo } from "./organization-logo"
@@ -107,25 +107,25 @@ export function OrganizationSwitcherMenu({
   return (
     <>
       {menuHeader}
-      {menuHeader ? <MenuSeparator /> : null}
+      {menuHeader ? <DropdownMenuSeparator /> : null}
 
       {hasSwitcherEntries ? (
-        <MenuGroup>
-          <MenuGroupLabel>Workspaces</MenuGroupLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
           {showPersonalSwitcher ? (
-            <MenuItem
+            <DropdownMenuItem
               disabled={isPending}
               onClick={() => handleSetActive(null)}
             >
               <AuthUserView hideSubtitle user={session?.user} />
-            </MenuItem>
+            </DropdownMenuItem>
           ) : null}
 
           {orgList.map((organization) => {
             const isActive = organization.id === activeOrganizationId
 
             return (
-              <MenuItem
+              <DropdownMenuItem
                 key={organization.id}
                 disabled={isPending || isActive}
                 onClick={() => handleSetActive(organization)}
@@ -137,18 +137,20 @@ export function OrganizationSwitcherMenu({
                 {isActive ? (
                   <Check className="ml-auto size-4 text-muted-foreground" />
                 ) : null}
-              </MenuItem>
+              </DropdownMenuItem>
             )
           })}
-        </MenuGroup>
+        </DropdownMenuGroup>
       ) : null}
 
       {hasWorkspaceActions ? (
         <>
-          {hasSwitcherEntries ? <MenuSeparator className="my-1.5" /> : null}
-          <MenuGroup>
+          {hasSwitcherEntries ? (
+            <DropdownMenuSeparator className="my-1.5" />
+          ) : null}
+          <DropdownMenuGroup>
             {activeOrg ? (
-              <MenuItem
+              <DropdownMenuItem
                 disabled={isPending}
                 onClick={() => {
                   onClose()
@@ -157,11 +159,11 @@ export function OrganizationSwitcherMenu({
               >
                 <Settings className="text-muted-foreground" />
                 Workspace settings
-              </MenuItem>
+              </DropdownMenuItem>
             ) : null}
 
             {!hideCreate ? (
-              <MenuItem
+              <DropdownMenuItem
                 disabled={isPending}
                 onClick={() => {
                   onClose()
@@ -170,9 +172,9 @@ export function OrganizationSwitcherMenu({
               >
                 <PlusCircle className="text-muted-foreground" />
                 Create workspace
-              </MenuItem>
+              </DropdownMenuItem>
             ) : null}
-          </MenuGroup>
+          </DropdownMenuGroup>
         </>
       ) : null}
     </>

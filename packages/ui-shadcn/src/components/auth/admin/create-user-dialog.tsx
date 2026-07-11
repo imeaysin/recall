@@ -1,184 +1,238 @@
 "use client"
 
 import type { PlatformRoleName } from "@workspace/auth/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import {
   Select,
+  SelectContent,
   SelectItem,
-  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui-shadcn/components/select"
-import { Controller, useFormState, type Control } from "react-hook-form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@workspace/ui-shadcn/components/sheet"
 
-type CreateUserValues = {
-  email: string
-  name: string
-  password: string
-  role: PlatformRoleName
-}
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const createUserSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required.")
+    .max(100, "Name must be 100 characters or fewer."),
+  email: z
+    .string()
+    .min(1, "Email is required.")
+    .email("Please enter a valid email address."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .max(128, "Password must be 128 characters or fewer."),
+  role: z.string().min(1, "Please select a role."),
+})
+
+type CreateUserValues = z.infer<typeof createUserSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type CreateUserDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  control: Control<CreateUserValues>
   roles: readonly PlatformRoleName[]
   formatRoleLabel: (role: PlatformRoleName) => string
-  onSubmit: () => void
-  isPending?: boolean
+  onSubmit: (values: CreateUserValues) => Promise<void> | void
 }
+
+// ---------------------------------------------------------------------------
+// CreateUserDialog
+// ---------------------------------------------------------------------------
 
 export function CreateUserDialog({
   open,
   onOpenChange,
-  control,
   roles,
   formatRoleLabel,
   onSubmit,
-  isPending = false,
 }: CreateUserDialogProps) {
-  const { errors } = useFormState({ control })
-  const fieldsDisabled = isPending
+  const form = useForm<CreateUserValues>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      role: roles[0] ?? "",
+    },
+  })
+
+  const isSubmitting = form.formState.isSubmitting
+
   const roleItems = roles.map((roleName) => ({
     value: roleName,
     label: formatRoleLabel(roleName),
   }))
 
-  const formErrors: Record<string, string> = {}
-  if (errors.email?.message) formErrors.email = errors.email.message
-  if (errors.name?.message) formErrors.name = errors.name.message
-  if (errors.password?.message) formErrors.password = errors.password.message
-  if (errors.role?.message) formErrors.role = errors.role.message
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) form.reset()
+    onOpenChange(nextOpen)
+  }
+
+  async function handleSubmit(values: CreateUserValues) {
+    await onSubmit(values)
+    form.reset()
+  }
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Create user</Pane.Title>
-          <Pane.Description>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right">
+        <SheetHeader className="border-b px-6 pb-4">
+          <SheetTitle>Create user</SheetTitle>
+          <SheetDescription>
             Add a platform user with email and password credentials.
-          </Pane.Description>
-        </Pane.Header>
+          </SheetDescription>
+        </SheetHeader>
 
-        <Form
-          className="contents"
-          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-          onSubmit={onSubmit}
-        >
-          <Pane.Panel className="flex flex-col gap-4">
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <Field name="name">
-                  <FieldLabel htmlFor="create-user-name">Name</FieldLabel>
-                  <Input
-                    {...field}
-                    autoFocus
-                    disabled={fieldsDisabled}
-                    id="create-user-name"
-                    placeholder="Jane Doe"
+        <Form {...form}>
+          <form
+            className="flex min-h-0 flex-1 flex-col"
+            noValidate
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        autoFocus
+                        disabled={isSubmitting}
+                        placeholder="Jane Doe"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isSubmitting}
+                        placeholder="name@example.com"
+                        type="email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isSubmitting}
+                        type="password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Platform role</FormLabel>
+                    <Select
+                      disabled={isSubmitting || roleItems.length === 0}
+                      items={roleItems}
+                      onValueChange={(item) =>
+                        field.onChange(item?.value ?? roles[0] ?? "")
+                      }
+                      value={
+                        roleItems.find((item) => item.value === field.value) ??
+                        null
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent alignItemWithTrigger={false}>
+                        {roleItems.map((item) => (
+                          <SelectItem key={item.value} value={item}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <SheetFooter className="border-t px-6 py-4">
+              <SheetClose
+                render={
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="outline"
                   />
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <Field name="email">
-                  <FieldLabel htmlFor="create-user-email">Email</FieldLabel>
-                  <Input
-                    {...field}
-                    disabled={fieldsDisabled}
-                    id="create-user-email"
-                    placeholder="name@example.com"
-                    type="email"
-                  />
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="password"
-              render={({ field }) => (
-                <Field name="password">
-                  <FieldLabel htmlFor="create-user-password">
-                    Password
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    disabled={fieldsDisabled}
-                    id="create-user-password"
-                    type="password"
-                  />
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="role"
-              render={({ field }) => (
-                <Field className="w-full" name="role">
-                  <FieldLabel htmlFor="create-user-role">
-                    Platform role
-                  </FieldLabel>
-                  <Select
-                    disabled={fieldsDisabled || roleItems.length === 0}
-                    items={roleItems}
-                    onValueChange={(item) =>
-                      field.onChange(item?.value ?? "user")
-                    }
-                    value={
-                      roleItems.find((item) => item.value === field.value) ??
-                      null
-                    }
-                  >
-                    <SelectTrigger className="w-full" id="create-user-role">
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectPopup alignItemWithTrigger={false}>
-                      {roleItems.map((item) => (
-                        <SelectItem key={item.value} value={item}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectPopup>
-                  </Select>
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </Pane.Panel>
-
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit">
-              Create user
-            </Button>
-          </Pane.Footer>
+                }
+              >
+                Cancel
+              </SheetClose>
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Create user
+              </Button>
+            </SheetFooter>
+          </form>
         </Form>
-      </Pane.Content>
-    </Pane>
+      </SheetContent>
+    </Sheet>
   )
 }

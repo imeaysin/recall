@@ -23,16 +23,15 @@ export function OpenEmailButton({
 
   return (
     <Button
+      asChild
       className={cn("w-full", className)}
-      render={
-        <a href={provider.loginUrl} rel="noopener noreferrer" target="_blank" />
-      }
       size="lg"
-      type="button"
       variant="outline"
     >
-      {buttonLabel}
-      <SquareArrowOutUpRight aria-hidden="true" />
+      <a href={provider.loginUrl} rel="noopener noreferrer" target="_blank">
+        {buttonLabel}
+        <SquareArrowOutUpRight aria-hidden="true" />
+      </a>
     </Button>
   )
 }

@@ -5,8 +5,16 @@ import type { Organization } from "@workspace/auth/types/organization"
 import { TriangleAlert } from "lucide-react"
 import type { SubmitEventHandler } from "react"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
-import { Form } from "@workspace/ui-shadcn/components/form"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@workspace/ui-shadcn/components/alert-dialog"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
 import { OrganizationView } from "./organization-view"
 
@@ -50,37 +58,35 @@ export function DeleteOrganizationDialog({
   }
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Form className="contents" onSubmit={handleSubmit}>
-          <Pane.Header>
-            <Pane.Title>Delete workspace</Pane.Title>
-            <Pane.Description>
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      <AlertDialogContent>
+        <form className="contents" onSubmit={handleSubmit}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete workspace</AlertDialogTitle>
+            <AlertDialogDescription>
               This action is permanent and cannot be undone.
-            </Pane.Description>
-          </Pane.Header>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
-          <Pane.Panel>
+          <div>
             <div className="rounded-lg border bg-muted/30 px-3 py-2.5">
               <OrganizationView organization={organization} />
             </div>
-          </Pane.Panel>
+          </div>
 
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit" variant="destructive">
-              <TriangleAlert />
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+            <Button disabled={isPending} type="submit" variant="destructive">
+              {isPending ? (
+                <Spinner data-icon="inline-start" />
+              ) : (
+                <TriangleAlert className="size-4" data-icon="inline-start" />
+              )}
               Delete workspace
             </Button>
-          </Pane.Footer>
-        </Form>
-      </Pane.Content>
-    </Pane>
+          </AlertDialogFooter>
+        </form>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

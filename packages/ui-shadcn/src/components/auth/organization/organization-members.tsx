@@ -54,7 +54,7 @@ export function OrganizationMembers({
       </div>
 
       <Card className="p-0">
-        <Table aria-label="Workspace members" variant="card">
+        <Table aria-label="Workspace members">
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>

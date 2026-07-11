@@ -1,95 +1,114 @@
 "use client"
 
+import { useAuthSession } from "@workspace/auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
   Card,
+  CardContent,
   CardFooter,
-  CardPanel,
 } from "@workspace/ui-shadcn/components/card"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
-import { Controller, useFormState, type Control } from "react-hook-form"
 
-type ChangeEmailValues = { email: string }
+const changeEmailSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required.")
+    .email("Please enter a valid email address."),
+})
+
+type ChangeEmailValues = z.infer<typeof changeEmailSchema>
 
 export type ChangeEmailProps = {
   className?: string
-  control?: Control<ChangeEmailValues>
-  onSubmit?: () => void
+  onSubmit?: (values: ChangeEmailValues) => Promise<void> | void
   isPending?: boolean
-  hasSession?: boolean
 }
 
 export function ChangeEmail({
   className,
-  control,
   onSubmit,
   isPending = false,
-  hasSession = false,
 }: ChangeEmailProps) {
-  const wired = onSubmit != null && control != null
-  const { errors } = useFormState({ control, disabled: !control })
+  const { data: session, isPending: isSessionPending } = useAuthSession()
 
-  const formErrors: Record<string, string> = {}
-  if (errors.email?.message) {
-    formErrors.email = errors.email.message
+  const form = useForm<ChangeEmailValues>({
+    resolver: zodResolver(changeEmailSchema),
+    defaultValues: { email: "" },
+  })
+
+  useEffect(() => {
+    if (session?.user) {
+      form.reset({ email: session.user.email ?? "" })
+    }
+  }, [session?.user, form])
+
+  const isSubmitting = form.formState.isSubmitting || isPending
+  const hasSession = !isSessionPending && !!session
+
+  async function handleSubmit(values: ChangeEmailValues) {
+    await onSubmit?.(values)
   }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Change email</h2>
-      <Form
-        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
-      >
-        <Card className={cn(className)}>
-          <CardPanel className="flex flex-col gap-6">
-            <Controller
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <Field name="email">
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
 
-                  {hasSession && wired ? (
-                    <Input
-                      {...field}
-                      autoComplete="email"
-                      disabled={isPending}
-                      id="email"
-                      placeholder="you@example.com"
-                      type="email"
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Input className="invisible" nativeInput />
-                    </Skeleton>
-                  )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Card className={cn(className)}>
+            <CardContent className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    {hasSession ? (
+                      <FormControl>
+                        <Input
+                          {...field}
+                          autoComplete="email"
+                          disabled={isSubmitting}
+                          placeholder="you@example.com"
+                          type="email"
+                        />
+                      </FormControl>
+                    ) : (
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
 
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </CardPanel>
-
-          <CardFooter>
-            <Button
-              disabled={!hasSession || !wired}
-              loading={isPending}
-              size="sm"
-              type="submit"
-            >
-              Update email
-            </Button>
-          </CardFooter>
-        </Card>
+            <CardFooter>
+              <Button
+                disabled={!hasSession || !onSubmit || isSubmitting}
+                size="sm"
+                type="submit"
+              >
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Update email
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
       </Form>
     </div>
   )

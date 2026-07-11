@@ -3,93 +3,150 @@
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
 import { formatOrganizationRoleLabel } from "@workspace/auth/permissions/organization"
 import type { OrganizationRole } from "@workspace/auth/types/organization"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
-import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
-import { Controller, useFormState, type Control } from "react-hook-form"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@workspace/ui-shadcn/components/sheet"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
+
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const editOrganizationRoleSchema = z.object({
+  permission: z.custom<OrganizationPermissionMap>(
+    (val) => typeof val === "object" && val !== null,
+    "Permissions must be a valid permission map."
+  ),
+})
 
 type EditOrganizationRoleValues = {
   permission: OrganizationPermissionMap
 }
 
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
+
 export type EditOrganizationRoleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   role: OrganizationRole | null
-  control: Control<EditOrganizationRoleValues>
-  onSubmit: () => void
-  isPending?: boolean
+  onSubmit: (values: EditOrganizationRoleValues) => Promise<void> | void
 }
+
+// ---------------------------------------------------------------------------
+// EditOrganizationRoleDialog
+// ---------------------------------------------------------------------------
 
 export function EditOrganizationRoleDialog({
   open,
   onOpenChange,
   role,
-  control,
   onSubmit,
-  isPending = false,
 }: EditOrganizationRoleDialogProps) {
-  const { errors } = useFormState({ control })
+  const form = useForm<EditOrganizationRoleValues>({
+    resolver: zodResolver(editOrganizationRoleSchema),
+    defaultValues: {
+      permission: role?.permissions ?? ({} as OrganizationPermissionMap),
+    },
+  })
+
+  const isSubmitting = form.formState.isSubmitting
+
+  // Sync form defaults when the role changes (e.g. opening a different role).
+  useEffect(() => {
+    if (role) {
+      form.reset({
+        permission: role.permissions ?? ({} as OrganizationPermissionMap),
+      })
+    }
+  }, [role, form])
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) form.reset()
+    onOpenChange(nextOpen)
+  }
+
+  async function handleSubmit(values: EditOrganizationRoleValues) {
+    await onSubmit(values)
+  }
 
   if (!role) return null
 
-  const formErrors: Record<string, string> = {}
-  if (errors.permission?.message) {
-    formErrors.permission = errors.permission.message
-  }
-
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Edit role</Pane.Title>
-          <Pane.Description>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right">
+        <SheetHeader className="border-b px-6 pb-4">
+          <SheetTitle>Edit role</SheetTitle>
+          <SheetDescription>
             Update permissions for {formatOrganizationRoleLabel(role.role)}.
-          </Pane.Description>
-        </Pane.Header>
+          </SheetDescription>
+        </SheetHeader>
 
-        <Form
-          className="flex min-h-0 min-w-0 flex-1 flex-col"
-          errors={formErrors}
-          noValidate
-          onSubmit={onSubmit}
-        >
-          <Pane.Panel className="w-full min-w-0">
-            <Controller
-              control={control}
-              name="permission"
-              render={({ field }) => (
-                <Field
-                  className="w-full min-w-0 !items-stretch gap-2"
-                  name="permission"
-                >
-                  <OrganizationRolePermissions
-                    disabled={isPending}
-                    onChange={field.onChange}
-                    permissions={field.value}
+        <Form {...form}>
+          <form
+            className="flex min-h-0 flex-1 flex-col"
+            noValidate
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <div className="flex flex-1 overflow-y-auto p-6">
+              <FormField
+                control={form.control}
+                name="permission"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <OrganizationRolePermissions
+                        disabled={isSubmitting}
+                        onChange={field.onChange}
+                        permissions={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <SheetFooter className="border-t px-6 py-4">
+              <SheetClose
+                render={
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="outline"
                   />
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </Pane.Panel>
-
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit">
-              Save changes
-            </Button>
-          </Pane.Footer>
+                }
+              >
+                Cancel
+              </SheetClose>
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Save changes
+              </Button>
+            </SheetFooter>
+          </form>
         </Form>
-      </Pane.Content>
-    </Pane>
+      </SheetContent>
+    </Sheet>
   )
 }

@@ -1,136 +1,188 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import {
   Select,
+  SelectContent,
   SelectItem,
-  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui-shadcn/components/select"
-import { Controller, useFormState, type Control } from "react-hook-form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@workspace/ui-shadcn/components/sheet"
 
-type InviteMemberValues = { email: string; role: string }
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const inviteMemberSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required.")
+    .email("Please enter a valid email address."),
+  role: z.string().min(1, "Please select a role."),
+})
+
+type InviteMemberValues = z.infer<typeof inviteMemberSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type InviteMemberDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  control: Control<InviteMemberValues>
   roles: string[]
   formatRoleLabel: (role: string) => string
-  onSubmit: () => void
-  isPending?: boolean
+  onSubmit: (values: InviteMemberValues) => Promise<void> | void
 }
+
+// ---------------------------------------------------------------------------
+// InviteMemberDialog
+// ---------------------------------------------------------------------------
 
 export function InviteMemberDialog({
   open,
   onOpenChange,
-  control,
   roles,
   formatRoleLabel,
   onSubmit,
-  isPending = false,
 }: InviteMemberDialogProps) {
-  const { errors } = useFormState({ control })
-  const fieldsDisabled = isPending
+  const form = useForm<InviteMemberValues>({
+    resolver: zodResolver(inviteMemberSchema),
+    defaultValues: { email: "", role: roles[0] ?? "" },
+  })
+
+  const isSubmitting = form.formState.isSubmitting
+
   const roleItems = roles.map((roleName) => ({
     value: roleName,
     label: formatRoleLabel(roleName),
   }))
 
-  const formErrors: Record<string, string> = {}
-  if (errors.email?.message) formErrors.email = errors.email.message
-  if (errors.role?.message) formErrors.role = errors.role.message
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) form.reset({ email: "", role: roles[0] ?? "" })
+    onOpenChange(nextOpen)
+  }
+
+  async function handleSubmit(values: InviteMemberValues) {
+    await onSubmit(values)
+    form.reset({ email: "", role: roles[0] ?? "" })
+  }
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Invite member</Pane.Title>
-          <Pane.Description>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right">
+        <SheetHeader className="border-b px-6 pb-4">
+          <SheetTitle>Invite member</SheetTitle>
+          <SheetDescription>
             Send an invitation to join this workspace.
-          </Pane.Description>
-        </Pane.Header>
+          </SheetDescription>
+        </SheetHeader>
 
-        <Form
-          className="contents"
-          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-          onSubmit={onSubmit}
-        >
-          <Pane.Panel className="flex flex-col gap-4">
-            <Controller
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <Field name="email">
-                  <FieldLabel htmlFor="invite-member-email">Email</FieldLabel>
-                  <Input
-                    {...field}
-                    autoFocus
-                    disabled={fieldsDisabled}
-                    id="invite-member-email"
-                    placeholder="name@example.com"
-                    type="email"
+        <Form {...form}>
+          <form
+            className="flex min-h-0 flex-1 flex-col"
+            noValidate
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        autoFocus
+                        disabled={isSubmitting}
+                        placeholder="name@example.com"
+                        type="email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Role</FormLabel>
+                    <Select
+                      disabled={isSubmitting || roleItems.length === 0}
+                      items={roleItems}
+                      onValueChange={(item) =>
+                        field.onChange(item?.value ?? "")
+                      }
+                      value={
+                        roleItems.find((item) => item.value === field.value) ??
+                        null
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent alignItemWithTrigger={false}>
+                        {roleItems.map((item) => (
+                          <SelectItem key={item.value} value={item}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <SheetFooter className="border-t px-6 py-4">
+              <SheetClose
+                render={
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="outline"
                   />
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="role"
-              render={({ field }) => (
-                <Field className="w-full" name="role">
-                  <FieldLabel htmlFor="invite-member-role">Role</FieldLabel>
-                  <Select
-                    disabled={fieldsDisabled || roleItems.length === 0}
-                    items={roleItems}
-                    onValueChange={(item) => field.onChange(item?.value ?? "")}
-                    value={
-                      roleItems.find((item) => item.value === field.value) ??
-                      null
-                    }
-                  >
-                    <SelectTrigger className="w-full" id="invite-member-role">
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectPopup alignItemWithTrigger={false}>
-                      {roleItems.map((item) => (
-                        <SelectItem key={item.value} value={item}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectPopup>
-                  </Select>
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </Pane.Panel>
-
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit">
-              Invite member
-            </Button>
-          </Pane.Footer>
+                }
+              >
+                Cancel
+              </SheetClose>
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Invite member
+              </Button>
+            </SheetFooter>
+          </form>
         </Form>
-      </Pane.Content>
-    </Pane>
+      </SheetContent>
+    </Sheet>
   )
 }

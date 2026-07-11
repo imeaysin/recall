@@ -4,12 +4,10 @@ import {
   isOrganizationSlugTakenError,
   useCheckSlug,
 } from "@workspace/auth/react"
-import { mergeProps } from "@base-ui/react/merge-props"
 import { Check, X } from "lucide-react"
 import { type ChangeEvent, useEffect } from "react"
 import {
   Field,
-  FieldControl,
   FieldError,
   FieldLabel,
 } from "@workspace/ui-shadcn/components/field"
@@ -151,25 +149,20 @@ export function OrganizationSlugField({
   ])
 
   return (
-    <Field name="slug">
+    <Field>
       <FieldLabel htmlFor={id}>Slug</FieldLabel>
       <InputGroup>
-        <FieldControl
-          render={(controlProps) => (
-            <InputGroupInput
-              {...mergeProps(controlProps, {
-                autoComplete: "off",
-                disabled,
-                id,
-                onBlur,
-                onChange: (event: ChangeEvent<HTMLInputElement>) =>
-                  onChange(sanitizeOrganizationSlug(event.target.value)),
-                placeholder: "my-team",
-                type: "text",
-                value,
-              })}
-            />
-          )}
+        <InputGroupInput
+          autoComplete="off"
+          disabled={disabled}
+          id={id}
+          onBlur={onBlur}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            onChange(sanitizeOrganizationSlug(event.target.value))
+          }
+          placeholder="my-team"
+          type="text"
+          value={value}
         />
         {shouldCheckAvailability ? (
           <InputGroupAddon align="inline-end">

@@ -1,90 +1,138 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
-import { Controller, useFormState, type Control } from "react-hook-form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@workspace/ui-shadcn/components/sheet"
 
-type BanUserValues = {
-  banReason: string
-}
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const banUserSchema = z.object({
+  banReason: z.string().max(500, "Reason must be 500 characters or fewer."),
+})
+
+type BanUserValues = z.infer<typeof banUserSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type BanUserDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  control: Control<BanUserValues>
   userLabel: string
-  onSubmit: () => void
-  isPending?: boolean
+  onSubmit: (values: BanUserValues) => Promise<void> | void
 }
+
+// ---------------------------------------------------------------------------
+// BanUserDialog
+// ---------------------------------------------------------------------------
 
 export function BanUserDialog({
   open,
   onOpenChange,
-  control,
   userLabel,
   onSubmit,
-  isPending = false,
 }: BanUserDialogProps) {
-  const { errors } = useFormState({ control })
-  const formErrors: Record<string, string> = {}
-  if (errors.banReason?.message) formErrors.banReason = errors.banReason.message
+  const form = useForm<BanUserValues>({
+    resolver: zodResolver(banUserSchema),
+    defaultValues: { banReason: "" },
+  })
+
+  const isSubmitting = form.formState.isSubmitting
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) form.reset()
+    onOpenChange(nextOpen)
+  }
+
+  async function handleSubmit(values: BanUserValues) {
+    await onSubmit(values)
+    form.reset()
+  }
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Ban user</Pane.Title>
-          <Pane.Description>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right">
+        <SheetHeader className="border-b px-6 pb-4">
+          <SheetTitle>Ban user</SheetTitle>
+          <SheetDescription>
             {userLabel} will be signed out and unable to sign in again until
             unbanned.
-          </Pane.Description>
-        </Pane.Header>
+          </SheetDescription>
+        </SheetHeader>
 
-        <Form
-          className="contents"
-          errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-          onSubmit={onSubmit}
-        >
-          <Pane.Panel>
-            <Controller
-              control={control}
-              name="banReason"
-              render={({ field }) => (
-                <Field name="banReason">
-                  <FieldLabel htmlFor="ban-user-reason">Reason</FieldLabel>
-                  <Input
-                    {...field}
-                    disabled={isPending}
-                    id="ban-user-reason"
-                    placeholder="Optional reason for audit"
+        <Form {...form}>
+          <form
+            className="flex min-h-0 flex-1 flex-col"
+            noValidate
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+              <FormField
+                control={form.control}
+                name="banReason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reason</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isSubmitting}
+                        placeholder="Optional reason for audit"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <SheetFooter className="border-t px-6 py-4">
+              <SheetClose
+                render={
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="outline"
                   />
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </Pane.Panel>
-
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit" variant="destructive">
-              Ban user
-            </Button>
-          </Pane.Footer>
+                }
+              >
+                Cancel
+              </SheetClose>
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                variant="destructive"
+              >
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Ban user
+              </Button>
+            </SheetFooter>
+          </form>
         </Form>
-      </Pane.Content>
-    </Pane>
+      </SheetContent>
+    </Sheet>
   )
 }

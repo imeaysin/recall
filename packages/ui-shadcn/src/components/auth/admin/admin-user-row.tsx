@@ -13,11 +13,11 @@ import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { LogIn, Pencil, ShieldOff } from "lucide-react"
 import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
-  Menu,
-  MenuItem,
-  MenuPopup,
-  MenuTrigger,
-} from "@workspace/ui-shadcn/components/menu"
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@workspace/ui-shadcn/components/dropdown-menu"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -89,8 +89,8 @@ export function AdminUserRow({
       <TableCell>
         <div className="flex items-center justify-end gap-1">
           {canSetRole?.success && !isCurrentUser ? (
-            <Menu>
-              <MenuTrigger
+            <DropdownMenu>
+              <DropdownMenuTrigger
                 aria-label="Change platform role"
                 className={cn(
                   buttonVariants({ size: "icon", variant: "ghost" }),
@@ -100,10 +100,10 @@ export function AdminUserRow({
                 render={<button type="button" />}
               >
                 {isUpdatingRole ? <Spinner /> : <Pencil className="size-4" />}
-              </MenuTrigger>
-              <MenuPopup align="end">
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
                 {roles.map((role) => (
-                  <MenuItem
+                  <DropdownMenuItem
                     key={role}
                     disabled={currentRole === role}
                     onClick={() =>
@@ -130,10 +130,10 @@ export function AdminUserRow({
                     }
                   >
                     {formatRoleLabel(role)}
-                  </MenuItem>
+                  </DropdownMenuItem>
                 ))}
-              </MenuPopup>
-            </Menu>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : null}
 
           {canImpersonate?.success && !isCurrentUser && !isBanned ? (

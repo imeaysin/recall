@@ -1,27 +1,45 @@
 "use client"
 
 import { useAuthSession, useAuthUiConfig } from "@workspace/auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
-import { Controller, useFormState, type Control } from "react-hook-form"
 import { AuthBrandLogo } from "../auth-brand-logo"
 import { DefaultAuthLink, type AuthLinkComponent } from "../auth-shell"
 import { AuthPageBody } from "../auth-form"
 import { AuthPageHeader } from "../auth-page-header"
 import { AuthUserView } from "../auth-user-view"
 
-type WorkspaceOnboardingValues = { name: string }
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const workspaceOnboardingSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Workspace name is required.")
+    .max(100, "Workspace name must be 100 characters or fewer."),
+})
+
+type WorkspaceOnboardingValues = z.infer<typeof workspaceOnboardingSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type WorkspaceOnboardingProps = {
-  control: Control<WorkspaceOnboardingValues>
-  onSubmit: () => void
-  isPending?: boolean
+  onSubmit: (values: WorkspaceOnboardingValues) => Promise<void> | void
   onSignOut?: () => void
   homeHref?: string
   linkComponent?: AuthLinkComponent
@@ -30,10 +48,12 @@ export type WorkspaceOnboardingProps = {
   submitLabel?: string
 }
 
+// ---------------------------------------------------------------------------
+// WorkspaceOnboarding
+// ---------------------------------------------------------------------------
+
 export function WorkspaceOnboarding({
-  control,
   onSubmit,
-  isPending = false,
   onSignOut,
   homeHref = "/",
   linkComponent: Link = DefaultAuthLink,
@@ -43,17 +63,24 @@ export function WorkspaceOnboarding({
 }: WorkspaceOnboardingProps) {
   const config = useAuthUiConfig()
   const { data: session } = useAuthSession()
-  const { errors } = useFormState({ control })
 
-  const formErrors: Record<string, string> = {}
-  if (errors.name?.message) formErrors.name = errors.name.message
+  const form = useForm<WorkspaceOnboardingValues>({
+    resolver: zodResolver(workspaceOnboardingSchema),
+    defaultValues: { name: "" },
+  })
 
-  const handleSignOut = () => {
+  const isSubmitting = form.formState.isSubmitting
+
+  function handleSignOut() {
     if (onSignOut) {
       onSignOut()
       return
     }
     config.navigate(config.routes.signOut)
+  }
+
+  async function handleSubmit(values: WorkspaceOnboardingValues) {
+    await onSubmit(values)
   }
 
   return (
@@ -100,37 +127,41 @@ export function WorkspaceOnboarding({
               <AuthUserView className="justify-center" user={session.user} />
             ) : null}
 
-            <Form
-              className="flex flex-col gap-4"
-              errors={
-                Object.keys(formErrors).length > 0 ? formErrors : undefined
-              }
-              onSubmit={onSubmit}
-            >
-              <Controller
-                control={control}
-                name="name"
-                render={({ field }) => (
-                  <Field name="name">
-                    <FieldLabel htmlFor="workspace-onboarding-name">
-                      Workspace name
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      autoFocus
-                      disabled={isPending}
-                      id="workspace-onboarding-name"
-                      placeholder="Acme Inc."
-                      type="text"
-                    />
-                    <FieldError />
-                  </Field>
-                )}
-              />
+            <Form {...form}>
+              <form
+                className="flex flex-col gap-4"
+                noValidate
+                onSubmit={form.handleSubmit(handleSubmit)}
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Workspace name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          autoFocus
+                          disabled={isSubmitting}
+                          placeholder="Acme Inc."
+                          type="text"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Button className="w-full" loading={isPending} type="submit">
-                {submitLabel}
-              </Button>
+                <Button
+                  className="w-full"
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                  {submitLabel}
+                </Button>
+              </form>
             </Form>
           </AuthPageBody>
         </div>

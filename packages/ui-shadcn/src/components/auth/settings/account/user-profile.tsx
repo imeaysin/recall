@@ -1,95 +1,114 @@
 "use client"
 
+import { useAuthSession } from "@workspace/auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
   Card,
+  CardContent,
   CardFooter,
-  CardPanel,
 } from "@workspace/ui-shadcn/components/card"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
-import { Controller, useFormState, type Control } from "react-hook-form"
 
-type UserProfileValues = { name: string }
+const userProfileSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required.")
+    .max(100, "Name must be 100 characters or fewer."),
+})
+
+type UserProfileValues = z.infer<typeof userProfileSchema>
 
 export type UserProfileProps = {
   className?: string
-  control?: Control<UserProfileValues>
-  onSubmit?: () => void
+  onSubmit?: (values: UserProfileValues) => Promise<void> | void
   isPending?: boolean
-  hasSession?: boolean
 }
 
 export function UserProfile({
   className,
-  control,
   onSubmit,
   isPending = false,
-  hasSession = false,
 }: UserProfileProps) {
-  const wired = onSubmit != null && control != null
-  const { errors } = useFormState({ control, disabled: !control })
+  const { data: session, isPending: isSessionPending } = useAuthSession()
 
-  const formErrors: Record<string, string> = {}
-  if (errors.name?.message) {
-    formErrors.name = errors.name.message
+  const form = useForm<UserProfileValues>({
+    resolver: zodResolver(userProfileSchema),
+    defaultValues: { name: "" },
+  })
+
+  useEffect(() => {
+    if (session?.user) {
+      form.reset({ name: session.user.name ?? "" })
+    }
+  }, [session?.user, form])
+
+  const isSubmitting = form.formState.isSubmitting || isPending
+  const hasSession = !isSessionPending && !!session
+
+  async function handleSubmit(values: UserProfileValues) {
+    await onSubmit?.(values)
   }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-      <Form
-        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
-      >
-        <Card className={cn(className)}>
-          <CardPanel className="flex flex-col gap-6">
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <Field name="name">
-                  <FieldLabel htmlFor="name">Name</FieldLabel>
 
-                  {hasSession && wired ? (
-                    <Input
-                      {...field}
-                      autoComplete="name"
-                      disabled={isPending}
-                      id="name"
-                      placeholder="Your name"
-                      type="text"
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Input className="invisible" nativeInput />
-                    </Skeleton>
-                  )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Card className={cn(className)}>
+            <CardContent className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    {hasSession ? (
+                      <FormControl>
+                        <Input
+                          {...field}
+                          autoComplete="name"
+                          disabled={isSubmitting}
+                          placeholder="Your name"
+                          type="text"
+                        />
+                      </FormControl>
+                    ) : (
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
 
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </CardPanel>
-
-          <CardFooter>
-            <Button
-              disabled={!hasSession || !wired}
-              loading={isPending}
-              size="sm"
-              type="submit"
-            >
-              Save changes
-            </Button>
-          </CardFooter>
-        </Card>
+            <CardFooter>
+              <Button
+                disabled={!hasSession || !onSubmit || isSubmitting}
+                size="sm"
+                type="submit"
+              >
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Save changes
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
       </Form>
     </div>
   )

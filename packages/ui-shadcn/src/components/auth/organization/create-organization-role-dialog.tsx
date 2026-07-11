@@ -1,121 +1,167 @@
 "use client"
 
 import type { OrganizationPermissionMap } from "@workspace/auth/permissions/organization"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
-  Field,
-  FieldControl,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
-import { Pane } from "@workspace/ui-shadcn/components/pane"
-import { Controller, useFormState, type Control } from "react-hook-form"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from "@workspace/ui-shadcn/components/sheet"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
+
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const createOrganizationRoleSchema = z.object({
+  role: z
+    .string()
+    .min(1, "Role name is required.")
+    .max(50, "Role name must be 50 characters or fewer.")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Role name may only contain lowercase letters, numbers, and hyphens."
+    ),
+  permission: z.custom<OrganizationPermissionMap>(
+    (val) => typeof val === "object" && val !== null,
+    "Permissions must be a valid permission map."
+  ),
+})
 
 type CreateOrganizationRoleValues = {
   role: string
   permission: OrganizationPermissionMap
 }
 
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
+
 export type CreateOrganizationRoleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  control: Control<CreateOrganizationRoleValues>
-  onSubmit: () => void
-  isPending?: boolean
+  defaultPermissions?: OrganizationPermissionMap
+  onSubmit: (values: CreateOrganizationRoleValues) => Promise<void> | void
 }
+
+// ---------------------------------------------------------------------------
+// CreateOrganizationRoleDialog
+// ---------------------------------------------------------------------------
 
 export function CreateOrganizationRoleDialog({
   open,
   onOpenChange,
-  control,
+  defaultPermissions = {} as OrganizationPermissionMap,
   onSubmit,
-  isPending = false,
 }: CreateOrganizationRoleDialogProps) {
-  const { errors } = useFormState({ control })
+  const form = useForm<CreateOrganizationRoleValues>({
+    resolver: zodResolver(createOrganizationRoleSchema),
+    defaultValues: { role: "", permission: defaultPermissions },
+  })
 
-  const formErrors: Record<string, string> = {}
-  if (errors.role?.message) formErrors.role = errors.role.message
-  if (errors.permission?.message)
-    formErrors.permission = errors.permission.message
+  const isSubmitting = form.formState.isSubmitting
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) form.reset()
+    onOpenChange(nextOpen)
+  }
+
+  async function handleSubmit(values: CreateOrganizationRoleValues) {
+    await onSubmit(values)
+    form.reset()
+  }
 
   return (
-    <Pane onOpenChange={onOpenChange} open={open}>
-      <Pane.Content>
-        <Pane.Header>
-          <Pane.Title>Create role</Pane.Title>
-          <Pane.Description>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent side="right">
+        <SheetHeader className="border-b px-6 pb-4">
+          <SheetTitle>Create role</SheetTitle>
+          <SheetDescription>
             Add a custom role with create, read, update, and delete access.
-          </Pane.Description>
-        </Pane.Header>
+          </SheetDescription>
+        </SheetHeader>
 
-        <Form
-          className="flex min-h-0 min-w-0 flex-1 flex-col"
-          errors={formErrors}
-          noValidate
-          onSubmit={onSubmit}
-        >
-          <Pane.Panel className="flex w-full min-w-0 flex-col gap-4">
-            <Controller
-              control={control}
-              name="role"
-              render={({ field }) => (
-                <Field className="w-full items-stretch" name="role">
-                  <FieldLabel htmlFor="create-organization-role-name">
-                    Role name
-                  </FieldLabel>
-                  <FieldControl
-                    {...field}
-                    render={(controlProps) => (
+        <Form {...form}>
+          <form
+            className="flex min-h-0 flex-1 flex-col"
+            noValidate
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role name</FormLabel>
+                    <FormControl>
                       <Input
-                        {...controlProps}
+                        {...field}
                         autoFocus
-                        disabled={isPending}
-                        id="create-organization-role-name"
+                        disabled={isSubmitting}
                         placeholder="moderator"
                       />
-                    )}
-                  />
-                  <FieldError />
-                </Field>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Controller
-              control={control}
-              name="permission"
-              render={({ field }) => (
-                <Field
-                  className="w-full min-w-0 !items-stretch gap-2"
-                  name="permission"
-                >
-                  <OrganizationRolePermissions
-                    disabled={isPending}
-                    onChange={field.onChange}
-                    permissions={field.value}
-                  />
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </Pane.Panel>
+              <FormField
+                control={form.control}
+                name="permission"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <OrganizationRolePermissions
+                        disabled={isSubmitting}
+                        onChange={field.onChange}
+                        permissions={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          <Pane.Footer>
-            <Pane.Close
-              render={
-                <Button disabled={isPending} type="button" variant="outline" />
-              }
-            >
-              Cancel
-            </Pane.Close>
-            <Button loading={isPending} type="submit">
-              Create role
-            </Button>
-          </Pane.Footer>
+            <SheetFooter className="border-t px-6 py-4">
+              <SheetClose
+                render={
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="outline"
+                  />
+                }
+              >
+                Cancel
+              </SheetClose>
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Create role
+              </Button>
+            </SheetFooter>
+          </form>
         </Form>
-      </Pane.Content>
-    </Pane>
+      </SheetContent>
+    </Sheet>
   )
 }

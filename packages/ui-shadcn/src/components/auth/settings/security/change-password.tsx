@@ -6,50 +6,72 @@ import {
   useRequestPasswordReset,
   useAuthSession,
 } from "@workspace/auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
   Card,
+  CardContent,
   CardFooter,
-  CardPanel,
 } from "@workspace/ui-shadcn/components/card"
 import {
-  Field,
-  FieldControl,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
-import { Input } from "@workspace/ui-shadcn/components/input"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { PasswordInput } from "@workspace/ui-shadcn/components/password-input"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
-import { Controller, useFormState, type Control } from "react-hook-form"
 
-type ChangePasswordValues = {
-  currentPassword: string
-  newPassword: string
-  confirmPassword: string
-}
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required."),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .max(128, "Password must be 128 characters or fewer."),
+    confirmPassword: z.string().min(1, "Please confirm your new password."),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  })
+
+type ChangePasswordValues = z.infer<typeof changePasswordSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type ChangePasswordProps = {
   className?: string
-  changePassword?: ChangePasswordFormProps
+  onSubmit?: (values: ChangePasswordValues) => Promise<void> | void
+  isPending?: boolean
 }
 
-export type ChangePasswordFormProps = {
-  className?: string
-  control?: Control<ChangePasswordValues>
-  onSubmit?: () => void
-  isPending?: boolean
-  hasSession?: boolean
-}
+// Kept for backward-compatible re-export only — consumers should use ChangePasswordProps.
+export type ChangePasswordFormProps = ChangePasswordProps
+
+// ---------------------------------------------------------------------------
+// Public component — routes to SetPassword or ChangePasswordForm
+// ---------------------------------------------------------------------------
 
 export function ChangePassword({
   className,
-  changePassword,
+  onSubmit,
+  isPending = false,
 }: ChangePasswordProps) {
-  const { data: session } = useAuthSession()
+  const { data: session, isPending: isSessionPending } = useAuthSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
   const hasCredentialAccount = accounts?.some(
@@ -63,20 +85,23 @@ export function ChangePassword({
   return (
     <ChangePasswordForm
       className={className}
-      {...changePassword}
-      hasSession={
-        changePassword?.hasSession ?? (!isAccountsPending && !!session)
-      }
+      onSubmit={onSubmit}
+      isPending={isPending}
+      hasSession={!isAccountsPending && !isSessionPending && !!session}
     />
   )
 }
+
+// ---------------------------------------------------------------------------
+// SetPassword — shown when the user has no credential account (social only)
+// ---------------------------------------------------------------------------
 
 function SetPassword({ className }: { className?: string }) {
   const config = useAuthUiConfig()
   const { data: session } = useAuthSession()
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset()
 
-  const handleSetPassword = () => {
+  function handleSetPassword() {
     if (!session?.user.email) return
     requestPasswordReset(
       {
@@ -107,7 +132,7 @@ function SetPassword({ className }: { className?: string }) {
       <h2 className="mb-3 text-sm font-semibold">Change password</h2>
 
       <Card className={cn(className)}>
-        <CardPanel className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm leading-tight font-medium">Set a password</p>
             <p className="mt-0.5 text-xs text-muted-foreground">
@@ -117,159 +142,136 @@ function SetPassword({ className }: { className?: string }) {
           </div>
 
           <Button
-            disabled={!session?.user.email}
-            loading={isPending}
+            className="shrink-0"
+            disabled={!session?.user.email || isPending}
             onClick={handleSetPassword}
             size="sm"
             type="button"
           >
+            {isPending ? <Spinner data-icon="inline-start" /> : null}
             Send reset link
           </Button>
-        </CardPanel>
+        </CardContent>
       </Card>
     </div>
   )
 }
 
+// ---------------------------------------------------------------------------
+// ChangePasswordForm — shown when the user already has a credential account
+// ---------------------------------------------------------------------------
+
 function ChangePasswordForm({
   className,
-  control,
   onSubmit,
   isPending = false,
   hasSession = false,
-}: ChangePasswordFormProps) {
-  const wired = onSubmit != null && control != null
-  const { errors } = useFormState({ control, disabled: !control })
+}: ChangePasswordProps & { hasSession?: boolean }) {
+  const form = useForm<ChangePasswordValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  })
 
-  const formErrors: Record<string, string> = {}
-  if (errors.currentPassword?.message) {
-    formErrors.currentPassword = errors.currentPassword.message
-  }
-  if (errors.newPassword?.message)
-    formErrors.newPassword = errors.newPassword.message
-  if (errors.confirmPassword?.message) {
-    formErrors.confirmPassword = errors.confirmPassword.message
+  const isSubmitting = form.formState.isSubmitting || isPending
+
+  async function handleSubmit(values: ChangePasswordValues) {
+    await onSubmit?.(values)
   }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Change password</h2>
 
-      <Form
-        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-        onSubmit={onSubmit ?? ((event) => event.preventDefault())}
-      >
-        <Card className={cn(className)}>
-          <CardPanel className="flex flex-col gap-6">
-            <Controller
-              control={control}
-              name="currentPassword"
-              render={({ field }) => (
-                <Field name="currentPassword">
-                  <FieldLabel htmlFor="currentPassword">
-                    Current password
-                  </FieldLabel>
-
-                  {hasSession && wired ? (
-                    <FieldControl
-                      {...field}
-                      render={(controlProps) => (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Card className={cn(className)}>
+            <CardContent className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current password</FormLabel>
+                    {hasSession ? (
+                      <FormControl>
                         <PasswordInput
-                          {...controlProps}
+                          {...field}
                           autoComplete="current-password"
-                          disabled={isPending}
-                          id="currentPassword"
+                          disabled={isSubmitting}
                           placeholder="Enter your current password"
                         />
-                      )}
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Input className="invisible" nativeInput />
-                    </Skeleton>
-                  )}
+                      </FormControl>
+                    ) : (
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="newPassword"
-              render={({ field }) => (
-                <Field name="newPassword">
-                  <FieldLabel htmlFor="newPassword">New password</FieldLabel>
-
-                  {hasSession && wired ? (
-                    <FieldControl
-                      {...field}
-                      render={(controlProps) => (
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New password</FormLabel>
+                    {hasSession ? (
+                      <FormControl>
                         <PasswordInput
-                          {...controlProps}
+                          {...field}
                           autoComplete="new-password"
-                          disabled={isPending}
-                          id="newPassword"
+                          disabled={isSubmitting}
                           placeholder="Enter a new password"
                         />
-                      )}
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Input className="invisible" nativeInput />
-                    </Skeleton>
-                  )}
+                      </FormControl>
+                    ) : (
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  <FieldError />
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <Field name="confirmPassword">
-                  <FieldLabel htmlFor="confirmPassword">
-                    Confirm password
-                  </FieldLabel>
-
-                  {hasSession && wired ? (
-                    <FieldControl
-                      {...field}
-                      render={(controlProps) => (
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm password</FormLabel>
+                    {hasSession ? (
+                      <FormControl>
                         <PasswordInput
-                          {...controlProps}
+                          {...field}
                           autoComplete="new-password"
-                          disabled={isPending}
-                          id="confirmPassword"
-                          placeholder="Confirm your password"
+                          disabled={isSubmitting}
+                          placeholder="Confirm your new password"
                         />
-                      )}
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Input className="invisible" nativeInput />
-                    </Skeleton>
-                  )}
+                      </FormControl>
+                    ) : (
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
 
-                  <FieldError />
-                </Field>
-              )}
-            />
-          </CardPanel>
-
-          <CardFooter>
-            <Button
-              disabled={!hasSession || !wired}
-              loading={isPending}
-              size="sm"
-              type="submit"
-            >
-              Update password
-            </Button>
-          </CardFooter>
-        </Card>
+            <CardFooter>
+              <Button
+                disabled={!hasSession || !onSubmit || isSubmitting}
+                size="sm"
+                type="submit"
+              >
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Update password
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
       </Form>
     </div>
   )

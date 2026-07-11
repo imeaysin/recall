@@ -10,7 +10,7 @@ import { LogOut, Monitor, Smartphone, X } from "lucide-react"
 import type { ReactNode } from "react"
 import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -95,14 +95,13 @@ function ActiveSessionRow({ activeSession }: { activeSession: SessionRecord }) {
           {ua.browserName}
           {ua.osName ? `, ${ua.osName}` : ""}
         </span>
-
         {sessionMeta}
       </div>
 
       <Button
         aria-label={isCurrentSession ? "Sign out" : "Revoke session"}
         className="ml-auto shrink-0"
-        loading={isRevoking}
+        disabled={isRevoking}
         onClick={() =>
           isCurrentSession
             ? config.navigate(config.routes.signOut)
@@ -161,7 +160,7 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
       <h2 className="mb-3 text-sm font-semibold">Active sessions</h2>
 
       <Card className={cn("p-0", className)}>
-        <CardPanel className="p-0">
+        <CardContent className="p-0">
           {isPending ? (
             <SessionRowSkeleton />
           ) : (
@@ -172,7 +171,7 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
               </div>
             ))
           )}
-        </CardPanel>
+        </CardContent>
       </Card>
     </div>
   )

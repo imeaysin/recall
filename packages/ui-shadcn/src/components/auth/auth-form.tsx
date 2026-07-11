@@ -1,11 +1,12 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import {
-  OTPField,
-  OTPFieldInput,
-} from "@workspace/ui-shadcn/components/otp-field"
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@workspace/ui-shadcn/components/input-otp"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 
@@ -33,44 +34,43 @@ export function AuthOtpInput({
   if (verifying) {
     return (
       <Card className="rounded-none shadow-xs">
-        <CardPanel className="flex h-16 items-center justify-center">
+        <CardContent className="flex h-16 items-center justify-center">
           <div className="flex items-center gap-2">
             <Spinner className="size-4 text-primary" />
             <span className="text-sm font-medium text-foreground">
               {verifyingLabel}
             </span>
           </div>
-        </CardPanel>
+        </CardContent>
       </Card>
     )
   }
 
   return (
-    <OTPField
+    <InputOTP
       aria-invalid={invalid || undefined}
       className="justify-center gap-2"
       disabled={disabled}
-      length={6}
-      onValueChange={(next) => {
-        onValueChange(next)
-        if (next.length === 6) {
-          onComplete?.(next)
-        }
-      }}
+      id={id}
+      maxLength={6}
+      onChange={onValueChange}
+      onComplete={onComplete}
       value={value}
     >
-      {Array.from({ length: 6 }).map((_, index) => (
-        <OTPFieldInput
-          key={index}
-          aria-label={`Character ${index + 1} of 6`}
-          className={cn(
-            "size-14 text-lg leading-14 sm:size-14 sm:text-lg sm:leading-14",
-            invalid && "border-destructive"
-          )}
-          id={index === 0 ? id : undefined}
-        />
-      ))}
-    </OTPField>
+      <InputOTPGroup>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <InputOTPSlot
+            key={index}
+            aria-label={`Character ${index + 1} of 6`}
+            className={cn(
+              "size-14 text-lg leading-14 sm:size-14 sm:text-lg sm:leading-14",
+              invalid && "border-destructive"
+            )}
+            index={index}
+          />
+        ))}
+      </InputOTPGroup>
+    </InputOTP>
   )
 }
 

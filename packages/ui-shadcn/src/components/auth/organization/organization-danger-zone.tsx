@@ -1,7 +1,7 @@
 "use client"
 
 import { useOrganizationPermission } from "@workspace/auth/react"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { DangerZoneRowSkeleton } from "./danger-zone-row"
@@ -28,7 +28,7 @@ export function OrganizationDangerZone({
       </h2>
 
       <Card>
-        <CardPanel className="p-4">
+        <CardContent className="p-4">
           <LeaveOrganization />
 
           {deletePermissionPending ? <DangerZoneRowSkeleton /> : null}
@@ -39,7 +39,7 @@ export function OrganizationDangerZone({
               <DeleteOrganization />
             </>
           ) : null}
-        </CardPanel>
+        </CardContent>
       </Card>
     </div>
   )

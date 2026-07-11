@@ -20,8 +20,8 @@ import {
 } from "@workspace/ui-shadcn/components/table"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { useEffect, useMemo, useState } from "react"
-import type { CreateUserDialogProps } from "./create-user-dialog"
 import { CreateUserDialog } from "./create-user-dialog"
+import type { CreateUserDialogProps } from "./create-user-dialog"
 import { AdminUserRow } from "./admin-user-row"
 import { platformUiPermissions } from "./ui-permissions"
 
@@ -118,7 +118,7 @@ export function AdminUsers({
       </div>
 
       <Card className="p-0">
-        <Table aria-label="Platform users" variant="card">
+        <Table aria-label="Platform users">
           <TableHeader>
             <TableRow>
               <TableHead>User</TableHead>

@@ -6,14 +6,14 @@ import { ChevronsUpDown, LogOut, Settings } from "lucide-react"
 import { useState } from "react"
 import { buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
-  Menu,
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuPopup,
-  MenuSeparator,
-  MenuTrigger,
-} from "@workspace/ui-shadcn/components/menu"
+  DropdownMenu,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui-shadcn/components/dropdown-menu"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { AuthUserAvatar, type AuthUserAvatarUser } from "./auth-user-avatar"
 import { AuthUserView } from "./auth-user-view"
@@ -205,17 +205,17 @@ export function AuthUserButton({
     isSidebar && !sidebarCollapsed ? "min-w-(--anchor-width)" : undefined
 
   return (
-    <Menu onOpenChange={setOpen} open={open}>
-      <MenuTrigger
+    <DropdownMenu onOpenChange={setOpen} open={open}>
+      <DropdownMenuTrigger
         aria-label={isIconOnly ? "Account menu" : triggerLabel}
         className={getTriggerClassName(size, className)}
         disabled={isPending && !user}
         render={<button type="button" />}
       >
         <TriggerContent isPending={isPending} size={size} user={user} />
-      </MenuTrigger>
+      </DropdownMenuTrigger>
 
-      <MenuPopup
+      <DropdownMenuContent
         align={menuPopupAlign}
         className={menuPopupClassName}
         side={menuPopupSide}
@@ -232,18 +232,18 @@ export function AuthUserButton({
               />
             ) : (
               <>
-                <MenuGroup>
-                  <MenuGroupLabel className="p-0 font-normal">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="p-0 font-normal">
                     <AuthUserView className="px-2 py-1.5" user={user} />
-                  </MenuGroupLabel>
-                </MenuGroup>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
 
-                <MenuSeparator className="my-1.5" />
+                <DropdownMenuSeparator className="my-1.5" />
               </>
             )}
 
             {showWorkspaceMenu && hasAccountSection ? (
-              <MenuSeparator className="my-1.5" />
+              <DropdownMenuSeparator className="my-1.5" />
             ) : null}
 
             {menuItems.map((item) => {
@@ -253,7 +253,7 @@ export function AuthUserButton({
 
               if (item.href) {
                 return (
-                  <MenuItem
+                  <DropdownMenuItem
                     key={item.label}
                     render={
                       <Link
@@ -264,39 +264,39 @@ export function AuthUserButton({
                     variant={menuItemVariant}
                   >
                     {content}
-                  </MenuItem>
+                  </DropdownMenuItem>
                 )
               }
 
               return (
-                <MenuItem
+                <DropdownMenuItem
                   key={item.label}
                   onClick={item.onClick}
                   variant={menuItemVariant}
                 >
                   {content}
-                </MenuItem>
+                </DropdownMenuItem>
               )
             })}
 
             {!hideSettings ? (
-              <MenuItem
+              <DropdownMenuItem
                 onClick={() => config.navigate(config.routes.settingsAccount)}
               >
                 <Settings className="text-muted-foreground" />
                 Account settings
-              </MenuItem>
+              </DropdownMenuItem>
             ) : null}
 
-            <MenuSeparator className="my-1.5" />
+            <DropdownMenuSeparator className="my-1.5" />
 
-            <MenuItem onClick={handleSignOut}>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut className="text-muted-foreground" />
               Sign out
-            </MenuItem>
+            </DropdownMenuItem>
           </>
         ) : null}
-      </MenuPopup>
-    </Menu>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

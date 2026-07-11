@@ -6,7 +6,7 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTab,
+  TabsTrigger,
 } from "@workspace/ui-shadcn/components/tabs"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import type { AccountSettingsProps } from "./account/account-settings"
@@ -38,23 +38,23 @@ export function Settings({
     <Tabs className={cn("w-full gap-4 md:gap-6", className)} value={view}>
       <div className={cn(hideNav && "hidden")}>
         <TabsList aria-label="Settings">
-          <TabsTab
+          <TabsTrigger
             className="gap-1"
             onClick={() => config.navigate(config.routes.settingsAccount)}
             value="account"
           >
             <User2 className="text-muted-foreground" />
             Account
-          </TabsTab>
+          </TabsTrigger>
 
-          <TabsTab
+          <TabsTrigger
             className="gap-1"
             onClick={() => config.navigate(config.routes.settingsSecurity)}
             value="security"
           >
             <Shield className="text-muted-foreground" />
             Security
-          </TabsTab>
+          </TabsTrigger>
         </TabsList>
       </div>
 

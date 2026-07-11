@@ -26,7 +26,7 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTab,
+  TabsTrigger,
 } from "@workspace/ui-shadcn/components/tabs"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import type { OrganizationPeopleProps } from "./organization-people"
@@ -75,7 +75,7 @@ export function Organization({
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <Building2 />
+            <Building2 className="size-6 text-muted-foreground" />
           </EmptyMedia>
           <EmptyTitle>No workspace yet</EmptyTitle>
           <EmptyDescription>
@@ -97,32 +97,32 @@ export function Organization({
     <Tabs className={cn("w-full gap-4 md:gap-6", className)} value={view}>
       <div className={cn(hideNav && "hidden")}>
         <TabsList aria-label="Workspace settings">
-          <TabsTab
+          <TabsTrigger
             className="gap-1"
             onClick={() => config.navigate(config.routes.organizationSettings)}
             value="settings"
           >
             <SettingsIcon className="text-muted-foreground" />
             Settings
-          </TabsTab>
+          </TabsTrigger>
 
-          <TabsTab
+          <TabsTrigger
             className="gap-1"
             onClick={() => config.navigate(config.routes.organizationPeople)}
             value="people"
           >
             <Users className="text-muted-foreground" />
             People
-          </TabsTab>
+          </TabsTrigger>
 
-          <TabsTab
+          <TabsTrigger
             className="gap-1"
             onClick={() => config.navigate(config.routes.organizationRoles)}
             value="roles"
           >
             <Shield className="text-muted-foreground" />
             Roles
-          </TabsTab>
+          </TabsTrigger>
         </TabsList>
       </div>
 

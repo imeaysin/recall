@@ -111,7 +111,7 @@ export function OrganizationRoles({
         </div>
 
         <Card className="p-0">
-          <Table aria-label="Custom workspace roles" variant="card">
+          <Table aria-label="Custom workspace roles">
             <TableHeader>
               <TableRow>
                 <TableHead>Role</TableHead>

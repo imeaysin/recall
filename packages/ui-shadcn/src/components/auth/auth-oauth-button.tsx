@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { Icons } from "@workspace/ui-shadcn/components/icons"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type AuthOAuthProvider = "google" | "github"
@@ -25,6 +26,7 @@ export type AuthOAuthButtonProps = {
   provider: AuthOAuthProvider
   onClick: () => void
   loading?: boolean
+  disabled?: boolean
   primary?: boolean
   className?: string
 }
@@ -33,6 +35,7 @@ export function AuthOAuthButton({
   provider,
   onClick,
   loading = false,
+  disabled = false,
   primary = false,
   className,
 }: AuthOAuthButtonProps) {
@@ -42,13 +45,17 @@ export function AuthOAuthButton({
   return (
     <Button
       className={cn("w-full", className)}
-      loading={loading}
+      disabled={disabled || loading}
       onClick={onClick}
       size="lg"
       type="button"
       variant={primary ? "default" : "outline"}
     >
-      <Icon aria-hidden="true" />
+      {loading ? (
+        <Spinner data-icon="inline-start" />
+      ) : (
+        <Icon className="size-4" data-icon="inline-start" />
+      )}
       Continue with {config.label}
     </Button>
   )

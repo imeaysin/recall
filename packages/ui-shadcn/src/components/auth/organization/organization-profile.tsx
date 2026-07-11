@@ -5,77 +5,117 @@ import {
   useActiveOrganization,
   useOrganizationPermission,
 } from "@workspace/auth/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardPanel } from "@workspace/ui-shadcn/components/card"
+import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Form } from "@workspace/ui-shadcn/components/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
-import { Controller, useFormState, type Control } from "react-hook-form"
 import { OrganizationSlugField } from "./organization-slug-field"
 import { organizationUiPermissions } from "./ui-permissions"
 
-type OrganizationProfileValues = { name: string; slug: string }
+// ---------------------------------------------------------------------------
+// Schema & types
+// ---------------------------------------------------------------------------
+
+const organizationProfileSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required.")
+    .max(100, "Name must be 100 characters or fewer."),
+  slug: z
+    .string()
+    .min(1, "Slug is required.")
+    .max(50, "Slug must be 50 characters or fewer.")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug may only contain lowercase letters, numbers, and hyphens."
+    ),
+})
+
+type OrganizationProfileValues = z.infer<typeof organizationProfileSchema>
+
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
 
 export type OrganizationProfileProps = {
   className?: string
-  control?: Control<OrganizationProfileValues>
-  currentSlug?: string
   onSlugBlur?: () => void
   checkSlugAvailability?: boolean
   onSlugAvailabilityChange?: (state: OrganizationSlugAvailabilityState) => void
-  slugAvailabilityError?: string
-  onSubmit?: () => void
+  onSubmit?: (values: OrganizationProfileValues) => Promise<void> | void
   isPending?: boolean
-  canSubmit?: boolean
 }
+
+// ---------------------------------------------------------------------------
+// Skeleton state
+// ---------------------------------------------------------------------------
 
 function OrganizationProfileSkeleton({ className }: { className?: string }) {
   return (
     <Card className={cn(className)}>
-      <CardPanel className="flex flex-col gap-4 p-4">
-        <Field>
-          <FieldLabel>Name</FieldLabel>
-          <Skeleton>
-            <Input className="invisible" nativeInput />
-          </Skeleton>
-        </Field>
-        <Field>
-          <FieldLabel>Slug</FieldLabel>
-          <Skeleton>
-            <Input className="invisible" nativeInput />
-          </Skeleton>
-        </Field>
-      </CardPanel>
+      <CardContent className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-9 w-full rounded-md" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-9 w-full rounded-md" />
+        </div>
+      </CardContent>
     </Card>
   )
 }
 
+// ---------------------------------------------------------------------------
+// OrganizationProfile
+// ---------------------------------------------------------------------------
+
 export function OrganizationProfile({
   className,
-  control,
-  currentSlug,
   onSlugBlur,
   checkSlugAvailability = true,
   onSlugAvailabilityChange,
-  slugAvailabilityError,
   onSubmit,
   isPending = false,
-  canSubmit = true,
 }: OrganizationProfileProps) {
   const { data: activeOrganization } = useActiveOrganization()
   const { data: canUpdateOrganization, isPending: permissionPending } =
     useOrganizationPermission(organizationUiPermissions.updateOrganization)
-  const readOnly = !canUpdateOrganization?.success
-  const wired = onSubmit != null && control != null
-  const { errors } = useFormState({ control, disabled: !control })
 
-  if (!activeOrganization || permissionPending || !wired) {
+  const readOnly = !canUpdateOrganization?.success
+
+  const form = useForm<OrganizationProfileValues>({
+    resolver: zodResolver(organizationProfileSchema),
+    defaultValues: { name: "", slug: "" },
+  })
+
+  useEffect(() => {
+    if (activeOrganization) {
+      form.reset({
+        name: activeOrganization.name ?? "",
+        slug: activeOrganization.slug ?? "",
+      })
+    }
+  }, [activeOrganization, form])
+
+  const isSubmitting = form.formState.isSubmitting || isPending
+
+  if (!activeOrganization || permissionPending) {
     return (
       <div>
         <h2 className="mb-3 text-sm font-semibold">Profile</h2>
@@ -84,77 +124,76 @@ export function OrganizationProfile({
     )
   }
 
-  const nameInputId = `${activeOrganization.id}-name`
-  const slugInputId = `${activeOrganization.id}-slug`
-
-  const formErrors: Record<string, string> = {}
-  if (errors.name?.message) formErrors.name = errors.name.message
-
-  const slugMessage = slugAvailabilityError ?? errors.slug?.message
-  if (slugMessage) formErrors.slug = slugMessage
+  async function handleSubmit(values: OrganizationProfileValues) {
+    await onSubmit?.(values)
+  }
 
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-      <Form
-        key={activeOrganization.id}
-        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-        onSubmit={onSubmit}
-      >
-        <Card className={cn(className)}>
-          <CardPanel className="flex flex-col gap-4 p-4">
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <Field name="name">
-                  <FieldLabel htmlFor={nameInputId}>Name</FieldLabel>
-                  <Input
-                    {...field}
-                    autoComplete="organization"
-                    disabled={isPending || readOnly}
-                    id={nameInputId}
-                    placeholder="Acme Inc."
-                    type="text"
-                  />
-                  <FieldError />
-                </Field>
-              )}
-            />
 
-            <Controller
-              control={control}
-              name="slug"
-              render={({ field }) => (
-                <OrganizationSlugField
-                  checkAvailability={checkSlugAvailability}
-                  currentSlug={currentSlug ?? activeOrganization.slug}
-                  disabled={isPending || readOnly}
-                  id={slugInputId}
-                  onAvailabilityChange={onSlugAvailabilityChange}
-                  onBlur={() => {
-                    field.onBlur()
-                    onSlugBlur?.()
-                  }}
-                  onChange={field.onChange}
-                  value={field.value}
-                />
-              )}
-            />
+      <Form {...form}>
+        <form
+          key={activeOrganization.id}
+          onSubmit={form.handleSubmit(handleSubmit)}
+        >
+          <Card className={cn(className)}>
+            <CardContent className="flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        autoComplete="organization"
+                        disabled={isSubmitting || readOnly}
+                        placeholder="Acme Inc."
+                        type="text"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {readOnly ? null : (
-              <Button
-                className="w-fit"
-                disabled={!canSubmit}
-                loading={isPending}
-                size="sm"
-                type="submit"
-              >
-                Save changes
-              </Button>
-            )}
-          </CardPanel>
-        </Card>
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <OrganizationSlugField
+                      checkAvailability={checkSlugAvailability}
+                      currentSlug={activeOrganization.slug}
+                      disabled={isSubmitting || readOnly}
+                      onAvailabilityChange={onSlugAvailabilityChange}
+                      onBlur={() => {
+                        field.onBlur()
+                        onSlugBlur?.()
+                      }}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormItem>
+                )}
+              />
+
+              {readOnly ? null : (
+                <Button
+                  className="w-fit"
+                  disabled={!onSubmit || isSubmitting}
+                  size="sm"
+                  type="submit"
+                >
+                  {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                  Save changes
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </form>
       </Form>
     </div>
   )
