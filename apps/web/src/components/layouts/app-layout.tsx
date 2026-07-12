@@ -1,17 +1,9 @@
-import { NavLink, Outlet, useLocation } from "react-router-dom"
-import { CreateOrganizationDialog } from "@workspace/ui-shadcn/auth"
+import { AppSidebar } from "@/components/app-sidebar"
+import { AppOutletContext } from "@/features/auth/app-outlet-context"
 import { WorkspaceOnboardingGate } from "@/features/auth/components/workspace-onboarding-gate"
-import type { AppOutletContext } from "@/features/auth/app-outlet-context"
 import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
 import { useEventStream } from "@/features/notifications/hooks/use-event-stream"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
-import { AppSidebar } from "@workspace/ui-shadcn/components/app-sidebar"
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@workspace/ui-shadcn/components/sidebar"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,35 +12,40 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@workspace/ui-shadcn/components/breadcrumb"
+import { Separator } from "@workspace/ui-shadcn/components/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@workspace/ui-shadcn/components/sidebar"
+import { Outlet, useLocation } from "react-router-dom"
 
-export function AppLayout() {
+export const AppLayout = () => {
   const createOrganization = useCreateOrganizationDialog()
-  const { navigation, projects, userMenuItems, onSignOut, brandLabel } =
-    useAppShellConfig()
+
+  const { navMain, brandLabel } = useAppShellConfig()
   const { pathname } = useLocation()
   useEventStream()
   const outletContext: AppOutletContext = {
     openCreateOrganization: createOrganization.openDialog,
   }
 
+  const currentNav = navMain.find(
+    (n) =>
+      pathname === n.url ||
+      n.items?.some(
+        (sub) => pathname === sub.url || pathname.startsWith(`${sub.url}/`)
+      )
+  )
+  const currentSubNav = currentNav?.items?.find(
+    (n) => pathname === n.url || pathname.startsWith(`${n.url}/`)
+  )
   return (
     <WorkspaceOnboardingGate>
       <SidebarProvider>
-        <AppSidebar
-          projects={projects}
-          navigation={navigation}
-          onCreateOrganization={createOrganization.openDialog}
-          onSignOut={onSignOut}
-          userMenuItems={userMenuItems}
-          pathname={pathname}
-          linkComponent={({ href, children, ...props }) => (
-            <NavLink to={href} {...props}>
-              {children}
-            </NavLink>
-          )}
-        />
+        <AppSidebar />
         <SidebarInset>
-          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator
@@ -58,25 +55,25 @@ export function AppLayout() {
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">{brandLabel}</BreadcrumbLink>
+                    <BreadcrumbLink href="#">
+                      {currentNav?.title ?? brandLabel}
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>
-                      {navigation.find((n) => n.isCurrent?.({ pathname }))
-                        ?.name ?? "Overview"}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
+                  {currentSubNav && (
+                    <>
+                      <BreadcrumbSeparator className="hidden md:block" />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>{currentSubNav.title}</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </>
+                  )}
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <Outlet context={outletContext} />
-          </div>
+          <Outlet context={outletContext} />
         </SidebarInset>
       </SidebarProvider>
-      <CreateOrganizationDialog {...createOrganization.dialogProps} />
     </WorkspaceOnboardingGate>
   )
 }

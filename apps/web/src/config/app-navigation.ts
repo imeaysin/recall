@@ -1,78 +1,132 @@
 import {
-  BellIcon,
-  LayoutDashboardIcon,
-  ShieldIcon,
-  StickyNoteIcon,
-  UploadIcon,
-  PieChartIcon,
-  type LucideIcon,
+  BookOpen,
+  Bot,
+  Frame,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
 } from "lucide-react"
-import { routes } from "@/config/routes"
 
-export type NavItem = {
-  name: string
-  href: string
-  icon: LucideIcon
-  badge?: string
-  isCurrent?: (params: { pathname: string }) => boolean
-  items?: {
-    title: string
-    url: string
-  }[]
+export const appNavigation = {
+  navMain: [
+    {
+      title: "Playground",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
 }
 
-export const appNavigation: NavItem[] = [
-  {
-    name: "Overview",
-    href: routes.dashboard,
-    icon: LayoutDashboardIcon,
-    isCurrent: ({ pathname }) => pathname === routes.dashboard,
-  },
-  {
-    name: "Notes",
-    href: routes.notes,
-    icon: StickyNoteIcon,
-    isCurrent: ({ pathname }) => pathname?.startsWith(routes.notes) ?? false,
-  },
-  {
-    name: "Uploads",
-    href: routes.uploads,
-    icon: UploadIcon,
-    isCurrent: ({ pathname }) => pathname?.startsWith(routes.uploads) ?? false,
-  },
-  {
-    name: "Notifications",
-    href: routes.notifications,
-    icon: BellIcon,
-    isCurrent: ({ pathname }) =>
-      pathname?.startsWith(routes.notifications) ?? false,
-  },
-  {
-    name: "Workspace",
-    href: routes.organizationSettings,
-    icon: PieChartIcon,
-    isCurrent: ({ pathname }) =>
-      pathname?.startsWith(routes.organization) ?? false,
-    items: [
-      {
-        title: "Settings",
-        url: routes.organizationSettings,
-      },
-      {
-        title: "People",
-        url: routes.organizationPeople,
-      },
-      {
-        title: "Roles",
-        url: routes.organizationRoles,
-      },
-    ],
-  },
-]
-
-export const adminNavigationItem: NavItem = {
-  name: "Admin",
-  href: routes.adminUsers,
-  icon: ShieldIcon,
-  isCurrent: ({ pathname }) => pathname?.startsWith(routes.admin) ?? false,
+export const adminNavigationItem = {
+  title: "Admin",
+  url: "#",
+  icon: Settings2,
+  items: [
+    {
+      title: "Users",
+      url: "#",
+    },
+    {
+      title: "Roles",
+      url: "#",
+    },
+  ],
 }
