@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import type { LucideIcon } from "lucide-react"
 import {
   FolderIcon,
@@ -24,14 +25,37 @@ import {
   useSidebar,
 } from "@workspace/ui-shadcn/components/sidebar"
 
+export type NavProjectsLinkComponent = React.ComponentType<{
+  href: string
+  className?: string
+  children?: React.ReactNode
+  [key: string]: unknown
+}>
+
+const DefaultLink = ({
+  href,
+  children,
+  ...props
+}: {
+  href: string
+  children?: React.ReactNode
+  [key: string]: unknown
+}) => (
+  <a href={href} {...props}>
+    {children}
+  </a>
+)
+
 export function NavProjects({
   projects,
+  linkComponent: Link = DefaultLink,
 }: {
   projects: {
     name: string
     url: string
     icon: LucideIcon
   }[]
+  linkComponent?: NavProjectsLinkComponent
 }) {
   const { isMobile } = useSidebar()
   return (
@@ -41,10 +65,10 @@ export function NavProjects({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <Link href={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

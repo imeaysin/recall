@@ -4,6 +4,7 @@ import * as React from "react"
 import type { LucideIcon } from "lucide-react"
 
 import { NavMain } from "@workspace/ui-shadcn/components/nav-main"
+import { NavProjects } from "@workspace/ui-shadcn/components/nav-projects"
 import { NavUser } from "@workspace/ui-shadcn/components/nav-user"
 import { TeamSwitcher } from "@workspace/ui-shadcn/components/team-switcher"
 import {
@@ -24,6 +25,7 @@ export type AppSidebarLinkComponent = React.ComponentType<{
 
 export function AppSidebar({
   navigation,
+  projects,
   onCreateOrganization,
   onSignOut,
   userMenuItems,
@@ -37,6 +39,15 @@ export function AppSidebar({
     icon: LucideIcon
     badge?: string
     isCurrent?: (params: { pathname: string }) => boolean
+    items?: {
+      title: string
+      url: string
+    }[]
+  }[]
+  projects?: {
+    name: string
+    url: string
+    icon: LucideIcon
   }[]
   onCreateOrganization?: () => void
   onSignOut?: () => void
@@ -55,6 +66,7 @@ export function AppSidebar({
     icon: item.icon,
     badge: item.badge,
     isActive: item.isCurrent?.({ pathname: currentPathname }),
+    items: item.items,
   }))
 
   return (
@@ -64,6 +76,9 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMainItems} linkComponent={linkComponent} />
+        {projects && projects.length > 0 && (
+          <NavProjects projects={projects} linkComponent={linkComponent} />
+        )}
       </SidebarContent>
       <SidebarFooter>
         {session?.user ? (
@@ -75,6 +90,7 @@ export function AppSidebar({
             }}
             menuItems={userMenuItems}
             onSignOut={onSignOut}
+            linkComponent={linkComponent}
           />
         ) : null}
       </SidebarFooter>

@@ -15,6 +15,10 @@ export type NavItem = {
   icon: LucideIcon
   badge?: string
   isCurrent?: (params: { pathname: string }) => boolean
+  items?: {
+    title: string
+    url: string
+  }[]
 }
 
 export const appNavigation: NavItem[] = [
@@ -49,6 +53,20 @@ export const appNavigation: NavItem[] = [
     icon: PieChartIcon,
     isCurrent: ({ pathname }) =>
       pathname?.startsWith(routes.organization) ?? false,
+    items: [
+      {
+        title: "Settings",
+        url: routes.organizationSettings,
+      },
+      {
+        title: "People",
+        url: routes.organizationPeople,
+      },
+      {
+        title: "Roles",
+        url: routes.organizationRoles,
+      },
+    ],
   },
 ]
 

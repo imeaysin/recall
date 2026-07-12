@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { ChevronsUpDownIcon, LogOutIcon, type LucideIcon } from "lucide-react"
 import {
   Avatar,
@@ -22,10 +23,18 @@ import {
   useSidebar,
 } from "@workspace/ui-shadcn/components/sidebar"
 
+export type NavUserLinkComponent = React.ComponentType<{
+  href: string
+  className?: string
+  children?: React.ReactNode
+  [key: string]: unknown
+}>
+
 export function NavUser({
   user,
   menuItems,
   onSignOut,
+  linkComponent: Link,
 }: {
   user: {
     name: string
@@ -39,6 +48,7 @@ export function NavUser({
     onClick?: () => void
   }[]
   onSignOut?: () => void
+  linkComponent?: NavUserLinkComponent
 }) {
   const { isMobile } = useSidebar()
 
@@ -88,22 +98,29 @@ export function NavUser({
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  {menuItems.map((item, index) => (
-                    <DropdownMenuItem
-                      key={index}
-                      onClick={() => {
-                        if (item.onClick) item.onClick()
-                        else if (item.href) {
-                          if (typeof window !== "undefined") {
-                            window.location.href = item.href
-                          }
-                        }
-                      }}
-                    >
-                      {item.icon && <item.icon />}
-                      {item.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {menuItems.map((item, index) => {
+                    if (item.href && Link) {
+                      return (
+                        <DropdownMenuItem key={index} asChild>
+                          <Link
+                            href={item.href}
+                            className="flex w-full items-center"
+                          >
+                            {item.icon && (
+                              <item.icon className="mr-2 h-4 w-4" />
+                            )}
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      )
+                    }
+                    return (
+                      <DropdownMenuItem key={index} onClick={item.onClick}>
+                        {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                        {item.label}
+                      </DropdownMenuItem>
+                    )
+                  })}
                 </DropdownMenuGroup>
               </>
             )}

@@ -21,7 +21,7 @@ import {
 
 export function AppLayout() {
   const createOrganization = useCreateOrganizationDialog()
-  const { navigation, userMenuItems, onSignOut } = useAppShellConfig()
+  const { navigation, projects, userMenuItems, onSignOut } = useAppShellConfig()
   const { pathname } = useLocation()
   useEventStream()
   const outletContext: AppOutletContext = {
@@ -32,6 +32,7 @@ export function AppLayout() {
     <WorkspaceOnboardingGate>
       <SidebarProvider>
         <AppSidebar
+          projects={projects}
           navigation={navigation}
           onCreateOrganization={createOrganization.openDialog}
           onSignOut={onSignOut}

@@ -37,9 +37,31 @@ export function useAppShellConfig() {
     []
   )
 
+  const projects = useMemo(
+    () => [
+      {
+        name: "Design Engineering",
+        url: "#",
+        icon: SettingsIcon,
+      },
+      {
+        name: "Sales & Marketing",
+        url: "#",
+        icon: SettingsIcon,
+      },
+      {
+        name: "Travel",
+        url: "#",
+        icon: SettingsIcon,
+      },
+    ],
+    []
+  )
+
   return {
     brandLabel: site.name,
     navigation,
+    projects,
     onSignOut: () => signOut.mutate(),
     userMenuItems,
   }
