@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { useActiveOrganizationId } from "@workspace/auth/react"
 import { UploadResponseSchema, type UploadResponse } from "@workspace/contracts"
-import { toastManager } from "@workspace/ui/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { apiRoutes } from "@/config/api-routes"
 import { apiFetch } from "@/lib/api"
 
@@ -17,22 +17,18 @@ export function useUploadFileMutation() {
       const formData = new FormData()
       formData.append("file", file)
 
-      const data = await toastManager.promise(
-        apiFetch<unknown>(apiRoutes.uploads, {
-          method: "POST",
-          body: formData,
-        }),
-        {
-          loading: { title: "Uploading…" },
-          success: { title: "File uploaded" },
-          error: {
-            title: "Upload failed",
-            description: "Please try again.",
-            type: "error",
-          },
-        }
-      )
+      const promise = apiFetch<unknown>(apiRoutes.uploads, {
+        method: "POST",
+        body: formData,
+      })
 
+      toast.promise(promise, {
+        loading: "Uploading…",
+        success: "File uploaded",
+        error: "Upload failed",
+      })
+
+      const data = await promise
       return UploadResponseSchema.parse(data)
     },
   })

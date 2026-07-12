@@ -1,16 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "react-router-dom"
-import { Controller, useForm, useFormState } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import {
   ForgotPasswordSchema,
   type ForgotPasswordInput,
 } from "@workspace/contracts"
-import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
-import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field"
-import { Form } from "@workspace/ui/components/form"
-import { Input } from "@workspace/ui/components/input"
-import { toastManager } from "@workspace/ui/components/toast"
+import { AuthPageBody, AuthPageHeader } from "@workspace/ui-shadcn/auth"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui-shadcn/components/form"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { useRequestPasswordReset } from "@workspace/auth/react"
 import { absoluteAppUrl, routes } from "@/config/routes"
 
@@ -20,7 +26,6 @@ export function ForgotPasswordPage() {
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: { email: "" },
   })
-  const { errors } = useFormState({ control: form.control })
 
   async function onSubmit(values: ForgotPasswordInput) {
     try {
@@ -28,10 +33,8 @@ export function ForgotPasswordPage() {
         email: values.email,
         redirectTo: absoluteAppUrl(routes.resetPassword),
       })
-      toastManager.add({
-        title: "Check your email",
+      toast.success("Check your email", {
         description: "If an account exists, a reset link has been sent.",
-        type: "success",
       })
     } catch {
       form.setError("email", {
@@ -39,9 +42,6 @@ export function ForgotPasswordPage() {
       })
     }
   }
-
-  const formErrors: Record<string, string> = {}
-  if (errors.email?.message) formErrors.email = errors.email.message
 
   return (
     <AuthPageBody
@@ -59,38 +59,39 @@ export function ForgotPasswordPage() {
         title="Forgot password"
       />
 
-      <Form
-        className="flex flex-col gap-4"
-        errors={Object.keys(formErrors).length > 0 ? formErrors : undefined}
-        noValidate
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <Controller
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <Field name="email">
-              <FieldLabel htmlFor="forgot-password-email">Email</FieldLabel>
-              <Input
-                {...field}
-                autoComplete="email"
-                id="forgot-password-email"
-                placeholder="you@example.com"
-                type="email"
-              />
-              <FieldError />
-            </Field>
-          )}
-        />
-        <Button
-          className="w-full"
-          loading={forgotPassword.isPending}
-          size="lg"
-          type="submit"
-          variant="default"
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+          noValidate
         >
-          Send reset link
-        </Button>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    type="email"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            className="w-full"
+            disabled={forgotPassword.isPending}
+            size="lg"
+            type="submit"
+          >
+            Send reset link
+          </Button>
+        </form>
       </Form>
     </AuthPageBody>
   )

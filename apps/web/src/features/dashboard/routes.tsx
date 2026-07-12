@@ -5,7 +5,7 @@ export const dashboardRoutes: RouteObject[] = [
   {
     path: routeSegments.app.dashboard,
     async lazy() {
-      const { DashboardPage } =
+      const { default: DashboardPage } =
         await import("@/features/dashboard/pages/dashboard-page")
       return { Component: DashboardPage }
     },

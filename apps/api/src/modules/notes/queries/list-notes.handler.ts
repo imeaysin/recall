@@ -1,8 +1,5 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs"
-import {
-  NotesListResponseSchema,
-  type NotesListResponse,
-} from "@workspace/contracts"
+import type { NotesListResponse } from "@workspace/contracts"
 import { toNoteResponse } from "../dto/note-response.mapper"
 import { NotesRepository } from "../repositories/notes.repository"
 import { ListNotesQuery } from "./list-notes.query"
@@ -13,8 +10,8 @@ export class ListNotesHandler implements IQueryHandler<ListNotesQuery> {
 
   async execute(query: ListNotesQuery): Promise<NotesListResponse> {
     const notes = await this.notesRepository.findMany(query.scope)
-    return NotesListResponseSchema.parse({
+    return {
       items: notes.map(toNoteResponse),
-    })
+    }
   }
 }

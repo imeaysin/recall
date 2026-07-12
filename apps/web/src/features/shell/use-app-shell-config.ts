@@ -1,34 +1,95 @@
 import { useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import { SettingsIcon } from "lucide-react"
-import { flattenNavItems } from "@workspace/ui/components/shell"
-import type { CommandAction } from "@workspace/ui/components/shell"
-import type { AuthUserButtonMenuItem } from "@workspace/ui/auth"
+import { useLocation } from "react-router-dom"
+import {
+  GalleryVerticalEnd,
+  AudioWaveform,
+  Command,
+  SettingsIcon,
+} from "lucide-react"
+import type { AuthUserButtonMenuItem } from "@workspace/ui-shadcn/auth"
 import { appNavigation, adminNavigationItem } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
-import { usePlatformPermission, useSignOut } from "@workspace/auth/react"
-import { platformUiPermissions } from "@workspace/ui/auth"
-import { useUnreadCountQuery } from "@/features/notifications/hooks/use-notifications"
+import {
+  usePlatformPermission,
+  useAuthSession,
+  useActiveOrganization,
+  useListOrganizations,
+  useSignOut,
+} from "@workspace/auth/react"
+import { platformUiPermissions } from "@workspace/ui-shadcn/auth"
 
 export function useAppShellConfig() {
-  const navigate = useNavigate()
   const signOut = useSignOut()
+  const location = useLocation()
+  const pathname = location.pathname
+
   const { data: adminPermission } = usePlatformPermission(
     platformUiPermissions.listUsers
   )
-  const { data: unreadCount } = useUnreadCountQuery()
 
-  const navigation = useMemo(() => {
-    const items = appNavigation.map((item) => {
-      if (item.href !== routes.notifications) return item
-      const count = unreadCount?.count ?? 0
-      if (count === 0) return item
-      return { ...item, badge: count > 99 ? "99+" : String(count) }
+  const { data: session } = useAuthSession()
+  const { data: activeOrganization } = useActiveOrganization()
+  const { data: organizations } = useListOrganizations()
+
+  const navMain = useMemo(() => {
+    let items = appNavigation.navMain
+
+    if (adminPermission?.success) {
+      items = [...items, adminNavigationItem]
+    }
+
+    return items.map((item) => {
+      const isUrlActive =
+        pathname === item.url ||
+        (item.items &&
+          item.items.length === 0 &&
+          pathname.startsWith(`${item.url}/`))
+      const hasActiveSubItem = item.items?.some(
+        (sub) => pathname === sub.url || pathname.startsWith(`${sub.url}/`)
+      )
+
+      return {
+        ...item,
+        isActive: isUrlActive || hasActiveSubItem,
+        items: item.items?.map((sub) => ({
+          ...sub,
+          isActive: pathname === sub.url || pathname.startsWith(`${sub.url}/`),
+        })),
+      }
     })
-    if (!adminPermission?.success) return items
-    return [...items, adminNavigationItem]
-  }, [adminPermission?.success, unreadCount?.count])
+  }, [adminPermission?.success, pathname])
+
+  const projects = useMemo(() => {
+    return appNavigation.projects.map((proj) => ({
+      ...proj,
+      isActive: pathname === proj.url || pathname.startsWith(`${proj.url}/`),
+    }))
+  }, [pathname])
+
+  const user = {
+    name: session?.user?.name ?? "User",
+    email: session?.user?.email ?? "",
+    avatar: session?.user?.image ?? "",
+  }
+
+  const teams = useMemo(() => {
+    if (!organizations || organizations.length === 0) {
+      return [
+        {
+          name: activeOrganization?.name ?? "Personal Workspace",
+          logo: GalleryVerticalEnd as React.ElementType,
+          plan: "Free",
+        },
+      ]
+    }
+    const logos = [GalleryVerticalEnd, AudioWaveform, Command]
+    return organizations.map((org, index) => ({
+      name: org.name,
+      logo: logos[index % logos.length] as React.ElementType,
+      plan: org.slug ?? "Pro",
+    }))
+  }, [organizations, activeOrganization])
 
   const userMenuItems = useMemo<AuthUserButtonMenuItem[]>(
     () => [
@@ -37,25 +98,21 @@ export function useAppShellConfig() {
         href: routes.settingsAccount,
         icon: SettingsIcon,
       },
+      {
+        label: "Workspace settings",
+        href: routes.organizationSettings,
+        icon: SettingsIcon,
+      },
     ],
     []
   )
 
-  const commandActions = useMemo<CommandAction[]>(() => {
-    return flattenNavItems(navigation).map((item) => ({
-      id: item.href || item.name,
-      name: item.name,
-      section: "Navigation",
-      keywords: item.name,
-      href: item.href || undefined,
-      onSelect: item.href ? () => navigate(item.href) : undefined,
-    }))
-  }, [navigate, navigation])
-
   return {
     brandLabel: site.name,
-    commandActions,
-    navigation,
+    navMain,
+    projects,
+    user,
+    teams,
     onSignOut: () => signOut.mutate(),
     userMenuItems,
   }

@@ -27,7 +27,9 @@ export class NotesRepository
     super()
   }
 
-  // ─── Read side ──────────────────────────────────────────────────────────────
+  /**
+   * @description Read side
+   */
 
   async findMany(scope: NoteActorScope): Promise<NoteEntity[]> {
     return this.db
@@ -52,7 +54,9 @@ export class NotesRepository
     })
   }
 
-  // ─── Write side ─────────────────────────────────────────────────────────────
+  /**
+   * @description Write side
+   */
 
   /**
    * Inserts a new note. Unique constraint violations (E11000) are mapped to
@@ -121,7 +125,9 @@ export class NotesRepository
     return result.deletedCount > 0
   }
 
-  // ─── Bulk write ─────────────────────────────────────────────────────────────
+  /**
+   * @description Bulk write
+   */
 
   async deleteMany(scope: BulkNoteMutationScope): Promise<number> {
     const objectIds = scope.ids
@@ -153,7 +159,9 @@ export class NotesRepository
     return deletedCount
   }
 
-  // ─── Diagnostic helpers ──────────────────────────────────────────────────────
+  /**
+   * @description Diagnostic helpers
+   */
 
   async rejectBulkMutationMiss(scope: BulkNoteMutationScope): Promise<never> {
     for (const id of scope.ids) {

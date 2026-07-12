@@ -1,59 +1,101 @@
 import {
-  BellIcon,
-  Building2Icon,
-  LayoutDashboardIcon,
-  ShieldIcon,
-  StickyNoteIcon,
-  UploadIcon,
-  BotIcon,
+  BookOpen,
+  Frame,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
 } from "lucide-react"
-import type { NavItem } from "@workspace/ui/components/shell"
 import { routes } from "@/config/routes"
 
-export const appNavigation: NavItem[] = [
-  {
-    name: "Overview",
-    href: routes.dashboard,
-    icon: LayoutDashboardIcon,
-    isCurrent: ({ pathname }) => pathname === routes.dashboard,
-  },
-  {
-    name: "Notes",
-    href: routes.notes,
-    icon: StickyNoteIcon,
-    isCurrent: ({ pathname }) => pathname?.startsWith(routes.notes) ?? false,
-  },
-  {
-    name: "AI Assistant",
-    href: routes.ai,
-    icon: BotIcon,
-    isCurrent: ({ pathname }) => pathname?.startsWith(routes.ai) ?? false,
-  },
-  {
-    name: "Uploads",
-    href: routes.uploads,
-    icon: UploadIcon,
-    isCurrent: ({ pathname }) => pathname?.startsWith(routes.uploads) ?? false,
-  },
-  {
-    name: "Notifications",
-    href: routes.notifications,
-    icon: BellIcon,
-    isCurrent: ({ pathname }) =>
-      pathname?.startsWith(routes.notifications) ?? false,
-  },
-  {
-    name: "Workspace",
-    href: routes.organizationSettings,
-    icon: Building2Icon,
-    isCurrent: ({ pathname }) =>
-      pathname?.startsWith(routes.organization) ?? false,
-  },
-]
+export const appNavigation = {
+  navMain: [
+    {
+      title: "Playground",
+      url: routes.dashboard,
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Dashboard",
+          url: routes.dashboard,
+        },
+        {
+          title: "Notes",
+          url: routes.notes,
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: routes.settingsAccount,
+      icon: Settings2,
+      items: [
+        {
+          title: "Account",
+          url: routes.settingsAccount,
+        },
+        {
+          title: "Workspace",
+          url: routes.organizationSettings,
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
+}
 
-export const adminNavigationItem: NavItem = {
-  name: "Admin",
-  href: routes.adminUsers,
-  icon: ShieldIcon,
-  isCurrent: ({ pathname }) => pathname?.startsWith(routes.admin) ?? false,
+export const adminNavigationItem = {
+  title: "Admin",
+  url: routes.adminUsers,
+  icon: Settings2,
+  items: [
+    {
+      title: "Users",
+      url: routes.adminUsers,
+    },
+    {
+      title: "Roles",
+      url: routes.adminUsers,
+    },
+  ],
 }

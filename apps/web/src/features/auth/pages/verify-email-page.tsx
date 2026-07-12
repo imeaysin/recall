@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react"
 import { Link, Navigate, useSearchParams } from "react-router-dom"
-import { AuthPageBody, AuthPageHeader } from "@workspace/ui/auth"
-import { Button } from "@workspace/ui/components/button"
-import { PageLoading } from "@workspace/ui/components/page-loading"
-import { toastManager } from "@workspace/ui/components/toast"
+import { AuthPageBody, AuthPageHeader } from "@workspace/ui-shadcn/auth"
+import { Button } from "@workspace/ui-shadcn/components/button"
+import { PageLoading } from "@workspace/ui-shadcn/components/page-loading"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import {
   useSendVerificationEmail,
   useVerifyEmail,
   useAuthSession,
 } from "@workspace/auth/react"
-import { OpenEmailButton } from "@workspace/ui/auth"
+import { OpenEmailButton } from "@workspace/ui-shadcn/auth"
 import {
   absoluteAppUrl,
   routes,
@@ -49,17 +49,13 @@ export function VerifyEmailPage() {
     verifyEmail(token, {
       onSuccess: () => {
         setVerified(true)
-        toastManager.add({
-          title: "Email verified",
+        toast.success("Email verified", {
           description: "Your account is ready. You can sign in now.",
-          type: "success",
         })
       },
       onError: () => {
-        toastManager.add({
-          title: "Verification failed",
+        toast.error("Verification failed", {
           description: "This link is invalid or has expired.",
-          type: "error",
         })
       },
     })
@@ -67,10 +63,8 @@ export function VerifyEmailPage() {
 
   async function resendEmail() {
     if (!email) {
-      toastManager.add({
-        title: "Email required",
+      toast.error("Email required", {
         description: "Sign up again or contact support to resend verification.",
-        type: "error",
       })
       return
     }
@@ -80,17 +74,12 @@ export function VerifyEmailPage() {
         email,
         callbackURL: absoluteAppUrl(routes.verifyEmail),
       })
-      toastManager.add({
-        title: "Email sent",
+      toast.success("Email sent", {
         description: "Check your inbox for a new verification link.",
-        type: "success",
       })
     } catch {
-      toastManager.add({
+      toast.error("Could not resend", {
         description: "Please try again in a moment.",
-        id: "verify-email-resend-error",
-        title: "Could not resend",
-        type: "error",
       })
     }
   }
@@ -113,7 +102,7 @@ export function VerifyEmailPage() {
             <OpenEmailButton email={email} />
             <Button
               className="w-full"
-              loading={sendVerification.isPending}
+              disabled={sendVerification.isPending}
               onClick={() => void resendEmail()}
               size="lg"
               type="button"
@@ -124,13 +113,13 @@ export function VerifyEmailPage() {
           </>
         ) : null}
         <Button
+          asChild
           className="w-full"
-          render={<Link to={routes.signIn} />}
           size="lg"
           type="button"
           variant="default"
         >
-          {copy.buttonLabel}
+          <Link to={routes.signIn}>{copy.buttonLabel}</Link>
         </Button>
       </div>
     </AuthPageBody>

@@ -1,3 +1,6 @@
+/**
+ * Represents a storage error.
+ */
 export class StorageError extends Error {
   constructor(
     message: string,
@@ -38,13 +41,9 @@ export type StorageUploadResult = {
   contentLength?: number
 }
 
-// ── Delete ──────────────────────────────────────────
-
 export type StorageDeleteInput = {
   path: string
 }
-
-// ── Copy / Move ─────────────────────────────────────
 
 export type StorageCopyInput = {
   sourcePath: string
@@ -66,8 +65,6 @@ export type StorageMoveResult = {
   url: string
 }
 
-// ── List ────────────────────────────────────────────
-
 export type StorageListInput = {
   prefix?: string
   delimiter?: string
@@ -87,8 +84,6 @@ export type StorageListResult = {
   isTruncated: boolean
 }
 
-// ── Metadata ────────────────────────────────────────
-
 export type StorageFileMetadata = {
   size: number
   contentType: string
@@ -97,15 +92,14 @@ export type StorageFileMetadata = {
   metadata?: Record<string, string>
 }
 
-// ── Signed URLs ─────────────────────────────────────
-
 export type SignedUrlOptions = {
   expiresInSeconds?: number
   contentType?: string
 }
 
-// ── Provider interface ──────────────────────────────
-
+/**
+ * Interface defining the operations supported by a storage provider.
+ */
 export type StorageProvider = {
   upload(input: StorageUploadInput): Promise<StorageUploadResult>
   delete(input: StorageDeleteInput): Promise<void>
@@ -121,8 +115,6 @@ export type StorageProvider = {
   ): Promise<string>
   getSignedUploadUrl(path: string, options?: SignedUrlOptions): Promise<string>
 }
-
-// ── Config ──────────────────────────────────────────
 
 export type LocalStorageConfig = {
   provider: "local"
@@ -140,4 +132,7 @@ export type S3StorageConfig = {
   baseUrl?: string
 }
 
+/**
+ * Configuration for the storage system.
+ */
 export type StorageConfig = LocalStorageConfig | S3StorageConfig
