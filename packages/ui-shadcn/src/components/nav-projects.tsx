@@ -1,5 +1,12 @@
 "use client"
 
+import type { LucideIcon } from "lucide-react"
+import {
+  FolderIcon,
+  ForwardIcon,
+  MoreHorizontalIcon,
+  Trash2Icon,
+} from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,12 +23,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui-shadcn/components/sidebar"
-import {
-  MoreHorizontalIcon,
-  FolderIcon,
-  ArrowRightIcon,
-  Trash2Icon,
-} from "lucide-react"
 
 export function NavProjects({
   projects,
@@ -29,7 +30,7 @@ export function NavProjects({
   projects: {
     name: string
     url: string
-    icon: React.ReactNode
+    icon: LucideIcon
   }[]
 }) {
   const { isMobile } = useSidebar()
@@ -39,38 +40,35 @@ export function NavProjects({
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton render={<a href={item.url} />}>
-              {item.icon}
-              <span>{item.name}</span>
+            <SidebarMenuButton asChild>
+              <a href={item.url}>
+                <item.icon />
+                <span>{item.name}</span>
+              </a>
             </SidebarMenuButton>
             <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <SidebarMenuAction
-                    showOnHover
-                    className="aria-expanded:bg-muted"
-                  />
-                }
-              >
-                <MoreHorizontalIcon />
-                <span className="sr-only">More</span>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuAction showOnHover>
+                  <MoreHorizontalIcon />
+                  <span className="sr-only">More</span>
+                </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-fit"
+                className="w-48 rounded-lg"
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
-                  <FolderIcon />
+                  <FolderIcon className="text-muted-foreground" />
                   <span>View Project</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <ArrowRightIcon />
+                  <ForwardIcon className="text-muted-foreground" />
                   <span>Share Project</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">
-                  <Trash2Icon />
+                <DropdownMenuItem>
+                  <Trash2Icon className="text-muted-foreground" />
                   <span>Delete Project</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

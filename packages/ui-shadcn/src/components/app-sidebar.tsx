@@ -1,6 +1,18 @@
 "use client"
 
 import * as React from "react"
+import {
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from "lucide-react"
 
 import { NavMain } from "@workspace/ui-shadcn/components/nav-main"
 import { NavProjects } from "@workspace/ui-shadcn/components/nav-projects"
@@ -13,18 +25,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@workspace/ui-shadcn/components/sidebar"
-import {
-  GalleryVerticalEndIcon,
-  AudioLinesIcon,
-  TerminalIcon,
-  TerminalSquareIcon,
-  BotIcon,
-  BookOpenIcon,
-  Settings2Icon,
-  FrameIcon,
-  PieChartIcon,
-  MapIcon,
-} from "lucide-react"
 
 // This is sample data.
 const data = {
@@ -36,17 +36,17 @@ const data = {
   teams: [
     {
       name: "Acme Inc",
-      logo: <GalleryVerticalEndIcon />,
+      logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
     {
       name: "Acme Corp.",
-      logo: <AudioLinesIcon />,
+      logo: AudioWaveform,
       plan: "Startup",
     },
     {
       name: "Evil Corp.",
-      logo: <TerminalIcon />,
+      logo: Command,
       plan: "Free",
     },
   ],
@@ -54,86 +54,44 @@ const data = {
     {
       title: "Playground",
       url: "#",
-      icon: <TerminalSquareIcon />,
+      icon: SquareTerminal,
       isActive: true,
       items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        { title: "History", url: "#" },
+        { title: "Starred", url: "#" },
+        { title: "Settings", url: "#" },
       ],
     },
     {
       title: "Models",
       url: "#",
-      icon: <BotIcon />,
+      icon: Bot,
       items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        { title: "Genesis", url: "#" },
+        { title: "Explorer", url: "#" },
+        { title: "Quantum", url: "#" },
       ],
     },
     {
       title: "Documentation",
       url: "#",
-      icon: <BookOpenIcon />,
+      icon: BookOpen,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
+        { title: "Introduction", url: "#" },
+        { title: "Get Started", url: "#" },
+        { title: "Tutorials", url: "#" },
+        { title: "Changelog", url: "#" },
       ],
     },
     {
       title: "Settings",
       url: "#",
-      icon: <Settings2Icon />,
+      icon: Settings2,
       items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "General", url: "#" },
+        { title: "Team", url: "#" },
+        { title: "Billing", url: "#" },
+        { title: "Limits", url: "#" },
       ],
     },
   ],
@@ -141,17 +99,17 @@ const data = {
     {
       name: "Design Engineering",
       url: "#",
-      icon: <FrameIcon />,
+      icon: Frame,
     },
     {
       name: "Sales & Marketing",
       url: "#",
-      icon: <PieChartIcon />,
+      icon: PieChart,
     },
     {
       name: "Travel",
       url: "#",
-      icon: <MapIcon />,
+      icon: Map,
     },
   ],
 }
