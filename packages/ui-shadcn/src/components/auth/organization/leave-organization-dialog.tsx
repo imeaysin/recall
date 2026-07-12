@@ -44,7 +44,7 @@ export function LeaveOrganizationDialog({
 
         <div className="px-6 pb-2">
           <Card>
-            <CardContent className="p-4">
+            <CardContent>
               <OrganizationView organization={organization} />
             </CardContent>
           </Card>
