@@ -26,10 +26,12 @@ import {
   RequireOrgPermission,
 } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import { BulkDeleteNotesCommand } from "./commands/bulk-delete-notes.command"
-import { CreateNoteCommand } from "./commands/create-note.command"
-import { DeleteNoteCommand } from "./commands/delete-note.command"
-import { UpdateNoteCommand } from "./commands/update-note.command"
+import {
+  BulkDeleteNotesCommand,
+  CreateNoteCommand,
+  DeleteNoteCommand,
+  UpdateNoteCommand,
+} from "./commands"
 import {
   BulkDeleteNotesApiResponseDto,
   BulkDeleteNotesDto,
@@ -38,7 +40,7 @@ import {
   NotesListApiResponseDto,
   UpdateNoteDto,
 } from "./notes.dto"
-import { ListNotesQuery } from "./queries/list-notes.query"
+import { ListNotesQuery } from "./queries"
 
 @ApiTags("notes")
 @ApiAuthErrorResponses()
