@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useLocation } from "react-router-dom"
 import {
   GalleryVerticalEnd,
   AudioWaveform,
@@ -20,6 +21,9 @@ import { platformUiPermissions } from "@workspace/ui-shadcn/auth"
 
 export function useAppShellConfig() {
   const signOut = useSignOut()
+  const location = useLocation()
+  const pathname = location.pathname
+
   const { data: adminPermission } = usePlatformPermission(
     platformUiPermissions.listUsers
   )
@@ -34,10 +38,34 @@ export function useAppShellConfig() {
     if (adminPermission?.success) {
       items = [...items, adminNavigationItem]
     }
-    return items
-  }, [adminPermission?.success])
 
-  const projects = appNavigation.projects
+    return items.map((item) => {
+      const isUrlActive =
+        pathname === item.url ||
+        (item.items &&
+          item.items.length === 0 &&
+          pathname.startsWith(`${item.url}/`))
+      const hasActiveSubItem = item.items?.some(
+        (sub) => pathname === sub.url || pathname.startsWith(`${sub.url}/`)
+      )
+
+      return {
+        ...item,
+        isActive: isUrlActive || hasActiveSubItem,
+        items: item.items?.map((sub) => ({
+          ...sub,
+          isActive: pathname === sub.url || pathname.startsWith(`${sub.url}/`),
+        })),
+      }
+    })
+  }, [adminPermission?.success, pathname])
+
+  const projects = useMemo(() => {
+    return appNavigation.projects.map((proj) => ({
+      ...proj,
+      isActive: pathname === proj.url || pathname.startsWith(`${proj.url}/`),
+    }))
+  }, [pathname])
 
   const user = {
     name: session?.user?.name ?? "User",
@@ -68,6 +96,11 @@ export function useAppShellConfig() {
       {
         label: "Account settings",
         href: routes.settingsAccount,
+        icon: SettingsIcon,
+      },
+      {
+        label: "Workspace settings",
+        href: routes.organizationSettings,
         icon: SettingsIcon,
       },
     ],

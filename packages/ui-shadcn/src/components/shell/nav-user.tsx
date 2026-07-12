@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
 import {
   Avatar,
@@ -32,12 +25,20 @@ import {
 
 export function NavUser({
   user,
+  menuItems,
+  onSignOut,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
+  menuItems?: {
+    label: string
+    href?: string
+    icon?: React.ElementType
+  }[]
+  onSignOut?: () => void
 }) {
   const { isMobile } = useSidebar()
 
@@ -80,30 +81,24 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {menuItems && menuItems.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  {menuItems.map((item, index) => (
+                    <DropdownMenuItem key={index} asChild>
+                      <a href={item.href} className="flex w-full items-center">
+                        {item.icon && <item.icon className="mr-2 size-4" />}
+                        {item.label}
+                      </a>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </>
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
+            <DropdownMenuItem onClick={onSignOut} className="cursor-pointer">
+              <LogOut className="mr-2 size-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

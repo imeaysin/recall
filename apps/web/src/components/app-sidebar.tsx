@@ -15,7 +15,8 @@ import {
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { navMain, projects, user, teams } = useAppShellConfig()
+  const { navMain, projects, user, teams, onSignOut, userMenuItems } =
+    useAppShellConfig()
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -27,7 +28,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={user} menuItems={userMenuItems} onSignOut={onSignOut} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

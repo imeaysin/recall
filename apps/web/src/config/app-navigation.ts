@@ -1,51 +1,43 @@
 import {
   BookOpen,
-  Bot,
   Frame,
   Map,
   PieChart,
   Settings2,
   SquareTerminal,
 } from "lucide-react"
+import { routes } from "@/config/routes"
 
 export const appNavigation = {
   navMain: [
     {
       title: "Playground",
-      url: "#",
+      url: routes.dashboard,
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashboard",
+          url: routes.dashboard,
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Notes",
+          url: routes.notes,
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Settings",
+      url: routes.settingsAccount,
+      icon: Settings2,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Account",
+          url: routes.settingsAccount,
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Workspace",
+          url: routes.organizationSettings,
         },
       ],
     },
@@ -72,29 +64,6 @@ export const appNavigation = {
         },
       ],
     },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
   ],
   projects: [
     {
@@ -117,16 +86,16 @@ export const appNavigation = {
 
 export const adminNavigationItem = {
   title: "Admin",
-  url: "#",
+  url: routes.adminUsers,
   icon: Settings2,
   items: [
     {
       title: "Users",
-      url: "#",
+      url: routes.adminUsers,
     },
     {
       title: "Roles",
-      url: "#",
+      url: routes.adminUsers,
     },
   ],
 }
