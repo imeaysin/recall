@@ -13,7 +13,7 @@ export function NavbarAuth() {
   if (session) {
     return (
       <Button asChild size="sm" variant="outline">
-        Dashboard
+        <Link to={routes.dashboard}>Dashboard</Link>
       </Button>
     )
   }
