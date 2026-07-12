@@ -6,7 +6,7 @@ import {
   type NotificationResponse,
   type UnreadCountResponse,
 } from "@workspace/contracts"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { apiRoutes } from "@/config/api-routes"
 import { apiFetch } from "@/lib/api"
 
@@ -106,27 +106,17 @@ export function useDeleteNotificationMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (notificationId: string) =>
-      toastManager.promise(
-        apiFetch<void>(apiRoutes.notification(notificationId), {
-          method: "DELETE",
-        }),
-        {
-          error: {
-            title: "Could not delete notification",
-            description: "Please try again.",
-            type: "error",
-          },
-          loading: {
-            title: "Deleting notification…",
-            type: "loading",
-          },
-          success: {
-            title: "Notification deleted",
-            type: "success",
-          },
-        }
-      ),
+    mutationFn: async (notificationId: string) => {
+      const promise = apiFetch<void>(apiRoutes.notification(notificationId), {
+        method: "DELETE",
+      })
+      toast.promise(promise, {
+        loading: "Deleting notification…",
+        success: "Notification deleted",
+        error: "Could not delete notification",
+      })
+      return promise
+    },
     onMutate: async (notificationId) => {
       await queryClient.cancelQueries({ queryKey: notificationsQueryKey })
       patchNotificationsList({

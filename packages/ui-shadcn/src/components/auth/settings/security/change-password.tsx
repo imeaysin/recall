@@ -29,7 +29,7 @@ import {
 } from "@workspace/ui-shadcn/components/form"
 import { PasswordInput } from "@workspace/ui-shadcn/components/password-input"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 // ---------------------------------------------------------------------------
@@ -113,17 +113,13 @@ function SetPassword({ className }: { className?: string }) {
       },
       {
         onSuccess: () => {
-          toastManager.add({
-            title: "Password reset email sent",
+          toast.success("Password reset email sent", {
             description: "A reset link has been sent to your email.",
-            type: "success",
           })
         },
         onError: () => {
-          toastManager.add({
-            title: "Could not send reset link",
+          toast.error("Could not send reset link", {
             description: "Please try again.",
-            type: "error",
           })
         },
       }

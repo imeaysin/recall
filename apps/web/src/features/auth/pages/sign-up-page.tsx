@@ -15,7 +15,7 @@ import {
 import { Input } from "@workspace/ui-shadcn/components/input"
 import { PasswordInput } from "@workspace/ui-shadcn/components/password-input"
 import { PageLoading } from "@workspace/ui-shadcn/components/page-loading"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { AuthButtons } from "@/features/auth/components/auth-buttons"
 import { useAuthSession, useSignUpEmail } from "@workspace/auth/react"
 import {
@@ -62,10 +62,8 @@ export function SignUpPage() {
         ...values,
         callbackURL: absoluteAppUrl(routes.verifyEmail),
       })
-      toastManager.add({
-        title: "Account created",
+      toast.success("Account created", {
         description: "Check your email to verify your account.",
-        type: "success",
       })
       navigate(
         `${routes.verifyEmail}?email=${encodeURIComponent(values.email)}`

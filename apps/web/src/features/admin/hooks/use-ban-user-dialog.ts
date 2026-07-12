@@ -1,7 +1,7 @@
 import { useBanUser, type AdminListedUser } from "@workspace/auth/react"
 import type { BanUserDialogProps } from "@workspace/ui-shadcn/auth"
 import { useState } from "react"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 
 export function useBanUserDialog() {
   const [open, setOpen] = useState(false)
@@ -27,32 +27,21 @@ export function useBanUserDialog() {
     onSubmit: async (values) => {
       if (!targetUser) return
 
-      await toastManager
-        .promise(
-          banUser({
-            userId: targetUser.id,
-            banReason: values.banReason || undefined,
-          }),
-          {
-            loading: {
-              title: "Banning user…",
-              description: "Revoking access for this account.",
-              type: "loading",
-            },
-            success: {
-              title: "User banned",
-              description: "The user has been banned from the platform.",
-              type: "success",
-            },
-            error: {
-              title: "Could not ban user",
-              description: "Please try again.",
-              type: "error",
-            },
-          }
-        )
-        .then(() => handleOpenChange(false))
-        .catch(() => undefined)
+      const promise = banUser({
+        userId: targetUser.id,
+        banReason: values.banReason || undefined,
+      })
+      toast.promise(promise, {
+        loading: "Banning user…",
+        success: "User banned",
+        error: "Could not ban user",
+      })
+      try {
+        await promise
+        handleOpenChange(false)
+      } catch {
+        // handled by toast
+      }
     },
   }
 

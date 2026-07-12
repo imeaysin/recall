@@ -18,7 +18,7 @@ import {
 } from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import {
   DefaultProviderIcon,
@@ -96,17 +96,13 @@ function LinkedAccountRow({
               { providerId: account.providerId },
               {
                 onSuccess: () => {
-                  toastManager.add({
-                    title: "Account unlinked",
+                  toast.success("Account unlinked", {
                     description: "Your account has been unlinked.",
-                    type: "success",
                   })
                 },
                 onError: () => {
-                  toastManager.add({
-                    title: "Could not unlink account",
+                  toast.error("Could not unlink account", {
                     description: "Please try again.",
-                    type: "error",
                   })
                 },
               }

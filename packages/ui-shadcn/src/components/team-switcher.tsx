@@ -21,7 +21,7 @@ import {
   useListOrganizations,
   useSetActiveOrganization,
 } from "@workspace/auth/react"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { OrganizationLogo } from "@workspace/ui-shadcn/components/auth/organization/organization-logo"
 
 export function TeamSwitcher({
@@ -40,24 +40,12 @@ export function TeamSwitcher({
   function handleSetActive(organizationId: string) {
     if (organizationId === activeOrganization?.id) return
 
-    void toastManager
-      .promise(setActiveOrganization({ organizationId }), {
-        error: {
-          description: "Please try again.",
-          title: "Could not switch workspace",
-          type: "error",
-        },
-        loading: {
-          title: "Switching workspace…",
-          description: "The workspace is being switched.",
-          type: "loading",
-        },
-        success: {
-          title: "Workspace switched",
-          type: "success",
-        },
-      })
-      .catch(() => undefined)
+    const promise = setActiveOrganization({ organizationId })
+    toast.promise(promise, {
+      loading: "Switching workspace…",
+      success: "Workspace switched",
+      error: "Could not switch workspace",
+    })
   }
 
   return (

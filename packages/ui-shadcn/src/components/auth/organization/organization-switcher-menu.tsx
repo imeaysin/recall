@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@workspace/ui-shadcn/components/dropdown-menu"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { AuthUserView } from "../auth-user-view"
 import { OrganizationLogo } from "./organization-logo"
 import { OrganizationView } from "./organization-view"
@@ -57,30 +57,14 @@ export function OrganizationSwitcherMenu({
 
     onClose()
 
-    void toastManager
-      .promise(setActiveOrganization({ organizationId }), {
-        error: {
-          description: "Please try again.",
-          title: "Could not switch workspace",
-          type: "error",
-        },
-        loading: {
-          title: "Switching workspace…",
-          description: "The workspace is being switched.",
-          type: "loading",
-        },
-        success: organization?.name
-          ? {
-              description: `You're now in ${organization.name}.`,
-              title: "Workspace switched",
-              type: "success",
-            }
-          : {
-              title: "Workspace switched",
-              type: "success",
-            },
-      })
-      .catch(() => undefined)
+    const promise = setActiveOrganization({ organizationId })
+    toast.promise(promise, {
+      loading: "Switching workspace…",
+      success: organization?.name
+        ? `Switched to ${organization.name}`
+        : "Workspace switched",
+      error: "Could not switch workspace",
+    })
   }
 
   let menuHeader: ReactNode = null

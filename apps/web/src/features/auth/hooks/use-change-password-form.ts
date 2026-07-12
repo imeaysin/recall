@@ -1,6 +1,6 @@
 import { useChangePassword } from "@workspace/auth/react"
 import type { ChangePasswordFormProps } from "@workspace/ui-shadcn/auth"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 
 export function useChangePasswordForm(): ChangePasswordFormProps {
   const { mutate: changePassword, isPending } = useChangePassword()
@@ -16,17 +16,13 @@ export function useChangePasswordForm(): ChangePasswordFormProps {
         },
         {
           onError: () => {
-            toastManager.add({
-              title: "Update failed",
+            toast.error("Update failed", {
               description: "Check your current password and try again.",
-              type: "error",
             })
           },
           onSuccess: () => {
-            toastManager.add({
-              title: "Password updated",
+            toast.success("Password updated", {
               description: "Your password has been updated.",
-              type: "success",
             })
           },
         }

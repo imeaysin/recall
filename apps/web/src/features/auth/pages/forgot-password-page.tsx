@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { useRequestPasswordReset } from "@workspace/auth/react"
 import { absoluteAppUrl, routes } from "@/config/routes"
 
@@ -33,10 +33,8 @@ export function ForgotPasswordPage() {
         email: values.email,
         redirectTo: absoluteAppUrl(routes.resetPassword),
       })
-      toastManager.add({
-        title: "Check your email",
+      toast.success("Check your email", {
         description: "If an account exists, a reset link has been sent.",
-        type: "success",
       })
     } catch {
       form.setError("email", {

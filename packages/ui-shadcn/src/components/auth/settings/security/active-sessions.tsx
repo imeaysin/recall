@@ -19,7 +19,7 @@ import {
 } from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { parseUserAgent } from "../../../../utils/parse-user-agent"
 
@@ -115,17 +115,13 @@ function ActiveSessionRow({ activeSession }: { activeSession: SessionRecord }) {
                 { token: activeSession.token },
                 {
                   onSuccess: () => {
-                    toastManager.add({
-                      title: "Session revoked",
+                    toast.success("Session revoked", {
                       description: "Your session has been revoked.",
-                      type: "success",
                     })
                   },
                   onError: () => {
-                    toastManager.add({
-                      title: "Could not revoke session",
+                    toast.error("Could not revoke session", {
                       description: "Please try again.",
-                      type: "error",
                     })
                   },
                 }

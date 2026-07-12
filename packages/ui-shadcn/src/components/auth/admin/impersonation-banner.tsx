@@ -6,7 +6,7 @@ import {
   useUser,
 } from "@workspace/auth/react"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 
 export type ImpersonationBannerProps = {
@@ -37,17 +37,13 @@ export function ImpersonationBanner({ className }: ImpersonationBannerProps) {
         onClick={() =>
           stopImpersonating(undefined, {
             onSuccess: () => {
-              toastManager.add({
-                title: "Impersonation ended",
+              toast.success("Impersonation ended", {
                 description: "Your admin session has been restored.",
-                type: "success",
               })
             },
             onError: () => {
-              toastManager.add({
-                title: "Could not stop impersonating",
+              toast.error("Could not stop impersonating", {
                 description: "Please try again.",
-                type: "error",
               })
             },
           })

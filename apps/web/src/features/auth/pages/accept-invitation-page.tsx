@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import { AuthPageBody, AuthPageHeader } from "@workspace/ui-shadcn/auth"
 import { Button } from "@workspace/ui-shadcn/components/button"
 import { PageLoading } from "@workspace/ui-shadcn/components/page-loading"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { useAcceptInvitation, useAuthSession } from "@workspace/auth/react"
 import { defaultAuthenticatedRoute, routes } from "@/config/routes"
 import { withAuthRedirectQuery } from "@/routing/safe-redirect"
@@ -24,18 +24,14 @@ export function AcceptInvitationPage() {
       {
         onSuccess: () => {
           setAccepted(true)
-          toastManager.add({
-            title: "Invitation accepted",
+          toast.success("Invitation accepted", {
             description: "You have joined the workspace.",
-            type: "success",
           })
         },
         onError: () => {
-          toastManager.add({
-            title: "Could not accept invitation",
+          toast.error("Could not accept invitation", {
             description:
               "This invitation is invalid, expired, or already used.",
-            type: "error",
           })
         },
       }

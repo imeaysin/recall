@@ -20,7 +20,7 @@ import {
 } from "@workspace/ui-shadcn/components/dropdown-menu"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { AuthUserView } from "../auth-user-view"
 import { platformUiPermissions } from "./ui-permissions"
@@ -113,18 +113,14 @@ export function AdminUserRow({
                         { userId: user.id, role },
                         {
                           onSuccess: () => {
-                            toastManager.add({
-                              title: "Role updated",
+                            toast.success("Role updated", {
                               description:
                                 "The platform role has been updated.",
-                              type: "success",
                             })
                           },
                           onError: () => {
-                            toastManager.add({
-                              title: "Could not update role",
+                            toast.error("Could not update role", {
                               description: "Please try again.",
-                              type: "error",
                             })
                           },
                         }
@@ -147,17 +143,13 @@ export function AdminUserRow({
                   { userId: user.id },
                   {
                     onSuccess: () => {
-                      toastManager.add({
-                        title: "Impersonation started",
+                      toast.success("Impersonation started", {
                         description: "You are now signed in as this user.",
-                        type: "success",
                       })
                     },
                     onError: () => {
-                      toastManager.add({
-                        title: "Could not impersonate user",
+                      toast.error("Could not impersonate user", {
                         description: "Please try again.",
-                        type: "error",
                       })
                     },
                   }
@@ -180,17 +172,13 @@ export function AdminUserRow({
                   { userId: user.id },
                   {
                     onSuccess: () => {
-                      toastManager.add({
-                        title: "User unbanned",
+                      toast.success("User unbanned", {
                         description: "The user can sign in again.",
-                        type: "success",
                       })
                     },
                     onError: () => {
-                      toastManager.add({
-                        title: "Could not unban user",
+                      toast.error("Could not unban user", {
                         description: "Please try again.",
-                        type: "error",
                       })
                     },
                   }

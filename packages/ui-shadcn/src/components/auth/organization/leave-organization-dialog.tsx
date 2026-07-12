@@ -15,7 +15,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "@workspace/ui-shadcn/components/alert-dialog"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { OrganizationView } from "./organization-view"
 
 export type LeaveOrganizationDialogProps = {
@@ -60,20 +60,16 @@ export function LeaveOrganizationDialog({
                 {
                   onSuccess: () => {
                     onOpenChange(false)
-                    toastManager.add({
-                      title: "Left workspace",
+                    toast.success("Left workspace", {
                       description: "You have left the workspace.",
-                      type: "success",
                     })
                     config.navigate(config.routes.defaultAuthenticated, {
                       replace: true,
                     })
                   },
                   onError: () => {
-                    toastManager.add({
-                      title: "Could not leave workspace",
+                    toast.error("Could not leave workspace", {
                       description: "Please try again.",
-                      type: "error",
                     })
                   },
                 }

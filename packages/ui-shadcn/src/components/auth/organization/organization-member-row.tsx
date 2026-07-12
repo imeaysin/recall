@@ -18,7 +18,7 @@ import {
 } from "@workspace/ui-shadcn/components/dropdown-menu"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { AuthUserView } from "../auth-user-view"
 import { LeaveOrganizationDialog } from "./leave-organization-dialog"
@@ -99,17 +99,13 @@ export function OrganizationMemberRow({
                         },
                         {
                           onSuccess: () => {
-                            toastManager.add({
-                              title: "Member role updated",
+                            toast.success("Member role updated", {
                               description: "The member role has been updated.",
-                              type: "success",
                             })
                           },
                           onError: () => {
-                            toastManager.add({
-                              title: "Could not update member role",
+                            toast.error("Could not update member role", {
                               description: "Please try again.",
-                              type: "error",
                             })
                           },
                         }

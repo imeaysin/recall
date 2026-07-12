@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@workspace/ui-shadcn/components/form"
 import { PasswordInput } from "@workspace/ui-shadcn/components/password-input"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { useResetPassword } from "@workspace/auth/react"
 import { routes } from "@/config/routes"
 
@@ -40,10 +40,8 @@ export function ResetPasswordPage() {
 
     try {
       await resetPassword.mutateAsync({ input: values, token })
-      toastManager.add({
-        title: "Password updated",
+      toast.success("Password updated", {
         description: "You can now sign in with your new password.",
-        type: "success",
       })
       navigate(routes.signIn)
     } catch {

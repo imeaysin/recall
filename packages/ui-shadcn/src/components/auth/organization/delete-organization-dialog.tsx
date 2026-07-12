@@ -15,7 +15,7 @@ import {
   AlertDialogCancel,
 } from "@workspace/ui-shadcn/components/alert-dialog"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { OrganizationView } from "./organization-view"
 
 export type DeleteOrganizationDialogProps = {
@@ -39,18 +39,14 @@ export function DeleteOrganizationDialog({
       {
         onSuccess: () => {
           onOpenChange(false)
-          toastManager.add({
-            title: "Workspace deleted",
+          toast.success("Workspace deleted", {
             description: "The workspace has been deleted.",
-            type: "success",
           })
           config.navigate(config.routes.defaultAuthenticated, { replace: true })
         },
         onError: () => {
-          toastManager.add({
-            title: "Could not delete workspace",
+          toast.error("Could not delete workspace", {
             description: "Please try again.",
-            type: "error",
           })
         },
       }

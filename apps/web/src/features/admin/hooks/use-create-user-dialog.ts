@@ -5,7 +5,7 @@ import {
 import type { CreateUserDialogProps } from "@workspace/ui-shadcn/auth"
 import { createAdminUserSchema } from "@workspace/auth/forms"
 import { useState } from "react"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 
 export function useCreateUserDialog() {
   const [open, setOpen] = useState(false)
@@ -23,26 +23,18 @@ export function useCreateUserDialog() {
     formatRoleLabel: formatPlatformRoleLabel,
     onSubmit: async (values) => {
       const parsedValues = createAdminUserSchema.parse(values)
-      await toastManager
-        .promise(createUser(parsedValues), {
-          loading: {
-            title: "Creating user…",
-            description: "The account is being created.",
-            type: "loading",
-          },
-          success: {
-            title: "User created",
-            description: "The platform user has been created.",
-            type: "success",
-          },
-          error: {
-            title: "Could not create user",
-            description: "Check the details and try again.",
-            type: "error",
-          },
-        })
-        .then(() => handleOpenChange(false))
-        .catch(() => undefined)
+      const promise = createUser(parsedValues)
+      toast.promise(promise, {
+        loading: "Creating user…",
+        success: "User created",
+        error: "Could not create user",
+      })
+      try {
+        await promise
+        handleOpenChange(false)
+      } catch {
+        // handled by toast
+      }
     },
   }
 

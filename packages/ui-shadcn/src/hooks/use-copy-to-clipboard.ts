@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react"
-import { toast } from "sonner"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 
 type UseCopyToClipboardProps = {
   text: string

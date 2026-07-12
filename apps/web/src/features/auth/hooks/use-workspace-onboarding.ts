@@ -5,7 +5,7 @@ import {
   useAuthSession,
 } from "@workspace/auth/react"
 import { useNavigate } from "react-router-dom"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { routes } from "@/config/routes"
 
 export function useWorkspaceOnboarding() {
@@ -25,22 +25,10 @@ export function useWorkspaceOnboarding() {
 
     const createOrgPromise = createOrganization({ name: values.name, slug })
 
-    toastManager.promise(createOrgPromise, {
-      error: {
-        description: "Please try again or choose a different name.",
-        title: "Could not create workspace",
-        type: "error",
-      },
-      loading: {
-        title: "Creating workspace…",
-        description: "The workspace is being created.",
-        type: "loading",
-      },
-      success: {
-        description: "You're ready to use Theo.",
-        title: "Workspace created",
-        type: "success",
-      },
+    toast.promise(createOrgPromise, {
+      loading: "Creating workspace…",
+      success: "Workspace created",
+      error: "Could not create workspace",
     })
 
     try {

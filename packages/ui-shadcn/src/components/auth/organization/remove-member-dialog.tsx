@@ -15,7 +15,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "@workspace/ui-shadcn/components/alert-dialog"
-import { toastManager } from "@workspace/ui-shadcn/components/toast"
+import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { AuthUserView } from "../auth-user-view"
 
@@ -63,17 +63,13 @@ export function RemoveMemberDialog({
                 {
                   onSuccess: () => {
                     onOpenChange(false)
-                    toastManager.add({
-                      title: "Member removed",
+                    toast.success("Member removed", {
                       description: "The member has been removed.",
-                      type: "success",
                     })
                   },
                   onError: () => {
-                    toastManager.add({
-                      title: "Could not remove member",
+                    toast.error("Could not remove member", {
                       description: "Please try again.",
-                      type: "error",
                     })
                   },
                 }
