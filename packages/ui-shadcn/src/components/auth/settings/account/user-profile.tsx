@@ -10,7 +10,10 @@ import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@workspace/ui-shadcn/components/card"
 import {
   Form,
@@ -65,51 +68,53 @@ export function UserProfile({
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-
+    <Card className={cn(className)}>
+      <CardHeader>
+        <CardTitle>Profile</CardTitle>
+        <CardDescription>
+          Update your personal profile information.
+        </CardDescription>
+      </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <Card className={cn(className)}>
-            <CardContent className="flex flex-col gap-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    {hasSession ? (
-                      <FormControl>
-                        <Input
-                          {...field}
-                          autoComplete="name"
-                          disabled={isSubmitting}
-                          placeholder="Your name"
-                          type="text"
-                        />
-                      </FormControl>
-                    ) : (
-                      <Skeleton className="h-9 w-full rounded-md" />
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
+          <CardContent className="flex flex-col gap-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  {hasSession ? (
+                    <FormControl>
+                      <Input
+                        {...field}
+                        autoComplete="name"
+                        disabled={isSubmitting}
+                        placeholder="Your name"
+                        type="text"
+                      />
+                    </FormControl>
+                  ) : (
+                    <Skeleton className="h-9 w-full rounded-md" />
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
 
-            <CardFooter>
-              <Button
-                disabled={!hasSession || !onSubmit || isSubmitting}
-                size="sm"
-                type="submit"
-              >
-                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-                Save changes
-              </Button>
-            </CardFooter>
-          </Card>
+          <CardFooter>
+            <Button
+              disabled={!hasSession || !onSubmit || isSubmitting}
+              size="sm"
+              type="submit"
+            >
+              {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+              Save changes
+            </Button>
+          </CardFooter>
         </form>
       </Form>
-    </div>
+    </Card>
   )
 }

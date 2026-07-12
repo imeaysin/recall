@@ -9,7 +9,13 @@ import {
 } from "@workspace/auth/react"
 import { Link2, Link2Off } from "lucide-react"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -179,29 +185,31 @@ export function LinkedAccounts({ className }: LinkedAccountsProps) {
   ]
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">Linked accounts</h2>
-
-      <Card className={cn("p-0", className)}>
-        <CardContent className="p-0">
-          {isPending
-            ? socialProviders.map((provider, index) => (
-                <div key={provider}>
-                  {index > 0 ? <Separator /> : null}
-                  <AccountRowSkeleton />
-                </div>
-              ))
-            : allRows.map((row, index) => (
-                <div key={row.key}>
-                  {index > 0 ? <Separator /> : null}
-                  <LinkedAccountRow
-                    account={row.account}
-                    provider={row.provider}
-                  />
-                </div>
-              ))}
-        </CardContent>
-      </Card>
-    </div>
+    <Card className={cn("overflow-hidden", className)}>
+      <CardHeader>
+        <CardTitle>Linked accounts</CardTitle>
+        <CardDescription>
+          Connect social accounts to sign in without a password.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="border-t p-0">
+        {isPending
+          ? socialProviders.map((provider, index) => (
+              <div key={provider}>
+                {index > 0 ? <Separator /> : null}
+                <AccountRowSkeleton />
+              </div>
+            ))
+          : allRows.map((row, index) => (
+              <div key={row.key}>
+                {index > 0 ? <Separator /> : null}
+                <LinkedAccountRow
+                  account={row.account}
+                  provider={row.provider}
+                />
+              </div>
+            ))}
+      </CardContent>
+    </Card>
   )
 }

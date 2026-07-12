@@ -11,7 +11,13 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@workspace/ui-shadcn/components/button"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui-shadcn/components/card"
 import {
   Form,
   FormControl,
@@ -117,10 +123,17 @@ export function OrganizationProfile({
 
   if (!activeOrganization || permissionPending) {
     return (
-      <div>
-        <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-        <OrganizationProfileSkeleton className={className} />
-      </div>
+      <Card className={cn(className)}>
+        <CardHeader>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>
+            Manage the workspace profile and branding.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <OrganizationProfileSkeleton />
+        </CardContent>
+      </Card>
     )
   }
 
@@ -129,72 +142,74 @@ export function OrganizationProfile({
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">Profile</h2>
-
+    <Card className={cn(className)}>
+      <CardHeader>
+        <CardTitle>Profile</CardTitle>
+        <CardDescription>
+          Manage the workspace profile and branding.
+        </CardDescription>
+      </CardHeader>
       <Form {...form}>
         <form
           key={activeOrganization.id}
           onSubmit={form.handleSubmit(handleSubmit)}
         >
-          <Card className={cn(className)}>
-            <CardContent className="flex flex-col gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        autoComplete="organization"
-                        disabled={isSubmitting || readOnly}
-                        placeholder="Acme Inc."
-                        type="text"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <OrganizationSlugField
-                      checkAvailability={checkSlugAvailability}
-                      currentSlug={activeOrganization.slug}
+          <CardContent className="flex flex-col gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoComplete="organization"
                       disabled={isSubmitting || readOnly}
-                      onAvailabilityChange={onSlugAvailabilityChange}
-                      onBlur={() => {
-                        field.onBlur()
-                        onSlugBlur?.()
-                      }}
-                      onChange={field.onChange}
-                      value={field.value}
+                      placeholder="Acme Inc."
+                      type="text"
                     />
-                  </FormItem>
-                )}
-              />
-
-              {readOnly ? null : (
-                <Button
-                  className="w-fit"
-                  disabled={!onSubmit || isSubmitting}
-                  size="sm"
-                  type="submit"
-                >
-                  {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-                  Save changes
-                </Button>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </CardContent>
-          </Card>
+            />
+
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <OrganizationSlugField
+                    checkAvailability={checkSlugAvailability}
+                    currentSlug={activeOrganization.slug}
+                    disabled={isSubmitting || readOnly}
+                    onAvailabilityChange={onSlugAvailabilityChange}
+                    onBlur={() => {
+                      field.onBlur()
+                      onSlugBlur?.()
+                    }}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
+                </FormItem>
+              )}
+            />
+
+            {readOnly ? null : (
+              <Button
+                className="w-fit"
+                disabled={!onSubmit || isSubmitting}
+                size="sm"
+                type="submit"
+              >
+                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+                Save changes
+              </Button>
+            )}
+          </CardContent>
         </form>
       </Form>
-    </div>
+    </Card>
   )
 }

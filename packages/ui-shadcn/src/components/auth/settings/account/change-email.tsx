@@ -10,7 +10,10 @@ import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@workspace/ui-shadcn/components/card"
 import {
   Form,
@@ -65,51 +68,54 @@ export function ChangeEmail({
   }
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">Change email</h2>
+    <Card className={cn(className)}>
+      <CardHeader>
+        <CardTitle>Change email</CardTitle>
+        <CardDescription>
+          Update the email address associated with your account.
+        </CardDescription>
+      </CardHeader>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <Card className={cn(className)}>
-            <CardContent className="flex flex-col gap-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    {hasSession ? (
-                      <FormControl>
-                        <Input
-                          {...field}
-                          autoComplete="email"
-                          disabled={isSubmitting}
-                          placeholder="you@example.com"
-                          type="email"
-                        />
-                      </FormControl>
-                    ) : (
-                      <Skeleton className="h-9 w-full rounded-md" />
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
+          <CardContent className="flex flex-col gap-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  {hasSession ? (
+                    <FormControl>
+                      <Input
+                        {...field}
+                        autoComplete="email"
+                        disabled={isSubmitting}
+                        placeholder="you@example.com"
+                        type="email"
+                      />
+                    </FormControl>
+                  ) : (
+                    <Skeleton className="h-9 w-full rounded-md" />
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
 
-            <CardFooter>
-              <Button
-                disabled={!hasSession || !onSubmit || isSubmitting}
-                size="sm"
-                type="submit"
-              >
-                {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-                Update email
-              </Button>
-            </CardFooter>
-          </Card>
+          <CardFooter>
+            <Button
+              disabled={!hasSession || !onSubmit || isSubmitting}
+              size="sm"
+              type="submit"
+            >
+              {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+              Update email
+            </Button>
+          </CardFooter>
         </form>
       </Form>
-    </div>
+    </Card>
   )
 }

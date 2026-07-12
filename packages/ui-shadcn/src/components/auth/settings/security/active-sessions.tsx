@@ -10,7 +10,13 @@ import { LogOut, Monitor, Smartphone, X } from "lucide-react"
 import type { ReactNode } from "react"
 import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui-shadcn/components/card"
 import { Separator } from "@workspace/ui-shadcn/components/separator"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toastManager } from "@workspace/ui-shadcn/components/toast"
@@ -156,23 +162,25 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
   ].sort((a) => (a.id === session?.session.id ? -1 : 1))
 
   return (
-    <div>
-      <h2 className="mb-3 text-sm font-semibold">Active sessions</h2>
-
-      <Card className={cn("p-0", className)}>
-        <CardContent className="p-0">
-          {isPending ? (
-            <SessionRowSkeleton />
-          ) : (
-            activeSessions.map((activeSession, index) => (
-              <div key={activeSession.id}>
-                {index > 0 ? <Separator /> : null}
-                <ActiveSessionRow activeSession={activeSession} />
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <Card className={cn("overflow-hidden", className)}>
+      <CardHeader>
+        <CardTitle>Active sessions</CardTitle>
+        <CardDescription>
+          Manage the devices currently logged into your account.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="border-t p-0">
+        {isPending ? (
+          <SessionRowSkeleton />
+        ) : (
+          activeSessions.map((activeSession, index) => (
+            <div key={activeSession.id}>
+              {index > 0 ? <Separator /> : null}
+              <ActiveSessionRow activeSession={activeSession} />
+            </div>
+          ))
+        )}
+      </CardContent>
+    </Card>
   )
 }
