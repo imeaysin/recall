@@ -1,21 +1,9 @@
 "use client"
 
 import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 import { NavMain } from "@workspace/ui-shadcn/components/nav-main"
-import { NavProjects } from "@workspace/ui-shadcn/components/nav-projects"
 import { NavUser } from "@workspace/ui-shadcn/components/nav-user"
 import { TeamSwitcher } from "@workspace/ui-shadcn/components/team-switcher"
 import {
@@ -25,107 +13,58 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@workspace/ui-shadcn/components/sidebar"
+import { useAuthSession } from "@workspace/auth/react"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        { title: "History", url: "#" },
-        { title: "Starred", url: "#" },
-        { title: "Settings", url: "#" },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        { title: "Genesis", url: "#" },
-        { title: "Explorer", url: "#" },
-        { title: "Quantum", url: "#" },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        { title: "Introduction", url: "#" },
-        { title: "Get Started", url: "#" },
-        { title: "Tutorials", url: "#" },
-        { title: "Changelog", url: "#" },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        { title: "General", url: "#" },
-        { title: "Team", url: "#" },
-        { title: "Billing", url: "#" },
-        { title: "Limits", url: "#" },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+export function AppSidebar({
+  navigation,
+  onCreateOrganization,
+  onSignOut,
+  userMenuItems,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  navigation: {
+    name: string
+    href: string
+    icon: LucideIcon
+    badge?: string
+    isCurrent?: (params: { pathname: string }) => boolean
+  }[]
+  onCreateOrganization?: () => void
+  onSignOut?: () => void
+  userMenuItems?: { label: string; href?: string; icon?: LucideIcon }[]
+}) {
+  const { data: session } = useAuthSession()
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Transform app navigation into NavMain format
+  const navMainItems = navigation.map((item) => ({
+    title: item.name,
+    url: item.href,
+    icon: item.icon,
+    isActive: item.isCurrent?.({
+      pathname: typeof window !== "undefined" ? window.location.pathname : "",
+    }),
+  }))
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher onCreateOrganization={onCreateOrganization} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMainItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {session?.user ? (
+          <NavUser
+            user={{
+              name: session.user.name ?? "User",
+              email: session.user.email ?? "",
+              avatar: session.user.image ?? "",
+            }}
+            menuItems={userMenuItems}
+            onSignOut={onSignOut}
+          />
+        ) : null}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

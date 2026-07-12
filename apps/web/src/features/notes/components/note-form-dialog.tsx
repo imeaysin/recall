@@ -12,13 +12,14 @@ import {
 import { Input } from "@workspace/ui-shadcn/components/input"
 import { Textarea } from "@workspace/ui-shadcn/components/textarea"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
@@ -29,17 +30,17 @@ import {
 
 type NoteFormValues = z.input<typeof CreateNoteSchema>
 
-type NoteFormSheetProps = {
+type NoteFormDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   note?: NoteResponse | null
 }
 
-export function NoteFormSheet({
+export function NoteFormDialog({
   open,
   onOpenChange,
   note,
-}: NoteFormSheetProps) {
+}: NoteFormDialogProps) {
   const isEditing = Boolean(note)
   const createNote = useCreateNoteMutation()
   const updateNote = useUpdateNoteMutation()
@@ -81,23 +82,23 @@ export function NoteFormSheet({
   }
 
   return (
-    <Sheet onOpenChange={handleOpenChange} open={open}>
-      <SheetContent side="right" className="flex flex-col sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>{isEditing ? "Edit note" : "New note"}</SheetTitle>
-          <SheetDescription>
+    <Dialog onOpenChange={handleOpenChange} open={open}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{isEditing ? "Edit note" : "New note"}</DialogTitle>
+          <DialogDescription>
             {isEditing
               ? "Update the title or body of your note."
               : "Add a title and optional details."}
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto py-6"
+            className="flex flex-col gap-6"
           >
-            <div className="flex-1 space-y-4 px-1">
+            <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="title"
@@ -135,14 +136,19 @@ export function NoteFormSheet({
                 )}
               />
             </div>
-            <SheetFooter>
-              <Button disabled={isPending} type="submit" className="w-full">
+            <DialogFooter className="gap-2 sm:gap-0">
+              <DialogClose asChild>
+                <Button type="button" variant="outline" disabled={isPending}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button disabled={isPending} type="submit">
                 {isEditing ? "Save changes" : "Create note"}
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

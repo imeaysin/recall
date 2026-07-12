@@ -31,7 +31,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import { useMemo, useState } from "react"
-import { NoteFormSheet } from "@/features/notes/components/note-form-sheet"
+import { NoteFormDialog } from "@/features/notes/components/note-form-dialog"
 import { NotesTable } from "@/features/notes/components/notes-table"
 import {
   useBulkDeleteNotesMutation,
@@ -80,7 +80,7 @@ export function NotesPage() {
   const [sort, setSort] = useState<SortOption>("newest")
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
-  const [sheetOpen, setSheetOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [editingNote, setEditingNote] = useState<NoteResponse | null>(null)
 
   const [deleteTarget, setDeleteTarget] = useState<
@@ -104,14 +104,14 @@ export function NotesPage() {
 
   const isMutating = deleteNote.isPending || bulkDeleteNotes.isPending
 
-  function openCreateSheet() {
+  function openCreateDialog() {
     setEditingNote(null)
-    setSheetOpen(true)
+    setDialogOpen(true)
   }
 
-  function openEditSheet(note: NoteResponse) {
+  function openEditDialog(note: NoteResponse) {
     setEditingNote(note)
-    setSheetOpen(true)
+    setDialogOpen(true)
   }
 
   function toggleSelection(noteId: string, checked: boolean) {
@@ -174,7 +174,7 @@ export function NotesPage() {
               Create and manage your notes.
             </p>
           </div>
-          <Button onClick={openCreateSheet}>
+          <Button onClick={openCreateDialog}>
             <PlusIcon className="size-4" />
             New note
           </Button>
@@ -277,7 +277,7 @@ export function NotesPage() {
                 </code>
                 .
               </EmptyDescription>
-              <Button onClick={openCreateSheet}>
+              <Button onClick={openCreateDialog}>
                 <PlusIcon className="size-4" />
                 Create note
               </Button>
@@ -313,7 +313,7 @@ export function NotesPage() {
                 title: note.title,
               })
             }
-            onEdit={openEditSheet}
+            onEdit={openEditDialog}
             onSelect={toggleSelection}
             onSelectAll={toggleSelectAll}
             selectedIds={selectedIds}
@@ -321,10 +321,10 @@ export function NotesPage() {
         ) : null}
       </div>
 
-      <NoteFormSheet
+      <NoteFormDialog
         note={editingNote}
-        onOpenChange={setSheetOpen}
-        open={sheetOpen}
+        onOpenChange={setDialogOpen}
+        open={dialogOpen}
       />
 
       <ConfirmDialog

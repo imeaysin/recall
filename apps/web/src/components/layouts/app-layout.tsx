@@ -4,6 +4,7 @@ import { WorkspaceOnboardingGate } from "@/features/auth/components/workspace-on
 import type { AppOutletContext } from "@/features/auth/app-outlet-context"
 import { useCreateOrganizationDialog } from "@/features/auth/hooks/use-create-organization-dialog"
 import { useEventStream } from "@/features/notifications/hooks/use-event-stream"
+import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 import { AppSidebar } from "@workspace/ui-shadcn/components/app-sidebar"
 import {
   SidebarProvider,
@@ -22,6 +23,7 @@ import {
 
 export function AppLayout() {
   const createOrganization = useCreateOrganizationDialog()
+  const { navigation, userMenuItems, onSignOut } = useAppShellConfig()
   useEventStream()
   const outletContext: AppOutletContext = {
     openCreateOrganization: createOrganization.openDialog,
@@ -30,7 +32,12 @@ export function AppLayout() {
   return (
     <WorkspaceOnboardingGate>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar
+          navigation={navigation}
+          onCreateOrganization={createOrganization.openDialog}
+          onSignOut={onSignOut}
+          userMenuItems={userMenuItems}
+        />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">

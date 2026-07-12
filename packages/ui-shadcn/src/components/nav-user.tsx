@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BadgeCheckIcon,
-  BellIcon,
-  ChevronsUpDownIcon,
-  CreditCardIcon,
-  LogOutIcon,
-  SparklesIcon,
-} from "lucide-react"
+import { ChevronsUpDownIcon, LogOutIcon, type LucideIcon } from "lucide-react"
 import {
   Avatar,
   AvatarFallback,
@@ -31,12 +24,21 @@ import {
 
 export function NavUser({
   user,
+  menuItems,
+  onSignOut,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
+  menuItems?: {
+    label: string
+    href?: string
+    icon?: LucideIcon
+    onClick?: () => void
+  }[]
+  onSignOut?: () => void
 }) {
   const { isMobile } = useSidebar()
 
@@ -51,7 +53,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.name.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -70,7 +74,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -78,30 +84,31 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            {menuItems && menuItems.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  {menuItems.map((item, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => {
+                        if (item.onClick) item.onClick()
+                        else if (item.href) {
+                          if (typeof window !== "undefined") {
+                            window.location.href = item.href
+                          }
+                        }
+                      }}
+                    >
+                      {item.icon && <item.icon />}
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </>
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <SparklesIcon />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheckIcon />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={onSignOut}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

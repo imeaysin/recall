@@ -23,26 +23,32 @@ export function useWorkspaceOnboarding() {
       checkOrganizationSlugAvailable
     )
 
-    await toastManager
-      .promise(createOrganization({ name: values.name, slug }), {
-        error: {
-          description: "Please try again or choose a different name.",
-          title: "Could not create workspace",
-          type: "error",
-        },
-        loading: {
-          title: "Creating workspace…",
-          description: "The workspace is being created.",
-          type: "loading",
-        },
-        success: {
-          description: "You're ready to use Theo.",
-          title: "Workspace created",
-          type: "success",
-        },
-      })
-      .then(() => navigate(routes.dashboard, { replace: true }))
-      .catch(() => undefined)
+    const createOrgPromise = createOrganization({ name: values.name, slug })
+
+    toastManager.promise(createOrgPromise, {
+      error: {
+        description: "Please try again or choose a different name.",
+        title: "Could not create workspace",
+        type: "error",
+      },
+      loading: {
+        title: "Creating workspace…",
+        description: "The workspace is being created.",
+        type: "loading",
+      },
+      success: {
+        description: "You're ready to use Theo.",
+        title: "Workspace created",
+        type: "success",
+      },
+    })
+
+    try {
+      await createOrgPromise
+      navigate(routes.dashboard, { replace: true })
+    } catch {
+      // Error is handled by toast
+    }
   }
 
   return {

@@ -185,14 +185,14 @@ function ChangePasswordForm({
   }
 
   return (
-    <Card className={cn(className)}>
-      <CardHeader>
-        <CardTitle>Change password</CardTitle>
-        <CardDescription>Update your account password.</CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <CardContent className="flex flex-col gap-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className={cn(className)}>
+          <CardHeader>
+            <CardTitle>Change password</CardTitle>
+            <CardDescription>Update your account password.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
             <FormField
               control={form.control}
               name="currentPassword"
@@ -262,7 +262,6 @@ function ChangePasswordForm({
               )}
             />
           </CardContent>
-
           <CardFooter>
             <Button
               disabled={!hasSession || !onSubmit || isSubmitting}
@@ -273,8 +272,8 @@ function ChangePasswordForm({
               Update password
             </Button>
           </CardFooter>
-        </form>
-      </Form>
-    </Card>
+        </Card>
+      </form>
+    </Form>
   )
 }

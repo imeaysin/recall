@@ -68,16 +68,16 @@ export function UserProfile({
   }
 
   return (
-    <Card className={cn(className)}>
-      <CardHeader>
-        <CardTitle>Profile</CardTitle>
-        <CardDescription>
-          Update your personal profile information.
-        </CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <CardContent className="flex flex-col gap-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className={cn(className)}>
+          <CardHeader>
+            <CardTitle>Profile</CardTitle>
+            <CardDescription>
+              Update your personal profile information.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <FormField
               control={form.control}
               name="name"
@@ -102,7 +102,6 @@ export function UserProfile({
               )}
             />
           </CardContent>
-
           <CardFooter>
             <Button
               disabled={!hasSession || !onSubmit || isSubmitting}
@@ -113,8 +112,8 @@ export function UserProfile({
               Save changes
             </Button>
           </CardFooter>
-        </form>
-      </Form>
-    </Card>
+        </Card>
+      </form>
+    </Form>
   )
 }

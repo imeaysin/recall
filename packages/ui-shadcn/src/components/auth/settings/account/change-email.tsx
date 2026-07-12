@@ -68,17 +68,16 @@ export function ChangeEmail({
   }
 
   return (
-    <Card className={cn(className)}>
-      <CardHeader>
-        <CardTitle>Change email</CardTitle>
-        <CardDescription>
-          Update the email address associated with your account.
-        </CardDescription>
-      </CardHeader>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <CardContent className="flex flex-col gap-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className={cn(className)}>
+          <CardHeader>
+            <CardTitle>Change email</CardTitle>
+            <CardDescription>
+              Update the email address associated with your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <FormField
               control={form.control}
               name="email"
@@ -91,7 +90,7 @@ export function ChangeEmail({
                         {...field}
                         autoComplete="email"
                         disabled={isSubmitting}
-                        placeholder="you@example.com"
+                        placeholder="Your email address"
                         type="email"
                       />
                     </FormControl>
@@ -103,7 +102,6 @@ export function ChangeEmail({
               )}
             />
           </CardContent>
-
           <CardFooter>
             <Button
               disabled={!hasSession || !onSubmit || isSubmitting}
@@ -114,8 +112,8 @@ export function ChangeEmail({
               Update email
             </Button>
           </CardFooter>
-        </form>
-      </Form>
-    </Card>
+        </Card>
+      </form>
+    </Form>
   )
 }
