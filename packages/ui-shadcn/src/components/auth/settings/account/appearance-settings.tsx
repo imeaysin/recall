@@ -143,13 +143,15 @@ export function AppearanceSettings() {
     <Card>
       <CardHeader>
         <CardTitle>Appearance</CardTitle>
-        <CardDescription>Choose how Theo looks on your device.</CardDescription>
+        <CardDescription>
+          Choose how the app looks on your device.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <RadioGroup
           value={theme}
           onValueChange={setTheme}
-          className="flex flex-row gap-4"
+          className="flex flex-row gap-5"
         >
           {themes.map((item) => (
             <Label
