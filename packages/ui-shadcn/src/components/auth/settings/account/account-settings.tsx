@@ -3,6 +3,7 @@
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { ChangeEmail, type ChangeEmailProps } from "./change-email"
 import { UserProfile, type UserProfileProps } from "./user-profile"
+import { AppearanceSettings } from "./appearance-settings"
 
 export type AccountSettingsProps = {
   className?: string
@@ -19,6 +20,7 @@ export function AccountSettings({
     <div className={cn("flex w-full flex-col gap-4 md:gap-6", className)}>
       <UserProfile {...profile} />
       <ChangeEmail {...changeEmail} />
+      <AppearanceSettings />
     </div>
   )
 }

@@ -23,20 +23,16 @@ export function useWorkspaceOnboarding() {
       checkOrganizationSlugAvailable
     )
 
-    const createOrgPromise = createOrganization({ name: values.name, slug })
+    const promise = createOrganization({ name: values.name, slug })
 
-    toast.promise(createOrgPromise, {
+    toast.promise(promise, {
       loading: "Creating workspace…",
       success: "Workspace created",
       error: "Could not create workspace",
     })
 
-    try {
-      await createOrgPromise
-      navigate(routes.dashboard, { replace: true })
-    } catch {
-      // Error is handled by toast
-    }
+    await promise
+    navigate(routes.dashboard, { replace: true })
   }
 
   return {

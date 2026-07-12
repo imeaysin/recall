@@ -15,11 +15,20 @@ import {
 } from "@workspace/ui-shadcn/components/sidebar"
 import { useAuthSession } from "@workspace/auth/react"
 
+export type AppSidebarLinkComponent = React.ComponentType<{
+  href: string
+  className?: string
+  children?: React.ReactNode
+  [key: string]: unknown
+}>
+
 export function AppSidebar({
   navigation,
   onCreateOrganization,
   onSignOut,
   userMenuItems,
+  linkComponent,
+  pathname,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   navigation: {
@@ -32,17 +41,20 @@ export function AppSidebar({
   onCreateOrganization?: () => void
   onSignOut?: () => void
   userMenuItems?: { label: string; href?: string; icon?: LucideIcon }[]
+  linkComponent?: AppSidebarLinkComponent
+  /** Pass the current pathname so active state is reactive */
+  pathname?: string
 }) {
   const { data: session } = useAuthSession()
+  const currentPathname =
+    pathname ?? (typeof window !== "undefined" ? window.location.pathname : "")
 
-  // Transform app navigation into NavMain format
   const navMainItems = navigation.map((item) => ({
     title: item.name,
     url: item.href,
     icon: item.icon,
-    isActive: item.isCurrent?.({
-      pathname: typeof window !== "undefined" ? window.location.pathname : "",
-    }),
+    badge: item.badge,
+    isActive: item.isCurrent?.({ pathname: currentPathname }),
   }))
 
   return (
@@ -51,7 +63,7 @@ export function AppSidebar({
         <TeamSwitcher onCreateOrganization={onCreateOrganization} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMainItems} />
+        <NavMain items={navMainItems} linkComponent={linkComponent} />
       </SidebarContent>
       <SidebarFooter>
         {session?.user ? (

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { NavLink, Outlet, useLocation } from "react-router-dom"
 import { CreateOrganizationDialog } from "@workspace/ui-shadcn/auth"
 import { WorkspaceOnboardingGate } from "@/features/auth/components/workspace-onboarding-gate"
 import type { AppOutletContext } from "@/features/auth/app-outlet-context"
@@ -15,15 +15,14 @@ import { Separator } from "@workspace/ui-shadcn/components/separator"
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@workspace/ui-shadcn/components/breadcrumb"
 
 export function AppLayout() {
   const createOrganization = useCreateOrganizationDialog()
   const { navigation, userMenuItems, onSignOut } = useAppShellConfig()
+  const { pathname } = useLocation()
   useEventStream()
   const outletContext: AppOutletContext = {
     openCreateOrganization: createOrganization.openDialog,
@@ -37,6 +36,12 @@ export function AppLayout() {
           onCreateOrganization={createOrganization.openDialog}
           onSignOut={onSignOut}
           userMenuItems={userMenuItems}
+          pathname={pathname}
+          linkComponent={({ href, children, ...props }) => (
+            <NavLink to={href} {...props}>
+              {children}
+            </NavLink>
+          )}
         />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -45,14 +50,11 @@ export function AppLayout() {
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb>
                 <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                    <BreadcrumbPage>
+                      {navigation.find((n) => n.isCurrent?.({ pathname }))
+                        ?.name ?? "Dashboard"}
+                    </BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
