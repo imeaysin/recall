@@ -2,6 +2,7 @@ services:
   mongodb:
     image: mongo:7.0
     container_name: mongodb
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
     ports:
       - "27017:27017"
     healthcheck:
@@ -13,7 +14,7 @@ services:
           "27017",
           "--quiet",
           "--eval",
-          "db.runCommand({ ping: 1 })",
+          "try { rs.status() } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}) }; db.runCommand({ ping: 1 })",
         ]
       interval: 10s
       timeout: 5s

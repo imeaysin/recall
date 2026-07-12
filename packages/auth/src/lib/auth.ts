@@ -100,11 +100,15 @@ export function createAuth(options: CreateAuthOptions = {}) {
       storeSessionInDatabase: Boolean(secondaryStorage),
     },
 
+    verification: {
+      storeInDatabase: Boolean(secondaryStorage),
+    },
+
     rateLimit: {
       enabled: true,
       window: 60,
       max: 100,
-      storage: secondaryStorage ? "secondary-storage" : "database",
+      storage: "database",
     },
 
     databaseHooks: {
