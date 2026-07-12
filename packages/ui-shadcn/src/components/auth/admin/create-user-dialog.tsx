@@ -23,18 +23,18 @@ import {
   SelectValue,
 } from "@workspace/ui-shadcn/components/select"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const createUserSchema = z.object({
   name: z
@@ -54,9 +54,9 @@ const createUserSchema = z.object({
 
 type CreateUserValues = z.infer<typeof createUserSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type CreateUserDialogProps = {
   open: boolean
@@ -66,9 +66,9 @@ export type CreateUserDialogProps = {
   onSubmit: (values: CreateUserValues) => Promise<void> | void
 }
 
-// ---------------------------------------------------------------------------
-// CreateUserDialog
-// ---------------------------------------------------------------------------
+/**
+ * @description CreateUserDialog
+ */
 
 export function CreateUserDialog({
   open,
@@ -105,14 +105,14 @@ export function CreateUserDialog({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>Create user</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>Create user</DialogTitle>
+          <DialogDescription>
             Add a platform user with email and password credentials.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -207,20 +207,20 @@ export function CreateUserDialog({
               />
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
-              <SheetClose asChild>
+            <DialogFooter className="border-t px-6 py-4">
+              <DialogClose asChild>
                 <Button disabled={isSubmitting} type="button" variant="outline">
                   Cancel
                 </Button>
-              </SheetClose>
+              </DialogClose>
               <Button disabled={isSubmitting} type="submit">
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 Create user
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

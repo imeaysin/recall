@@ -32,9 +32,9 @@ import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { toast } from "@workspace/ui-shadcn/components/sonner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const changePasswordSchema = z
   .object({
@@ -52,9 +52,9 @@ const changePasswordSchema = z
 
 type ChangePasswordValues = z.infer<typeof changePasswordSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type ChangePasswordProps = {
   className?: string
@@ -65,9 +65,9 @@ export type ChangePasswordProps = {
 // Kept for backward-compatible re-export only — consumers should use ChangePasswordProps.
 export type ChangePasswordFormProps = ChangePasswordProps
 
-// ---------------------------------------------------------------------------
-// Public component — routes to SetPassword or ChangePasswordForm
-// ---------------------------------------------------------------------------
+/**
+ * @description Public component — routes to SetPassword or ChangePasswordForm
+ */
 
 export function ChangePassword({
   className,
@@ -95,9 +95,9 @@ export function ChangePassword({
   )
 }
 
-// ---------------------------------------------------------------------------
-// SetPassword — shown when the user has no credential account (social only)
-// ---------------------------------------------------------------------------
+/**
+ * @description SetPassword — shown when the user has no credential account (social only)
+ */
 
 function SetPassword({ className }: { className?: string }) {
   const config = useAuthUiConfig()
@@ -155,9 +155,9 @@ function SetPassword({ className }: { className?: string }) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// ChangePasswordForm — shown when the user already has a credential account
-// ---------------------------------------------------------------------------
+/**
+ * @description ChangePasswordForm — shown when the user already has a credential account
+ */
 
 function ChangePasswordForm({
   className,

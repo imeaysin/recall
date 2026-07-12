@@ -16,19 +16,19 @@ import {
 } from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const createOrganizationRoleSchema = z.object({
   role: z
@@ -50,9 +50,9 @@ type CreateOrganizationRoleValues = {
   permission: OrganizationPermissionMap
 }
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type CreateOrganizationRoleDialogProps = {
   open: boolean
@@ -61,9 +61,9 @@ export type CreateOrganizationRoleDialogProps = {
   onSubmit: (values: CreateOrganizationRoleValues) => Promise<void> | void
 }
 
-// ---------------------------------------------------------------------------
-// CreateOrganizationRoleDialog
-// ---------------------------------------------------------------------------
+/**
+ * @description CreateOrganizationRoleDialog
+ */
 
 export function CreateOrganizationRoleDialog({
   open,
@@ -89,14 +89,14 @@ export function CreateOrganizationRoleDialog({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>Create role</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>Create role</DialogTitle>
+          <DialogDescription>
             Add a custom role with create, read, update, and delete access.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -142,20 +142,20 @@ export function CreateOrganizationRoleDialog({
               />
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
-              <SheetClose asChild>
+            <DialogFooter className="border-t px-6 py-4">
+              <DialogClose asChild>
                 <Button disabled={isSubmitting} type="button" variant="outline">
                   Cancel
                 </Button>
-              </SheetClose>
+              </DialogClose>
               <Button disabled={isSubmitting} type="submit">
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 Create role
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

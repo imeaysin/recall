@@ -1,9 +1,9 @@
 import { z } from "zod"
 import { apiSuccessResponse } from "../api/envelopes"
 
-// ---------------------------------------------------------------------------
-// Notification (in-app)
-// ---------------------------------------------------------------------------
+/**
+ * @description Notification (in-app)
+ */
 
 export const NotificationResponseSchema = z
   .object({
@@ -50,9 +50,9 @@ export const UnreadCountResponseSchema = z
     description: "Count of unread notifications for the current user.",
   })
 
-// ---------------------------------------------------------------------------
-// Device tokens
-// ---------------------------------------------------------------------------
+/**
+ * @description Device tokens
+ */
 
 export const RegisterDeviceTokenSchema = z
   .object({
@@ -91,9 +91,9 @@ export const UnregisterDeviceTokenSchema = z
     description: "Remove a previously registered push token.",
   })
 
-// ---------------------------------------------------------------------------
-// Send notification (internal / admin)
-// ---------------------------------------------------------------------------
+/**
+ * @description Send notification (internal / admin)
+ */
 
 export const SendNotificationSchema = z
   .object({
@@ -177,9 +177,9 @@ export const SendNotificationResponseSchema = z
     description: "Summary of notification delivery.",
   })
 
-// ---------------------------------------------------------------------------
-// Inferred types
-// ---------------------------------------------------------------------------
+/**
+ * @description Inferred types
+ */
 
 export type NotificationResponse = z.infer<typeof NotificationResponseSchema>
 export type NotificationListResponse = z.infer<
@@ -195,9 +195,9 @@ export type SendNotificationResponse = z.infer<
   typeof SendNotificationResponseSchema
 >
 
-// ---------------------------------------------------------------------------
-// API envelopes
-// ---------------------------------------------------------------------------
+/**
+ * @description API envelopes
+ */
 
 export const NotificationApiResponseSchema = apiSuccessResponse(
   NotificationResponseSchema,

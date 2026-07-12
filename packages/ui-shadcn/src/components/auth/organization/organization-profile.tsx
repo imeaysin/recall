@@ -32,9 +32,9 @@ import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { OrganizationSlugField } from "./organization-slug-field"
 import { organizationUiPermissions } from "./ui-permissions"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const organizationProfileSchema = z.object({
   name: z
@@ -53,9 +53,9 @@ const organizationProfileSchema = z.object({
 
 type OrganizationProfileValues = z.infer<typeof organizationProfileSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type OrganizationProfileProps = {
   className?: string
@@ -66,9 +66,9 @@ export type OrganizationProfileProps = {
   isPending?: boolean
 }
 
-// ---------------------------------------------------------------------------
-// Skeleton state
-// ---------------------------------------------------------------------------
+/**
+ * @description Skeleton state
+ */
 
 function OrganizationProfileSkeleton({ className }: { className?: string }) {
   return (
@@ -87,9 +87,9 @@ function OrganizationProfileSkeleton({ className }: { className?: string }) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// OrganizationProfile
-// ---------------------------------------------------------------------------
+/**
+ * @description OrganizationProfile
+ */
 
 export function OrganizationProfile({
   className,

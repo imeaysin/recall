@@ -17,7 +17,9 @@ function toDate(date: Date | string | number): Date {
   return typeof date === "string" ? dateFnsParseISO(date) : new Date(date)
 }
 
-// ── Standalone helpers (re-exported from index.ts for consumers) ──────────────
+/**
+ * @description Standalone helpers (re-exported from index.ts for consumers)
+ */
 
 export function formatDate(
   date: Date | string | number,
@@ -42,7 +44,9 @@ export function parseISO(date: string): Date {
   return dateFnsParseISO(date)
 }
 
-// ── Adapter class (uses the helpers above) ────────────────────────────────────
+/**
+ * @description Adapter class (uses the helpers above)
+ */
 
 export class DateFnsAdapter implements DateProvider {
   formatDate(date: Date | string | number, pattern?: string): string {

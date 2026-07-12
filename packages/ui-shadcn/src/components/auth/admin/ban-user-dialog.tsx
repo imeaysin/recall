@@ -15,18 +15,14 @@ import {
 } from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
-
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 
 const banUserSchema = z.object({
   banReason: z.string().max(500, "Reason must be 500 characters or fewer."),
@@ -34,20 +30,12 @@ const banUserSchema = z.object({
 
 type BanUserValues = z.infer<typeof banUserSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
-
 export type BanUserDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   userLabel: string
   onSubmit: (values: BanUserValues) => Promise<void> | void
 }
-
-// ---------------------------------------------------------------------------
-// BanUserDialog
-// ---------------------------------------------------------------------------
 
 export function BanUserDialog({
   open,
@@ -73,15 +61,15 @@ export function BanUserDialog({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>Ban user</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>Ban user</DialogTitle>
+          <DialogDescription>
             {userLabel} will be signed out and unable to sign in again until
             unbanned.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -109,12 +97,12 @@ export function BanUserDialog({
               />
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
-              <SheetClose asChild>
+            <DialogFooter className="border-t px-6 py-4">
+              <DialogClose asChild>
                 <Button disabled={isSubmitting} type="button" variant="outline">
                   Cancel
                 </Button>
-              </SheetClose>
+              </DialogClose>
               <Button
                 disabled={isSubmitting}
                 type="submit"
@@ -123,10 +111,10 @@ export function BanUserDialog({
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 Ban user
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

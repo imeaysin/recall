@@ -17,19 +17,19 @@ import {
   FormMessage,
 } from "@workspace/ui-shadcn/components/form"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 import { OrganizationRolePermissions } from "./organization-role-permissions"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const editOrganizationRoleSchema = z.object({
   permission: z.custom<OrganizationPermissionMap>(
@@ -42,9 +42,9 @@ type EditOrganizationRoleValues = {
   permission: OrganizationPermissionMap
 }
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type EditOrganizationRoleDialogProps = {
   open: boolean
@@ -53,9 +53,9 @@ export type EditOrganizationRoleDialogProps = {
   onSubmit: (values: EditOrganizationRoleValues) => Promise<void> | void
 }
 
-// ---------------------------------------------------------------------------
-// EditOrganizationRoleDialog
-// ---------------------------------------------------------------------------
+/**
+ * @description EditOrganizationRoleDialog
+ */
 
 export function EditOrganizationRoleDialog({
   open,
@@ -93,14 +93,14 @@ export function EditOrganizationRoleDialog({
   if (!role) return null
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>Edit role</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>Edit role</DialogTitle>
+          <DialogDescription>
             Update permissions for {formatOrganizationRoleLabel(role.role)}.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -127,20 +127,20 @@ export function EditOrganizationRoleDialog({
               />
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
-              <SheetClose asChild>
+            <DialogFooter className="border-t px-6 py-4">
+              <DialogClose asChild>
                 <Button disabled={isSubmitting} type="button" variant="outline">
                   Cancel
                 </Button>
-              </SheetClose>
+              </DialogClose>
               <Button disabled={isSubmitting} type="submit">
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 Save changes
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

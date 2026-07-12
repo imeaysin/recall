@@ -21,9 +21,9 @@ import { AuthPageBody } from "../auth-form"
 import { AuthPageHeader } from "../auth-page-header"
 import { AuthUserView } from "../auth-user-view"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const workspaceOnboardingSchema = z.object({
   name: z
@@ -34,9 +34,9 @@ const workspaceOnboardingSchema = z.object({
 
 type WorkspaceOnboardingValues = z.infer<typeof workspaceOnboardingSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type WorkspaceOnboardingProps = {
   onSubmit: (values: WorkspaceOnboardingValues) => Promise<void> | void
@@ -48,9 +48,9 @@ export type WorkspaceOnboardingProps = {
   submitLabel?: string
 }
 
-// ---------------------------------------------------------------------------
-// WorkspaceOnboarding
-// ---------------------------------------------------------------------------
+/**
+ * @description WorkspaceOnboarding
+ */
 
 export function WorkspaceOnboarding({
   onSubmit,

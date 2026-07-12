@@ -16,19 +16,19 @@ import {
 } from "@workspace/ui-shadcn/components/form"
 import { Input } from "@workspace/ui-shadcn/components/input"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 import { OrganizationSlugField } from "./organization-slug-field"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const createOrganizationSchema = z.object({
   name: z
@@ -47,9 +47,9 @@ const createOrganizationSchema = z.object({
 
 type CreateOrganizationValues = z.infer<typeof createOrganizationSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type CreateOrganizationDialogProps = {
   open: boolean
@@ -64,9 +64,9 @@ export type CreateOrganizationDialogProps = {
   submitLabel?: string
 }
 
-// ---------------------------------------------------------------------------
-// CreateOrganizationDialog
-// ---------------------------------------------------------------------------
+/**
+ * @description CreateOrganizationDialog
+ */
 
 export function CreateOrganizationDialog({
   open,
@@ -99,12 +99,12 @@ export function CreateOrganizationDialog({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent showCloseButton={!required} side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent showCloseButton={!required}>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -155,9 +155,9 @@ export function CreateOrganizationDialog({
               ) : null}
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
+            <DialogFooter className="border-t px-6 py-4">
               {required ? null : (
-                <SheetClose asChild>
+                <DialogClose asChild>
                   <Button
                     disabled={isSubmitting}
                     type="button"
@@ -165,16 +165,16 @@ export function CreateOrganizationDialog({
                   >
                     Cancel
                   </Button>
-                </SheetClose>
+                </DialogClose>
               )}
               <Button disabled={isSubmitting} type="submit">
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 {submitLabel}
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

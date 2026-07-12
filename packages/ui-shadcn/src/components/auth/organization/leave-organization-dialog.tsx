@@ -42,7 +42,7 @@ export function LeaveOrganizationDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="px-6 pb-2">
+        <div className="pb-2">
           <Card>
             <CardContent>
               <OrganizationView organization={organization} />

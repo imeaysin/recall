@@ -9,7 +9,9 @@ import {
 import { NotesRepository } from "@/modules/notes/repositories/notes.repository"
 import type { NoteEntity } from "@/modules/notes/entities/note.entity"
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+/**
+ * @description Helpers
+ */
 
 function makeNote(partial: Partial<NoteEntity> = {}): NoteEntity {
   return {
@@ -42,7 +44,9 @@ function makeCollection() {
   }
 }
 
-// ─── Test suite ───────────────────────────────────────────────────────────────
+/**
+ * @description Test suite
+ */
 
 describe("NotesRepository", () => {
   let repository: NotesRepository
@@ -62,7 +66,9 @@ describe("NotesRepository", () => {
     repository = moduleRef.get(NotesRepository)
   })
 
-  // ─── findById ───────────────────────────────────────────────────────────────
+  /**
+   * @description findById
+   */
 
   describe("findById", () => {
     it("returns null for an invalid ObjectId string", async () => {
@@ -85,7 +91,9 @@ describe("NotesRepository", () => {
     })
   })
 
-  // ─── insert ─────────────────────────────────────────────────────────────────
+  /**
+   * @description insert
+   */
 
   describe("insert", () => {
     it("returns the created entity with generated _id and timestamps", async () => {
@@ -137,7 +145,9 @@ describe("NotesRepository", () => {
     })
   })
 
-  // ─── update ─────────────────────────────────────────────────────────────────
+  /**
+   * @description update
+   */
 
   describe("update", () => {
     it("returns null for an invalid noteId", async () => {
@@ -177,7 +187,9 @@ describe("NotesRepository", () => {
     })
   })
 
-  // ─── delete ─────────────────────────────────────────────────────────────────
+  /**
+   * @description delete
+   */
 
   describe("delete", () => {
     it("returns false for an invalid noteId without calling the driver", async () => {
@@ -211,7 +223,9 @@ describe("NotesRepository", () => {
     })
   })
 
-  // ─── Pagination helpers ──────────────────────────────────────────────────────
+  /**
+   * @description Pagination helpers
+   */
 
   describe("paginate (BaseMongoRepository)", () => {
     // We call paginate via a thin test subclass so we don't couple the test

@@ -22,18 +22,18 @@ import {
   SelectValue,
 } from "@workspace/ui-shadcn/components/select"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@workspace/ui-shadcn/components/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@workspace/ui-shadcn/components/dialog"
 
-// ---------------------------------------------------------------------------
-// Schema & types
-// ---------------------------------------------------------------------------
+/**
+ * @description Schema & types
+ */
 
 const inviteMemberSchema = z.object({
   email: z
@@ -45,9 +45,9 @@ const inviteMemberSchema = z.object({
 
 type InviteMemberValues = z.infer<typeof inviteMemberSchema>
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
+/**
+ * @description Public types
+ */
 
 export type InviteMemberDialogProps = {
   open: boolean
@@ -57,9 +57,9 @@ export type InviteMemberDialogProps = {
   onSubmit: (values: InviteMemberValues) => Promise<void> | void
 }
 
-// ---------------------------------------------------------------------------
-// InviteMemberDialog
-// ---------------------------------------------------------------------------
+/**
+ * @description InviteMemberDialog
+ */
 
 export function InviteMemberDialog({
   open,
@@ -91,14 +91,14 @@ export function InviteMemberDialog({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader className="border-b px-6 pb-4">
-          <SheetTitle>Invite member</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader className="border-b px-6 pb-4">
+          <DialogTitle>Invite member</DialogTitle>
+          <DialogDescription>
             Send an invitation to join this workspace.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <Form {...form}>
           <form
@@ -157,20 +157,20 @@ export function InviteMemberDialog({
               />
             </div>
 
-            <SheetFooter className="border-t px-6 py-4">
-              <SheetClose asChild>
+            <DialogFooter className="border-t px-6 py-4">
+              <DialogClose asChild>
                 <Button disabled={isSubmitting} type="button" variant="outline">
                   Cancel
                 </Button>
-              </SheetClose>
+              </DialogClose>
               <Button disabled={isSubmitting} type="submit">
                 {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
                 Invite member
               </Button>
-            </SheetFooter>
+            </DialogFooter>
           </form>
         </Form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }
