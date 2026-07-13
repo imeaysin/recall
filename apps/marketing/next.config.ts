@@ -9,9 +9,16 @@ const monorepoRoot = path.join(rootDir, "../..")
 loadEnvConfig(monorepoRoot)
 
 const nextConfig: NextConfig = {
-  // Monorepo: trace files from the workspace root when deploying (Next.js + Turborepo).
   outputFileTracingRoot: monorepoRoot,
-  transpilePackages: ["@workspace/ui"],
+  transpilePackages: ["@workspace/ui-shadcn"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.midday.ai",
+      },
+    ],
+  },
 }
 
 export default nextConfig

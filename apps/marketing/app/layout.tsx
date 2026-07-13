@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
-import { site } from "@/config/site"
-import "@workspace/ui/globals.css"
+import { siteConfig } from "@/config/site"
+import { ThemeProvider } from "@workspace/ui-shadcn/components/theme-provider"
+import "@workspace/ui-shadcn/globals.css"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: site.name,
-  description: site.description,
+  title: siteConfig.name,
+  description: siteConfig.description,
 }
 
 export default function RootLayout({
@@ -14,9 +15,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="flex min-h-full flex-col font-sans antialiased">
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

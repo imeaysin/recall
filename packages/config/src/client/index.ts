@@ -65,7 +65,12 @@ export function parseWebEnv(
   return resolveClientUrls(source)
 }
 
-export { clientDefaults, DEFAULT_APP_NAME, DEV_URLS } from "../constants"
+export {
+  clientDefaults,
+  DEFAULT_APP_NAME,
+  DEV_URLS,
+  DEV_ALLOWED_ORIGINS,
+} from "../constants"
 
 /** `apps/marketing` (Next.js) — pass `process.env`. */
 export function parseMarketingEnv(

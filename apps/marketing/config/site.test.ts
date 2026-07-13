@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest"
-import { site } from "@/config/site"
+import { siteConfig } from "@/config/site"
 
 describe("site config", () => {
   it("has a name and description", () => {
-    expect(site.name).toBeTruthy()
-    expect(site.description).toBeTruthy()
+    expect(siteConfig.name).toBeTruthy()
+    expect(siteConfig.description).toBeTruthy()
   })
 
   it("has a client URL", () => {
-    expect(site.clientUrl).toMatch(/^https?:\/\//)
+    expect(siteConfig.clientUrl).toMatch(/^https?:\/\//)
   })
 })
