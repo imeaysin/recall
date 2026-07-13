@@ -53,6 +53,14 @@ You must read, analyze, and strictly adhere to these engineering rules before ex
 
 - **You Aren't Gonna Need It:** Never build speculative features, generic extension points, or dead endpoints for imaginary future requirements. Write exactly what the current task demands.
 
+### 10. Advanced TypeScript & Type-Level Safety
+
+- **Discriminated Unions Over Optionals:** Avoid interfaces with "bag of optional fields" (`?`). Use discriminated (tagged) unions to represent mutually exclusive states (e.g., `type Result = { success: true, data: D } | { success: false, error: E }`).
+- **Exhaustiveness Checking:** When switching over a union type or Enum, always use a `default` case that assigns the value to `never` to guarantee compile-time errors if a new type is added.
+- **Strict Nullish Coalescing:** Never use the logical OR operator (`||`) for default values unless you explicitly want to catch `0` or `""`. Always use the nullish coalescing operator (`??`) to handle `null` or `undefined`.
+- **Branded Types for Primitives:** For critical domain IDs (e.g., `UserId`, `OrderId`), use branded/opaque types rather than raw strings or numbers to prevent accidental parameter swapping.
+- **Interface vs. Type Consistency:** Use `interface` for declaring object shapes and class contracts. Use `type` aliases for unions, intersections, and utility type manipulations (e.g., `Pick`, `Omit`, `ReturnType`).
+
 ---
 
 ## 🛠️ Framework Optimization & Debugging Protocols
