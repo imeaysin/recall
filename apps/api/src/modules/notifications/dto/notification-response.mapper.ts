@@ -2,7 +2,7 @@ import {
   NotificationResponseSchema,
   type NotificationResponse,
 } from "@workspace/contracts"
-import type { NotificationEntity } from "../entities/notification.entity"
+import type { NotificationEntity } from "../domain/notification.model"
 
 export function toNotificationResponse(
   record: NotificationEntity

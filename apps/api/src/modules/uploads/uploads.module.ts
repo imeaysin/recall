@@ -1,12 +1,10 @@
 import { Module } from "@nestjs/common"
-import { CqrsModule } from "@nestjs/cqrs"
-import { UploadFileHandler } from "./commands/upload-file.handler"
-import { StorageRepository } from "./repositories/storage.repository"
+import { UploadCommandRepository } from "./repository/upload.command"
 import { UploadsController } from "./uploads.controller"
+import { UploadsService } from "./uploads.service"
 
 @Module({
-  imports: [CqrsModule],
   controllers: [UploadsController],
-  providers: [StorageRepository, UploadFileHandler],
+  providers: [UploadCommandRepository, UploadsService],
 })
 export class UploadsModule {}

@@ -6,13 +6,13 @@ NestJS 11 REST API with Better Auth, MongoDB, and CQRS feature modules.
 
 ```
 modules/<feature>/
-  commands/           *.command.ts + *.handler.ts
-  queries/            *.query.ts + *.handler.ts  (when reads are non-trivial)
-  notes.dto.ts       createZodDto wrappers (request + success response envelopes)
-  entities/           Domain types / DB document shape
-  repositories/       Data access (Mongo, storage, etc.)
-  <feature>.controller.ts   CommandBus / QueryBus only
-  <feature>.module.ts       CqrsModule + handlers + repository
+  domain/             *.model.ts (Domain entities) + exceptions/
+  dto/                create-[feature].dto.ts, update-[feature].dto.ts, etc.
+  repository/         *.command.ts (writes) + *.query.ts (reads)
+  listeners/          *.listener.ts (Cross-module events via event-emitter)
+  <feature>.controller.ts   Ingress Routing & Delivery
+  <feature>.service.ts      Workflow Orchestrator (No CQRS boilerplate)
+  <feature>.module.ts       Dependency Providers
 ```
 
 **Uploads** follows the same pattern with `StorageRepository` instead of Mongo.
@@ -29,7 +29,7 @@ modules/<feature>/
 | `jobs/`                       | Job queue provider (`@workspace/jobs`) — `inline` or `redis` (BullMQ)      |
 | `filters/`                    | Global exception handler (machine-readable `code`)                         |
 | `decorators/`                 | Auth re-exports, `@ApiAuthErrorResponses()` / `@ApiPublicErrorResponses()` |
-| `exceptions/`                 | `apiNotFound` / `apiForbidden` / `apiBadRequest` (typed `DomainErrorCode`) |
+| `exceptions/`                 | Base `DomainException` for throwing pure domain errors                     |
 | `storage/storage.module.ts`   | `STORAGE` provider from `@workspace/storage`                               |
 | `database/database.module.ts` | Global `DATABASE_READY` + injectable `MONGO_DB` (native driver `Db`)       |
 
@@ -53,14 +53,14 @@ Global guards use `APP_GUARD` + `useFactory` in `@workspace/auth/nestjs` (Reflec
 ## Adding an endpoint
 
 1. Add Zod schema (+ `.meta()` / `.describe()` for Swagger) to `packages/contracts`.
-2. Add `createZodDto` wrapper in the module (e.g. `notes.dto.ts`).
-3. Create command/query + handler + repository method.
-4. Wire handler in module `providers`.
+2. Add `createZodDto` wrappers in the module inside the `dto/` directory (e.g. `dto/create-note.dto.ts`).
+3. Create repository methods (`*.command.ts` or `*.query.ts`) and orchestrate them in `*.service.ts`.
+4. Wire service and repositories in module `providers`.
 5. Expose via controller — `@Body() MyDto` validates automatically; add `@ApiAuthErrorResponses()` or `@ApiPublicErrorResponses()`.
 
-**Domain errors:** add codes to `DomainErrorCode` in `packages/contracts/src/api/errors.ts`, then use `apiNotFound(..., DomainErrorCode.NOTE_NOT_FOUND)`.
+**Domain errors:** add codes to `DomainErrorCode` in `packages/contracts/src/api/errors.ts`, then create and throw custom exceptions that inherit from `DomainException` inside your business layer.
 
-Do not call repositories or storage directly from controllers.
+Do not call repositories or storage directly from controllers. Instead, dispatch logic through the orchestrating Service.
 
 ## Serverless architecture
 

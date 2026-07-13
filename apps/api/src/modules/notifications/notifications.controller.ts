@@ -8,7 +8,6 @@ import {
   Param,
   Post,
 } from "@nestjs/common"
-import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import {
   ApiBearerAuth,
   ApiNoContentResponse,
@@ -20,28 +19,21 @@ import {
 import type { JwtClaims } from "@workspace/auth/types"
 import { CurrentUser } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import { DeleteNotificationCommand } from "./commands/delete-notification/delete-notification.command"
-import { MarkAllNotificationsReadCommand } from "./commands/mark-all-notifications-read/mark-all-notifications-read.command"
-import { MarkNotificationReadCommand } from "./commands/mark-notification-read/mark-notification-read.command"
-import { RegisterDeviceTokenCommand } from "./commands/register-device-token/register-device-token.command"
-import { UnregisterDeviceTokenCommand } from "./commands/unregister-device-token/unregister-device-token.command"
+import {
+  RegisterDeviceTokenDto,
+  UnregisterDeviceTokenDto,
+} from "./dto/device-token.dto"
 import {
   NotificationListApiResponseDto,
-  RegisterDeviceTokenDto,
   UnreadCountApiResponseDto,
-  UnregisterDeviceTokenDto,
-} from "./notifications.dto"
-import { CountUnreadNotificationsQuery } from "./queries/count-unread-notifications/count-unread-notifications.query"
-import { ListNotificationsQuery } from "./queries/list-notifications/list-notifications.query"
+} from "./dto/notification-responses.dto"
+import { NotificationsService } from "./notifications.service"
 
 @ApiTags("notifications")
 @ApiAuthErrorResponses()
 @Controller({ path: "notifications", version: "1" })
 export class NotificationsController {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus
-  ) {}
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
   @ApiBearerAuth("bearer")
@@ -52,7 +44,7 @@ export class NotificationsController {
   })
   @ApiOkResponse({ type: NotificationListApiResponseDto })
   list(@CurrentUser() user: JwtClaims) {
-    return this.queryBus.execute(new ListNotificationsQuery(user.id))
+    return this.notificationsService.listNotifications({ userId: user.id })
   }
 
   @Get("unread-count")
@@ -63,7 +55,7 @@ export class NotificationsController {
   })
   @ApiOkResponse({ type: UnreadCountApiResponseDto })
   unreadCount(@CurrentUser() user: JwtClaims) {
-    return this.queryBus.execute(new CountUnreadNotificationsQuery(user.id))
+    return this.notificationsService.countUnread({ userId: user.id })
   }
 
   @Post(":id/read")
@@ -80,7 +72,10 @@ export class NotificationsController {
   })
   @ApiNoContentResponse({ description: "Marked as read" })
   markRead(@CurrentUser() user: JwtClaims, @Param("id") id: string) {
-    return this.commandBus.execute(new MarkNotificationReadCommand(user.id, id))
+    return this.notificationsService.markAsRead({
+      userId: user.id,
+      notificationId: id,
+    })
   }
 
   @Post("read-all")
@@ -92,7 +87,7 @@ export class NotificationsController {
   })
   @ApiNoContentResponse({ description: "All marked as read" })
   markAllRead(@CurrentUser() user: JwtClaims) {
-    return this.commandBus.execute(new MarkAllNotificationsReadCommand(user.id))
+    return this.notificationsService.markAllAsRead({ userId: user.id })
   }
 
   @Delete(":id")
@@ -109,7 +104,10 @@ export class NotificationsController {
   })
   @ApiNoContentResponse({ description: "Notification deleted" })
   remove(@CurrentUser() user: JwtClaims, @Param("id") id: string) {
-    return this.commandBus.execute(new DeleteNotificationCommand(user.id, id))
+    return this.notificationsService.deleteNotification({
+      userId: user.id,
+      notificationId: id,
+    })
   }
 
   @Post("device-tokens")
@@ -126,9 +124,10 @@ export class NotificationsController {
     @CurrentUser() user: JwtClaims,
     @Body() body: RegisterDeviceTokenDto
   ) {
-    return this.commandBus.execute(
-      new RegisterDeviceTokenCommand(user.id, body)
-    )
+    return this.notificationsService.registerDeviceToken({
+      userId: user.id,
+      ...body,
+    })
   }
 
   @Post("device-tokens/unregister")
@@ -143,8 +142,6 @@ export class NotificationsController {
     @CurrentUser() user: JwtClaims,
     @Body() body: UnregisterDeviceTokenDto
   ) {
-    return this.commandBus.execute(
-      new UnregisterDeviceTokenCommand(user.id, body.token)
-    )
+    return this.notificationsService.unregisterDeviceToken(user.id, body.token)
   }
 }

@@ -12,6 +12,7 @@ import { getRequestId } from "@workspace/logger"
 import type { Request } from "express"
 import { ZodValidationException } from "nestjs-zod"
 import { z, ZodError } from "zod"
+import { DomainException } from "../exceptions/domain.exception"
 
 const STATUS_TO_CODE: Record<number, HttpErrorCode> = {
   [HttpStatus.BAD_REQUEST]: HttpErrorCode.BAD_REQUEST,
@@ -44,6 +45,7 @@ const STORAGE_DOMAIN_CODE: Partial<Record<StorageErrorCode, FileErrorCode>> = {
 }
 
 export function resolveHttpStatus(exception: unknown): number {
+  if (exception instanceof DomainException) return exception.statusCode
   if (exception instanceof HttpException) return exception.getStatus()
   if (exception instanceof StorageError) return STORAGE_STATUS[exception.code]
 
@@ -113,6 +115,10 @@ export function resolveErrorCode(
   exception: unknown,
   status: number
 ): ApiErrorCode {
+  if (exception instanceof DomainException) {
+    return exception.errorCode
+  }
+
   if (exception instanceof ZodValidationException) {
     return HttpErrorCode.VALIDATION_FAILED
   }
@@ -137,6 +143,7 @@ export function resolveClientMessage(
   exception: unknown,
   status: number
 ): string {
+  if (exception instanceof DomainException) return exception.message
   if (status >= HttpStatus.INTERNAL_SERVER_ERROR) return INTERNAL_ERROR_MESSAGE
   if (exception instanceof ZodValidationException) return "Validation failed"
   if (exception instanceof StorageError) return exception.message

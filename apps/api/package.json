@@ -25,7 +25,7 @@
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "catalog:",
     "@nestjs/core": "catalog:",
-    "@nestjs/cqrs": "catalog:",
+    "@nestjs/event-emitter": "catalog:",
     "@nestjs/platform-express": "catalog:",
     "@nestjs/platform-socket.io": "^11.1.27",
     "@nestjs/schedule": "^6.1.3",

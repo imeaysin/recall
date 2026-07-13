@@ -1,6 +1,6 @@
-import { NoteErrorCode } from "@workspace/contracts"
-import { apiForbidden, apiNotFound } from "@/common/exceptions/api.exception"
-import type { NoteEntity } from "./entities/note.entity"
+import { NoteForbiddenException } from "./domain/exceptions/note-forbidden.exception"
+import { NoteNotFoundException } from "./domain/exceptions/note-not-found.exception"
+import type { NoteEntity } from "./domain/note.model"
 
 export const NOTE_FORBIDDEN_MESSAGE = "Not allowed to modify this note"
 
@@ -8,9 +8,12 @@ export const NOTE_FORBIDDEN_MESSAGE = "Not allowed to modify this note"
 export function assertNoteAccessOrThrow(
   existing: NoteEntity | null,
   organizationId: string
-): never {
-  if (!existing || existing.organizationId !== organizationId) {
-    apiNotFound("Note not found", NoteErrorCode.NOT_FOUND)
+): void {
+  if (!existing) {
+    throw new NoteNotFoundException("Note not found")
   }
-  apiForbidden(NOTE_FORBIDDEN_MESSAGE, NoteErrorCode.FORBIDDEN)
+
+  if (existing.organizationId !== organizationId) {
+    throw new NoteForbiddenException(NOTE_FORBIDDEN_MESSAGE)
+  }
 }

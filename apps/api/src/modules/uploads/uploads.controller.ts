@@ -6,7 +6,6 @@ import {
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common"
-import { CommandBus } from "@nestjs/cqrs"
 import { FileInterceptor } from "@nestjs/platform-express"
 import {
   ApiBearerAuth,
@@ -24,14 +23,17 @@ import {
   RequireOrgPermission,
 } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import { UploadFileCommand } from "./commands/upload-file.command"
-import { UploadApiResponseDto, type FileMetadata } from "./uploads.dto"
+import {
+  UploadApiResponseDto,
+  type FileMetadata,
+} from "./dto/upload-responses.dto"
+import { UploadsService } from "./uploads.service"
 
 @ApiTags("uploads")
 @ApiAuthErrorResponses()
 @Controller({ path: "uploads", version: "1" })
 export class UploadsController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly uploadsService: UploadsService) {}
 
   @Post()
   @RequireOrgPermission("content", "create")
@@ -69,8 +71,13 @@ export class UploadsController {
     @UploadedFile()
     file?: FileMetadata
   ) {
-    return this.commandBus.execute(
-      new UploadFileCommand(organizationId, user.id, file)
-    )
+    if (!file) {
+      throw new Error("File is required")
+    }
+    return this.uploadsService.uploadFile({
+      organizationId,
+      userId: user.id,
+      file,
+    })
   }
 }

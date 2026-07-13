@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
 } from "@nestjs/common"
-import { CommandBus, QueryBus } from "@nestjs/cqrs"
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -26,30 +25,21 @@ import {
   RequireOrgPermission,
 } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import {
-  BulkDeleteNotesCommand,
-  CreateNoteCommand,
-  DeleteNoteCommand,
-  UpdateNoteCommand,
-} from "./commands"
+import { NotesService } from "./notes.service"
+import { CreateNoteDto } from "./dto/create-note.dto"
+import { UpdateNoteDto } from "./dto/update-note.dto"
+import { BulkDeleteNotesDto } from "./dto/bulk-delete-notes.dto"
 import {
   BulkDeleteNotesApiResponseDto,
-  BulkDeleteNotesDto,
-  CreateNoteDto,
   NoteApiResponseDto,
   NotesListApiResponseDto,
-  UpdateNoteDto,
-} from "./notes.dto"
-import { ListNotesQuery } from "./queries"
+} from "./dto/note-responses.dto"
 
 @ApiTags("notes")
 @ApiAuthErrorResponses()
 @Controller({ path: "notes", version: "1" })
 export class NotesController {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus
-  ) {}
+  constructor(private readonly notesService: NotesService) {}
 
   @Get()
   @RequireOrgPermission("content", "read")
@@ -64,7 +54,7 @@ export class NotesController {
     @CurrentOrganization() organizationId: string,
     @CurrentUser() user: JwtClaims
   ) {
-    return this.queryBus.execute(new ListNotesQuery(organizationId, user.id))
+    return this.notesService.listNotes({ organizationId, userId: user.id })
   }
 
   @Post()
@@ -82,8 +72,9 @@ export class NotesController {
     @CurrentUser() user: JwtClaims,
     @Body() body: CreateNoteDto
   ) {
-    return this.commandBus.execute(
-      new CreateNoteCommand(organizationId, user.id, body)
+    return this.notesService.createNote(
+      { organizationId, userId: user.id },
+      body
     )
   }
 
@@ -101,9 +92,11 @@ export class NotesController {
     @CurrentUser() user: JwtClaims,
     @Body() body: BulkDeleteNotesDto
   ) {
-    return this.commandBus.execute(
-      new BulkDeleteNotesCommand(organizationId, user.id, body)
-    )
+    return this.notesService.bulkDeleteNotes({
+      organizationId,
+      userId: user.id,
+      ids: body.ids,
+    })
   }
 
   @Patch(":id")
@@ -126,8 +119,9 @@ export class NotesController {
     @Param("id") id: string,
     @Body() body: UpdateNoteDto
   ) {
-    return this.commandBus.execute(
-      new UpdateNoteCommand(organizationId, user.id, id, body)
+    return this.notesService.updateNote(
+      { organizationId, userId: user.id, noteId: id },
+      body
     )
   }
 
@@ -151,8 +145,10 @@ export class NotesController {
     @CurrentUser() user: JwtClaims,
     @Param("id") id: string
   ) {
-    return this.commandBus.execute(
-      new DeleteNoteCommand(organizationId, user.id, id)
-    )
+    return this.notesService.deleteNote({
+      organizationId,
+      userId: user.id,
+      noteId: id,
+    })
   }
 }

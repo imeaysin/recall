@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common"
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core"
 import { ZodValidationPipe } from "nestjs-zod"
-import { CqrsModule } from "@nestjs/cqrs"
+import { EventEmitterModule } from "@nestjs/event-emitter"
 import { AuthModule } from "@thallesp/nestjs-better-auth"
 import { getAuth } from "@workspace/auth"
 import type { CacheProvider } from "@workspace/cache"
@@ -31,7 +31,7 @@ import { AiModule } from "./modules/ai/ai.module"
 
 @Module({
   imports: [
-    CqrsModule.forRoot(),
+    EventEmitterModule.forRoot(),
     AuthGuardsModule.register(),
     CacheModule,
     DatabaseModule,

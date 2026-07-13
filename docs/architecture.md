@@ -30,7 +30,7 @@
 - `@workspace/storage` — file upload providers (local / S3)
 - `@workspace/ui` — components, auth UI, app shell
 
-**API pattern:** controller → CQRS command/query handlers → repository.
+**API pattern:** controller → Service Orchestrator (Pragmatic Light-CQRS) → Command / Query Repository → Domain Exceptions.
 
 **Tests:** API uses Jest (`test/unit/`, `test/e2e/`). Web and packages use Vitest (`test/`).
 
