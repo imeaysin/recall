@@ -1,0 +1,61 @@
+# 🤖 Global AI Agent Coding Standards & Guardrails
+
+You must read, analyze, and strictly adhere to these engineering rules before executing any task or refactoring pass within this monorepo.
+
+---
+
+## 🛑 Zero-Tolerance Coding Standards & Anti-Patterns
+
+### 1. Absolute Type Purity & Safety
+
+- **Banned Types:** The use of `any` or `unknown` is strictly forbidden. Every variable, parameter, and return value must be strongly typed.
+- **Banned Assertions:** Type forcing via `as Type`, non-null assertions (`value!`), or angle-bracket casting (`<Type>value`) is completely banned.
+- **Root-Cause Resolution:** If a type mismatch or compilation error occurs, you must track down the structural root cause. Fix the underlying interface, schema, generic, or DTO instead of bypassing the compiler.
+
+### 2. Uncle Bob's Clean Code Constraints
+
+- **The Two-Argument Limit:** Functions and class methods must accept a maximum of two (2) arguments. If a routine requires more data, group them into a single, cohesive, strongly typed configuration object or DTO.
+- **Single Responsibility Principle (SRP):** Every function, class, and module must do exactly one thing. If you cannot describe what a function does in one simple sentence, break it down into smaller, atomic units.
+- **Metrics:** Keep individual functions under 20 lines. Keep class or orchestration files under 150 lines.
+
+### 3. Control Flow & Readability Code Smells
+
+- **No Nested Ternaries:** Conditional expressions using nested ternaries (`a ? b : c ? d : e`) are completely banned. Use explicit, early-return `if` blocks or clear `switch` blocks instead to keep cognitive load low.
+- **No Magic Values:** Hardcoded strings or numbers are banned. Lock all configuration thresholds, status keys, or static metrics behind strictly typed Enums or read-only constants.
+- **Fail-Fast Pattern:** Always evaluate edge cases, invalid data states, or security constraints at the very top of your execution block. Return early or throw custom exceptions immediately to prevent deeply nested conditional code.
+
+### 4. Self-Documenting Restraint ("Let the Code Talk")
+
+- **No Obvious Comments:** Do not write redundant, obvious, or boilerplate comments (e.g., `// loop through array`, `// initialize constructor`).
+- **Descriptive Semantics:** Your logic must communicate its intent perfectly through highly descriptive variable names, explicit domain vocabulary, and clean structural separation.
+- **When to Comment:** Use comments _only_ to document strict business rules, complex mathematical invariants, optimization constraints, or intentional workarounds for known upstream bugs.
+
+### 5. Immutability & Functional Paradigms
+
+- **Default to `const` and `readonly`:** All variables should be `const`. All class properties, interfaces, and DTO fields should be marked `readonly` unless mutability is strictly required by the domain.
+- **No Array/Object Mutations:** Avoid `push()`, `splice()`, or direct property reassignment. Use spread operators, `.map()`, and `.filter()` to generate new state safely.
+
+### 6. Edge-Validation & Security (Zero-Trust)
+
+- **Never Trust Client Payloads:** Every piece of ingress data must be strictly validated at the controller/route level (e.g., using Zod). Never allow unvalidated data to reach the domain or repository layers.
+- **No Swallowed Errors:** Empty `catch (e) {}` blocks are banned. All caught errors must be logged, mapped to a domain exception, or re-thrown.
+
+### 7. State Management & Asynchrony
+
+- **No Floating Promises:** Every asynchronous function call must be properly `await`ed or explicitly handled. Leaving Promises unhandled causes memory leaks and lost execution contexts.
+- **Isolate I/O Operations:** Keep database calls, network requests, and file system interactions strictly separated from pure domain logic.
+
+### 8. Dependency Imports & Aliasing
+
+- **Ban Deep Relative Paths:** Refuse to use paths like `../../../../utils`. Always enforce absolute path aliases (e.g., `@workspace/contracts`, `@/domain/`) to prevent import brittleness.
+
+### 9. YAGNI Principle
+
+- **You Aren't Gonna Need It:** Never build speculative features, generic extension points, or dead endpoints for imaginary future requirements. Write exactly what the current task demands.
+
+---
+
+## 🛠️ Framework Optimization & Debugging Protocols
+
+- **No Guessing or Fabricating:** Do not make assumptions about folder paths, API contracts, or dependencies. If a technical mapping is ambiguous, stop execution immediately and request clarification.
+- **Native Library Adoption:** When resolving issues, code behaviors, or bugs, do not deploy custom "hacky" wrappers or bespoke overrides. Research the official documentation of the core framework or tool stack being used and resolve the issue exactly as recommended by the library's authors.

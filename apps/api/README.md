@@ -42,3 +42,7 @@ pnpm test:e2e      # e2e (requires MongoDB — run `pnpm db:up` first)
 ```
 
 See [docs/deployment.md](../../docs/deployment.md).
+
+## 🤖 Agentic Coding Instructions
+
+When modifying or refactoring this application, you must pull global standards from the monorepo root `.agentinstructions` file and merge them with the architectural specifications defined locally in `.agenticdocs.md`.
