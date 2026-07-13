@@ -18,7 +18,11 @@ import { PushModule } from "./common/push/push.module"
 import { RealtimeModule } from "./common/realtime/realtime.module"
 import { StorageModule } from "./common/storage/storage.module"
 import { PaymentModule } from "./common/payment/payment.module"
-import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter"
+import { GlobalExceptionsFilter } from "./common/filters/global-exceptions.filter"
+import { HttpExceptionFilter } from "./common/filters/http-exception.filter"
+import { DomainExceptionFilter } from "./common/filters/domain-exception.filter"
+import { StorageExceptionFilter } from "./common/filters/storage-exception.filter"
+import { ZodValidationExceptionFilter } from "./common/filters/zod-validation-exception.filter"
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor"
 import { TransformResponseInterceptor } from "./common/interceptors/transform-response.interceptor"
 import { HealthModule } from "./modules/health/health.module"
@@ -65,7 +69,11 @@ import { AiModule } from "./modules/ai/ai.module"
   providers: [
     AppService,
     { provide: APP_PIPE, useClass: ZodValidationPipe },
-    { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    { provide: APP_FILTER, useClass: GlobalExceptionsFilter },
+    { provide: APP_FILTER, useClass: HttpExceptionFilter },
+    { provide: APP_FILTER, useClass: StorageExceptionFilter },
+    { provide: APP_FILTER, useClass: ZodValidationExceptionFilter },
+    { provide: APP_FILTER, useClass: DomainExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_INTERCEPTOR, useClass: TransformResponseInterceptor },
   ],
