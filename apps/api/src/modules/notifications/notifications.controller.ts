@@ -19,15 +19,13 @@ import {
 import type { JwtClaims } from "@workspace/auth/types"
 import { CurrentUser } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
+import { NotificationsService } from "./notifications.service"
 import {
   RegisterDeviceTokenDto,
   UnregisterDeviceTokenDto,
-} from "./dto/device-token.dto"
-import {
   NotificationListApiResponseDto,
   UnreadCountApiResponseDto,
-} from "./dto/notification-responses.dto"
-import { NotificationsService } from "./notifications.service"
+} from "./dto"
 
 @ApiTags("notifications")
 @ApiAuthErrorResponses()

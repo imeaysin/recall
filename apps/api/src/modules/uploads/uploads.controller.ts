@@ -23,11 +23,8 @@ import {
   RequireOrgPermission,
 } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import {
-  UploadApiResponseDto,
-  type FileMetadata,
-} from "./dto/upload-responses.dto"
 import { UploadsService } from "./uploads.service"
+import { UploadApiResponseDto, type FileMetadata } from "./dto"
 
 @ApiTags("uploads")
 @ApiAuthErrorResponses()

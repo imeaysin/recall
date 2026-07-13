@@ -26,14 +26,14 @@ import {
 } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { NotesService } from "./notes.service"
-import { CreateNoteDto } from "./dto/create-note.dto"
-import { UpdateNoteDto } from "./dto/update-note.dto"
-import { BulkDeleteNotesDto } from "./dto/bulk-delete-notes.dto"
 import {
   BulkDeleteNotesApiResponseDto,
+  BulkDeleteNotesDto,
+  CreateNoteDto,
   NoteApiResponseDto,
   NotesListApiResponseDto,
-} from "./dto/note-responses.dto"
+  UpdateNoteDto,
+} from "./dto"
 
 @ApiTags("notes")
 @ApiAuthErrorResponses()

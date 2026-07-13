@@ -8,9 +8,7 @@ import type {
   BulkDeleteNotesResponse,
 } from "@workspace/contracts"
 import { jobsEnv } from "@workspace/config/jobs"
-import { toNoteResponse } from "./dto/note-response.mapper"
-import { NoteQueryRepository } from "./repository/note.query"
-import { NoteCommandRepository } from "./repository/note.command"
+import { NoteQueryRepository, NoteCommandRepository } from "./repository"
 import type { NoteJobPayload } from "./notes-cron.producer"
 import type {
   NewNoteEntity,
@@ -18,6 +16,7 @@ import type {
   NoteMutationScope,
   BulkNoteMutationScope,
 } from "./domain/note.model"
+import { toNoteResponse } from "./dto"
 
 @Injectable()
 export class NotesService {

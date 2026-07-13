@@ -12,8 +12,10 @@ import type {
 } from "@workspace/contracts"
 import { PUSH_PROVIDER } from "@/common/push/push.module"
 import { RealtimeGateway } from "@/common/realtime/realtime.gateway"
-import { NotificationQueryRepository } from "./repository/notification.query"
-import { NotificationCommandRepository } from "./repository/notification.command"
+import {
+  NotificationQueryRepository,
+  NotificationCommandRepository,
+} from "./repository"
 import type {
   NotificationUserScope,
   NotificationMutationScope,
