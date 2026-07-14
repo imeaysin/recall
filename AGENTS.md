@@ -24,7 +24,7 @@ packages/
   realtime/       Event bus (memory / Redis pub/sub)
   redis/          ioredis client factory
   storage/        File upload providers (local / S3)
-  ui/             Shared React components + auth UI + app shell
+  coss-ui/             Shared React components + auth UI + app shell
 tooling/        eslint-config, typescript-config, vitest-config
 docs/           Human docs (architecture, features, deployment)
 ```
