@@ -27,7 +27,6 @@ const urlsSchema = z.object({
 
 const authSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
-  AUTH_JWT_EXPIRATION: z.string().default("15m"),
   AUTH_TOTP_ISSUER: z.string().default("Theo"),
   GOOGLE_CLIENT_ID: z.string().default(""),
   GOOGLE_CLIENT_SECRET: z.string().default(""),
@@ -128,7 +127,6 @@ export const serverDefaults = {
   ALLOWED_ORIGINS: DEV_ALLOWED_ORIGINS,
   BETTER_AUTH_SECRET:
     "j6K#v9$e8f7037b453c8a6b455a6fe9cc7e5d1438af032e3bf8731affcea1e9967481d7!z8*Nq5&W3tY7uB9xCcE1",
-  AUTH_JWT_EXPIRATION: "15m",
   AUTH_TOTP_ISSUER: DEFAULT_APP_NAME,
   EMAIL_PROVIDER: "mock",
   RESEND_API_KEY: "",

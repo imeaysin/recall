@@ -1,43 +1,28 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { signUp } from "@workspace/auth/client"
 import { SignUpSchema, type SignUpInput } from "@workspace/contracts"
-import { AuthPageBody, AuthPageHeader } from "@workspace/ui-shadcn/auth"
 import { Button } from "@workspace/ui-shadcn/components/button"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@workspace/ui-shadcn/components/form"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui-shadcn/components/card"
 import { Input } from "@workspace/ui-shadcn/components/input"
-import { PasswordInput } from "@workspace/ui-shadcn/components/password-input"
-import { PageLoading } from "@workspace/ui-shadcn/components/page-loading"
-import { toast } from "@workspace/ui-shadcn/components/sonner"
-import { AuthButtons } from "@/features/auth/components/auth-buttons"
-import { useAuthSession, useSignUpEmail } from "@workspace/auth/react"
-import {
-  absoluteAppUrl,
-  defaultAuthenticatedRoute,
-  routes,
-} from "@/config/routes"
-import { site } from "@/config/site"
-import {
-  getSafeRedirectPath,
-  withAuthRedirectQuery,
-} from "@/routing/safe-redirect"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { routes, defaultAuthenticatedRoute } from "@/config/routes"
+import { AuthDivider } from "@/features/auth/components/auth-divider"
+import { GoogleSignInButton } from "@/features/auth/components/google-sign-in-button"
+import { buildAuthCallback } from "@/features/auth/lib/auth-callback"
 
 export function SignUpPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const redirectPath = getSafeRedirectPath(
-    searchParams.get("redirect"),
-    defaultAuthenticatedRoute
-  )
-  const { data: session, isPending } = useAuthSession()
-  const signUp = useSignUpEmail()
+  const [formError, setFormError] = useState<string | null>(null)
   const form = useForm<SignUpInput>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -48,143 +33,87 @@ export function SignUpPage() {
     },
   })
 
-  if (isPending) {
-    return <PageLoading />
-  }
-
-  if (session) {
-    return <Navigate replace to={redirectPath} />
-  }
-
   async function onSubmit(values: SignUpInput) {
-    try {
-      await signUp.mutateAsync({
-        ...values,
-        callbackURL: absoluteAppUrl(routes.verifyEmail),
-      })
-      toast.success("Account created", {
-        description: "Check your email to verify your account.",
-      })
-      navigate(
-        `${routes.verifyEmail}?email=${encodeURIComponent(values.email)}`
-      )
-    } catch {
-      form.setError("email", {
-        message: "Could not create your account. Please try again.",
-      })
+    setFormError(null)
+    const result = await signUp.email({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      callbackURL: buildAuthCallback(routes.verifyEmail),
+    })
+
+    if (result.error) {
+      setFormError(result.error.message ?? "Unable to create account")
+      return
     }
+
+    navigate(
+      `${routes.verifyEmail}?email=${encodeURIComponent(values.email)}`,
+      { replace: true }
+    )
   }
 
   return (
-    <AuthPageBody
-      footer={
-        <p className="font-sans text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link
-            className="text-foreground underline underline-offset-2 transition-colors hover:text-foreground/80"
-            to={withAuthRedirectQuery(routes.signIn, {
-              redirect: searchParams.get("redirect"),
-              fallback: defaultAuthenticatedRoute,
-            })}
-          >
-            Sign in
-          </Link>
-        </p>
-      }
-    >
-      <AuthPageHeader
-        description="Create your account to get started"
-        title={`Join ${site.name}`}
-      />
-
-      <AuthButtons callbackPath={redirectPath} />
-
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={form.handleSubmit(onSubmit)}
-          noValidate
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    autoComplete="name"
-                    placeholder="Your name"
-                    type="text"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    type="email"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    {...field}
-                    autoComplete="new-password"
-                    placeholder="Create a password"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm password</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    {...field}
-                    autoComplete="new-password"
-                    placeholder="Confirm your password"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            className="w-full"
-            disabled={signUp.isPending}
-            size="lg"
-            type="submit"
-          >
-            Create account
+    <Card>
+      <CardHeader>
+        <CardTitle>Create account</CardTitle>
+        <CardDescription>
+          Sign up with Google or email. Email sign-ups require verification
+          before you can sign in.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <GoogleSignInButton
+          callbackPath={defaultAuthenticatedRoute}
+          label="Continue with Google"
+        />
+        <AuthDivider />
+        <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="grid gap-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" autoComplete="name" {...form.register("name")} />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              {...form.register("email")}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              autoComplete="new-password"
+              {...form.register("password")}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              {...form.register("confirmPassword")}
+            />
+          </div>
+          {formError ? (
+            <p className="text-sm text-destructive">{formError}</p>
+          ) : null}
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            {form.formState.isSubmitting ? "Creating…" : "Sign up"}
           </Button>
         </form>
-      </Form>
-    </AuthPageBody>
+      </CardContent>
+      <CardFooter className="text-sm">
+        Already have an account?{" "}
+        <Link className="ml-1 underline" to={routes.signIn}>
+          Sign in
+        </Link>
+      </CardFooter>
+    </Card>
   )
 }

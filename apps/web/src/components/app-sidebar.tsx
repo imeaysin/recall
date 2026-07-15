@@ -35,7 +35,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} linkComponent={RouterLink} />
-        <NavProjects projects={projects} linkComponent={RouterLink} />
+        {projects.length > 0 ? (
+          <NavProjects projects={projects} linkComponent={RouterLink} />
+        ) : null}
       </SidebarContent>
       <SidebarFooter>
         <NavUser

@@ -1,103 +1,70 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { authClient } from "@workspace/auth/client"
 import { TwoFactorSchema, type TwoFactorInput } from "@workspace/contracts"
+import { Button } from "@workspace/ui-shadcn/components/button"
 import {
-  AuthOtpInput,
-  AuthPageBody,
-  AuthPageHeader,
-} from "@workspace/ui-shadcn/auth"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@workspace/ui-shadcn/components/form"
-import { useVerifyTotp } from "@workspace/auth/react"
-import { routes, defaultAuthenticatedRoute } from "@/config/routes"
-import {
-  getSafeRedirectPath,
-  withAuthRedirectQuery,
-} from "@/routing/safe-redirect"
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui-shadcn/components/card"
+import { Input } from "@workspace/ui-shadcn/components/input"
+import { Label } from "@workspace/ui-shadcn/components/label"
+import { defaultAuthenticatedRoute } from "@/config/routes"
 
 export function TwoFactorPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const redirectPath = getSafeRedirectPath(
-    searchParams.get("redirect"),
-    defaultAuthenticatedRoute
-  )
-  const verifyTotp = useVerifyTotp()
-
+  const [formError, setFormError] = useState<string | null>(null)
   const form = useForm<TwoFactorInput>({
     resolver: zodResolver(TwoFactorSchema),
     defaultValues: { code: "" },
   })
 
   async function onSubmit(values: TwoFactorInput) {
-    try {
-      await verifyTotp.mutateAsync(values)
-      navigate(redirectPath)
-    } catch {
-      form.setError("code", {
-        message: "Check your authenticator app and try again.",
-      })
-      form.setValue("code", "")
+    setFormError(null)
+    const result = await authClient.twoFactor.verifyTotp({
+      code: values.code,
+    })
+
+    if (result.error) {
+      setFormError(result.error.message ?? "Invalid code")
+      return
     }
+
+    navigate(defaultAuthenticatedRoute, { replace: true })
   }
 
   return (
-    <AuthPageBody
-      footer={
-        <Link
-          className="font-sans text-sm text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
-          to={withAuthRedirectQuery(routes.signIn, {
-            redirect: searchParams.get("redirect"),
-            fallback: defaultAuthenticatedRoute,
-          })}
-        >
-          Back to sign in
-        </Link>
-      }
-    >
-      <AuthPageHeader
-        description="Please enter the code from your authenticator app."
-        title="Verify your identity"
-      />
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="code"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Verification code</FormLabel>
-                <FormControl>
-                  <AuthOtpInput
-                    invalid={Boolean(form.formState.errors.code)}
-                    onComplete={(value) => {
-                      form.setValue("code", value, { shouldValidate: true })
-                      void form.handleSubmit(onSubmit)()
-                    }}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    verifying={verifyTotp.isPending}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Open your authenticator app (1Password, Authy, etc.) to get a
-                  6-digit code.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Card>
+      <CardHeader>
+        <CardTitle>Two-factor authentication</CardTitle>
+        <CardDescription>
+          Enter the 6-digit code from your authenticator app.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="grid gap-2">
+            <Label htmlFor="code">Authentication code</Label>
+            <Input
+              id="code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              {...form.register("code")}
+            />
+          </div>
+          {formError ? (
+            <p className="text-sm text-destructive">{formError}</p>
+          ) : null}
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            Verify
+          </Button>
         </form>
-      </Form>
-    </AuthPageBody>
+      </CardContent>
+    </Card>
   )
 }

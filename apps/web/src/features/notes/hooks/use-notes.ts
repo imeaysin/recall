@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useActiveOrganizationId } from "@workspace/auth/react"
+import { useActiveOrganizationId } from "@/lib/session"
 import {
   BulkDeleteNotesSchema,
   CreateNoteSchema,

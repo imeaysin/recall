@@ -9,7 +9,10 @@ export const routeSegments = {
     resetPassword: "reset-password",
     verifyEmail: "verify-email",
     twoFactor: "two-factor",
-    acceptInvitation: "accept-invitation",
+  },
+  acceptInvitation: {
+    root: "accept-invitation",
+    invitationId: ":invitationId",
   },
   app: {
     root: "app",
@@ -17,10 +20,6 @@ export const routeSegments = {
     notes: "notes",
     uploads: "uploads",
     notifications: "notifications",
-    settings: "settings",
-    organization: "organization",
-    admin: "admin",
-    ai: "ai",
   },
 } as const
 
@@ -44,7 +43,7 @@ export const routes = {
   ),
   verifyEmail: toPath(routeSegments.auth.root, routeSegments.auth.verifyEmail),
   twoFactor: toPath(routeSegments.auth.root, routeSegments.auth.twoFactor),
-  acceptInvitation: "/accept-invitation",
+  acceptInvitation: toPath(routeSegments.acceptInvitation.root),
   dashboard: toPath(routeSegments.app.root, routeSegments.app.dashboard),
   notes: toPath(routeSegments.app.root, routeSegments.app.notes),
   uploads: toPath(routeSegments.app.root, routeSegments.app.uploads),
@@ -52,39 +51,13 @@ export const routes = {
     routeSegments.app.root,
     routeSegments.app.notifications
   ),
-  settings: toPath(routeSegments.app.root, routeSegments.app.settings),
-  settingsAccount: toPath(
-    routeSegments.app.root,
-    routeSegments.app.settings,
-    "account"
-  ),
-  settingsSecurity: toPath(
-    routeSegments.app.root,
-    routeSegments.app.settings,
-    "security"
-  ),
-  organization: toPath(routeSegments.app.root, routeSegments.app.organization),
-  organizationSettings: toPath(
-    routeSegments.app.root,
-    routeSegments.app.organization,
-    "settings"
-  ),
-  organizationPeople: toPath(
-    routeSegments.app.root,
-    routeSegments.app.organization,
-    "people"
-  ),
-  organizationRoles: toPath(
-    routeSegments.app.root,
-    routeSegments.app.organization,
-    "roles"
-  ),
-  admin: toPath(routeSegments.app.root, routeSegments.app.admin),
-  adminUsers: toPath(routeSegments.app.root, routeSegments.app.admin, "users"),
-  ai: toPath(routeSegments.app.root, routeSegments.app.ai),
 } as const
 
 export const defaultAuthenticatedRoute = routes.dashboard
+
+export function acceptInvitationPath(invitationId: string): string {
+  return toPath(routeSegments.acceptInvitation.root, invitationId)
+}
 
 export function absoluteAppUrl(path: string): string {
   if (typeof window === "undefined") return path

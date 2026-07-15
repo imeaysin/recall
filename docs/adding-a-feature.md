@@ -65,11 +65,13 @@ apps/web/src/features/notes/
 
 ## 4. Authorization
 
-Use decorators from `@workspace/auth/nestjs` — see [packages/auth/README.md](../packages/auth/README.md).
+Use exports from `@workspace/auth/nestjs` — see [packages/auth/README.md](../packages/auth/README.md)
+and [docs/authN-authZ.md](./authN-authZ.md).
 
-User-owned resources: JWT + ownership check in the handler (notes pattern).
-
-Org-scoped resources: `@RequireOrgPermission(...)`.
+- Session: `@Session()` / global AuthGuard; `@AllowAnonymous()` for public routes
+- Org RBAC: `@MemberHasPermission({ permissions: { project: ["read"] } })`
+- ABAC (ownership): CASL `AccessGuard` + `@UseAbility`
+- Always take `activeOrganizationId` from the session — never from the client body
 
 ## 5. Verify
 
