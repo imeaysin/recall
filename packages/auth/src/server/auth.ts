@@ -58,6 +58,9 @@ export function createAuth() {
       changeEmail: {
         enabled: true,
       },
+      deleteUser: {
+        enabled: true,
+      },
     },
     socialProviders: buildSocialProviders(),
     plugins: [

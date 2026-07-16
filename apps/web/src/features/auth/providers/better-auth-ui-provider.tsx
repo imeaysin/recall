@@ -6,6 +6,7 @@ import type { ReactNode } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthProvider } from "@/features/auth/components/auth/auth-provider"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
+import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { themePlugin } from "@/lib/auth/theme-plugin"
 import { defaultAuthenticatedRoute, routes } from "@/config/routes"
@@ -40,6 +41,7 @@ export function BetterAuthUiProvider({ children }: { children: ReactNode }) {
         organizationPlugin(),
         apiKeyPlugin({ organization: true }),
         themePlugin({ useTheme }),
+        deleteUserPlugin(),
       ]}
     >
       {children}
