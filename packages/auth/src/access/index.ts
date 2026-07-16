@@ -14,6 +14,19 @@ export {
   viewerRole,
   organizationRoles,
   platformRoles,
+  organizationStatement,
+  rolePermissionCatalog,
+  STATIC_ORG_ROLES,
+  ASSIGNABLE_ORG_ROLES,
+  isStaticOrgRole,
+  isPermissionResource,
+} from "./roles"
+
+export type {
+  OrganizationStatement,
+  RolePermissionCatalog,
+  PermissionResource,
+  StaticOrgRoleName,
 } from "./roles"
 
 export {

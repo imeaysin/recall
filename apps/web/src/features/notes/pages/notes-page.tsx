@@ -47,6 +47,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import { useMemo, useState } from "react"
+import { authClient } from "@workspace/auth/client"
 import { NoteFormDialog } from "@/features/notes/components/note-form-dialog"
 import { NotesTable } from "@/features/notes/components/notes-table"
 import {
@@ -54,6 +55,7 @@ import {
   useDeleteNoteMutation,
   useNotesQuery,
 } from "@/features/notes/hooks/use-notes"
+import { useHasOrgPermission } from "@/hooks/use-org-permission"
 
 type SortOption = "newest" | "oldest" | "title-asc" | "title-desc"
 
@@ -88,6 +90,19 @@ function sortNotes(items: NoteResponse[], sort: SortOption) {
 }
 
 export function NotesPage() {
+  const { data: organization } = authClient.useActiveOrganization()
+  const canCreate = useHasOrgPermission(
+    { project: ["create"] },
+    organization?.id
+  )
+  const canUpdate = useHasOrgPermission(
+    { project: ["update"] },
+    organization?.id
+  )
+  const canDelete = useHasOrgPermission(
+    { project: ["delete"] },
+    organization?.id
+  )
   const { data, isLoading, isError, error } = useNotesQuery()
   const deleteNote = useDeleteNoteMutation()
   const bulkDeleteNotes = useBulkDeleteNotesMutation()
@@ -189,10 +204,12 @@ export function NotesPage() {
               Create and manage your notes.
             </p>
           </div>
-          <Button onClick={openCreateDialog}>
-            <PlusIcon data-icon="inline-start" />
-            New note
-          </Button>
+          {canCreate.data ? (
+            <Button onClick={openCreateDialog}>
+              <PlusIcon data-icon="inline-start" />
+              New note
+            </Button>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -229,7 +246,7 @@ export function NotesPage() {
           </Select>
         </div>
 
-        {selectedIds.size > 0 ? (
+        {selectedIds.size > 0 && canDelete.data ? (
           <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-muted/40 px-4 py-3">
             <p className="text-sm font-medium">{selectedIds.size} selected</p>
             <Button
@@ -298,10 +315,16 @@ export function NotesPage() {
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button onClick={openCreateDialog}>
-                <PlusIcon data-icon="inline-start" />
-                Create note
-              </Button>
+              {canCreate.data ? (
+                <Button onClick={openCreateDialog}>
+                  <PlusIcon data-icon="inline-start" />
+                  Create note
+                </Button>
+              ) : (
+                <EmptyDescription>
+                  You can view notes but do not have permission to create them.
+                </EmptyDescription>
+              )}
             </EmptyContent>
           </Empty>
         ) : null}
@@ -323,6 +346,8 @@ export function NotesPage() {
 
         {!isLoading && !isError && filteredNotes.length > 0 ? (
           <NotesTable
+            canDelete={canDelete.data === true}
+            canUpdate={canUpdate.data === true}
             disabled={isMutating}
             notes={filteredNotes}
             onDelete={(note) =>

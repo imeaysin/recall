@@ -31,7 +31,7 @@
 - `@workspace/ui-shadcn` — shared React components
 
 **API pattern:** controller → Service Orchestrator (Pragmatic Light-CQRS) → Command / Query Repository → Domain Exceptions.
-**Auth:** Better Auth sessions + organization RBAC; CASL for ABAC. See [docs/authN-authZ.md](./authN-authZ.md).
+**Auth:** Better Auth sessions + organization RBAC; CASL for ABAC. See [docs/org-roles-and-ui.md](./org-roles-and-ui.md) and [docs/authN-authZ.md](./authN-authZ.md).
 
 **Tests:** API uses Jest (`test/unit/`, `test/e2e/`). Web and packages use Vitest (`test/`).
 

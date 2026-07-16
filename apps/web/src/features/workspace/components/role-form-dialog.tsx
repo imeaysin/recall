@@ -52,17 +52,10 @@ type RoleFormDialogProps = {
   readonly onSaved: () => void
 }
 
-type PermissionState = Record<PermissionResource, Set<string>>
+type PermissionState = Partial<Record<PermissionResource, Set<string>>>
 
 function emptyPermissionState(): PermissionState {
-  return {
-    project: new Set(),
-    report: new Set(),
-    invoice: new Set(),
-    member: new Set(),
-    invitation: new Set(),
-    settings: new Set(),
-  }
+  return {}
 }
 
 function permissionStateFromRole(role: WorkspaceRole | null): PermissionState {
@@ -78,7 +71,9 @@ function permissionStateFromRole(role: WorkspaceRole | null): PermissionState {
 function toPermissionPayload(state: PermissionState): Record<string, string[]> {
   const permission: Record<string, string[]> = {}
   for (const [resource, actions] of Object.entries(state)) {
-    if (!isPermissionResource(resource) || actions.size === 0) continue
+    if (!isPermissionResource(resource) || !actions || actions.size === 0) {
+      continue
+    }
     permission[resource] = [...actions]
   }
   return permission
@@ -129,7 +124,7 @@ function RoleFormBody({
 
   function toggleAction(resource: PermissionResource, action: string) {
     setPermissionState((current) => {
-      const set = new Set(current[resource])
+      const set = new Set(current[resource] ?? [])
       if (set.has(action)) set.delete(action)
       else set.add(action)
       return { ...current, [resource]: set }
@@ -147,7 +142,10 @@ function RoleFormBody({
     if (isEditing && editingRole) {
       const result = await authClient.organization.updateRole({
         roleId: editingRole.id,
-        data: { permission },
+        data: {
+          permission,
+          roleName: values.role,
+        },
       })
       setIsPending(false)
       if (result.error) {
@@ -190,9 +188,9 @@ function RoleFormBody({
         <Field data-invalid={nameError ? true : undefined}>
           <FieldLabel htmlFor="role-name">Role name</FieldLabel>
           <Input
-            disabled={isPending || isEditing}
+            disabled={isPending}
             id="role-name"
-            placeholder="contractor"
+            placeholder="support"
             {...form.register("role")}
           />
           <FieldError errors={[nameError]} />

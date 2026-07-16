@@ -746,6 +746,8 @@ Level 2: Org-scoped roles (organization plugin)
 
 ### Dynamic Custom Roles (from docs — organization plugin)
 
+> **Theo playbook:** static vs custom roles, Workspace UI, and how every module should gate API + web UI — [org-roles-and-ui.md](./org-roles-and-ui.md).
+
 ```typescript
 // Create a custom role at runtime (stored in organizationRole table)
 await authClient.organization.createRole({

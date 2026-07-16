@@ -77,5 +77,7 @@ Set `SKIP_ENV_VALIDATION=true` when env is incomplete locally.
 
 - [docs/architecture.md](./docs/architecture.md)
 - [docs/adding-a-feature.md](./docs/adding-a-feature.md)
+- [docs/org-roles-and-ui.md](./docs/org-roles-and-ui.md) — static vs custom roles, module API/UI gating
+- [docs/authN-authZ.md](./docs/authN-authZ.md)
 - [packages/auth/README.md](./packages/auth/README.md)
 - Per-app: `apps/api/AGENTS.md`, `apps/web/AGENTS.md`

@@ -52,6 +52,9 @@ Notes are **per-member within an organization** (scoped by `organizationId` +
 `userId`). `@MemberHasPermission` gates which roles can call the endpoint;
 the repository still only returns/mutates that member’s notes.
 
+For static vs **custom** org roles and how the web app should mirror these
+guards, see [docs/org-roles-and-ui.md](../../docs/org-roles-and-ui.md).
+
 CASL (`AccessGuard`, `@UseAbility`) is available from `@workspace/auth/nestjs`
 for attribute-based checks when needed — not used on controllers yet.
 

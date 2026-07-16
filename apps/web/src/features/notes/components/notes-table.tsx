@@ -23,6 +23,8 @@ import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from "lucide-react"
 type NotesTableProps = {
   notes: NoteResponse[]
   disabled?: boolean
+  canUpdate?: boolean
+  canDelete?: boolean
   selectedIds: Set<string>
   onDelete: (note: NoteResponse) => void
   onEdit: (note: NoteResponse) => void
@@ -33,14 +35,20 @@ type NotesTableProps = {
 function NoteActions({
   note,
   disabled,
+  canUpdate,
+  canDelete,
   onEdit,
   onDelete,
 }: {
   note: NoteResponse
   disabled?: boolean
+  canUpdate: boolean
+  canDelete: boolean
   onEdit: (note: NoteResponse) => void
   onDelete: (note: NoteResponse) => void
 }) {
+  if (!canUpdate && !canDelete) return null
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -57,22 +65,26 @@ function NoteActions({
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => onEdit(note)}>
-            <PencilIcon />
-            Edit
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem
-            onClick={() => onDelete(note)}
-            variant="destructive"
-          >
-            <Trash2Icon />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+        {canUpdate ? (
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => onEdit(note)}>
+              <PencilIcon />
+              Edit
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        ) : null}
+        {canUpdate && canDelete ? <DropdownMenuSeparator /> : null}
+        {canDelete ? (
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              onClick={() => onDelete(note)}
+              variant="destructive"
+            >
+              <Trash2Icon />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -81,6 +93,8 @@ function NoteActions({
 export function NotesTable({
   notes,
   disabled,
+  canUpdate = true,
+  canDelete = true,
   selectedIds,
   onDelete,
   onEdit,
@@ -89,26 +103,29 @@ export function NotesTable({
 }: NotesTableProps) {
   const allSelected = notes.length > 0 && selectedIds.size === notes.length
   const someSelected = selectedIds.size > 0 && !allSelected
+  const showSelection = canDelete
 
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-10">
-              <Checkbox
-                aria-label="Select all"
-                checked={allSelected}
-                disabled={notes.length === 0}
-                indeterminate={someSelected}
-                onCheckedChange={(checked) =>
-                  onSelectAll(
-                    checked === true,
-                    notes.map((note) => note.id)
-                  )
-                }
-              />
-            </TableHead>
+            {showSelection ? (
+              <TableHead className="w-10">
+                <Checkbox
+                  aria-label="Select all"
+                  checked={allSelected}
+                  disabled={notes.length === 0}
+                  indeterminate={someSelected}
+                  onCheckedChange={(checked) =>
+                    onSelectAll(
+                      checked === true,
+                      notes.map((note) => note.id)
+                    )
+                  }
+                />
+              </TableHead>
+            ) : null}
             <TableHead>Title</TableHead>
             <TableHead>Preview</TableHead>
             <TableHead>Updated</TableHead>
@@ -123,15 +140,17 @@ export function NotesTable({
               data-state={selectedIds.has(note.id) ? "selected" : undefined}
               key={note.id}
             >
-              <TableCell>
-                <Checkbox
-                  aria-label={`Select ${note.title}`}
-                  checked={selectedIds.has(note.id)}
-                  onCheckedChange={(checked) =>
-                    onSelect(note.id, checked === true)
-                  }
-                />
-              </TableCell>
+              {showSelection ? (
+                <TableCell>
+                  <Checkbox
+                    aria-label={`Select ${note.title}`}
+                    checked={selectedIds.has(note.id)}
+                    onCheckedChange={(checked) =>
+                      onSelect(note.id, checked === true)
+                    }
+                  />
+                </TableCell>
+              ) : null}
               <TableCell className="font-medium">
                 <span className="block max-w-56 truncate">{note.title}</span>
               </TableCell>
@@ -150,6 +169,8 @@ export function NotesTable({
               <TableCell>
                 <div className="flex justify-end">
                   <NoteActions
+                    canDelete={canDelete}
+                    canUpdate={canUpdate}
                     disabled={disabled}
                     note={note}
                     onDelete={onDelete}
