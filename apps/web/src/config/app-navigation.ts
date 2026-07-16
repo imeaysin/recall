@@ -33,10 +33,13 @@ export const appNavigation = {
       ],
     },
     {
-      title: "Workspace",
-      url: routes.workspace,
+      title: "Organization",
+      url: routes.organizationSettings,
       icon: Building2,
-      items: [{ title: "Members & roles", url: routes.workspace }],
+      items: [
+        { title: "Settings", url: routes.organizationSettings },
+        { title: "People", url: routes.organizationPeople },
+      ],
     },
   ] satisfies readonly NavItem[],
   projects: emptyProjects,

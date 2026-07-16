@@ -54,6 +54,11 @@ export function createAuth() {
       },
       sendOnSignUp: true,
     },
+    user: {
+      changeEmail: {
+        enabled: true,
+      },
+    },
     socialProviders: buildSocialProviders(),
     plugins: [
       admin({

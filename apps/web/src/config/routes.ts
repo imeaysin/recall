@@ -21,6 +21,7 @@ export const routeSegments = {
     uploads: "uploads",
     notifications: "notifications",
     workspace: "workspace",
+    settings: "settings",
   },
 } as const
 
@@ -53,6 +54,24 @@ export const routes = {
     routeSegments.app.notifications
   ),
   workspace: toPath(routeSegments.app.root, routeSegments.app.workspace),
+  organizationSettings: "/organization/settings",
+  organizationPeople: "/organization/people",
+  settings: toPath(routeSegments.app.root, routeSegments.app.settings),
+  settingsAccount: toPath(
+    routeSegments.app.root,
+    routeSegments.app.settings,
+    "account"
+  ),
+  settingsSecurity: toPath(
+    routeSegments.app.root,
+    routeSegments.app.settings,
+    "security"
+  ),
+  settingsOrganizations: toPath(
+    routeSegments.app.root,
+    routeSegments.app.settings,
+    "organizations"
+  ),
 } as const
 
 export const defaultAuthenticatedRoute = routes.dashboard

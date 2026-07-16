@@ -4,11 +4,13 @@ import {
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  SettingsIcon,
   type LucideIcon,
 } from "lucide-react"
 import { useSession, signOut, authClient } from "@workspace/auth/client"
 import { toast } from "sonner"
 import { appNavigation } from "@/config/app-navigation"
+import { routes } from "@/config/routes"
 import { site } from "@/config/site"
 import type {
   AppSidebarNavItem,
@@ -94,7 +96,16 @@ export function useAppShellConfig() {
 
   const teams = useMemo(() => toShellTeams(organizations), [organizations])
 
-  const userMenuItems = useMemo<AppSidebarUserMenuItem[]>(() => [], [])
+  const userMenuItems = useMemo<AppSidebarUserMenuItem[]>(
+    () => [
+      {
+        label: "Settings",
+        href: routes.settingsAccount,
+        icon: <SettingsIcon />,
+      },
+    ],
+    []
+  )
 
   const onTeamChange = useCallback(async (team: AppSidebarTeam) => {
     const result = await authClient.organization.setActive({
