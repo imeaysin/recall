@@ -3,11 +3,14 @@ import { clientDefaults } from "../constants"
 
 const optionalPublicUrl = z.union([z.literal(""), z.string().url()]).optional()
 
+const optionalSentryDsn = z.union([z.literal(""), z.string().url()]).optional()
+
 const webClientSchema = z.object({
   VITE_API_URL: optionalPublicUrl,
   VITE_AUTH_URL: optionalPublicUrl,
   VITE_APP_NAME: z.string().min(1).optional(),
   VITE_MARKETING_URL: z.string().url().optional(),
+  VITE_SENTRY_DSN: optionalSentryDsn,
 })
 
 const marketingClientSchema = z.object({

@@ -52,6 +52,11 @@ catalog:
   ai: ^4.1.41
   "@ai-sdk/react": ^1.1.13
   "@ai-sdk/openai": ^1.1.10
+  "@sentry/nestjs": ^9.47.0
+  "@sentry/react": ^9.47.0
+  "@opentelemetry/sdk-node": ^0.211.0
+  "@opentelemetry/auto-instrumentations-node": ^0.67.3
+  "@opentelemetry/exporter-trace-otlp-http": ^0.211.0
 
 overrides:
   react: 19.2.7
@@ -69,6 +74,7 @@ allowBuilds:
   esbuild: true
   msgpackr-extract: false
   "@swc/core": true
+  protobufjs: true
 
 minimumReleaseAgeExclude:
   - "@better-auth/api-key@1.6.23"

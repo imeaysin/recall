@@ -2,9 +2,11 @@ import { Module } from "@nestjs/common"
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core"
 import { ZodValidationPipe } from "nestjs-zod"
 import { EventEmitterModule } from "@nestjs/event-emitter"
+import { SentryModule } from "@sentry/nestjs/setup"
 import { WorkspaceAuthModule } from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { isSentryEnabled } from "./observability/enabled"
 import { CacheModule } from "./common/cache/cache.module"
 import { DatabaseModule } from "./common/database/database.module"
 import { JobsModule } from "./common/jobs/jobs.module"
@@ -27,6 +29,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
 
 @Module({
   imports: [
+    ...(isSentryEnabled() ? [SentryModule.forRoot()] : []),
     EventEmitterModule.forRoot(),
     DatabaseModule,
     WorkspaceAuthModule,

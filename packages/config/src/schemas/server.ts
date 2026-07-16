@@ -89,6 +89,12 @@ const rateLimitSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
 })
 
+const observabilitySchema = z.object({
+  SENTRY_DSN: z.string().default(""),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default(""),
+  OTEL_SERVICE_NAME: z.string().min(1).default("api"),
+})
+
 const paymentSchema = z.object({
   PAYMENT_PROVIDER: z.enum(["bkash", "sslcommerz"]).default("bkash"),
   PAYMENT_IS_SANDBOX: z
@@ -114,6 +120,7 @@ export const serverSchema = sharedSchema
   .extend(realtimeSchema.shape)
   .extend(cacheSchema.shape)
   .extend(rateLimitSchema.shape)
+  .extend(observabilitySchema.shape)
   .extend(paymentSchema.shape)
 
 export const serverDefaults = {
@@ -159,6 +166,9 @@ export const serverDefaults = {
   EXPO_ACCESS_TOKEN: "",
   REALTIME_PROVIDER: "memory",
   CACHE_PROVIDER: "memory",
+  SENTRY_DSN: "",
+  OTEL_EXPORTER_OTLP_ENDPOINT: "",
+  OTEL_SERVICE_NAME: "api",
   PAYMENT_PROVIDER: "bkash",
   BKASH_APP_KEY: "",
   BKASH_APP_SECRET: "",

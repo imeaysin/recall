@@ -22,6 +22,7 @@
     "@tanstack/react-pacer": "^0.22.1",
     "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-table": "^8.21.3",
+    "@sentry/react": "catalog:",
     "@workspace/auth": "workspace:*",
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
