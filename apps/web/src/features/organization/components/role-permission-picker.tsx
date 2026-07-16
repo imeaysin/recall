@@ -1,14 +1,14 @@
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Checkbox } from "@workspace/ui-shadcn/components/checkbox"
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldLegend,
+  FieldSeparator,
   FieldSet,
 } from "@workspace/ui-shadcn/components/field"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { Switch } from "@workspace/ui-shadcn/components/switch"
 import type { PermissionState } from "@/features/organization/lib/permission-state"
 import {
   PERMISSION_RESOURCE_LABELS,
@@ -50,26 +50,29 @@ function ResourcePermissionGroup({
   const selectedInGroup = actions.filter((action) =>
     selected.has(action)
   ).length
+  const resourceSwitchId = `role-permission-${resource}-all`
 
   return (
     <FieldSet data-disabled={disabled ? true : undefined}>
-      <div className="flex items-center justify-between gap-3">
-        <FieldLegend variant="label">
-          {PERMISSION_RESOURCE_LABELS[resource]}
-        </FieldLegend>
-        <Button
-          type="button"
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1">
+          <FieldLegend variant="label">
+            {PERMISSION_RESOURCE_LABELS[resource]}
+          </FieldLegend>
+          <FieldDescription>
+            {selectedInGroup} of {actions.length} enabled
+          </FieldDescription>
+        </div>
+        <Switch
+          id={resourceSwitchId}
           size="sm"
-          variant="ghost"
+          checked={allSelected}
           disabled={disabled}
-          onClick={() => onToggleResource(resource)}
-        >
-          {allSelected ? "Clear" : "Select all"}
-        </Button>
+          aria-label={`Enable all ${PERMISSION_RESOURCE_LABELS[resource]} permissions`}
+          onCheckedChange={() => onToggleResource(resource)}
+        />
       </div>
-      <FieldDescription>
-        {selectedInGroup} of {actions.length} selected
-      </FieldDescription>
+
       <FieldGroup className="gap-3">
         {actions.map((action) => {
           const id = `role-permission-${resource}-${action}`
@@ -79,13 +82,18 @@ function ResourcePermissionGroup({
               orientation="horizontal"
               data-disabled={disabled ? true : undefined}
             >
-              <Checkbox
+              <FieldContent>
+                <FieldLabel htmlFor={id}>
+                  {formatActionLabel(action)}
+                </FieldLabel>
+              </FieldContent>
+              <Switch
                 id={id}
+                size="sm"
                 checked={selected.has(action)}
                 disabled={disabled}
                 onCheckedChange={() => onToggleAction(resource, action)}
               />
-              <FieldLabel htmlFor={id}>{formatActionLabel(action)}</FieldLabel>
             </Field>
           )
         })}
@@ -111,7 +119,7 @@ export function RolePermissionPicker({
     <FieldGroup className="gap-5">
       {resources.map(({ resource, actions }, index) => (
         <div key={resource} className="flex flex-col gap-5">
-          {index > 0 ? <Separator /> : null}
+          {index > 0 ? <FieldSeparator /> : null}
           <ResourcePermissionGroup
             resource={resource}
             actions={actions}

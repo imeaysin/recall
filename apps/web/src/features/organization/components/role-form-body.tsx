@@ -65,6 +65,7 @@ export function RoleFormBody({
 }: RoleFormBodyProps) {
   const isEditing = Boolean(editingRole)
   const [isPending, setIsPending] = useState(false)
+  const [permissionsSubmitted, setPermissionsSubmitted] = useState(false)
   const [permissionState, setPermissionState] = useState(() =>
     permissionStateFromRole(editingRole?.permission ?? {})
   )
@@ -76,7 +77,8 @@ export function RoleFormBody({
   const normalizedDraft = roleDraft.trim().toLowerCase()
   const selectedCount = countSelectedPermissions(permissionState)
   const nameError = form.formState.errors.role
-  const permissionsInvalid = selectedCount === 0
+  const permissionsEmpty = selectedCount === 0
+  const showPermissionsError = permissionsSubmitted && permissionsEmpty
 
   function toggleAction(resource: PermissionResource, action: string) {
     setPermissionState((current) => {
@@ -98,9 +100,10 @@ export function RoleFormBody({
   }
 
   async function handleSubmit(values: RoleNameValues) {
+    setPermissionsSubmitted(true)
     const permission = toPermissionPayload(permissionState)
     if (Object.keys(permission).length === 0) {
-      toast.error("Select at least one permission")
+      toast.error("Enable at least one permission")
       return
     }
     setIsPending(true)
@@ -116,8 +119,12 @@ export function RoleFormBody({
   }
 
   return (
-    <form noValidate onSubmit={form.handleSubmit(handleSubmit)}>
-      <DialogHeader>
+    <form
+      noValidate
+      className="flex min-h-0 flex-1 flex-col"
+      onSubmit={form.handleSubmit(handleSubmit)}
+    >
+      <DialogHeader className="shrink-0 border-b p-4 pr-12">
         <DialogTitle>
           {isEditing ? "Edit custom role" : "Create custom role"}
         </DialogTitle>
@@ -127,60 +134,64 @@ export function RoleFormBody({
         </DialogDescription>
       </DialogHeader>
 
-      <FieldGroup className="max-h-[60vh] overflow-y-auto py-4">
-        <Field
-          data-invalid={nameError ? true : undefined}
-          data-disabled={isPending ? true : undefined}
-        >
-          <FieldLabel htmlFor="role-name">Role name</FieldLabel>
-          <Input
-            autoFocus
-            autoComplete="off"
-            disabled={isPending}
-            id="role-name"
-            placeholder="support"
-            aria-invalid={Boolean(nameError)}
-            {...form.register("role")}
-          />
-          <FieldDescription>
-            {normalizedDraft.length >= 2 && !nameError
-              ? `Saved as ${normalizedDraft}`
-              : "Letters, numbers, hyphens, and underscores. Saved in lowercase."}
-          </FieldDescription>
-          <FieldError errors={[nameError]} />
-        </Field>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <FieldGroup className="p-4">
+          <Field
+            data-invalid={nameError ? true : undefined}
+            data-disabled={isPending ? true : undefined}
+          >
+            <FieldLabel htmlFor="role-name">Role name</FieldLabel>
+            <Input
+              autoFocus
+              autoComplete="off"
+              disabled={isPending}
+              id="role-name"
+              placeholder="support"
+              aria-invalid={Boolean(nameError)}
+              {...form.register("role")}
+            />
+            <FieldDescription>
+              {normalizedDraft.length >= 2 && !nameError
+                ? `Saved as ${normalizedDraft}`
+                : "Letters, numbers, hyphens, and underscores. Saved in lowercase."}
+            </FieldDescription>
+            <FieldError errors={[nameError]} />
+          </Field>
 
-        <FieldSet data-invalid={permissionsInvalid ? true : undefined}>
-          <div className="flex items-center justify-between gap-3">
-            <FieldLegend variant="label">Permissions</FieldLegend>
-            <Badge variant={permissionsInvalid ? "outline" : "secondary"}>
-              {selectedCount} selected
-            </Badge>
-          </div>
-          <FieldDescription>
-            Pick at least one action. Members with this role receive only these
-            permissions.
-          </FieldDescription>
-          <RolePermissionPicker
-            disabled={isPending}
-            permissionState={permissionState}
-            onToggleAction={toggleAction}
-            onToggleResource={toggleResource}
-          />
-          {permissionsInvalid ? (
-            <FieldError>Select at least one permission to continue.</FieldError>
-          ) : null}
-        </FieldSet>
-      </FieldGroup>
+          <FieldSet data-invalid={showPermissionsError ? true : undefined}>
+            <div className="flex items-center justify-between gap-3">
+              <FieldLegend variant="label">Permissions</FieldLegend>
+              <Badge variant={permissionsEmpty ? "outline" : "secondary"}>
+                {selectedCount} selected
+              </Badge>
+            </div>
+            <FieldDescription>
+              Enable at least one action. Members with this role receive only
+              these permissions.
+            </FieldDescription>
+            <RolePermissionPicker
+              disabled={isPending}
+              permissionState={permissionState}
+              onToggleAction={toggleAction}
+              onToggleResource={toggleResource}
+            />
+            {showPermissionsError ? (
+              <FieldError>
+                Enable at least one permission to continue.
+              </FieldError>
+            ) : null}
+          </FieldSet>
+        </FieldGroup>
+      </div>
 
-      <DialogFooter>
+      <DialogFooter className="mx-0 mb-0 shrink-0">
         <DialogClose
           disabled={isPending}
           render={<Button type="button" variant="outline" />}
         >
           Cancel
         </DialogClose>
-        <Button disabled={isPending || permissionsInvalid} type="submit">
+        <Button disabled={isPending || permissionsEmpty} type="submit">
           {isPending ? <Spinner data-icon="inline-start" /> : null}
           {isEditing ? "Save changes" : "Create role"}
         </Button>
