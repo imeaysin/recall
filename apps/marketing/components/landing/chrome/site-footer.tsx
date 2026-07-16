@@ -31,7 +31,6 @@ interface SiteFooterProps {
 function FooterLinkItem({ link }: { link: FooterLink }) {
   return (
     <Button
-      asChild
       className="h-auto justify-start p-0 text-sm text-muted-foreground hover:text-foreground"
       variant="ghost"
     >
@@ -53,7 +52,6 @@ function StatusIndicator({
 }) {
   return (
     <Button
-      asChild
       className="inline-flex h-auto items-center gap-2 p-0 no-underline hover:no-underline hover:opacity-80"
       variant="ghost"
     >
