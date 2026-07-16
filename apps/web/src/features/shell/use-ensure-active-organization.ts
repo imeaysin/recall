@@ -1,15 +1,7 @@
 import { useEffect, useRef } from "react"
 import { authClient, useSession } from "@workspace/auth/client"
 import { toast } from "sonner"
-
-function toOrgSlug(seed: string) {
-  const slug = seed
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 48)
-  return slug || "workspace"
-}
+import { toOrgSlug } from "@/features/shell/organization-slug"
 
 /**
  * Notes/uploads require Better Auth `session.activeOrganizationId`.

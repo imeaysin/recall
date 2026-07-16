@@ -3,6 +3,7 @@
 import * as React from "react"
 import { AppSidebar as UiAppSidebar } from "@workspace/ui-shadcn/components/app-sidebar"
 import type { ComponentProps } from "react"
+import { CreateWorkspaceDialog } from "@/features/shell/components/create-workspace-dialog"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 import { Link } from "react-router-dom"
 
@@ -40,21 +41,29 @@ export function AppSidebar(props: AppSidebarProps) {
     onTeamChange,
     onAddTeam,
     userMenuItems,
+    createWorkspaceOpen,
+    setCreateWorkspaceOpen,
   } = useAppShellConfig()
 
   return (
-    <UiAppSidebar
-      activeTeamId={activeTeamId}
-      linkComponent={RouterLink}
-      navMain={navMain}
-      onAddTeam={onAddTeam}
-      onSignOut={onSignOut}
-      onTeamChange={onTeamChange}
-      projects={projects}
-      teams={teams}
-      user={user}
-      userMenuItems={userMenuItems}
-      {...props}
-    />
+    <>
+      <UiAppSidebar
+        activeTeamId={activeTeamId}
+        linkComponent={RouterLink}
+        navMain={navMain}
+        onAddTeam={onAddTeam}
+        onSignOut={onSignOut}
+        onTeamChange={onTeamChange}
+        projects={projects}
+        teams={teams}
+        user={user}
+        userMenuItems={userMenuItems}
+        {...props}
+      />
+      <CreateWorkspaceDialog
+        onOpenChange={setCreateWorkspaceOpen}
+        open={createWorkspaceOpen}
+      />
+    </>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import {
   AudioWaveform,
@@ -49,21 +49,13 @@ function toNavIcon(icon?: LucideIcon) {
   return <Icon />
 }
 
-function toOrgSlug(seed: string) {
-  const slug = seed
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 48)
-  return slug || "workspace"
-}
-
 export function useAppShellConfig() {
   const location = useLocation()
   const pathname = location.pathname
   const { data: session } = useSession()
   const { data: activeOrganization } = authClient.useActiveOrganization()
   const { data: organizations } = authClient.useListOrganizations()
+  const [createWorkspaceOpen, setCreateWorkspaceOpen] = useState(false)
 
   const navMain = useMemo<AppSidebarNavItem[]>(() => {
     return appNavigation.navMain.map((item) => {
@@ -113,30 +105,9 @@ export function useAppShellConfig() {
     }
   }, [])
 
-  const onAddTeam = useCallback(async () => {
-    const seed =
-      session?.user.name?.trim() ||
-      session?.user.email?.split("@")[0] ||
-      "workspace"
-    const name = `${seed}'s Workspace`
-    const slug = `${toOrgSlug(seed)}-${Date.now().toString(36)}`
-
-    const created = await authClient.organization.create({ name, slug })
-    if (created.error) {
-      toast.error(created.error.message ?? "Could not create workspace")
-      return
-    }
-
-    const organizationId = created.data?.id
-    if (!organizationId) return
-
-    const activated = await authClient.organization.setActive({
-      organizationId,
-    })
-    if (activated.error) {
-      toast.error(activated.error.message ?? "Could not activate workspace")
-    }
-  }, [session?.user.email, session?.user.name])
+  const onAddTeam = useCallback(() => {
+    setCreateWorkspaceOpen(true)
+  }, [])
 
   return {
     brandLabel: site.name,
@@ -153,6 +124,8 @@ export function useAppShellConfig() {
     userMenuItems,
     onTeamChange,
     onAddTeam,
+    createWorkspaceOpen,
+    setCreateWorkspaceOpen,
     onSignOut: () => {
       void signOut()
     },
