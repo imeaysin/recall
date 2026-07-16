@@ -2,12 +2,9 @@
 
 import { authClient } from "@workspace/auth/client"
 import { useQueryClient } from "@tanstack/react-query"
-import { Plus } from "lucide-react"
 import { useState, type ComponentProps } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { RoleFormDialog } from "@/features/organization/components/role-form-dialog"
 import { useOrganizationRolePermissions } from "@/features/organization/hooks/use-organization-role-permissions"
 import {
@@ -25,8 +22,7 @@ export type OrganizationRolesProps = {
 }
 
 /**
- * Custom (dynamic) organization role management.
- * Better Auth UI has no role CRUD — only assign/invite with static role labels.
+ * Organization roles: built-in reference list + custom role CRUD.
  */
 export function OrganizationRoles({
   className,
@@ -73,45 +69,34 @@ export function OrganizationRoles({
     await refreshRoles()
   }
 
+  function openCreate() {
+    setEditingRole(null)
+    setRoleFormOpen(true)
+  }
+
   if (!permissions.canListRoles && !permissions.isPending) {
     return null
   }
 
   return (
-    <div className={cn("flex w-full flex-col", className)} {...props}>
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold">Roles</h2>
-        {permissions.canCreateRoles ? (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              setEditingRole(null)
-              setRoleFormOpen(true)
-            }}
-          >
-            <Plus />
-            Create role
-          </Button>
-        ) : null}
-      </div>
-
-      <Card>
-        <CardContent className="flex flex-col gap-6">
-          <BuiltInRolesSection />
-          <CustomRolesSection
-            canDeleteRoles={permissions.canDeleteRoles}
-            canUpdateRoles={permissions.canUpdateRoles}
-            customRoles={customRoles}
-            isPending={isPending}
-            onDelete={setRoleToDelete}
-            onEdit={(role) => {
-              setEditingRole(role)
-              setRoleFormOpen(true)
-            }}
-          />
-        </CardContent>
-      </Card>
+    <div
+      className={cn("flex w-full flex-col gap-4 md:gap-6", className)}
+      {...props}
+    >
+      <BuiltInRolesSection />
+      <CustomRolesSection
+        canCreateRoles={permissions.canCreateRoles}
+        canDeleteRoles={permissions.canDeleteRoles}
+        canUpdateRoles={permissions.canUpdateRoles}
+        customRoles={customRoles}
+        isPending={isPending}
+        onCreate={openCreate}
+        onDelete={setRoleToDelete}
+        onEdit={(role) => {
+          setEditingRole(role)
+          setRoleFormOpen(true)
+        }}
+      />
 
       <RoleFormDialog
         open={roleFormOpen}

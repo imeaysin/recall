@@ -1,108 +1,64 @@
-import { Pencil, Trash2 } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
-import { formatRoleLabel } from "@/features/organization/lib/organization-roles"
+import { CustomRolesTable } from "./custom-roles-table"
 
 type CustomRolesSectionProps = {
+  readonly canCreateRoles: boolean
   readonly canDeleteRoles: boolean
   readonly canUpdateRoles: boolean
   readonly customRoles: readonly OrganizationRole[]
   readonly isPending: boolean
+  readonly onCreate: () => void
   readonly onDelete: (role: OrganizationRole) => void
   readonly onEdit: (role: OrganizationRole) => void
 }
 
-function permissionSummary(permission: Record<string, string[]>) {
-  const parts = Object.entries(permission).flatMap(([resource, actions]) =>
-    actions.map((action) => `${resource}:${action}`)
-  )
-  if (parts.length === 0) return "No permissions"
-  if (parts.length <= 4) return parts.join(", ")
-  return `${parts.slice(0, 4).join(", ")} +${parts.length - 4}`
-}
-
-function CustomRolesTable({
-  canDeleteRoles,
-  canUpdateRoles,
-  customRoles,
-  onDelete,
-  onEdit,
-}: Omit<CustomRolesSectionProps, "isPending">) {
+function CustomRolesEmpty({
+  canCreateRoles,
+  onCreate,
+}: {
+  readonly canCreateRoles: boolean
+  readonly onCreate: () => void
+}) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Role</TableHead>
-          <TableHead>Permissions</TableHead>
-          <TableHead className="w-28 text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {customRoles.map((role) => (
-          <TableRow key={role.id}>
-            <TableCell className="font-medium">
-              {formatRoleLabel(role.role)}
-            </TableCell>
-            <TableCell className="max-w-md text-xs text-muted-foreground">
-              {permissionSummary(role.permission)}
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end gap-1">
-                {canUpdateRoles ? (
-                  <Button
-                    aria-label={`Edit ${role.role}`}
-                    size="icon-sm"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => onEdit(role)}
-                  >
-                    <Pencil />
-                  </Button>
-                ) : null}
-                {canDeleteRoles ? (
-                  <Button
-                    aria-label={`Delete ${role.role}`}
-                    size="icon-sm"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => onDelete(role)}
-                  >
-                    <Trash2 />
-                  </Button>
-                ) : null}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="flex flex-col items-start gap-3 px-4 py-10">
+      <div className="flex flex-col gap-1">
+        <p className="text-sm font-medium">No custom roles yet</p>
+        <p className="max-w-md text-sm text-muted-foreground">
+          Create a role with a tailored permission set, then assign it when you
+          invite or update members.
+        </p>
+      </div>
+      {canCreateRoles ? (
+        <Button size="sm" onClick={onCreate}>
+          <Plus />
+          Create role
+        </Button>
+      ) : null}
+    </div>
   )
 }
 
-function renderCustomRolesContent(props: CustomRolesSectionProps) {
+function renderCustomRolesBody(props: CustomRolesSectionProps) {
   if (props.isPending) {
     return (
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
+      <div className="flex flex-col gap-2 p-4">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
       </div>
     )
   }
   if (props.customRoles.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        No custom roles yet. Create one to grant a tailored permission set.
-      </p>
+      <CustomRolesEmpty
+        canCreateRoles={props.canCreateRoles}
+        onCreate={props.onCreate}
+      />
     )
   }
   return <CustomRolesTable {...props} />
@@ -110,9 +66,30 @@ function renderCustomRolesContent(props: CustomRolesSectionProps) {
 
 export function CustomRolesSection(props: CustomRolesSectionProps) {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium">Custom roles</p>
-      {renderCustomRolesContent(props)}
+    <div className="flex flex-col gap-3">
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h3 className="truncate text-sm font-semibold">Custom roles</h3>
+          <p className="text-xs text-muted-foreground">
+            Stored per organization. Permissions cannot exceed your own access.
+          </p>
+        </div>
+        {props.canCreateRoles && props.customRoles.length > 0 ? (
+          <Button
+            className="shrink-0"
+            size="sm"
+            disabled={props.isPending}
+            onClick={props.onCreate}
+          >
+            <Plus />
+            Create role
+          </Button>
+        ) : null}
+      </div>
+
+      <Card className="overflow-hidden p-0">
+        {renderCustomRolesBody(props)}
+      </Card>
     </div>
   )
 }
