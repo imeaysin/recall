@@ -11,7 +11,7 @@ export interface ProductConfig {
   readonly supportEmail: string
   readonly privacyEmail: string
   readonly analyticsEventName: string
-  readonly logoIcon: "orbit"
+  readonly logoIcon: "webhook"
 }
 
 export const productConfig = {
@@ -26,5 +26,5 @@ export const productConfig = {
   supportEmail: "support@theo.example",
   privacyEmail: "privacy@theo.example",
   analyticsEventName: "theo:analytics",
-  logoIcon: "orbit",
+  logoIcon: "webhook",
 } as const satisfies ProductConfig

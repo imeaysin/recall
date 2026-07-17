@@ -8,11 +8,11 @@ import { Kbd } from "@workspace/ui-shadcn/components/kbd"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { productConfig } from "@workspace/config/public"
-import { Orbit } from "lucide-react"
+import { Webhook } from "lucide-react"
 import type { CSSProperties, ReactNode } from "react"
 
 const productLogoIcons = {
-  orbit: Orbit,
+  webhook: Webhook,
 } as const
 
 type ProductButtonVariant =
@@ -144,18 +144,18 @@ export function Logo({
   return (
     <span
       aria-label={`${productConfig.name} logo`}
-      className={cn("inline-flex items-center gap-2", className)}
+      className={cn("inline-flex items-center gap-1.5", className)}
       style={style}
     >
       <ProductLogoIcon
         aria-hidden="true"
-        className={hideLogoName ? "aspect-square w-full" : "size-8 shrink-0"}
+        className={hideLogoName ? "aspect-square w-full" : "size-6 shrink-0"}
         strokeWidth={2.25}
       />
       {!hideLogoName ? (
         <span
           className={cn(
-            "text-xl font-semibold tracking-tight",
+            "text-lg font-semibold tracking-tight",
             white ? "text-primary-foreground" : "text-foreground"
           )}
         >
