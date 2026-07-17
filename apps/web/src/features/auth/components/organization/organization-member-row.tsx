@@ -13,6 +13,7 @@ import { LogOut, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
+import { Badge } from "@workspace/ui-shadcn/components/badge"
 import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
 import {
   DropdownMenu,
@@ -20,8 +21,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@workspace/ui-shadcn/components/dropdown-menu"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+} from "@workspace/ui-shadcn/components/item"
 import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { UserView } from "@/features/auth/components/user/user-view"
@@ -80,68 +85,65 @@ export function OrganizationMemberRow({
   }
 
   return (
-    <TableRow>
-      <TableCell>
+    <Item role="listitem" variant="outline">
+      <ItemContent className="gap-2">
         <UserView user={member.user} />
-      </TableCell>
-
-      <TableCell>{roleLabel}</TableCell>
-
-      <TableCell>
-        <div className="flex items-center justify-end gap-1">
-          {hasUpdatePermission?.success && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className={cn(
-                  buttonVariants({ size: "icon", variant: "ghost" }),
-                  "size-8"
-                )}
-                disabled={isUpdatingRole}
-                aria-label={organizationLocalization.changeMemberRole}
-              >
-                {isUpdatingRole ? <Spinner /> : <Pencil />}
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end">
-                {assignableRoles.map(([role, label]) => (
-                  <DropdownMenuItem
-                    key={role}
-                    disabled={member.role === role}
-                    onClick={() =>
-                      updateMemberRole({ memberId: member.id, role })
-                    }
-                  >
-                    {label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-
-          {isCurrentUser ? (
-            <Button
-              size="icon"
-              variant="outline"
-              className="size-8 text-destructive"
-              aria-label={organizationLocalization.leaveOrganization}
-              onClick={() => setLeaveOpen(true)}
+        <Badge variant="secondary" className="w-fit">
+          {roleLabel}
+        </Badge>
+      </ItemContent>
+      <ItemActions>
+        {hasUpdatePermission?.success ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={cn(
+                buttonVariants({ size: "icon-sm", variant: "outline" })
+              )}
+              disabled={isUpdatingRole}
+              aria-label={organizationLocalization.changeMemberRole}
             >
-              <LogOut />
-            </Button>
-          ) : (
-            hasDeletePermission?.success && (
-              <Button
-                size="icon"
-                variant="outline"
-                className="size-8 text-destructive"
-                aria-label={organizationLocalization.removeMember}
-                onClick={() => setRemoveOpen(true)}
-              >
-                <Trash2 />
-              </Button>
-            )
-          )}
-        </div>
+              {isUpdatingRole ? <Spinner /> : <Pencil />}
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              {assignableRoles.map(([role, label]) => (
+                <DropdownMenuItem
+                  key={role}
+                  disabled={member.role === role}
+                  onClick={() =>
+                    updateMemberRole({ memberId: member.id, role })
+                  }
+                >
+                  {label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
+
+        {isCurrentUser ? (
+          <Button
+            size="icon-sm"
+            variant="outline"
+            className="text-destructive"
+            aria-label={organizationLocalization.leaveOrganization}
+            onClick={() => setLeaveOpen(true)}
+          >
+            <LogOut />
+          </Button>
+        ) : null}
+
+        {!isCurrentUser && hasDeletePermission?.success ? (
+          <Button
+            size="icon-sm"
+            variant="outline"
+            className="text-destructive"
+            aria-label={organizationLocalization.removeMember}
+            onClick={() => setRemoveOpen(true)}
+          >
+            <Trash2 />
+          </Button>
+        ) : null}
 
         {isCurrentUser && organization ? (
           <LeaveOrganizationDialog
@@ -149,16 +151,16 @@ export function OrganizationMemberRow({
             onOpenChange={setLeaveOpen}
             organization={organization}
           />
-        ) : (
-          hasDeletePermission?.success && (
-            <RemoveMemberDialog
-              open={removeOpen}
-              onOpenChange={setRemoveOpen}
-              member={member}
-            />
-          )
-        )}
-      </TableCell>
-    </TableRow>
+        ) : null}
+
+        {!isCurrentUser && hasDeletePermission?.success ? (
+          <RemoveMemberDialog
+            open={removeOpen}
+            onOpenChange={setRemoveOpen}
+            member={member}
+          />
+        ) : null}
+      </ItemActions>
+    </Item>
   )
 }

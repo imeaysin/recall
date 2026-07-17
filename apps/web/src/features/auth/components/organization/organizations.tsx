@@ -9,39 +9,60 @@ import {
 import { useState } from "react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import {
+  Item,
+  ItemContent,
+  ItemGroup,
+} from "@workspace/ui-shadcn/components/item"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { SectionHeader } from "@/components/page-header"
 import { CreateOrganizationDialog } from "@/features/auth/components/organization/create-organization-dialog"
 import { OrganizationRow } from "@/features/auth/components/organization/organization-row"
-import { OrganizationViewSkeleton } from "@/features/auth/components/organization/organization-view-skeleton"
 import { OrganizationsEmpty } from "@/features/auth/components/organization/organizations-empty"
 
 export type OrganizationsProps = {
   className?: string
+  /** When true, omit the section header (page already provides PageHeader). */
+  hideHeader?: boolean
+  createOpen?: boolean
+  onCreateOpenChange?: (open: boolean) => void
 }
 
 /**
  * Lists organizations the user belongs to (via `useListOrganizations`): loading skeleton,
- * empty state with create, or a card of rows with a Manage control per organization.
- * Owns `CreateOrganizationDialog` open state and the create actions.
+ * empty state with create, or Item rows with a Manage control per organization.
  */
-export function Organizations({ className }: OrganizationsProps) {
+export function Organizations({
+  className,
+  hideHeader,
+  createOpen: createOpenProp,
+  onCreateOpenChange,
+}: OrganizationsProps) {
   const { authClient } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const [createOpen, setCreateOpen] = useState(false)
+  const [uncontrolledCreateOpen, setUncontrolledCreateOpen] = useState(false)
+  const createOpen = createOpenProp ?? uncontrolledCreateOpen
+  const setCreateOpen = onCreateOpenChange ?? setUncontrolledCreateOpen
 
   const { data: organizations, isPending: organizationsPending } =
     useListOrganizations(authClient as OrganizationAuthClient)
 
-  function renderCardContent() {
+  function renderContent() {
     if (organizationsPending) {
       return (
-        <div className="p-4">
-          <OrganizationViewSkeleton />
-        </div>
+        <ItemGroup>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <Item key={index} variant="outline">
+              <ItemContent>
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-28" />
+              </ItemContent>
+            </Item>
+          ))}
+        </ItemGroup>
       )
     }
 
@@ -49,39 +70,35 @@ export function Organizations({ className }: OrganizationsProps) {
       return <OrganizationsEmpty onCreatePress={() => setCreateOpen(true)} />
     }
 
-    return organizations.map((organization, index) => (
-      <div key={organization.id}>
-        {index > 0 && <Separator />}
-
-        <div className="p-4">
-          <OrganizationRow organization={organization} />
-        </div>
-      </div>
-    ))
+    return (
+      <ItemGroup>
+        {organizations.map((organization) => (
+          <OrganizationRow key={organization.id} organization={organization} />
+        ))}
+      </ItemGroup>
+    )
   }
 
   return (
     <>
       <div className={className}>
         <div className="flex flex-col gap-3">
-          <div className="flex items-end justify-between gap-3">
-            <h2 className="truncate text-sm font-semibold">
-              {organizationLocalization.organizations}
-            </h2>
+          {!hideHeader ? (
+            <SectionHeader
+              actions={
+                <Button
+                  size="sm"
+                  disabled={organizationsPending}
+                  onClick={() => setCreateOpen(true)}
+                >
+                  {organizationLocalization.createOrganization}
+                </Button>
+              }
+              title={organizationLocalization.organizations}
+            />
+          ) : null}
 
-            <Button
-              className="shrink-0"
-              size="sm"
-              disabled={organizationsPending}
-              onClick={() => setCreateOpen(true)}
-            >
-              {organizationLocalization.createOrganization}
-            </Button>
-          </div>
-
-          <Card className="p-0">
-            <CardContent className="p-0">{renderCardContent()}</CardContent>
-          </Card>
+          {renderContent()}
         </div>
       </div>
 

@@ -1,31 +1,25 @@
 "use client"
 
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+} from "@workspace/ui-shadcn/components/item"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 
 /**
  * Placeholder row matching `OrganizationInvitationRow` while invitations load.
  */
 export function OrganizationInvitationRowSkeleton() {
   return (
-    <TableRow>
-      <TableCell>
+    <Item variant="outline">
+      <ItemContent>
         <Skeleton className="h-4 w-48 rounded-md" />
-      </TableCell>
-
-      <TableCell>
-        <Skeleton className="h-4 w-36 rounded-md" />
-      </TableCell>
-
-      <TableCell>
-        <Skeleton className="h-4 w-16 rounded-md" />
-      </TableCell>
-
-      <TableCell>
-        <Skeleton className="h-4 w-14 rounded-full" />
-      </TableCell>
-
-      <TableCell />
-    </TableRow>
+        <Skeleton className="h-3 w-36 rounded-md" />
+      </ItemContent>
+      <ItemActions>
+        <Skeleton className="size-8 rounded-md" />
+      </ItemActions>
+    </Item>
   )
 }

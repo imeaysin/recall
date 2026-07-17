@@ -1,10 +1,23 @@
-import { Plus } from "lucide-react"
+import { Plus, Shield } from "lucide-react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card } from "@workspace/ui-shadcn/components/card"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@workspace/ui-shadcn/components/empty"
+import {
+  Item,
+  ItemContent,
+  ItemGroup,
+} from "@workspace/ui-shadcn/components/item"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
-import { CustomRolesTable } from "@/features/auth/components/organization/custom-roles-table"
+import { SectionHeader } from "@/components/page-header"
+import { CustomRolesList } from "@/features/auth/components/organization/custom-roles-list"
 
 type CustomRolesSectionProps = {
   readonly canCreateRoles: boolean
@@ -25,32 +38,42 @@ function CustomRolesEmpty({
   readonly onCreate: () => void
 }) {
   return (
-    <div className="flex flex-col items-start gap-3 px-4 py-10">
-      <div className="flex flex-col gap-1">
-        <p className="text-sm font-medium">No custom roles yet</p>
-        <p className="max-w-md text-sm text-muted-foreground">
+    <Empty className="border border-dashed">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Shield />
+        </EmptyMedia>
+        <EmptyTitle>No custom roles yet</EmptyTitle>
+        <EmptyDescription>
           Create a role with a tailored permission set, then assign it when you
           invite or update members.
-        </p>
-      </div>
+        </EmptyDescription>
+      </EmptyHeader>
       {canCreateRoles ? (
-        <Button size="sm" onClick={onCreate}>
-          <Plus />
-          Create role
-        </Button>
+        <EmptyContent>
+          <Button size="sm" onClick={onCreate}>
+            <Plus data-icon="inline-start" />
+            Create role
+          </Button>
+        </EmptyContent>
       ) : null}
-    </div>
+    </Empty>
   )
 }
 
 function renderCustomRolesBody(props: CustomRolesSectionProps) {
   if (props.isPending) {
     return (
-      <div className="flex flex-col gap-2 p-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-      </div>
+      <ItemGroup>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Item key={index} variant="outline">
+            <ItemContent>
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
+            </ItemContent>
+          </Item>
+        ))}
+      </ItemGroup>
     )
   }
   if (props.customRoles.length === 0) {
@@ -61,35 +84,30 @@ function renderCustomRolesBody(props: CustomRolesSectionProps) {
       />
     )
   }
-  return <CustomRolesTable {...props} />
+  return <CustomRolesList {...props} />
 }
 
 export function CustomRolesSection(props: CustomRolesSectionProps) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-end justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
-          <h3 className="truncate text-sm font-semibold">Custom roles</h3>
-          <p className="text-xs text-muted-foreground">
-            Stored per organization. Permissions cannot exceed your own access.
-          </p>
-        </div>
-        {props.canCreateRoles && props.customRoles.length > 0 ? (
-          <Button
-            className="shrink-0"
-            size="sm"
-            disabled={props.isPending}
-            onClick={props.onCreate}
-          >
-            <Plus />
-            Create role
-          </Button>
-        ) : null}
-      </div>
+      <SectionHeader
+        actions={
+          props.canCreateRoles && props.customRoles.length > 0 ? (
+            <Button
+              size="sm"
+              disabled={props.isPending}
+              onClick={props.onCreate}
+            >
+              <Plus data-icon="inline-start" />
+              Create role
+            </Button>
+          ) : null
+        }
+        description="Stored per organization. Permissions cannot exceed your own access."
+        title="Custom roles"
+      />
 
-      <Card className="overflow-hidden p-0">
-        {renderCustomRolesBody(props)}
-      </Card>
+      {renderCustomRolesBody(props)}
     </div>
   )
 }

@@ -1,7 +1,11 @@
 "use client"
 
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+} from "@workspace/ui-shadcn/components/item"
 import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { TableCell, TableRow } from "@workspace/ui-shadcn/components/table"
 import { UserView } from "@/features/auth/components/user/user-view"
 
 /**
@@ -9,18 +13,14 @@ import { UserView } from "@/features/auth/components/user/user-view"
  */
 export function OrganizationMemberRowSkeleton() {
   return (
-    <TableRow>
-      <TableCell>
+    <Item variant="outline">
+      <ItemContent className="gap-2">
         <UserView isPending />
-      </TableCell>
-
-      <TableCell>
         <Skeleton className="h-4 w-18 rounded-md" />
-      </TableCell>
-
-      <TableCell className="flex justify-end">
+      </ItemContent>
+      <ItemActions>
         <Skeleton className="size-8 rounded-md" />
-      </TableCell>
-    </TableRow>
+      </ItemActions>
+    </Item>
   )
 }

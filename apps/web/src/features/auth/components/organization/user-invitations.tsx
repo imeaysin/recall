@@ -7,11 +7,16 @@ import {
   useListUserInvitations,
 } from "@better-auth-ui/react"
 
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import {
+  Item,
+  ItemContent,
+  ItemGroup,
+  ItemMedia,
+} from "@workspace/ui-shadcn/components/item"
+import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { SectionHeader } from "@/components/page-header"
 import { UserInvitationRow } from "@/features/auth/components/organization/user-invitation-row"
-import { UserInvitationRowSkeleton } from "@/features/auth/components/organization/user-invitation-row-skeleton"
 import { UserInvitationsEmpty } from "@/features/auth/components/organization/user-invitations-empty"
 
 export type UserInvitationsProps = {
@@ -19,8 +24,7 @@ export type UserInvitationsProps = {
 }
 
 /**
- * Organization invitations for the signed-in user. Always renders the section
- * card; uses `UserInvitationsEmpty` when there are no pending invitations.
+ * Organization invitations for the signed-in user.
  */
 export function UserInvitations({ className }: UserInvitationsProps) {
   const { authClient } = useAuth()
@@ -31,12 +35,22 @@ export function UserInvitations({ className }: UserInvitationsProps) {
     authClient as OrganizationAuthClient
   )
 
-  function renderCardContent() {
+  function renderContent() {
     if (isPending) {
       return (
-        <div className="p-4">
-          <UserInvitationRowSkeleton />
-        </div>
+        <ItemGroup>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <Item key={index} variant="outline">
+              <ItemMedia>
+                <Skeleton className="size-4 rounded-sm" />
+              </ItemMedia>
+              <ItemContent>
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-28" />
+              </ItemContent>
+            </Item>
+          ))}
+        </ItemGroup>
       )
     }
 
@@ -44,27 +58,20 @@ export function UserInvitations({ className }: UserInvitationsProps) {
       return <UserInvitationsEmpty />
     }
 
-    return invitations.map((invitation, index) => (
-      <div key={invitation.id}>
-        {index > 0 && <Separator />}
-
-        <div className="p-4">
-          <UserInvitationRow invitation={invitation} />
-        </div>
-      </div>
-    ))
+    return (
+      <ItemGroup>
+        {invitations.map((invitation) => (
+          <UserInvitationRow key={invitation.id} invitation={invitation} />
+        ))}
+      </ItemGroup>
+    )
   }
 
   return (
     <div className={className}>
       <div className="flex flex-col gap-3">
-        <h2 className="truncate text-sm font-semibold">
-          {organizationLocalization.invitations}
-        </h2>
-
-        <Card className="p-0">
-          <CardContent className="p-0">{renderCardContent()}</CardContent>
-        </Card>
+        <SectionHeader title={organizationLocalization.invitations} />
+        {renderContent()}
       </div>
     </div>
   )

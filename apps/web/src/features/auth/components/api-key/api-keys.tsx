@@ -10,9 +10,10 @@ import { useState } from "react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
 import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { ItemGroup, ItemSeparator } from "@workspace/ui-shadcn/components/item"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { SectionHeader } from "@/components/page-header"
 import { ApiKey } from "@/features/auth/components/api-key/api-key"
 import { ApiKeySkeleton } from "@/features/auth/components/api-key/api-key-skeleton"
 import { ApiKeysEmpty } from "@/features/auth/components/api-key/api-keys-empty"
@@ -51,64 +52,68 @@ export function ApiKeys({
   )
 
   const isPending = isPendingProp || isListPending
-
   const [createOpen, setCreateOpen] = useState(false)
+  const apiKeys = listData?.apiKeys ?? []
 
-  function renderListContent() {
-    if (isPending) return <ApiKeySkeleton />
-
-    if (!listData?.apiKeys.length) {
+  function renderCardContent() {
+    if (isPending) {
       return (
-        <ApiKeysEmpty
-          onCreatePress={() => setCreateOpen(true)}
-          hideCreate={hideCreate}
-        />
+        <ItemGroup className="gap-0">
+          <ApiKeySkeleton />
+          <ItemSeparator />
+          <ApiKeySkeleton />
+        </ItemGroup>
       )
     }
 
-    return listData.apiKeys.map((key, index) => (
-      <div key={key.id}>
-        {index > 0 && <Separator />}
+    if (apiKeys.length === 0) {
+      return <ApiKeysEmpty />
+    }
 
-        <ApiKey
-          apiKey={key}
-          hideDelete={hideDelete}
-          organizationId={organizationId}
-        />
-      </div>
-    ))
+    return (
+      <ItemGroup className="gap-0">
+        {apiKeys.map((key, index) => (
+          <div key={key.id}>
+            {index > 0 ? <ItemSeparator /> : null}
+            <ApiKey
+              apiKey={key}
+              hideDelete={hideDelete}
+              organizationId={organizationId}
+            />
+          </div>
+        ))}
+      </ItemGroup>
+    )
   }
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      <div className="flex items-end justify-between gap-3">
-        <h2 className="truncate text-sm font-semibold">
-          {apiKeyLocalization.apiKeys}
-        </h2>
+      <SectionHeader
+        actions={
+          !hideCreate ? (
+            <Button
+              size="sm"
+              disabled={isPending}
+              onClick={() => setCreateOpen(true)}
+            >
+              {apiKeyLocalization.createApiKey}
+            </Button>
+          ) : null
+        }
+        title={apiKeyLocalization.apiKeys}
+      />
 
-        {!hideCreate && (
-          <Button
-            className="shrink-0"
-            size="sm"
-            disabled={isPending}
-            onClick={() => setCreateOpen(true)}
-          >
-            {apiKeyLocalization.createApiKey}
-          </Button>
-        )}
-      </div>
-
-      <Card className="p-0">
-        <CardContent className="p-0">{renderListContent()}</CardContent>
+      <Card>
+        <CardContent>{renderCardContent()}</CardContent>
       </Card>
 
-      {!hideCreate && (
+      {!hideCreate ? (
         <CreateApiKeyDialog
           open={createOpen}
           onOpenChange={setCreateOpen}
           organizationId={organizationId}
         />
-      )}
+      ) : null}
     </div>
   )
 }
