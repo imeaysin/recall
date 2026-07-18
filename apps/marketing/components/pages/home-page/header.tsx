@@ -36,7 +36,7 @@ const HERO_MODE_COLORS = {
   screenshot: "text-violet-600",
 } as const
 
-const TITLE_LEADING = "leading-[2.25rem] md:leading-[3.5rem]"
+const TITLE_LEADING = "leading-9 md:leading-[3.5rem]"
 
 const trackHomepageEvent = (
   eventName: string,
@@ -60,7 +60,11 @@ const HeroTitle = ({ text, animate }: { text: string; animate: boolean }) => {
           <Fragment key={`${word}:${wordCounts[word]}`}>
             {" "}
             <span
-              className={clsx("inline-block whitespace-nowrap", TITLE_LEADING)}
+              className={clsx(
+                "inline-block",
+                TITLE_LEADING,
+                "md:whitespace-nowrap"
+              )}
             >
               {animate
                 ? Array.from(word).map((char) => {
@@ -151,7 +155,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
         })
       }
       size="lg"
-      className="flex max-w-fit items-center justify-center font-medium"
+      className="flex w-full items-center justify-center font-medium md:w-auto md:max-w-fit"
     >
       {getPlatformIcon(displayPlatform)}
       {getDownloadButtonText(displayPlatform, false, isIntel)}
@@ -172,12 +176,12 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
   )
 
   return (
-    <div className="mx-auto mt-[90px] mb-[60px] w-full max-w-[1920px] overflow-x-hidden sm:mb-[100px] md:mt-[140px] md:mb-[160px] md:overflow-visible xl:min-h-[700px]">
-      <div className="relative z-10 mb-0 flex w-full flex-col justify-center px-5 lg:justify-start xl:flex-row">
-        <div className="mx-auto w-full max-w-2xl xl:ml-[100px] xl:max-w-[530px] 2xl:mt-12 2xl:ml-[150px]">
-          <div className="flex w-full max-w-[650px] flex-col text-center md:text-left">
+    <div className="mx-auto mt-[90px] mb-16 w-full max-w-[1920px] overflow-x-clip sm:mb-[100px] md:mt-[140px] md:mb-[160px] xl:min-h-[700px]">
+      <div className="relative z-10 flex w-full min-w-0 flex-col px-5 xl:flex-row xl:items-start">
+        <div className="mx-auto w-full max-w-2xl min-w-0 xl:ml-[100px] xl:max-w-[530px] 2xl:mt-12 2xl:ml-[150px]">
+          <div className="flex w-full flex-col text-center md:text-left">
             <div className="mb-5 flex justify-center md:justify-start">
-              <div className="inline-flex gap-1 rounded-full border border-border bg-muted p-1">
+              <div className="inline-flex max-w-full flex-wrap justify-center gap-1 rounded-full border border-border bg-muted p-1">
                 {heroModes.map((mode, index) => {
                   const isActive = index === activeModeIndex
                   const Icon = HERO_MODE_ICONS[mode.id]
@@ -190,7 +194,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
                         setActiveModeIndex(index)
                         setHasCycled(true)
                       }}
-                      className="relative flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium"
+                      className="relative flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm font-medium sm:px-3"
                     >
                       {isActive ? (
                         <motion.span
@@ -205,7 +209,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
                       ) : null}
                       <Icon
                         className={clsx(
-                          "relative z-1 size-3.5 transition-colors",
+                          "relative z-[1] size-3.5 shrink-0 transition-colors",
                           isActive
                             ? HERO_MODE_COLORS[mode.id]
                             : "text-muted-foreground"
@@ -213,12 +217,11 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
                       />
                       <span
                         className={clsx(
-                          "relative z-1 whitespace-nowrap transition-colors",
+                          "relative z-[1] whitespace-nowrap transition-colors",
                           isActive ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
                         {mode.label}
-                        <span className="hidden sm:inline"> Mode</span>
                       </span>
                     </button>
                   )
@@ -246,7 +249,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
               </AnimatePresence>
             </div>
 
-            <h1 className="relative z-10 mb-6 flex h-18 flex-col justify-center text-[2.25rem] leading-9 font-medium text-foreground md:h-28 md:text-[3.75rem] md:leading-14">
+            <h1 className="relative z-10 mb-4 min-h-[4.5rem] text-[2rem] font-medium text-balance text-foreground sm:mb-6 sm:text-[2.25rem] md:min-h-[7rem] md:text-[3.75rem] md:leading-[3.5rem]">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={activeMode?.id ?? activeModeIndex}
@@ -266,7 +269,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
               </AnimatePresence>
             </h1>
 
-            <p className="mx-auto mb-4 max-w-3xl text-lg leading-7 text-muted-foreground md:mx-0">
+            <p className="mx-auto mb-6 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg md:mx-0">
               {headerContent.description}
             </p>
           </div>
@@ -276,26 +279,24 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
             {upgradeButton}
           </div>
 
-          <div className="mb-5 flex flex-col gap-3 md:hidden">
+          <div className="mb-5 flex w-full flex-col items-stretch gap-3 md:hidden">
             {downloadButton}
-            <div className="mt-1 flex flex-col items-center gap-2">
-              {upgradeButton}
-              <span className="text-center text-xs text-muted-foreground">
-                {productConfig.name} Pro unlocks unlimited cloud sharing, AI
-                features &amp; team workspaces
-              </span>
-            </div>
+            {upgradeButton}
+            <p className="px-2 text-center text-xs text-muted-foreground">
+              {productConfig.name} Pro unlocks unlimited cloud sharing, AI
+              features &amp; team workspaces
+            </p>
           </div>
 
-          <div className="mb-3 flex justify-center md:justify-start">
+          <div className="mb-3 flex justify-center px-1 md:justify-start">
             <Link
               href="/migrate"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="group inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:justify-start md:text-left"
             >
-              Coming from another tool? Bring your library with you
+              <span>Coming from another tool? Bring your library with you</span>
               <FontAwesomeIcon
                 icon={faArrowRight}
-                className="size-3 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                className="size-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
               />
             </Link>
           </div>
@@ -324,7 +325,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
             </Link>
           </div>
 
-          <div className="mt-14">
+          <div className="mt-10 min-w-0 md:mt-14">
             <p className="mb-4 text-center text-sm text-muted-foreground italic md:text-left">
               {homeContent.pricing.lovedBy}
             </p>
@@ -332,33 +333,27 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
           </div>
         </div>
 
-        <div className="relative top-[-22%] w-full drop-shadow-2xl lg:right-[-400px] xl:absolute xl:max-w-[1000px] 2xl:right-[-300px] 2xl:max-w-[1200px]">
-          <motion.div
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => setVideoToggled(true)}
-            role="button"
-            tabIndex={0}
+        <div className="relative mx-auto mt-10 w-full max-w-3xl min-w-0 drop-shadow-2xl xl:absolute xl:top-0 xl:right-0 xl:mt-0 xl:max-w-[55%] 2xl:max-w-[60%]">
+          <button
+            type="button"
             aria-label={`Play ${productConfig.name} product demo`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") setVideoToggled(true)
-            }}
-            className="xs:top-[180px] relative inset-x-0 top-[35vw] z-10 mx-auto flex size-[100px] cursor-pointer items-center justify-center rounded-full bg-blue-500 shadow-[0px_60px_40px_3px_rgba(0,0,0,0.4)] sm:top-[35vw] md:size-[150px] xl:top-[350px] xl:left-[-120px] 2xl:top-[400px]"
+            onClick={() => setVideoToggled(true)}
+            className="absolute top-1/2 left-1/2 z-10 flex size-20 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-500 shadow-[0px_40px_30px_3px_rgba(0,0,0,0.35)] transition-transform hover:scale-105 active:scale-95 sm:size-[100px] md:size-[150px] xl:left-[40%]"
           >
             <FontAwesomeIcon
               icon={faPlay}
-              className="size-8 text-white md:size-12"
+              className="size-7 text-white sm:size-8 md:size-12"
             />
-          </motion.div>
+          </button>
           <Image
             src="/illustrations/app.webp"
-            width={1000}
-            height={1000}
+            width={1200}
+            height={900}
             quality={75}
             priority
-            sizes="(min-width: 1536px) 1200px, (min-width: 1280px) 1000px, 100vw"
+            sizes="(min-width: 1536px) 60vw, (min-width: 1280px) 55vw, 100vw"
             alt={`${productConfig.name} product`}
-            className="relative inset-0 size-full rounded-xl object-cover opacity-70"
+            className="relative h-auto w-full rounded-xl object-cover opacity-90"
           />
         </div>
       </div>

@@ -73,7 +73,7 @@ const UpgradeToPro = ({
           rive.play("items-coming-out")
         }
       }}
-      className="relative flex w-full max-w-[220px] cursor-pointer items-center justify-evenly gap-3 overflow-visible rounded-full border border-blue-800 bg-blue-600 text-white shadow-[0_1.50px_0_0_rgba(255,255,255,0.20)_inset] hover:bg-blue-700"
+      className="relative flex w-full max-w-none cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full border border-blue-800 bg-blue-600 px-6 text-white shadow-[0_1.50px_0_0_rgba(255,255,255,0.20)_inset] hover:bg-blue-700 md:max-w-[220px] md:justify-evenly md:overflow-visible"
       onMouseLeave={() => {
         const rive = riveRef.current
         if (rive) {
@@ -85,7 +85,7 @@ const UpgradeToPro = ({
       variant="blue"
     >
       {shouldLoad ? <ProRiveArt onReady={handleReady} /> : null}
-      <p className="relative left-5 font-medium text-white">{label}</p>
+      <p className="relative font-medium text-white md:left-5">{label}</p>
     </Button>
   )
 }
