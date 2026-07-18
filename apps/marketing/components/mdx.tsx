@@ -80,13 +80,13 @@ interface WarningProps {
 
 function Warning(props: WarningProps) {
   return (
-    <div className="not-prose mb-8 rounded-lg border-2 border-destructive bg-destructive px-4 py-3 text-sm dark:border-destructive dark:bg-destructive">
-      <div className="mb-2 flex items-center gap-2 font-medium text-destructive dark:text-destructive">
+    <div className="mb-8 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
+      <div className="mb-2 flex items-center gap-2 font-medium text-destructive">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          className="h-5 w-5"
+          className="size-5 shrink-0"
         >
           <path
             fillRule="evenodd"
@@ -96,7 +96,7 @@ function Warning(props: WarningProps) {
         </svg>
         {props.title || "Warning"}
       </div>
-      <div className="text-destructive dark:text-destructive [&_a]:underline [&_code]:rounded [&_code]:bg-destructive [&_code]:px-1 [&_code]:dark:bg-destructive [&_p]:m-0 [&_strong]:font-medium [&_ul]:m-0 [&_ul]:mt-2">
+      <div className="text-muted-foreground [&_a]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_p]:m-0 [&_strong]:font-medium [&_ul]:m-0 [&_ul]:mt-2">
         {props.children}
       </div>
     </div>

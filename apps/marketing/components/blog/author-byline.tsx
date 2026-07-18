@@ -14,26 +14,27 @@ export function AuthorByline({ authors }: AuthorBylineProps) {
   }
 
   return (
-    <div className="mt-16 border-t border-border pt-8">
-      <div className="flex flex-wrap gap-1 sm:gap-6">
-        {authorList.map((author, _index) => (
+    <div className="mt-12 border-t border-border pt-8">
+      <p className="mb-4 text-sm font-medium text-foreground">Written by</p>
+      <div className="flex flex-wrap gap-6">
+        {authorList.map((author) => (
           <div key={author.name} className="flex items-center gap-3">
             <Image
               src={author.image}
               alt={author.name}
-              width={48}
-              height={48}
-              className="h-10 w-10 rounded-full object-cover"
+              width={40}
+              height={40}
+              className="size-10 rounded-full object-cover"
             />
             <div>
-              <div className="font-medium text-muted-foreground">
+              <div className="text-sm font-medium text-foreground">
                 {author.name}
               </div>
               <Link
                 href={`https://x.com/${author.handle}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-primary transition-colors hover:text-primary"
+                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 @{author.handle}
               </Link>

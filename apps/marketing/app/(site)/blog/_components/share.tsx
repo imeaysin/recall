@@ -17,18 +17,18 @@ export function Share({ post, url }: ShareProps) {
   const [copied, setCopied] = useState(false)
 
   return (
-    <div className="mt-6 rounded-xl bg-muted px-3 py-6 text-center">
-      <h3 className="mt-0 mb-2 text-lg font-medium">Share this post</h3>
-      <div className="flex justify-center gap-4">
+    <div className="mt-12 border-t border-border pt-8">
+      <p className="mb-4 text-sm font-medium text-foreground">Share</p>
+      <div className="flex flex-wrap gap-2">
         <a
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
             post.metadata.title
           )}&url=${encodeURIComponent(url)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-lg text-muted-foreground hover:text-primary hover:underline"
+          className="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
-          Twitter
+          X
         </a>
         <a
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
@@ -36,20 +36,21 @@ export function Share({ post, url }: ShareProps) {
           )}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-lg text-muted-foreground hover:text-primary hover:underline"
+          className="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           LinkedIn
         </a>
         <button
+          type="button"
           onClick={() => {
-            navigator.clipboard.writeText(url)
+            void navigator.clipboard.writeText(url)
             toast.success("Link copied to clipboard")
             setCopied(true)
-            setTimeout(() => setCopied(false), 2000)
+            window.setTimeout(() => setCopied(false), 2000)
           }}
-          className="text-lg text-muted-foreground underline hover:text-muted-foreground"
+          className="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
-          {copied ? "Link copied" : "Copy Link"}
+          {copied ? "Copied" : "Copy link"}
         </button>
       </div>
     </div>

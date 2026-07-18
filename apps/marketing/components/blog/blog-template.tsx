@@ -145,19 +145,13 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
         </div>
       </header>
 
-      <div className="mb-12 rounded-xl border border-primary bg-primary p-8 shadow-md">
-        <h2 className="relative mb-4 inline-block text-2xl font-medium text-foreground">
-          TL;DR
-          <span className="absolute -bottom-1 left-0 h-1 w-16 rounded-full bg-primary"></span>
-        </h2>
-        <p className="mt-6 text-xl text-muted-foreground">{content.heroTLDR}</p>
-        <div className="mt-6 inline-flex">
-          <Button
-            href={content.cta.buttonLink}
-            size="lg"
-            variant="blue"
-            className="px-6 py-3 shadow-lg"
-          >
+      <div className="mb-12 rounded-xl border border-border bg-muted p-6 md:p-8">
+        <h2 className="mb-3 text-xl font-medium text-foreground">TL;DR</h2>
+        <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+          {content.heroTLDR}
+        </p>
+        <div className="mt-6">
+          <Button href={content.cta.buttonLink} size="lg" variant="blue">
             {content.cta.buttonText}
           </Button>
         </div>
