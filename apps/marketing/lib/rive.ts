@@ -2,10 +2,10 @@
 
 import { RuntimeLoader } from "@rive-app/react-canvas"
 
-// Self-host the Rive WASM. By default @rive-app/canvas fetches its runtime from
-// unpkg.com on first use, which adds a third-party origin (extra DNS/TLS) to the
-// critical path. The file under /public/rive must stay in sync with the
-// @rive-app/canvas version that @rive-app/react-canvas resolves to.
-RuntimeLoader.setWasmUrl("/rive/rive.wasm")
+// Serve WASM from the installed package (always version-matched). Turbopack emits
+// a static asset URL via new URL(..., import.meta.url).
+RuntimeLoader.setWasmUrl(
+  new URL("@rive-app/canvas/rive.wasm", import.meta.url).href
+)
 
 export * from "@rive-app/react-canvas"

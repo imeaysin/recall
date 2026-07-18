@@ -373,6 +373,9 @@ importers:
       '@number-flow/react':
         specifier: ^0.5.9
         version: 0.5.14(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rive-app/canvas':
+        specifier: 2.38.5
+        version: 2.38.5
       '@rive-app/react-canvas':
         specifier: ^4.18.7
         version: 4.29.5(react@19.2.7)
