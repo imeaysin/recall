@@ -209,7 +209,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
                       ) : null}
                       <Icon
                         className={clsx(
-                          "relative z-[1] size-3.5 shrink-0 transition-colors",
+                          "relative z-1 size-3.5 shrink-0 transition-colors",
                           isActive
                             ? HERO_MODE_COLORS[mode.id]
                             : "text-muted-foreground"
@@ -217,7 +217,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
                       />
                       <span
                         className={clsx(
-                          "relative z-[1] whitespace-nowrap transition-colors",
+                          "relative z-1 whitespace-nowrap transition-colors",
                           isActive ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
@@ -249,7 +249,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
               </AnimatePresence>
             </div>
 
-            <h1 className="relative z-10 mb-4 min-h-[4.5rem] text-[2rem] font-medium text-balance text-foreground sm:mb-6 sm:text-[2.25rem] md:min-h-[7rem] md:text-[3.75rem] md:leading-[3.5rem]">
+            <h1 className="relative z-10 mb-4 min-h-18 text-[2rem] font-medium text-balance text-foreground sm:mb-6 sm:text-[2.25rem] md:min-h-28 md:text-[3.75rem] md:leading-14">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={activeMode?.id ?? activeModeIndex}

@@ -351,7 +351,7 @@ export const FeaturesPage = () => {
     <div className="min-h-screen">
       <div className="relative z-10 w-full px-5 pt-32 pb-20">
         <div className="mx-auto w-full max-w-5xl px-5 text-center sm:px-8">
-          <h1 className="relative z-10 mb-4 text-3xl leading-[2.5rem] font-medium md:text-6xl md:leading-[4rem]">
+          <h1 className="relative z-10 mb-4 text-3xl leading-10 font-medium md:text-6xl md:leading-16">
             The screen recorder for
             <br />
             <span className="text-muted-foreground">teams and creators</span>
@@ -385,7 +385,7 @@ export const FeaturesPage = () => {
       </div>
 
       <div className="mx-auto w-full max-w-screen-2xl px-5 pb-32 sm:px-8 lg:px-10">
-        <div className="grid grid-flow-dense auto-rows-[minmax(200px,_auto)] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-flow-dense auto-rows-[minmax(200px,auto)] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {features.map((feature, index) => {
             const sizeClasses = {
               small: "col-span-1",
@@ -409,7 +409,7 @@ export const FeaturesPage = () => {
                   {feature.isPro && (
                     <Link
                       href="/pricing"
-                      className="ml-2 inline-flex items-center rounded-full bg-gradient-to-br from-primary/20 to-primary/20 px-2 py-1 text-xs font-medium text-primary-foreground transition-all duration-200 hover:from-primary/20 hover:to-primary/20"
+                      className="ml-2 inline-flex items-center rounded-full bg-linear-to-br from-primary/20 to-primary/20 px-2 py-1 text-xs font-medium text-primary-foreground transition-all duration-200 hover:from-primary/20 hover:to-primary/20"
                     >
                       Theo Pro
                     </Link>

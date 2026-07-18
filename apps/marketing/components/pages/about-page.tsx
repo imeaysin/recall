@@ -16,7 +16,7 @@ export const AboutPage = () => {
             <p className="mb-4 text-sm font-medium tracking-widest text-muted-foreground uppercase">
               About {name}
             </p>
-            <h1 className="mb-6 text-3xl leading-[2.5rem] text-foreground md:text-5xl md:leading-[3.75rem]">
+            <h1 className="mb-6 text-3xl leading-10 text-foreground md:text-5xl md:leading-16">
               Why we built {name}
             </h1>
             <p className="text-lg leading-relaxed text-muted-foreground md:text-xl">
