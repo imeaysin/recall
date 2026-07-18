@@ -4,13 +4,12 @@ import { Button } from "@/components/product-ui"
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import NumberFlow from "@number-flow/react"
+import { Monitor } from "lucide-react"
 import Link from "next/link"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { Tooltip } from "@/components/tooltip"
-import { WhenVisible } from "@/components/ui/when-visible"
 import { homeContent } from "@/content/home"
 import { BillingToggle } from "./billing-toggle"
-import { CommercialArt, type CommercialArtRef } from "./commercial-art"
 import { PlanFeature } from "./plan-feature"
 import { Stepper } from "./stepper"
 
@@ -19,7 +18,6 @@ const plan = homeContent.pricing.commercial
 export const CommercialCard = () => {
   const [licenses, setLicenses] = useState(1)
   const [isYearly, setIsYearly] = useState(true)
-  const artRef = useRef<CommercialArtRef>(null)
 
   const perLicense = isYearly ? plan.pricing.yearly : plan.pricing.lifetime
   const total = licenses * perLicense
@@ -29,28 +27,22 @@ export const CommercialCard = () => {
     setLicenses((prev) => (prev > 1 ? prev - 1 : 1))
 
   return (
-    <article
-      onMouseEnter={() => artRef.current?.playHoverAnimation()}
-      onMouseLeave={() => artRef.current?.playDefaultAnimation()}
-      className="flex flex-col rounded-2xl border border-border bg-card p-8"
-    >
-      <div className="mb-4 -ml-3 size-14">
-        <WhenVisible className="size-full">
-          <CommercialArt ref={artRef} />
-        </WhenVisible>
+    <article className="flex flex-col rounded-2xl border border-border bg-card p-8">
+      <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-muted text-primary">
+        <Monitor className="size-5" strokeWidth={1.5} />
       </div>
       <div className="flex items-center gap-1.5">
-        <h3 className="text-lg font-semibold text-foreground">{plan.title}</h3>
+        <h3 className="text-lg font-medium text-foreground">{plan.title}</h3>
         <Tooltip
           position="top"
           delayDuration={150}
           className="max-w-[260px] items-start text-left leading-relaxed"
-          content="A commercial license to use Theo on your desktop — unlimited local recording and editing, plus 20 cloud shareable links per month. No cloud subscription required."
+          content={plan.description}
         >
           <button
             type="button"
             aria-label="What's included in the Desktop License?"
-            className="text-muted-foreground transition-colors hover:text-muted-foreground"
+            className="text-muted-foreground transition-colors hover:text-foreground"
           >
             <FontAwesomeIcon icon={faCircleInfo} className="size-3.5" />
           </button>
@@ -61,7 +53,7 @@ export const CommercialCard = () => {
       </p>
 
       <div className="mt-6 flex items-baseline gap-1.5">
-        <span className="text-4xl font-semibold tracking-tight text-foreground tabular-nums">
+        <span className="text-4xl font-medium tracking-tight text-foreground tabular-nums">
           $<NumberFlow value={perLicense} />
         </span>
         <span className="text-base text-muted-foreground">/ license</span>
@@ -99,7 +91,7 @@ export const CommercialCard = () => {
       <Button
         variant="outline"
         size="lg"
-        href="https://theo.example/signup"
+        href="/pricing"
         className="mt-6 w-full font-medium"
         aria-label="Purchase Commercial License"
       >

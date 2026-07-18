@@ -178,7 +178,7 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
                     (header, headerIndex) => (
                       <th
                         key={`header-${headerIndex}-${header}`}
-                        className="border-b border-border px-6 py-4 text-left font-semibold text-muted-foreground"
+                        className="border-b border-border px-6 py-4 text-left font-medium text-muted-foreground"
                       >
                         {header}
                       </th>
@@ -227,7 +227,7 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
               className="mb-8 rounded-xl border border-border bg-muted p-6 shadow-md"
             >
               {step.title && (
-                <h3 className="mb-4 text-2xl font-semibold text-foreground">
+                <h3 className="mb-4 text-2xl font-medium text-foreground">
                   {step.title}
                 </h3>
               )}
@@ -250,7 +250,7 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
                 key={`trouble-${itemIndex}-${item.question.slice(0, 20)}`}
                 className="rounded-xl border border-border bg-muted p-6 shadow-md"
               >
-                <summary className="cursor-pointer text-xl font-semibold text-muted-foreground">
+                <summary className="cursor-pointer text-xl font-medium text-muted-foreground">
                   {item.question}
                 </summary>
                 <p className="mt-4 text-muted-foreground">
@@ -275,7 +275,7 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
                 key={`tip-${tipIndex}-${tip.title}`}
                 className="rounded-xl border border-primary bg-primary p-6 shadow-md"
               >
-                <h3 className="mb-3 text-xl font-semibold text-primary">
+                <h3 className="mb-3 text-xl font-medium text-primary">
                   🔹 {tip.title}
                 </h3>
                 <p className="text-muted-foreground">{tip.description}</p>
@@ -317,7 +317,7 @@ export const BlogTemplate = ({ content }: { content: BlogPost }) => {
                 key={`faq-${faqIndex}-${faq.question.slice(0, 20)}`}
                 className="rounded-xl border border-border bg-muted p-6 shadow-md"
               >
-                <summary className="cursor-pointer text-xl font-semibold text-muted-foreground">
+                <summary className="cursor-pointer text-xl font-medium text-muted-foreground">
                   {faq.question}
                 </summary>
                 <p className="mt-4 text-muted-foreground">

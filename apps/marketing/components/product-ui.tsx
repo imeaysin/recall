@@ -154,7 +154,7 @@ export function Logo({
       {!hideLogoName ? (
         <span
           className={cn(
-            "text-lg font-semibold tracking-tight",
+            "text-lg font-medium tracking-tight",
             white ? "text-primary-foreground" : "text-foreground"
           )}
         >

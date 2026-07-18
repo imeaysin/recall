@@ -1,8 +1,7 @@
 "use client"
 
 import { Button } from "@/components/product-ui"
-import { useRef } from "react"
-import { EnterpriseArt, type EnterpriseArtRef } from "./enterprise-art"
+import { Building2 } from "lucide-react"
 import { PlanFeature } from "./plan-feature"
 
 const enterpriseFeatures = [
@@ -15,29 +14,23 @@ const enterpriseFeatures = [
 ]
 
 export const EnterpriseCard = () => {
-  const artRef = useRef<EnterpriseArtRef>(null)
-
   const handleBookCall = () => {
     window.open("https://cal.com/theo.example/15min", "_blank")
   }
 
   return (
-    <article
-      onMouseEnter={() => artRef.current?.playHoverAnimation()}
-      onMouseLeave={() => artRef.current?.playDefaultAnimation()}
-      className="flex flex-col rounded-2xl border border-border bg-muted p-8"
-    >
-      <div className="mb-4 -ml-3 size-14">
-        <EnterpriseArt ref={artRef} />
+    <article className="flex flex-col rounded-2xl border border-border bg-muted p-8">
+      <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-background text-primary">
+        <Building2 className="size-5" strokeWidth={1.5} />
       </div>
-      <h3 className="text-lg font-semibold text-foreground">Enterprise</h3>
+      <h3 className="text-lg font-medium text-foreground">Enterprise</h3>
       <p className="mt-1.5 min-h-[40px] text-sm leading-relaxed text-muted-foreground">
         For organizations that need security, control, and dedicated support at
         scale.
       </p>
 
       <div className="mt-6 flex items-baseline gap-1.5">
-        <span className="text-4xl font-semibold tracking-tight text-muted-foreground">
+        <span className="text-4xl font-medium tracking-tight text-muted-foreground">
           Custom
         </span>
       </div>
@@ -64,7 +57,7 @@ export const EnterpriseCard = () => {
 
       <div className="mt-8 border-t border-border pt-8">
         <p className="mb-4 text-sm font-medium text-muted-foreground">
-          Everything in Theo Pro, plus:
+          Everything in Pro, plus:
         </p>
         <ul className="flex flex-col gap-3">
           {enterpriseFeatures.map((feature) => (

@@ -18,7 +18,7 @@ export function Share({ post, url }: ShareProps) {
 
   return (
     <div className="mt-6 rounded-xl bg-muted px-3 py-6 text-center">
-      <h3 className="mt-0 mb-2 text-lg font-semibold">Share this post</h3>
+      <h3 className="mt-0 mb-2 text-lg font-medium">Share this post</h3>
       <div className="flex justify-center gap-4">
         <a
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(

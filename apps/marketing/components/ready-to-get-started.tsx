@@ -43,7 +43,7 @@ export function ReadyToGetStarted() {
             or{" "}
             <Link
               href="/pricing"
-              className="font-semibold text-foreground underline"
+              className="font-medium text-foreground underline"
             >
               view pricing
             </Link>

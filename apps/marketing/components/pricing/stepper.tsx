@@ -39,7 +39,7 @@ export const Stepper = ({
         >
           <FontAwesomeIcon icon={faMinus} className="size-3.5" />
         </button>
-        <span className="w-10 text-center text-base font-semibold text-foreground tabular-nums">
+        <span className="w-10 text-center text-base font-medium text-foreground tabular-nums">
           <NumberFlow value={value} />
         </span>
         <button

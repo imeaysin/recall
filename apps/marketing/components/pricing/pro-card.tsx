@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/product-ui"
 import NumberFlow from "@number-flow/react"
-import { useRef, useState } from "react"
-import { WhenVisible } from "@/components/ui/when-visible"
+import { Sparkles } from "lucide-react"
+import { useState } from "react"
 import { homeContent } from "@/content/home"
 import { BillingToggle } from "./billing-toggle"
 import { PlanFeature } from "./plan-feature"
-import { ProArt, type ProArtRef } from "./pro-art"
 import { Stepper } from "./stepper"
 
 const plan = homeContent.pricing.pro
@@ -15,7 +14,6 @@ const plan = homeContent.pricing.pro
 export const ProCard = () => {
   const [users, setUsers] = useState(1)
   const [isAnnually, setIsAnnually] = useState(false)
-  const artRef = useRef<ProArtRef>(null)
 
   const perUser = isAnnually ? plan.pricing.annual : plan.pricing.monthly
   const monthlyTotal = perUser * users
@@ -25,28 +23,22 @@ export const ProCard = () => {
   const decrementUsers = () => setUsers((prev) => (prev > 1 ? prev - 1 : 1))
 
   return (
-    <article
-      onMouseEnter={() => artRef.current?.playHoverAnimation()}
-      onMouseLeave={() => artRef.current?.playDefaultAnimation()}
-      className="relative flex flex-col rounded-2xl bg-card p-8 shadow-xl ring-2 shadow-primary/10 ring-primary"
-    >
-      <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-base font-semibold whitespace-nowrap text-primary-foreground">
+    <article className="relative flex flex-col rounded-2xl bg-card p-8 shadow-xl ring-2 shadow-primary/10 ring-primary">
+      <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-sm font-medium whitespace-nowrap text-primary-foreground">
         Most popular
       </span>
 
-      <div className="mb-4 -ml-3 size-14">
-        <WhenVisible className="size-full">
-          <ProArt ref={artRef} />
-        </WhenVisible>
+      <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-muted text-primary">
+        <Sparkles className="size-5" strokeWidth={1.5} />
       </div>
-      <h3 className="text-lg font-semibold text-foreground">{plan.title}</h3>
+      <h3 className="text-lg font-medium text-foreground">{plan.title}</h3>
       <p className="mt-1.5 min-h-[40px] text-base leading-relaxed text-muted-foreground">
         Everything in Desktop, plus unlimited cloud sharing, AI, and team
         collaboration.
       </p>
 
       <div className="mt-6 flex items-baseline gap-1.5">
-        <span className="text-4xl font-semibold tracking-tight text-foreground tabular-nums">
+        <span className="text-4xl font-medium tracking-tight text-foreground tabular-nums">
           $<NumberFlow value={perUser} />
         </span>
         <span className="text-base text-muted-foreground">/ user / month</span>
@@ -57,7 +49,7 @@ export const ProCard = () => {
 
       <div className="mt-6 flex min-h-[120px] flex-col gap-3">
         <BillingToggle
-          ariaLabel="Billing cycle for Theo Pro"
+          ariaLabel="Billing cycle for Pro"
           value={isAnnually ? "annual" : "monthly"}
           onChange={(value) => setIsAnnually(value === "annual")}
           options={[
@@ -85,9 +77,9 @@ export const ProCard = () => {
       <Button
         variant="blue"
         size="lg"
-        href="https://theo.example/signup"
+        href="/pricing"
         className="mt-6 w-full font-medium"
-        aria-label="Purchase Theo Pro License"
+        aria-label={`Purchase ${plan.title}`}
       >
         {plan.cta}
       </Button>

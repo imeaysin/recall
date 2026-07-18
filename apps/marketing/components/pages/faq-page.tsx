@@ -62,9 +62,7 @@ export const FaqPage = () => {
   return (
     <div className="mx-auto w-full max-w-5xl px-5 py-32 sm:px-8 md:py-40">
       <div className="mb-14 text-center">
-        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-          FAQ
-        </h1>
+        <h1 className="text-4xl font-medium tracking-tight md:text-5xl">FAQ</h1>
       </div>
       <div className="mb-10">
         {faqContent.map((section) => {

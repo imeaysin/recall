@@ -40,7 +40,7 @@ function TestimonialCard({ name, handle, image, content, url }: Testimonial) {
           />
         </div>
         <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold text-foreground">
+          <h3 className="truncate text-base font-medium text-foreground">
             {name}
           </h3>
           {handle ? (

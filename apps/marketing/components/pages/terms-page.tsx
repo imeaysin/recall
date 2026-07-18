@@ -14,7 +14,7 @@ export const TermsPage = () => {
           digestible as possible. If you have any questions, please don&apos;t
           hesitate to reach out to us.
         </p>
-        <div className="animate-in text-left text-base leading-7 text-muted-foreground delay-500 fade-in slide-in-from-bottom-4 [&_h3]:mb-3 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:text-foreground [&_ol]:flex [&_ol]:flex-col [&_ol]:gap-8 [&_p]:mb-5">
+        <div className="animate-in text-left text-base leading-7 text-muted-foreground delay-500 fade-in slide-in-from-bottom-4 [&_h3]:mb-3 [&_h3]:text-2xl [&_h3]:font-medium [&_h3]:text-foreground [&_ol]:flex [&_ol]:flex-col [&_ol]:gap-8 [&_p]:mb-5">
           <ol>
             <li>
               <h3>Introduction</h3>

@@ -101,7 +101,7 @@ export default async function PostPage(props: PostProps) {
 
         <div className="mx-auto w-full max-w-screen-2xl px-5 sm:px-8 lg:px-10">
           <header>
-            <h1 className="mb-2 font-semibold">{post.metadata.title}</h1>
+            <h1 className="mb-2 font-medium">{post.metadata.title}</h1>
             <p className="inline-flex gap-1 text-xs text-muted-foreground">
               <span>
                 {format(

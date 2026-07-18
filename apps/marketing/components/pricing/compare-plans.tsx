@@ -221,7 +221,7 @@ export const ComparePlans = () => {
                           : "border-b border-border"
                       )}
                     >
-                      <p className="text-base font-semibold text-muted-foreground">
+                      <p className="text-base font-medium text-muted-foreground">
                         {plan.name}
                       </p>
                       <p className="mt-1 mb-4 text-sm text-muted-foreground">
@@ -244,7 +244,7 @@ export const ComparePlans = () => {
               {sections.map((section) => (
                 <Fragment key={section.title}>
                   <tr>
-                    <td className="px-5 pt-8 pb-3 text-sm font-semibold text-muted-foreground">
+                    <td className="px-5 pt-8 pb-3 text-sm font-medium text-muted-foreground">
                       {section.title}
                     </td>
                     <td className="pt-8 pb-3" />
@@ -292,7 +292,7 @@ export const ComparePlans = () => {
                   isPro ? "ring-2 ring-primary" : "border border-border"
                 )}
               >
-                <p className="text-sm font-semibold text-muted-foreground">
+                <p className="text-sm font-medium text-muted-foreground">
                   {plan.short}
                 </p>
                 <p className="mt-0.5 mb-3 text-xs text-muted-foreground">

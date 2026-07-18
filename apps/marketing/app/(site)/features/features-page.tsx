@@ -403,7 +403,7 @@ export const FeaturesPage = () => {
                   <FontAwesomeIcon icon={feature.icon} className="h-6 w-6" />
                 </div>
 
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
+                <h3 className="mb-2 text-lg font-medium text-foreground">
                   {feature.title}
                   {feature.isPro && (
                     <Link
