@@ -1,5 +1,6 @@
+import { productConfig } from "@workspace/config/public"
 import type { Metadata } from "next"
-import { HomePage } from "@/components/pages/home-page"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   robots: {
@@ -7,10 +8,10 @@ export const metadata: Metadata = {
     follow: false,
   },
   alternates: {
-    canonical: "https://theo.example/",
+    canonical: `${productConfig.siteUrl}/`,
   },
 }
 
-export default async function Home() {
-  return <HomePage />
+export default function HomeAliasPage() {
+  redirect("/")
 }

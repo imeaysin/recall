@@ -51,7 +51,7 @@ export const employeeOnboardingContent: SeoPageContent = {
       "Theo adapts to your organization's onboarding requirements with flexible recording options",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode for Quick Walkthroughs",
         description:
           "Perfect for brief system introductions and quick process demonstrations. Record and share in seconds with a simple link that new hires can instantly access with built-in commenting for questions.",

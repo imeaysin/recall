@@ -60,7 +60,7 @@ export const videoRecordingSoftwareContent: SeoPageContent = {
       "Theo adapts to whether you need a quick share or a polished professional video",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record and get a shareable link the moment you stop. Perfect for quick demos, bug reports, and async team updates. Free plan includes video recordings up to 5 minutes with built-in thread commenting.",
@@ -86,7 +86,7 @@ export const videoRecordingSoftwareContent: SeoPageContent = {
     rows: [
       [
         "Price",
-        { text: "Free / $9.99/mo", status: "positive" },
+        { text: "Free / from $8.16/mo", status: "positive" },
         { text: "Free / $18/mo", status: "warning" },
         { text: "$299.99 one-time", status: "negative" },
         { text: "Free", status: "positive" },
@@ -151,7 +151,7 @@ export const videoRecordingSoftwareContent: SeoPageContent = {
     {
       title: "Theo vs Loom",
       description:
-        "Theo starts at $9.99/month versus Loom's $18/month, and Theo's Studio Mode is completely free with no watermarks. Theo records at up to 4K, is open-source, and supports custom S3 storage — quality and flexibility that Loom's free and paid plans don't match. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
+        "Theo starts at $8.16/month when billed annually versus Loom's $18/month, and Theo's Studio Mode is completely free with no watermarks. Theo records at up to 4K, is open-source, and supports custom S3 storage — quality and flexibility that Loom's free and paid plans don't match. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
     },
     {
       title: "Theo vs Camtasia",
@@ -222,7 +222,7 @@ export const videoRecordingSoftwareContent: SeoPageContent = {
     {
       question: "Is Theo video recording software free?",
       answer:
-        "Yes. Theo's Studio Mode is completely free for personal use with no time limits, no watermarks, and no hidden fees. Instant Mode is free for recordings up to 5 minutes. Theo Pro at $9.99/month removes Instant Mode limits and adds team features — but the core video recording software is free to use forever.",
+        "Yes. Theo's Studio Mode is completely free for personal use with no time limits, no watermarks, and no hidden fees. Instant Mode is free for recordings up to 5 minutes. Theo Pro at $8.16/month when billed annually removes Instant Mode limits and adds team features — but the core video recording software is free to use forever.",
     },
     {
       question: "Does Theo video recording software work on Mac and Windows?",

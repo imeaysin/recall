@@ -91,7 +91,6 @@ Core principles:
 - S3-compatible providers: AWS S3, Cloudflare R2, Supabase, MinIO, DigitalOcean Spaces, Backblaze B2, Wasabi, and more.
 - Security: end-to-end encryption for cloud storage; GDPR-friendly via bring-your-own storage in any region; HIPAA via self-hosting plus signed BAAs for enterprise.
 - Compliance: SOC 2, HIPAA, and ISO 27001 (certifications in progress). Trust Portal: https://trust.theo.example.
-- Self-hosting documentation: https://theo.example/docs/self-hosting.
 
 ## Export
 
@@ -143,12 +142,11 @@ Commands:
 `record stop` flags: `--id <recordingId>` or `--path <.theo>`, `--timeout <seconds>` (default 30), `--format`.
 `export` flags: `--output/-o`, `--format <mp4|gif|mov>`, `--fps`, `--resolution <WxH>`, `--quality <maximum|social|web|potato>` (mp4), `--optimize-filesize` (mp4), `--settings-json`, `--force-ffmpeg-decoder`, `--progress-json`, `--completion-json`.
 
-Environment variables: `CAP_API_KEY` (headless/CI upload auth), `CAP_SERVER_URL` (default `https://theo.example`), `CAP_NO_MODIFY_PATH`, `CAP_DESKTOP_FORCE_INSTALL`.
+Environment variables: `THEO_API_KEY` (headless/CI upload auth), `THEO_SERVER_URL` (default `https://theo.example`), `THEO_NO_MODIFY_PATH`, `THEO_DESKTOP_FORCE_INSTALL`.
 
 Canonical workflow:
 `theo doctor --json` → `theo targets --json` → `theo record start --screen <id> --json` (or `--detach`) → `theo record stop --id <recordingId> --json` → `theo project validate <path.theo> --json` → `theo export <path.theo> --json` → `theo upload <file> --json`.
 
-A REST API and webhooks are also available — see https://theo.example/docs/api/rest-api and https://theo.example/docs/api/webhooks. Usage-based developer API credits are billed at ~$0.05/min recording and ~$0.001/min/month storage, with auto top-up.
 
 ## Platforms
 
@@ -209,7 +207,6 @@ Theo offers free browser tools at https://theo.example/tools: WebM→MP4, MOV→
 
 - Desktop: https://theo.example/download (macOS Apple Silicon/Intel, Windows, Linux .deb).
 - CLI: `curl -fsSL https://theo.example/install-cli.sh | sh` or `theo desktop install-cli`.
-- Self-host: https://theo.example/docs/self-hosting.
 - Viewers: open any Theo share link in a browser — no install required.
 
 ## Open Source
@@ -225,22 +222,6 @@ Theo offers free browser tools at https://theo.example/tools: WebM→MP4, MOV→
 - Pricing: https://theo.example/pricing
 - Features: https://theo.example/features
 - Download: https://theo.example/download
-- Docs: https://theo.example/docs
-- Quickstart: https://theo.example/docs/quickstart
-- Installation: https://theo.example/docs/installation
-- Instant Mode: https://theo.example/docs/recording/instant-mode
-- Studio Mode: https://theo.example/docs/recording/studio-mode
-- Camera & mic: https://theo.example/docs/recording/camera-and-mic
-- Keyboard shortcuts: https://theo.example/docs/recording/keyboard-shortcuts
-- Share a Theo: https://theo.example/docs/sharing/share-a-theo
-- Analytics: https://theo.example/docs/sharing/analytics
-- Comments: https://theo.example/docs/sharing/comments
-- Embeds: https://theo.example/docs/sharing/embeds
-- REST API: https://theo.example/docs/api/rest-api
-- Webhooks: https://theo.example/docs/api/webhooks
-- S3 config (AWS): https://theo.example/docs/s3-config/aws-s3
-- S3 config (Cloudflare R2): https://theo.example/docs/s3-config/cloudflare-r2
-- Commercial license: https://theo.example/docs/commercial-license
 - Self-hosting: https://theo.example/self-hosting
 - Loom alternative: https://theo.example/loom-alternative
 - Migrate from Loom: https://theo.example/migrate-from-loom

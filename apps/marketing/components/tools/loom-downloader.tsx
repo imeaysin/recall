@@ -483,7 +483,7 @@ export function LoomDownloader() {
             }}
             onKeyDown={handleKeyDown}
             placeholder="https://www.loom.com/share/..."
-            className="ring-offset-gray-3 h-[48px] w-full rounded-xl border border-border bg-muted px-3 text-base text-muted-foreground outline-0 transition-all duration-200 placeholder:text-muted-foreground hover:border-border hover:bg-muted focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 sm:h-[44px] sm:flex-1 sm:px-4 sm:text-base"
+            className="h-[48px] w-full rounded-xl border border-border bg-muted px-3 text-base text-muted-foreground ring-offset-background outline-0 transition-all duration-200 placeholder:text-muted-foreground hover:border-border hover:bg-muted focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 sm:h-[44px] sm:flex-1 sm:px-4 sm:text-base"
             disabled={isLoading}
           />
           <Button

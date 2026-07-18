@@ -60,7 +60,7 @@ export const openSourceScreenRecorderContent: SeoPageContent = {
       "Theo gives you two distinct modes so you can choose the right workflow for every recording",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record and share instantly with a link ready the moment you stop. Perfect for bug reports, async updates, and quick team communication. Free plan includes recordings up to 5 minutes with built-in thread commenting.",
@@ -151,7 +151,7 @@ export const openSourceScreenRecorderContent: SeoPageContent = {
     {
       title: "Theo vs Loom",
       description:
-        "Loom is a closed-source SaaS that owns your recording data and can change pricing at any time. Theo is open source with custom storage support, starting at $9.99/month versus Loom's $18/month — and Theo's Studio Mode is completely free. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
+        "Loom is a closed-source SaaS that owns your recording data and can change pricing at any time. Theo is open source with custom storage support, starting at $8.16/month when billed annually versus Loom's $18/month — and Theo's Studio Mode is completely free. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
     },
     {
       title: "Theo vs OBS Studio",
@@ -227,7 +227,7 @@ export const openSourceScreenRecorderContent: SeoPageContent = {
     {
       question: "Is Theo's open source version free?",
       answer:
-        "Yes. Theo's Studio Mode is completely free for personal use with no time limits and no watermarks. Instant Mode on the free plan supports recordings up to 5 minutes. Theo Pro ($9.99/month) removes Instant Mode time limits and adds team features. The core software will always be open source and free to use.",
+        "Yes. Theo's Studio Mode is completely free for personal use with no time limits and no watermarks. Instant Mode on the free plan supports recordings up to 5 minutes. Theo Pro ($8.16/month when billed annually) removes Instant Mode time limits and adds team features. The core software will always be open source and free to use.",
     },
     {
       question:

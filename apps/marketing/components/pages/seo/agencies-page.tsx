@@ -185,7 +185,7 @@ export const agenciesContent: SeoPageContent = {
       "Theo adapts to your client communication needs with flexible recording options",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode for Quick Client Updates",
         description:
           "Perfect for weekly progress updates, quick design reviews, and urgent bug reports. Record and share in seconds with a simple link that clients can access immediately, complete with automatic subtitles and commenting.",

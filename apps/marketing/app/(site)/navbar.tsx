@@ -1,4 +1,5 @@
 import { Button, Logo } from "@/components/product-ui"
+import { productConfig } from "@workspace/config/public"
 import Image from "next/image"
 import Link from "next/link"
 import MobileMenu from "@/components/ui/mobile-menu"
@@ -10,11 +11,8 @@ export const Navbar = ({ stars }: { stars?: string }) => {
       <nav className="relative mx-auto h-fit w-full max-w-[calc(100%-20px)] rounded-full border border-border bg-background p-2 lg:max-w-fit">
         <div className="mx-auto flex h-full max-w-5xl items-center justify-between gap-12 transition-all">
           <div className="flex items-center">
-            <Link passHref href="/home">
-              <Logo
-                className="h-10 w-24 transition-all duration-200 ease-out"
-                viewBoxDimensions="0 0 120 40"
-              />
+            <Link passHref href="/">
+              <Logo className="h-10 w-24 transition-all duration-200 ease-out" />
             </Link>
             <div className="hidden lg:flex">
               <DesktopNavLinks />
@@ -27,7 +25,7 @@ export const Navbar = ({ stars }: { stars?: string }) => {
                 <Image src="/github.svg" alt="Github" width={16} height={16} />
               }
               target="_blank"
-              href="https://github.com/imeaysin/theo"
+              href={productConfig.repositoryUrl}
               size="sm"
               className="w-full font-medium sm:w-auto"
             >
@@ -35,7 +33,7 @@ export const Navbar = ({ stars }: { stars?: string }) => {
             </Button>
             <Button
               variant="gray"
-              href="https://theo.example/login"
+              href={`${productConfig.siteUrl}/login`}
               size="sm"
               className="w-full font-medium sm:w-auto"
             >
@@ -43,7 +41,7 @@ export const Navbar = ({ stars }: { stars?: string }) => {
             </Button>
             <Button
               variant="dark"
-              href="https://theo.example/signup"
+              href={`${productConfig.siteUrl}/signup`}
               size="sm"
               className="w-full font-medium sm:w-auto"
             >

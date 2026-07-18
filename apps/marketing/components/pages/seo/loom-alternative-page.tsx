@@ -59,7 +59,7 @@ export const loomAlternativeContent: SeoPageContent = {
       "Theo gives you flexible recording options to match your workflow needs, with both modes available in the free plan",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Share your screen right away with a simple link—no waiting, just record and share in seconds. Record up to 5-minute shareable links for free, perfect for quick demos and explanations. Includes built-in thread commenting for easy collaboration.",

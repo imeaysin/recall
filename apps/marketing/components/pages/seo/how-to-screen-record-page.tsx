@@ -202,7 +202,7 @@ export const howToScreenRecordContent: SeoPageContent = {
     {
       question: "How long can I screen record?",
       answer:
-        "Theo's Studio Mode records locally with no time limit, so you can capture anything from a 30-second demo to a 2-hour training session. On the free plan, Instant Mode — the instantly shareable links — is capped at 5 minutes per recording, and Theo Pro lifts that theo. The macOS built-in recorder and Windows Game Bar have no strict time limits either, though they lack the sharing and editing features that Theo provides.",
+        "Theo's Studio Mode records locally with no time limit, so you can capture anything from a 30-second demo to a 2-hour training session. On the free plan, Instant Mode — the instantly shareable links — is capped at 5 minutes per recording, and Theo Pro lifts that limit. The macOS built-in recorder and Windows Game Bar have no strict time limits either, though they lack the sharing and editing features that Theo provides.",
     },
     {
       question: "What format do screen recordings save in?",

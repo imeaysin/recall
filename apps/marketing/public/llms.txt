@@ -52,11 +52,9 @@ Async team updates, bug reports & QA, product demos & sales, async code reviews,
 - Pricing: https://theo.example/pricing
 - Features: https://theo.example/features
 - Download: https://theo.example/download
-- Docs: https://theo.example/docs
 - Loom alternative: https://theo.example/loom-alternative
 - Open-source screen recorder: https://theo.example/open-source-screen-recorder
 - Self-hosting: https://theo.example/self-hosting
-- REST API: https://theo.example/docs/api/rest-api
 - Source code: https://github.com/imeaysin/theo
 - Community (Discord): https://discord.gg/y8gdQ3WRN3
 

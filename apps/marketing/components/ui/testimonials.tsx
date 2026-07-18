@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { type Testimonial, testimonials } from "../../data/testimonials"
+import { type Testimonial, testimonials } from "@/content/testimonials"
 
 interface TestimonialsProps {
   amount?: number
@@ -55,7 +55,7 @@ export const Testimonials = ({
       <div className="mt-8 columns-1 gap-3 *:mb-3 md:columns-2 lg:columns-3">
         {displayedTestimonials.map((testimonial) => (
           <motion.div
-            key={testimonial.url}
+            key={`${testimonial.name}:${testimonial.handle}`}
             className="mb-3 break-inside-avoid"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

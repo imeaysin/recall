@@ -3,7 +3,7 @@
 import { ReadyToGetStarted } from "@/components/ready-to-get-started"
 import Pricing from "@/components/pricing"
 import { TextReveal } from "@/components/ui/text-reveal"
-import { homepageCopy } from "../../../data/homepage-copy"
+import { homeContent } from "@/content/home"
 import Features from "./features"
 import InstantModeDetail from "./instant-mode-detail"
 import RecordingModePicker from "./recording-mode-picker"
@@ -29,7 +29,7 @@ export function DeferredHomepageClosingSections() {
   return (
     <>
       <TextReveal className="mx-auto max-w-[600px] text-center leading-[1.2]">
-        {homepageCopy.textReveal}
+        {homeContent.textReveal}
       </TextReveal>
       <ReadyToGetStarted />
     </>

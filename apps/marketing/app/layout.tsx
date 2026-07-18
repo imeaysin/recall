@@ -57,7 +57,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={productFont.variable} lang="en">
-      <body suppressHydrationWarning>
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <main className="w-full">{children}</main>
       </body>
     </html>

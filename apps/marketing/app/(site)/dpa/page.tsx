@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { productConfig } from "@workspace/config/public"
 
 export const metadata: Metadata = {
   title: "Data Processing Agreement - Theo",
@@ -443,7 +444,7 @@ export default function DataProcessingAgreementPage() {
               <h3>Contact</h3>
               <br />
               For questions about this DPA, data protection, or Subprocessor
-              information, contact Theo at hello@theo.example.
+              information, contact Theo at {productConfig.supportEmail}.
             </li>
             <li>
               <h3>Annex I: Details of Processing</h3>

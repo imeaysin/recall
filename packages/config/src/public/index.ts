@@ -15,12 +15,13 @@ export interface ProductConfig {
 }
 
 export const productConfig = {
+  /** Sample product name for this monorepo template — change when forking. */
   name: "Theo",
   shortName: "Theo",
   legalName: "Theo Software, Inc.",
-  tagline: "Beautiful screen recordings, owned by you.",
+  tagline: "Beautiful product demos, owned by you.",
   description:
-    "Theo is a lightweight, powerful screen recorder for creating and sharing polished videos.",
+    "Theo is a lightweight product template for recording, editing, and sharing polished videos — customize this config for your brand.",
   siteUrl: "https://theo.example",
   repositoryUrl: "https://github.com/imeaysin/theo",
   supportEmail: "support@theo.example",

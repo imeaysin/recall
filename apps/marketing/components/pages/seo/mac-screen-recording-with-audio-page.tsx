@@ -60,7 +60,7 @@ export const macScreenRecordingWithAudioContent: SeoPageContent = {
       "Theo adapts to whether you need a quick share or a polished production",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record your Mac screen with audio and get a shareable link the moment you stop. Perfect for quick demos, bug reports, and async team updates. Free plan includes recordings up to 5 minutes with built-in thread commenting.",

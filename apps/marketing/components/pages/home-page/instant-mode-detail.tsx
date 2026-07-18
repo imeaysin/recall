@@ -393,7 +393,7 @@ const MockSharePage = () => {
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-purple-100" />
+                    <div className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-muted" />
                     <div>
                       <span className="text-xs font-medium text-foreground">
                         Alex K.
@@ -577,7 +577,7 @@ const MockSharePage = () => {
           <h4 className="mt-3 mb-1.5 text-xs font-medium text-foreground md:mt-4 md:mb-2 md:text-sm">
             Chapters
           </h4>
-          <div className="divide-gray-3 divide-y">
+          <div className="divide-y divide-border">
             {[
               { time: "0:00", title: "Introduction" },
               { time: "0:45", title: "Project setup" },
@@ -670,7 +670,7 @@ const InstantModeDetail = () => {
               ease: "easeInOut",
             }}
           >
-            <Zap fill="yellow" className="size-5" strokeWidth={1.5} />
+            <Zap className="size-5 text-primary" strokeWidth={1.5} />
           </motion.div>
           <span className="text-sm font-medium tracking-wider text-primary uppercase">
             Instant Mode

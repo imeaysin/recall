@@ -1,7 +1,7 @@
 import { Button, type ButtonProps } from "@/components/product-ui"
 import Image from "next/image"
 import type React from "react"
-import { CAP_CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
+import { THEO_CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
 
 type ChromeExtensionButtonProps = {
   className?: string
@@ -20,7 +20,7 @@ export function ChromeExtensionButton({
 }: ChromeExtensionButtonProps) {
   return (
     <Button
-      href={CAP_CHROME_EXTENSION_URL}
+      href={THEO_CHROME_EXTENSION_URL}
       onClick={onClick}
       size={size}
       variant={variant}

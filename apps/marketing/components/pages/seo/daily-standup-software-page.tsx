@@ -51,7 +51,7 @@ export const dailyStandupSoftwareContent: SeoPageContent = {
       "Theo adapts to your team's Agile workflow with flexible recording options",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode for Quick Daily Updates",
         description:
           "Perfect for the classic 'what I did yesterday, what I'm doing today, any blockers' format. Record and share in seconds with a simple link that team members can instantly access with built-in commenting for addressing blockers.",

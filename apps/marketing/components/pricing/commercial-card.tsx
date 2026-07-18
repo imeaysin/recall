@@ -8,20 +8,20 @@ import Link from "next/link"
 import { useRef, useState } from "react"
 import { Tooltip } from "@/components/tooltip"
 import { WhenVisible } from "@/components/ui/when-visible"
-import { homepageCopy } from "../../data/homepage-copy"
+import { homeContent } from "@/content/home"
 import { BillingToggle } from "./billing-toggle"
 import { CommercialArt, type CommercialArtRef } from "./commercial-art"
 import { PlanFeature } from "./plan-feature"
 import { Stepper } from "./stepper"
 
-const copy = homepageCopy.pricing.commercial
+const plan = homeContent.pricing.commercial
 
 export const CommercialCard = () => {
   const [licenses, setLicenses] = useState(1)
   const [isYearly, setIsYearly] = useState(true)
   const artRef = useRef<CommercialArtRef>(null)
 
-  const perLicense = isYearly ? copy.pricing.yearly : copy.pricing.lifetime
+  const perLicense = isYearly ? plan.pricing.yearly : plan.pricing.lifetime
   const total = licenses * perLicense
 
   const incrementLicenses = () => setLicenses((prev) => prev + 1)
@@ -40,7 +40,7 @@ export const CommercialCard = () => {
         </WhenVisible>
       </div>
       <div className="flex items-center gap-1.5">
-        <h3 className="text-lg font-semibold text-foreground">{copy.title}</h3>
+        <h3 className="text-lg font-semibold text-foreground">{plan.title}</h3>
         <Tooltip
           position="top"
           delayDuration={150}
@@ -57,7 +57,7 @@ export const CommercialCard = () => {
         </Tooltip>
       </div>
       <p className="mt-1.5 min-h-[40px] text-base leading-relaxed text-muted-foreground">
-        {copy.description}
+        {plan.description}
       </p>
 
       <div className="mt-6 flex items-baseline gap-1.5">
@@ -103,7 +103,7 @@ export const CommercialCard = () => {
         className="mt-6 w-full font-medium"
         aria-label="Purchase Commercial License"
       >
-        {copy.cta}
+        {plan.cta}
       </Button>
 
       <div className="mt-8 border-t border-border pt-8">
@@ -111,15 +111,15 @@ export const CommercialCard = () => {
           What&apos;s included
         </p>
         <ul className="flex flex-col gap-3">
-          {copy.features.map((feature) => (
+          {plan.features.map((feature) => (
             <PlanFeature key={feature}>{feature}</PlanFeature>
           ))}
         </ul>
         <Link
-          href="/docs/commercial-license"
+          href="/pricing"
           className="mt-5 inline-block text-base text-muted-foreground underline transition-colors hover:text-foreground"
         >
-          Learn more about the commercial license
+          Learn more about pricing
         </Link>
       </div>
     </article>

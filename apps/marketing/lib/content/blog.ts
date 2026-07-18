@@ -151,7 +151,3 @@ export function getBlogPosts(): BlogPost[] {
 
   return [...mdxPosts, ...interactivePosts]
 }
-
-export function getDocs() {
-  return getMDXData(path.join(process.cwd(), "content/docs"))
-}

@@ -4,22 +4,22 @@ import { Button } from "@/components/product-ui"
 import NumberFlow from "@number-flow/react"
 import { useRef, useState } from "react"
 import { WhenVisible } from "@/components/ui/when-visible"
-import { homepageCopy } from "../../data/homepage-copy"
+import { homeContent } from "@/content/home"
 import { BillingToggle } from "./billing-toggle"
 import { PlanFeature } from "./plan-feature"
 import { ProArt, type ProArtRef } from "./pro-art"
 import { Stepper } from "./stepper"
 
-const copy = homepageCopy.pricing.pro
+const plan = homeContent.pricing.pro
 
 export const ProCard = () => {
   const [users, setUsers] = useState(1)
   const [isAnnually, setIsAnnually] = useState(false)
   const artRef = useRef<ProArtRef>(null)
 
-  const perUser = isAnnually ? copy.pricing.annual : copy.pricing.monthly
+  const perUser = isAnnually ? plan.pricing.annual : plan.pricing.monthly
   const monthlyTotal = perUser * users
-  const yearlyTotal = Math.round(copy.pricing.annual * 12) * users
+  const yearlyTotal = Math.round(plan.pricing.annual * 12) * users
 
   const incrementUsers = () => setUsers((prev) => prev + 1)
   const decrementUsers = () => setUsers((prev) => (prev > 1 ? prev - 1 : 1))
@@ -39,7 +39,7 @@ export const ProCard = () => {
           <ProArt ref={artRef} />
         </WhenVisible>
       </div>
-      <h3 className="text-lg font-semibold text-foreground">{copy.title}</h3>
+      <h3 className="text-lg font-semibold text-foreground">{plan.title}</h3>
       <p className="mt-1.5 min-h-[40px] text-base leading-relaxed text-muted-foreground">
         Everything in Desktop, plus unlimited cloud sharing, AI, and team
         collaboration.
@@ -89,7 +89,7 @@ export const ProCard = () => {
         className="mt-6 w-full font-medium"
         aria-label="Purchase Theo Pro License"
       >
-        {copy.cta}
+        {plan.cta}
       </Button>
 
       <div className="mt-8 border-t border-border pt-8">
@@ -97,7 +97,7 @@ export const ProCard = () => {
           Everything in Desktop License, plus:
         </p>
         <ul className="flex flex-col gap-3">
-          {copy.features.slice(1).map((feature) => (
+          {plan.features.slice(1).map((feature) => (
             <PlanFeature key={feature}>{feature}</PlanFeature>
           ))}
         </ul>

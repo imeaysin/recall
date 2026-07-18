@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { memo } from "react"
 import { WhenVisible } from "@/components/ui/when-visible"
 import { Fit, Layout, useRive } from "@/lib/rive"
-import { homepageCopy } from "../../../data/homepage-copy"
+import { homeContent } from "@/content/home"
 
 type FeatureArt = {
   artboard: string
@@ -64,10 +64,11 @@ const featureArt: FeatureArt[] = [
     className: "w-full max-w-[420px] mx-auto h-[244px]",
   },
   { artboard: "everyone", className: "w-full max-w-[600px] mx-auto h-[300px]" },
+  // Rive binary artboard name is Cap-era; do not rename or animation breaks.
   { artboard: "capai", className: "w-full max-w-[550px] mx-auto h-[300px]" },
 ]
 
-const features: Feature[] = homepageCopy.features.features.map(
+const features: Feature[] = homeContent.features.features.map(
   (feature, index) => {
     const relatives = [
       { top: 25 },
@@ -92,10 +93,10 @@ const Features = () => {
   return (
     <div className="mx-auto max-w-[1440px] px-5 text-center">
       <h2 className="mb-3 text-4xl font-medium text-foreground">
-        {homepageCopy.features.title}
+        {homeContent.features.title}
       </h2>
       <p className="mx-auto w-full max-w-[600px] text-lg leading-7 text-muted-foreground">
-        {homepageCopy.features.subtitle}
+        {homeContent.features.subtitle}
       </p>
       <div className="mt-[52px] flex flex-col gap-4">
         <div className="mx-auto grid w-full grid-cols-1 gap-4 md:grid-cols-2">

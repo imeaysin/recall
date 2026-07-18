@@ -1,13 +1,13 @@
-import { homepageCopy } from "../../../data/homepage-copy"
+import { homeContent } from "@/content/home"
 
 const Faq = () => {
   return (
     <div className="mx-auto max-w-[1000px] px-5">
       <h2 className="mb-10 text-4xl text-foreground">
-        {homepageCopy.faq.title}
+        {homeContent.faq.title}
       </h2>
       <div className="flex flex-col gap-4">
-        {homepageCopy.faq.items.map((item, index) => (
+        {homeContent.faq.items.map((item, index) => (
           <details
             key={index.toString()}
             className="group overflow-hidden rounded-xl border border-border bg-card text-foreground transition-colors duration-200 open:bg-primary open:text-primary-foreground hover:bg-muted open:hover:bg-primary"

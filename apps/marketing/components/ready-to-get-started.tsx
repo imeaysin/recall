@@ -5,7 +5,7 @@ import { useDetectPlatform } from "hooks/use-detect-platform"
 import Image from "next/image"
 import Link from "next/link"
 import { getPlatformIcon } from "@/utils/platform"
-import { homepageCopy } from "../data/homepage-copy"
+import { homeContent } from "@/content/home"
 import UpgradeToPro from "./upgrade-to-pro"
 
 export function ReadyToGetStarted() {
@@ -23,29 +23,29 @@ export function ReadyToGetStarted() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-screen-2xl flex-col items-center justify-center px-5 sm:px-8 lg:px-10">
         <div className="mx-auto mb-8 max-w-[800px] text-center">
           <h2 className="mb-3 text-3xl text-foreground md:text-4xl">
-            {homepageCopy.readyToGetStarted.title}
+            {homeContent.readyToGetStarted.title}
           </h2>
         </div>
         <div className="mb-8 flex w-full flex-col items-center justify-center gap-4 sm:flex-row sm:gap-2">
           <Button
             variant="dark"
-            href="/pricing"
+            href="/download"
             size="lg"
             className="w-fit font-medium"
           >
             {!loading && getPlatformIcon(platform)}
-            {homepageCopy.readyToGetStarted.buttons.secondary}
+            {homeContent.readyToGetStarted.buttons.secondary}
           </Button>
-          <UpgradeToPro text={homepageCopy.header.cta.primaryButton} />
+          <UpgradeToPro text={homeContent.readyToGetStarted.buttons.primary} />
         </div>
         <div>
-          <p>
-            or,{" "}
+          <p className="text-muted-foreground">
+            or{" "}
             <Link
-              href="/loom-alternative"
-              className="font-semibold underline hover:text-foreground"
+              href="/pricing"
+              className="font-semibold text-foreground underline"
             >
-              Switch from Loom
+              view pricing
             </Link>
           </p>
         </div>

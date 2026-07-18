@@ -22,7 +22,6 @@ import { ComparisonSlider } from "@/components/seo/comparison-slider"
 import type { ComparisonCell, SeoPageContent } from "@/components/seo/types"
 
 const MotionButton = motion.create(Button)
-const MotionImage = motion.create(Image)
 
 const renderHTML = (content: string) => renderRichText(content)
 
@@ -78,7 +77,7 @@ const renderComparisonCell = (cell: string | ComparisonCell) => {
 
 export const SeoPageTemplate = ({
   content,
-  showLogosInHeader,
+  showLogosInHeader: _showLogosInHeader,
   showLoomComparisonSlider,
   showVideo = true,
   skipHero = false,
@@ -91,32 +90,6 @@ export const SeoPageTemplate = ({
 }) => {
   return (
     <>
-      {showLogosInHeader && (
-        <>
-          <MotionImage
-            alt="Theo Logo"
-            initial={{ opacity: 0, left: "-40vw" }}
-            animate={{ opacity: 0.5, left: "-17vw" }}
-            transition={{ duration: 1 }}
-            width={500}
-            height={500}
-            className="absolute top-[200px] hidden md:flex md:size-[300px] lg:size-[400px] xl:size-[500px]"
-            src="/logos/logo-solo.svg"
-          />
-
-          <MotionImage
-            alt="Loom Logo"
-            initial={{ opacity: 0, right: "-40vw" }}
-            animate={{ opacity: 0.5, right: "-17vw" }}
-            transition={{ duration: 1 }}
-            width={500}
-            height={500}
-            className="absolute top-[200px] hidden md:flex md:size-[300px] lg:size-[400px] xl:size-[500px]"
-            src="/logos/loom.svg"
-          />
-        </>
-      )}
-
       {!skipHero && (
         <div className="relative mt-12">
           <div className="relative z-10 mt-[12vh] flex h-full w-full flex-col px-5 md:mt-[20vh]">

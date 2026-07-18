@@ -1,5 +1,7 @@
 "use client"
 
+import { productConfig } from "@workspace/config/public"
+
 export const TermsPage = () => {
   return (
     <div className="mx-auto w-full max-w-5xl px-5 py-32 sm:px-8 md:py-40">
@@ -94,7 +96,7 @@ export const TermsPage = () => {
               presentations, and promotional materials, to indicate you as a
               user or customer of our Services. If you do not wish for your
               company’s name or logo to be used for such purposes, you may opt
-              out by contacting us at hello@theo.example.
+              out by contacting us at {productConfig.supportEmail}.
             </li>
             <li>
               <h3>Privacy</h3>
@@ -163,8 +165,8 @@ export const TermsPage = () => {
             <li>
               <h3>Contact Us</h3>
               <br />
-              If you have any questions about these Terms, please contact us at
-              hello@theo.example.
+              If you have any questions about these Terms, please contact us at{" "}
+              {productConfig.supportEmail}.
             </li>
           </ol>
           <p>Last updated: 24th April 2024</p>

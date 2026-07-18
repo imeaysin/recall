@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { CAP_CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
+import { THEO_CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
 import { SeoPageTemplate } from "../../seo/seo-page-template"
 import type { SeoPageContent } from "../../seo/types"
 
@@ -187,7 +187,7 @@ export const googleChromeScreenRecorderContent: SeoPageContent = {
     subtitle:
       "Add Theo to Chrome and capture your first recording in seconds. No account required.",
     buttonText: "Add to Chrome",
-    buttonHref: CAP_CHROME_EXTENSION_URL,
+    buttonHref: THEO_CHROME_EXTENSION_URL,
     buttonTarget: "_blank",
     buttonIcon: (
       <Image

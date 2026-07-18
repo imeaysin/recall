@@ -217,11 +217,11 @@ const MobileMenu = ({ stars }: MobileMenuProps) => {
               >
                 <div className="flex h-[72px] shrink-0 items-center justify-between px-5 pt-[env(safe-area-inset-top)]">
                   <Link
-                    href="/home"
-                    aria-label="Theo home"
+                    href="/"
+                    aria-label="Home"
                     onClick={() => setOpen(false)}
                   >
-                    <Logo viewBoxDimensions="0 0 120 40" className="h-9 w-20" />
+                    <Logo className="h-9 w-20" />
                   </Link>
                   <button
                     ref={closeRef}

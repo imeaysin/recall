@@ -294,7 +294,7 @@ const studioModeIcons = {
     />
   ),
   "instant-mode": (
-    <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />
+    <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />
   ),
 }
 

@@ -158,7 +158,7 @@ export const screenRecordWindowsContent: SeoPageContent = {
       "Theo gives you flexible recording options to match your workflow — whether you need a quick screen capture or a polished studio recording",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Click record and share your screen right away with an auto-generated link. Ideal for quick bug reports, async standups, and answering questions with a screencast instead of a wall of text. On the free plan, Instant Mode recordings run up to 5 minutes.",

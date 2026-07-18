@@ -1,6 +1,7 @@
 "use client"
 
 import { navigationMenuTriggerStyle } from "@/components/product-ui"
+import { productConfig } from "@workspace/config/public"
 import { cn as classNames } from "@workspace/ui-shadcn/lib/utils"
 import { ChevronDown, Clapperboard, Zap } from "lucide-react"
 import Link from "next/link"
@@ -37,18 +38,14 @@ const Links: NavItem[] = [
         label: "Instant Mode",
         sub: "Quick recordings with instant shareable links",
         href: "/features/instant-mode",
-        icon: <Zap fill="yellow" className="size-4" strokeWidth={1.5} />,
+        icon: <Zap className="size-4 text-primary" strokeWidth={1.5} />,
       },
       {
         label: "Studio Mode",
         sub: "Professional recordings with advanced editing",
         href: "/features/studio-mode",
         icon: (
-          <Clapperboard
-            fill="var(--primary)"
-            className="size-4"
-            strokeWidth={1.5}
-          />
+          <Clapperboard className="size-4 text-primary" strokeWidth={1.5} />
         ),
       },
       {
@@ -58,18 +55,18 @@ const Links: NavItem[] = [
       },
       {
         label: "Open Source",
-        sub: "Theo is open source and available on GitHub",
-        href: "https://github.com/imeaysin/theo",
+        sub: "Open source and available on GitHub",
+        href: productConfig.repositoryUrl,
       },
       {
-        label: "Self-host Theo",
-        sub: "Self-host Theo on your own infrastructure",
+        label: "Self-host",
+        sub: "Run on your own infrastructure",
         href: "/self-hosting",
       },
       {
         label: "Join the community",
-        sub: "Join the Theo community on Discord",
-        href: "https://theo.example/discord",
+        sub: "Chat with other builders",
+        href: "https://discord.gg/y8gdQ3WRN3",
       },
     ],
   },
@@ -91,13 +88,8 @@ const Links: NavItem[] = [
         href: "/support",
       },
       {
-        label: "Documentation",
-        sub: "Documentation for using Theo",
-        href: "/docs",
-      },
-      {
         label: "FAQs",
-        sub: "Frequently asked questions about Theo",
+        sub: "Frequently asked questions",
         href: "/faq",
       },
       {

@@ -60,7 +60,7 @@ export const recordScreenContent: SeoPageContent = {
       "Whether you need a quick share or a polished production, Theo has a recording mode for you",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record your screen and share instantly with a link. The fastest way to capture async updates, bug reports, and quick demos. Free plan includes recordings up to 5 minutes with built-in thread commenting.",
@@ -144,7 +144,7 @@ export const recordScreenContent: SeoPageContent = {
     {
       title: "Theo vs Loom",
       description:
-        "Both Theo and Loom let you record your screen and share with a link, but Theo is significantly more affordable — starting at $9.99/month versus Loom's $18/month. Theo's Studio Mode is completely free for personal use with no watermarks, and Theo is fully open-source. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
+        "Both Theo and Loom let you record your screen and share with a link, but Theo is significantly more affordable — starting at $8.16/month when billed annually versus Loom's $18/month. Theo's Studio Mode is completely free for personal use with no watermarks, and Theo is fully open-source. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
     },
     {
       title: "Theo vs OBS Studio",

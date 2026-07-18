@@ -257,9 +257,9 @@ export const StudentDiscountPage = () => {
             </div>
 
             <div className="rounded-2xl border border-border bg-muted p-8 shadow-sm">
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-purple-50">
+              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
                 <FontAwesomeIcon
-                  className="size-6 text-purple-500"
+                  className="size-6 text-primary"
                   icon={faRocket}
                 />
               </div>

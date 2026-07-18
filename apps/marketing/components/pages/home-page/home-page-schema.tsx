@@ -1,4 +1,4 @@
-import { testimonials } from "@/data/testimonials"
+import { testimonials } from "@/content/testimonials"
 import {
   createBreadcrumbSchema,
   createFAQSchema,

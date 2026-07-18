@@ -539,7 +539,7 @@ const MockScreenshotEditor = () => {
               />
               {GRADIENTS.map((grad, i) => (
                 <motion.div
-                  key={grad}
+                  key={i}
                   className="absolute inset-0"
                   style={{ background: grad }}
                   initial={false}
@@ -626,7 +626,7 @@ const MockScreenshotEditor = () => {
                 <div className="flex flex-wrap gap-1.5">
                   {GRADIENT_COLORS.map(([from, to], i) => (
                     <motion.button
-                      key={from}
+                      key={i}
                       type="button"
                       className="relative cursor-pointer"
                       onClick={() => handleGradientClick(i)}

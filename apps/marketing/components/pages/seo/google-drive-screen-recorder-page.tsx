@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/product-ui"
+import { Button, Logo } from "@/components/product-ui"
 import {
   faCheck,
   faMinus,
@@ -21,7 +21,6 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react"
-import Image from "next/image"
 import { type JSX, useState } from "react"
 import { GoogleDriveLogo } from "@/components/icons/google-drive-logo"
 import { googleDriveScreenRecorderFaqs } from "./google-drive-screen-recorder-faqs"
@@ -264,7 +263,7 @@ const ConnectionDemo = () => (
 
       <div className="mt-4 flex items-center gap-3 rounded-xl border border-border bg-muted px-5 py-4">
         <Gauge
-          className="size-4 flex-shrink-0 text-muted-foreground"
+          className="size-4 shrink-0 text-muted-foreground"
           strokeWidth={1.75}
         />
         <div className="flex-1">
@@ -312,12 +311,7 @@ export const GoogleDriveScreenRecorderPage = () => {
             className="mb-6 flex items-center justify-center gap-3"
           >
             <span className="flex size-11 items-center justify-center rounded-xl border border-border bg-muted">
-              <Image
-                src="/logos/logo-solo.svg"
-                alt="Theo"
-                width={22}
-                height={22}
-              />
+              <Logo hideLogoName className="size-[22px]" />
             </span>
             <span className="text-muted-foreground">+</span>
             <span className="flex size-11 items-center justify-center rounded-xl border border-border bg-muted">
@@ -330,7 +324,7 @@ export const GoogleDriveScreenRecorderPage = () => {
             animate="visible"
             custom={1}
             variants={fadeUp}
-            className="text-4xl leading-[2.5rem] font-medium text-balance text-foreground md:text-6xl md:leading-[3.75rem]"
+            className="text-4xl leading-10 font-medium text-balance text-foreground md:text-6xl md:leading-15"
           >
             The screen recorder that saves straight to your Google Drive
           </motion.h1>

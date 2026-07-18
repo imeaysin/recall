@@ -51,7 +51,7 @@ export const onlineClassroomToolsContent: SeoPageContent = {
       "Theo adapts to different teaching scenarios with flexible recording options",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode for Quick Explanations",
         description:
           "Perfect for answering student questions, providing assignment feedback, or recording short concept explanations. Record and share in seconds with a simple link that students can instantly access with built-in commenting for follow-up questions.",

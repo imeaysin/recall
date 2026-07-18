@@ -1,12 +1,9 @@
 "use client"
 
 import { Logo } from "@/components/product-ui"
+import { productConfig } from "@workspace/config/public"
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core"
-import {
-  faDiscord,
-  faLinkedinIn,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons"
+import { faDiscord, faXTwitter } from "@fortawesome/free-brands-svg-icons"
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
@@ -22,7 +19,6 @@ type FooterLink = {
 const footerLinks = {
   product: [
     { label: "Blog", href: "/blog" },
-    { label: "Docs", href: "/docs" },
     { label: "Pricing", href: "/pricing" },
     { label: "Download", href: "/download" },
     {
@@ -46,7 +42,7 @@ const footerLinks = {
     { label: "FAQs", href: "/faq" },
     { label: "Self-hosting", href: "/self-hosting" },
     { label: "Support", href: "/support" },
-    { label: "Email Support", href: "mailto:hello@theo.example" },
+    { label: "Email Support", href: `mailto:${productConfig.supportEmail}` },
     { label: "Trust Portal", href: "https://trust.theo.example" },
     {
       label: "Chat Support",
@@ -116,11 +112,6 @@ const footerLinks = {
 const socialLinks: { label: string; href: string; icon: IconDefinition }[] = [
   { label: "X (@Theo)", href: "https://x.com/theo", icon: faXTwitter },
   { label: "Discord", href: "https://discord.gg/y8gdQ3WRN3", icon: faDiscord },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/company/caprecorder/",
-    icon: faLinkedinIn,
-  },
 ]
 
 const complianceBadges: { label: string; content: ReactNode }[] = [
@@ -298,11 +289,7 @@ export const Footer = () => {
           aria-hidden="true"
           className="pointer-events-none absolute bottom-0 left-1/2 w-[700px] -translate-x-1/2 translate-y-2/3 opacity-[0.05] select-none sm:w-[1000px] lg:w-[1300px]"
         >
-          <Logo
-            hideLogoName
-            viewBoxDimensions="0 0 40 40"
-            className="h-auto w-full"
-          />
+          <Logo hideLogoName className="h-auto w-full" />
         </div>
 
         <div className="relative z-10">
@@ -310,8 +297,7 @@ export const Footer = () => {
             <div className="2xl:w-64 2xl:shrink-0">
               <Logo className="h-auto w-[104px]" />
               <p className="mt-5 max-w-sm text-sm leading-6 text-muted-foreground">
-                The open source alternative to Loom. Lightweight, powerful, and
-                cross-platform — record and share in seconds.
+                {productConfig.tagline}
               </p>
               <div className="mt-6 flex items-center gap-2.5">
                 {socialLinks.map((social) => (

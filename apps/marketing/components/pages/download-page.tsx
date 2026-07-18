@@ -7,7 +7,7 @@ import { useState } from "react"
 import { trackEvent } from "@/lib/analytics"
 import { ChromeExtensionButton } from "@/components/chrome-extension-button"
 import {
-  CAP_CHROME_EXTENSION_URL,
+  THEO_CHROME_EXTENSION_URL,
   CHROME_EXTENSION_BUTTON_CLASS,
 } from "@/lib/chrome-extension"
 import {
@@ -87,7 +87,7 @@ export const DownloadPage = () => {
                 onClick={() =>
                   trackDownloadClick(
                     "chrome_extension_primary",
-                    CAP_CHROME_EXTENSION_URL,
+                    THEO_CHROME_EXTENSION_URL,
                     "chrome_extension"
                   )
                 }

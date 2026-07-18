@@ -24,8 +24,8 @@ type ProductButtonVariant =
   | "ghost"
   | "gray"
   | "dark"
-  | "darkgradient"
-  | "radialblue"
+  | "solid"
+  | "accent"
   | "transparent"
 
 type ProductButtonSize = "xs" | "sm" | "md" | "lg" | "icon"
@@ -52,8 +52,8 @@ const variantMap = {
   ghost: "ghost",
   gray: "secondary",
   dark: "default",
-  darkgradient: "default",
-  radialblue: "default",
+  solid: "default",
+  accent: "default",
   transparent: "ghost",
 } as const
 
@@ -137,7 +137,6 @@ export function Logo({
   white?: boolean
   hideLogoName?: boolean
   style?: CSSProperties
-  viewBoxDimensions?: `${string} ${string} ${string} ${string}`
 }) {
   const ProductLogoIcon = productLogoIcons[productConfig.logoIcon]
 

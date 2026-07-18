@@ -63,7 +63,7 @@ export const selfHostedScreenRecordingContent: SeoPageContent = {
       "Both Theo recording modes work fully with self-hosted storage — choose the right workflow for your team",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record and get a shareable link the moment you stop. With self-hosted storage, that link points to video in your S3 bucket. Ideal for quick team updates, bug reports, and async communication where speed matters and data residency is required.",

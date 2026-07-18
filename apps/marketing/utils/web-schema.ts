@@ -1,7 +1,7 @@
 import { productConfig } from "@workspace/config/public"
 
-import type { Testimonial } from "@/data/testimonials"
-import { testimonials as allTestimonials } from "@/data/testimonials"
+import type { Testimonial } from "@/content/testimonials"
+import { testimonials as allTestimonials } from "@/content/testimonials"
 
 const productUrl = (path = "") => `${productConfig.siteUrl}${path}`
 

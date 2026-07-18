@@ -60,7 +60,7 @@ export const screenRecordingContent: SeoPageContent = {
       "Theo adapts to how you work — whether you need a quick share or a polished production",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record and share your screen in seconds with a shareable link. Perfect for async updates, bug reports, and quick demos. Free plan includes up to 5-minute recordings with built-in thread commenting.",

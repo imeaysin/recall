@@ -46,7 +46,7 @@ export const LicenseDeactivationPage = () => {
               value={licenseKey}
               onChange={(e) => setLicenseKey(e.target.value)}
               placeholder="XXXX-XXXX-XXXX-XXXX"
-              className="ring-offset-gray-3 flex h-[44px] w-full rounded-xl border border-border bg-muted px-4 text-base font-thin text-muted-foreground ring-0 ring-ring outline-0 transition-all duration-200 placeholder:text-muted-foreground placeholder:transition-all placeholder:duration-200 autofill:bg-muted hover:border-border hover:bg-muted hover:placeholder:text-muted-foreground focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 md:text-sm"
+              className="flex h-[44px] w-full rounded-xl border border-border bg-muted px-4 text-base font-thin text-muted-foreground ring-0 ring-ring ring-offset-background outline-0 transition-all duration-200 placeholder:text-muted-foreground placeholder:transition-all placeholder:duration-200 autofill:bg-muted hover:border-border hover:bg-muted hover:placeholder:text-muted-foreground focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 md:text-sm"
             />
           </div>
           <div>
@@ -62,7 +62,7 @@ export const LicenseDeactivationPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="ring-offset-gray-3 flex h-[44px] w-full rounded-xl border border-border bg-muted px-4 text-base font-thin text-muted-foreground ring-0 ring-ring outline-0 transition-all duration-200 placeholder:text-muted-foreground placeholder:transition-all placeholder:duration-200 autofill:bg-muted hover:border-border hover:bg-muted hover:placeholder:text-muted-foreground focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 md:text-sm"
+              className="flex h-[44px] w-full rounded-xl border border-border bg-muted px-4 text-base font-thin text-muted-foreground ring-0 ring-ring ring-offset-background outline-0 transition-all duration-200 placeholder:text-muted-foreground placeholder:transition-all placeholder:duration-200 autofill:bg-muted hover:border-border hover:bg-muted hover:placeholder:text-muted-foreground focus:border-border focus:bg-muted focus:ring-1 focus:ring-ring focus:ring-offset-2 md:text-sm"
             />
           </div>
           <Button type="submit" variant="primary" className="w-full">

@@ -60,7 +60,7 @@ export const bestScreenRecorderContent: SeoPageContent = {
       "Theo adapts to your workflow — whether you need a quick share or a polished, professional video",
     modes: [
       {
-        icon: <Zap fill="yellow" className="mb-4 size-8" strokeWidth={1.5} />,
+        icon: <Zap className="mb-4 size-8 text-primary" strokeWidth={1.5} />,
         title: "Instant Mode",
         description:
           "Record and share your screen in seconds with a link ready the moment you stop. Perfect for bug reports, async updates, and quick demos. Free plan includes recordings up to 5 minutes with built-in thread commenting.",
@@ -86,7 +86,7 @@ export const bestScreenRecorderContent: SeoPageContent = {
     rows: [
       [
         "Price",
-        { text: "Free / $9.99/mo", status: "positive" },
+        { text: "Free / from $8.16/mo", status: "positive" },
         { text: "Free", status: "positive" },
         { text: "Free / $18/mo", status: "warning" },
         { text: "$299.99 one-time", status: "negative" },
@@ -156,7 +156,7 @@ export const bestScreenRecorderContent: SeoPageContent = {
     {
       title: "Theo vs Loom",
       description:
-        "Theo starts at $9.99/month compared to Loom's $18/month, and Theo's Studio Mode is completely free with no watermarks. Theo is also open-source, supports custom S3 storage, and records at up to 4K — quality that Loom's free and paid plans don't match. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
+        "Theo starts at $8.16/month when billed annually compared to Loom's $18/month, and Theo's Studio Mode is completely free with no watermarks. Theo is also open-source, supports custom S3 storage, and records at up to 4K — quality that Loom's free and paid plans don't match. <a href='/loom-alternative'>See the full Theo vs Loom comparison</a>.",
     },
     {
       title: "Theo vs Camtasia",
