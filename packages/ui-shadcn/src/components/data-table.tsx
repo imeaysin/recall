@@ -41,6 +41,8 @@ type DataTableProps<TData, TValue> = {
    */
   filterFn?: (row: TData, query: string) => boolean
   filterPlaceholder?: string
+  /** Extra controls rendered beside the filter (e.g. faceted filters). */
+  toolbar?: React.ReactNode
   className?: string
   getRowId?: (originalRow: TData, index: number, parent?: unknown) => string
   initialSorting?: SortingState
@@ -55,6 +57,7 @@ function DataTable<TData, TValue>({
   filterColumn,
   filterFn,
   filterPlaceholder = "Filter...",
+  toolbar,
   className,
   getRowId,
   initialSorting = [],
@@ -129,7 +132,7 @@ function DataTable<TData, TValue>({
 
   return (
     <div className={cn("flex w-full flex-col gap-4", className)}>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {showFilter ? (
           <Input
             placeholder={filterPlaceholder}
@@ -138,6 +141,7 @@ function DataTable<TData, TValue>({
             className="max-w-sm"
           />
         ) : null}
+        {toolbar}
         <DataTableViewOptions table={table} />
       </div>
       <div className="overflow-hidden rounded-lg border">

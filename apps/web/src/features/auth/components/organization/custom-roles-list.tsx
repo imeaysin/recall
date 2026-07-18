@@ -1,6 +1,12 @@
+"use client"
+
+import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { useMemo } from "react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { DataTable } from "@workspace/ui-shadcn/components/data-table"
+import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,14 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui-shadcn/components/dropdown-menu"
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemTitle,
-} from "@workspace/ui-shadcn/components/item"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import {
   countPermissions,
@@ -87,6 +85,58 @@ function RoleActionsMenu({
   )
 }
 
+function getCustomRolesColumns({
+  canDeleteRoles,
+  canUpdateRoles,
+  onDelete,
+  onEdit,
+}: Omit<CustomRolesListProps, "customRoles">): ColumnDef<OrganizationRole>[] {
+  return [
+    {
+      id: "role",
+      accessorFn: (row) => formatRoleLabel(row.role),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Role" />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">{formatRoleLabel(row.original.role)}</div>
+      ),
+    },
+    {
+      id: "permissions",
+      accessorFn: (row) => countPermissions(row.permission),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Permissions" />
+      ),
+      cell: ({ row }) => {
+        const total = countPermissions(row.original.permission)
+        return (
+          <div className="flex flex-col gap-2">
+            <span className="text-muted-foreground">
+              {total} permission{total === 1 ? "" : "s"}
+            </span>
+            <PermissionChips permission={row.original.permission} />
+          </div>
+        )
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      enableSorting: false,
+      cell: ({ row }) => (
+        <RoleActionsMenu
+          canDeleteRoles={canDeleteRoles}
+          canUpdateRoles={canUpdateRoles}
+          role={row.original}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
+      ),
+    },
+  ]
+}
+
 export function CustomRolesList({
   canDeleteRoles,
   canUpdateRoles,
@@ -94,31 +144,25 @@ export function CustomRolesList({
   onDelete,
   onEdit,
 }: CustomRolesListProps) {
+  const columns = useMemo(
+    () =>
+      getCustomRolesColumns({
+        canDeleteRoles,
+        canUpdateRoles,
+        onDelete,
+        onEdit,
+      }),
+    [canDeleteRoles, canUpdateRoles, onDelete, onEdit]
+  )
+
   return (
-    <ItemGroup>
-      {customRoles.map((role) => {
-        const total = countPermissions(role.permission)
-        return (
-          <Item key={role.id} role="listitem" variant="outline">
-            <ItemContent>
-              <ItemTitle>{formatRoleLabel(role.role)}</ItemTitle>
-              <ItemDescription>
-                {total} permission{total === 1 ? "" : "s"}
-              </ItemDescription>
-              <PermissionChips permission={role.permission} />
-            </ItemContent>
-            <ItemActions>
-              <RoleActionsMenu
-                canDeleteRoles={canDeleteRoles}
-                canUpdateRoles={canUpdateRoles}
-                role={role}
-                onDelete={onDelete}
-                onEdit={onEdit}
-              />
-            </ItemActions>
-          </Item>
-        )
-      })}
-    </ItemGroup>
+    <DataTable
+      columns={columns}
+      data={[...customRoles]}
+      filterColumn="role"
+      filterPlaceholder="Filter roles..."
+      getRowId={(role) => role.id}
+      initialSorting={[{ id: "role", desc: false }]}
+    />
   )
 }

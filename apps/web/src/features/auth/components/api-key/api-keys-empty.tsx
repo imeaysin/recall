@@ -19,7 +19,7 @@ export function ApiKeysEmpty() {
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
 
   return (
-    <Empty className="border-0 py-8">
+    <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Key />

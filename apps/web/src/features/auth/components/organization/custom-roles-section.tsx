@@ -1,6 +1,7 @@
 import { Plus, Shield } from "lucide-react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
 import {
   Empty,
   EmptyContent,
@@ -9,12 +10,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui-shadcn/components/empty"
-import {
-  Item,
-  ItemContent,
-  ItemGroup,
-} from "@workspace/ui-shadcn/components/item"
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import { SectionHeader } from "@/components/page-header"
 import { CustomRolesList } from "@/features/auth/components/organization/custom-roles-list"
@@ -63,18 +58,7 @@ function CustomRolesEmpty({
 
 function renderCustomRolesBody(props: CustomRolesSectionProps) {
   if (props.isPending) {
-    return (
-      <ItemGroup>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <Item key={index} variant="outline">
-            <ItemContent>
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-3 w-48" />
-            </ItemContent>
-          </Item>
-        ))}
-      </ItemGroup>
-    )
+    return <DataTableSkeleton columnCount={3} />
   }
   if (props.customRoles.length === 0) {
     return (

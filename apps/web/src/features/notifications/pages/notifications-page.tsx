@@ -4,6 +4,7 @@ import {
   AlertTitle,
 } from "@workspace/ui-shadcn/components/alert"
 import { Button } from "@workspace/ui-shadcn/components/button"
+import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
 import {
   Empty,
   EmptyDescription,
@@ -11,13 +12,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui-shadcn/components/empty"
-import {
-  Item,
-  ItemContent,
-  ItemGroup,
-  ItemMedia,
-} from "@workspace/ui-shadcn/components/item"
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
 import { BellIcon, CheckCheckIcon, CircleAlertIcon } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { NotificationList } from "@/features/notifications/components/notification-list"
@@ -63,22 +57,7 @@ export function NotificationsPage() {
       />
 
       <div className="flex flex-col gap-4">
-        {isLoading ? (
-          <ItemGroup>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Item key={index} variant="outline">
-                <ItemMedia>
-                  <Skeleton className="size-2 rounded-full" />
-                </ItemMedia>
-                <ItemContent>
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-3 w-full max-w-sm" />
-                  <Skeleton className="h-3 w-20" />
-                </ItemContent>
-              </Item>
-            ))}
-          </ItemGroup>
-        ) : null}
+        {isLoading ? <DataTableSkeleton columnCount={4} /> : null}
 
         {isError ? (
           <Alert variant="destructive">

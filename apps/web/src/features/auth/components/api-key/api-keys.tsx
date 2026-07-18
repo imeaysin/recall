@@ -2,22 +2,25 @@
 
 import {
   type ApiKeyAuthClient,
+  type ListedApiKey,
   useAuth,
   useAuthPlugin,
   useListApiKeys,
 } from "@better-auth-ui/react"
-import { useState } from "react"
+import type { ColumnDef } from "@tanstack/react-table"
+import { X } from "lucide-react"
+import { useMemo, useState } from "react"
 
 import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { ItemGroup, ItemSeparator } from "@workspace/ui-shadcn/components/item"
+import { DataTable } from "@workspace/ui-shadcn/components/data-table"
+import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
+import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 import { cn } from "@workspace/ui-shadcn/lib/utils"
 import { SectionHeader } from "@/components/page-header"
-import { ApiKey } from "@/features/auth/components/api-key/api-key"
-import { ApiKeySkeleton } from "@/features/auth/components/api-key/api-key-skeleton"
 import { ApiKeysEmpty } from "@/features/auth/components/api-key/api-keys-empty"
 import { CreateApiKeyDialog } from "@/features/auth/components/api-key/create-api-key-dialog"
+import { DeleteApiKeyDialog } from "@/features/auth/components/api-key/delete-api-key-dialog"
 
 export type ApiKeysProps = {
   className?: string
@@ -29,6 +32,105 @@ export type ApiKeysProps = {
   hideCreate?: boolean
   /** Hide the per-row delete button on listed keys. */
   hideDelete?: boolean
+}
+
+function ApiKeyDeleteAction({
+  apiKey,
+  organizationId,
+}: {
+  apiKey: ListedApiKey
+  organizationId?: string
+}) {
+  const { localization } = useAuth()
+  const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setDeleteOpen(true)}
+        aria-label={apiKeyLocalization.deleteApiKey}
+      >
+        <X data-icon="inline-start" />
+        {localization.settings.delete}
+      </Button>
+      <DeleteApiKeyDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        apiKey={apiKey}
+        organizationId={organizationId}
+      />
+    </>
+  )
+}
+
+function getApiKeysColumns({
+  hideDelete,
+  organizationId,
+  nameFallback,
+}: {
+  hideDelete?: boolean
+  organizationId?: string
+  nameFallback: string
+}): ColumnDef<ListedApiKey>[] {
+  const columns: ColumnDef<ListedApiKey>[] = [
+    {
+      id: "name",
+      accessorFn: (row) => row.name || nameFallback,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">{row.original.name || nameFallback}</div>
+      ),
+    },
+    {
+      id: "preview",
+      accessorFn: (row) => row.start,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Key" />
+      ),
+      cell: ({ row }) => (
+        <span className="font-mono text-muted-foreground">
+          {row.original.start}
+          {"*".repeat(16)}
+        </span>
+      ),
+      enableSorting: false,
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created" />
+      ),
+      cell: ({ row }) => (
+        <time className="whitespace-nowrap text-muted-foreground">
+          {new Date(row.original.createdAt).toLocaleString(undefined, {
+            dateStyle: "medium",
+            timeStyle: "short",
+          })}
+        </time>
+      ),
+    },
+  ]
+
+  if (!hideDelete) {
+    columns.push({
+      id: "actions",
+      enableHiding: false,
+      enableSorting: false,
+      cell: ({ row }) => (
+        <ApiKeyDeleteAction
+          apiKey={row.original}
+          organizationId={organizationId}
+        />
+      ),
+    })
+  }
+
+  return columns
 }
 
 export function ApiKeys({
@@ -55,36 +157,15 @@ export function ApiKeys({
   const [createOpen, setCreateOpen] = useState(false)
   const apiKeys = listData?.apiKeys ?? []
 
-  function renderCardContent() {
-    if (isPending) {
-      return (
-        <ItemGroup className="gap-0">
-          <ApiKeySkeleton />
-          <ItemSeparator />
-          <ApiKeySkeleton />
-        </ItemGroup>
-      )
-    }
-
-    if (apiKeys.length === 0) {
-      return <ApiKeysEmpty />
-    }
-
-    return (
-      <ItemGroup className="gap-0">
-        {apiKeys.map((key, index) => (
-          <div key={key.id}>
-            {index > 0 ? <ItemSeparator /> : null}
-            <ApiKey
-              apiKey={key}
-              hideDelete={hideDelete}
-              organizationId={organizationId}
-            />
-          </div>
-        ))}
-      </ItemGroup>
-    )
-  }
+  const columns = useMemo(
+    () =>
+      getApiKeysColumns({
+        hideDelete,
+        organizationId,
+        nameFallback: apiKeyLocalization.apiKey,
+      }),
+    [hideDelete, organizationId, apiKeyLocalization.apiKey]
+  )
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
@@ -103,9 +184,22 @@ export function ApiKeys({
         title={apiKeyLocalization.apiKeys}
       />
 
-      <Card>
-        <CardContent>{renderCardContent()}</CardContent>
-      </Card>
+      {isPending ? (
+        <DataTableSkeleton columnCount={hideDelete ? 3 : 4} />
+      ) : null}
+
+      {!isPending && apiKeys.length === 0 ? <ApiKeysEmpty /> : null}
+
+      {!isPending && apiKeys.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={apiKeys}
+          filterColumn="name"
+          filterPlaceholder="Filter API keys..."
+          getRowId={(apiKey) => apiKey.id}
+          initialSorting={[{ id: "createdAt", desc: true }]}
+        />
+      ) : null}
 
       {!hideCreate ? (
         <CreateApiKeyDialog
