@@ -1,6 +1,6 @@
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { Badge } from "@workspace/ui/components/badge"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Separator } from "@workspace/ui/components/separator"
 import {
   BUILT_IN_ROLE_DESCRIPTIONS,
   STATIC_ORG_ROLES,

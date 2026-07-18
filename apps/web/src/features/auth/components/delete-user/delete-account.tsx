@@ -21,15 +21,15 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Button, buttonVariants } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Label } from "@workspace/ui-shadcn/components/label"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/alert-dialog"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Field, FieldError } from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type DeleteAccountProps = {
   className?: string

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -8,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/card"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
 import { resendVerificationEmail } from "@/features/auth/lib/resend-verification-email"
 

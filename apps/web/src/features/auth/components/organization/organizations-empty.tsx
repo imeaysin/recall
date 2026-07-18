@@ -3,7 +3,7 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { Briefcase } from "lucide-react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Empty,
   EmptyContent,
@@ -11,7 +11,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
+} from "@workspace/ui/components/empty"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 export type OrganizationsEmptyProps = {

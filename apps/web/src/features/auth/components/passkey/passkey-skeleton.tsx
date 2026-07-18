@@ -1,4 +1,4 @@
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 
 export function PasskeySkeleton() {
   return (

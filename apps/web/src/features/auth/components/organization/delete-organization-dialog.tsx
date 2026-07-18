@@ -20,10 +20,10 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/alert-dialog"
+import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { OrganizationView } from "@/features/auth/components/organization/organization-view"
 

@@ -3,15 +3,15 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { useSyncExternalStore, type ReactNode } from "react"
 
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { FieldLegend, FieldSet } from "@workspace/ui-shadcn/components/field"
-import { Label } from "@workspace/ui-shadcn/components/label"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { FieldLegend, FieldSet } from "@workspace/ui/components/field"
+import { Label } from "@workspace/ui/components/label"
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@workspace/ui-shadcn/components/radio-group"
+} from "@workspace/ui/components/radio-group"
 import { themePlugin } from "@/lib/auth/theme-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type AppearanceProps = {
   className?: string

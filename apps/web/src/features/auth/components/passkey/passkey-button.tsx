@@ -10,10 +10,10 @@ import {
 import { useIsMutating } from "@tanstack/react-query"
 import { Fingerprint } from "lucide-react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Button } from "@workspace/ui/components/button"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type PasskeyButtonProps = {
   /** @remarks `AuthView` */

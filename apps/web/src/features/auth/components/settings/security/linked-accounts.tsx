@@ -1,10 +1,10 @@
 "use client"
 
 import { useAuth, useListAccounts } from "@better-auth-ui/react"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Separator } from "@workspace/ui/components/separator"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { cn } from "@workspace/ui/lib/utils"
 import { LinkedAccount } from "@/features/auth/components/settings/security/linked-account"
 
 export type LinkedAccountsProps = {

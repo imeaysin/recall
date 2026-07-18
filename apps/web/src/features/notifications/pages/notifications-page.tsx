@@ -2,16 +2,16 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@workspace/ui-shadcn/components/alert"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
+} from "@workspace/ui/components/alert"
+import { Button } from "@workspace/ui/components/button"
+import { DataTableSkeleton } from "@workspace/ui/components/data-table-skeleton"
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
+} from "@workspace/ui/components/empty"
 import { BellIcon, CheckCheckIcon, CircleAlertIcon } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { NotificationList } from "@/features/notifications/components/notification-list"

@@ -3,8 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Member, Organization, User } from "better-auth/client"
 
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
+import { Badge } from "@workspace/ui/components/badge"
+import { DataTableColumnHeader } from "@workspace/ui/components/data-table-column-header"
 import { UserView } from "@/features/auth/components/user/user-view"
 import { OrganizationMemberActions } from "@/features/auth/components/organization/organization-member-actions"
 

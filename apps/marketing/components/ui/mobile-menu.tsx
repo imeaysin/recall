@@ -2,7 +2,7 @@
 
 import { Button, Logo } from "@/components/product-ui"
 import { productConfig } from "@workspace/config/public"
-import { cn as classNames } from "@workspace/ui-shadcn/lib/utils"
+import { cn as classNames } from "@workspace/ui/lib/utils"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"

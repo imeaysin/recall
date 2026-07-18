@@ -1,8 +1,8 @@
 import { QueryClientProvider } from "@tanstack/react-query"
 import { useState, type ReactNode } from "react"
-import { Toaster } from "@workspace/ui-shadcn/components/sonner"
-import { ThemeProvider } from "@workspace/ui-shadcn/components/theme-provider"
-import { TooltipProvider } from "@workspace/ui-shadcn/components/tooltip"
+import { Toaster } from "@workspace/ui/components/sonner"
+import { ThemeProvider } from "@workspace/ui/components/theme-provider"
+import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { createQueryClient } from "@/lib/query-client"
 import { AppErrorBoundary } from "./app-error-boundary"
 

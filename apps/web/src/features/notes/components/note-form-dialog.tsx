@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CreateNoteSchema, type NoteResponse } from "@workspace/contracts"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
   DialogClose,
@@ -9,16 +9,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui-shadcn/components/dialog"
+} from "@workspace/ui/components/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { Textarea } from "@workspace/ui-shadcn/components/textarea"
+} from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { Textarea } from "@workspace/ui/components/textarea"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"

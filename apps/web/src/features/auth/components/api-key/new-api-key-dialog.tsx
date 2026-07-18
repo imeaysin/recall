@@ -14,13 +14,13 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
+} from "@workspace/ui/components/alert-dialog"
 import {
   InputGroup,
   InputGroupButton,
   InputGroupInput,
-} from "@workspace/ui-shadcn/components/input-group"
-import { Label } from "@workspace/ui-shadcn/components/label"
+} from "@workspace/ui/components/input-group"
+import { Label } from "@workspace/ui/components/label"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 
 export type NewApiKeyDialogProps = {

@@ -19,11 +19,11 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/alert-dialog"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { UserView } from "@/features/auth/components/user/user-view"
 

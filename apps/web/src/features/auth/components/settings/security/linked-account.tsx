@@ -12,10 +12,10 @@ import type { Account, SocialProvider } from "better-auth"
 import { Link2, Link2Off, Plug } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Button } from "@workspace/ui/components/button"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type LinkedAccountProps = {
   account?: Account

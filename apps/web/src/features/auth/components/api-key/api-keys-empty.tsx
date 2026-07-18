@@ -9,7 +9,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
+} from "@workspace/ui/components/empty"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 
 /**

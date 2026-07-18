@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { useSession, signOut } from "@workspace/auth/client"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
 

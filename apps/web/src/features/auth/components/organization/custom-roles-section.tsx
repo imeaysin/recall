@@ -1,7 +1,7 @@
 import { Plus, Shield } from "lucide-react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
+import { Button } from "@workspace/ui/components/button"
+import { DataTableSkeleton } from "@workspace/ui/components/data-table-skeleton"
 import {
   Empty,
   EmptyContent,
@@ -9,7 +9,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
+} from "@workspace/ui/components/empty"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import { SectionHeader } from "@/components/page-header"
 import { CustomRolesList } from "@/features/auth/components/organization/custom-roles-list"

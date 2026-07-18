@@ -7,9 +7,9 @@ import {
 } from "@better-auth-ui/react"
 import type { ComponentProps } from "react"
 
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Separator } from "@workspace/ui/components/separator"
+import { cn } from "@workspace/ui/lib/utils"
 import { SectionHeader } from "@/components/page-header"
 import { DeleteOrganization } from "@/features/auth/components/organization/delete-organization"
 import { DeleteOrganizationSkeleton } from "@/features/auth/components/organization/delete-organization-skeleton"

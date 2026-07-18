@@ -1,4 +1,4 @@
-import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { Badge } from "@workspace/ui/components/badge"
 import {
   PERMISSION_RESOURCE_LABELS,
   formatActionLabel,

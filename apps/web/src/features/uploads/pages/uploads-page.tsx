@@ -1,21 +1,17 @@
 import { useRef, useState, type ChangeEvent } from "react"
 import type { UploadResponse } from "@workspace/contracts"
 import { UPLOAD_MAX_BYTES } from "@workspace/contracts"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/card"
+import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { UploadIcon } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { useUploadFileMutation } from "@/features/uploads/hooks/use-upload"

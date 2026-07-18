@@ -4,12 +4,8 @@ import { useAuthPlugin } from "@better-auth-ui/react"
 import { Monitor, Moon, PaletteIcon, Sun } from "lucide-react"
 import { useRef } from "react"
 
-import { DropdownMenuItem } from "@workspace/ui-shadcn/components/dropdown-menu"
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@workspace/ui-shadcn/components/tabs"
+import { DropdownMenuItem } from "@workspace/ui/components/dropdown-menu"
+import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { themePlugin } from "@/lib/auth/theme-plugin"
 
 /**

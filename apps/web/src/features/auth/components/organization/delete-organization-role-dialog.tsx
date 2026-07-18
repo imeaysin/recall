@@ -7,8 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/alert-dialog"
+import { Spinner } from "@workspace/ui/components/spinner"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import { formatRoleLabel } from "@/features/organization/lib/organization-roles"
 

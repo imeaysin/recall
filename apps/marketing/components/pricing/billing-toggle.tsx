@@ -1,10 +1,10 @@
 "use client"
 
-import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { Badge } from "@workspace/ui/components/badge"
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@workspace/ui-shadcn/components/toggle-group"
+} from "@workspace/ui/components/toggle-group"
 
 interface BillingToggleOption {
   value: string

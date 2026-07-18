@@ -3,10 +3,10 @@
 import {
   Button as SharedButton,
   buttonVariants,
-} from "@workspace/ui-shadcn/components/button"
-import { Kbd } from "@workspace/ui-shadcn/components/kbd"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/button"
+import { Kbd } from "@workspace/ui/components/kbd"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { cn } from "@workspace/ui/lib/utils"
 import { productConfig } from "@workspace/config/public"
 import { Webhook } from "lucide-react"
 import type { CSSProperties, ReactNode } from "react"

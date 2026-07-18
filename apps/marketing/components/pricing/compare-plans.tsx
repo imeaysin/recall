@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/product-ui"
-import { cn as classNames } from "@workspace/ui-shadcn/lib/utils"
+import { cn as classNames } from "@workspace/ui/lib/utils"
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Fragment } from "react"

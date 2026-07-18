@@ -17,16 +17,16 @@ import {
 } from "lucide-react"
 import { type ComponentProps, type ReactElement, useState } from "react"
 
-import { buttonVariants } from "@workspace/ui-shadcn/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import { UserView } from "@/features/auth/components/user/user-view"
 import { CreateOrganizationDialog } from "@/features/auth/components/organization/create-organization-dialog"
 import { OrganizationView } from "@/features/auth/components/organization/organization-view"

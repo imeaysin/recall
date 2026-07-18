@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useState } from "react"
 import { authClient, useSession } from "@workspace/auth/client"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/card"
+import { Spinner } from "@workspace/ui/components/spinner"
 import {
   acceptInvitationPath,
   defaultAuthenticatedRoute,

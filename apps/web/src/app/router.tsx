@@ -1,5 +1,5 @@
 import { createBrowserRouter, Link, Navigate, Outlet } from "react-router-dom"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import { PageNotFound } from "@/components/page-not-found"
 import { AppLayout } from "@/components/layouts/app-layout"
 import { AuthLayout } from "@/components/layouts/auth-layout"

@@ -4,15 +4,15 @@ import { useForm, useWatch } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
 import {
   DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui-shadcn/components/dialog"
+} from "@workspace/ui/components/dialog"
 import {
   Field,
   FieldDescription,
@@ -21,9 +21,9 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { RolePermissionPicker } from "@/features/organization/components/role-permission-picker"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import {

@@ -7,7 +7,7 @@ import {
   ForgotPasswordSchema,
   type ForgotPasswordInput,
 } from "@workspace/contracts"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -15,15 +15,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
+} from "@workspace/ui/components/card"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
 
 export function ForgotPasswordPage() {

@@ -1,6 +1,6 @@
 import "@/lib/auth/auth-plugin"
 import { authClient } from "@workspace/auth/client"
-import { useTheme } from "@workspace/ui-shadcn/components/theme-provider"
+import { useTheme } from "@workspace/ui/components/theme-provider"
 import { useQueryClient } from "@tanstack/react-query"
 import { useMemo, type ReactNode } from "react"
 import { Link, useNavigate } from "react-router-dom"

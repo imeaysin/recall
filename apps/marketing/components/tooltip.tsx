@@ -1,13 +1,13 @@
 "use client"
 
-import { cn as classNames } from "@workspace/ui-shadcn/lib/utils"
-import { Kbd, KbdGroup } from "@workspace/ui-shadcn/components/kbd"
+import { cn as classNames } from "@workspace/ui/lib/utils"
+import { Kbd, KbdGroup } from "@workspace/ui/components/kbd"
 import {
   Tooltip as TooltipRoot,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@workspace/ui-shadcn/components/tooltip"
+} from "@workspace/ui/components/tooltip"
 import type * as React from "react"
 
 const Tooltip = ({

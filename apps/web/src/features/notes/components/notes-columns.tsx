@@ -5,9 +5,9 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from "lucide-react"
 
 import { dates } from "@/lib/dates"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Checkbox } from "@workspace/ui-shadcn/components/checkbox"
-import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
+import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
+import { DataTableColumnHeader } from "@workspace/ui/components/data-table-column-header"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 
 type NotesColumnsOptions = {
   canUpdate: boolean

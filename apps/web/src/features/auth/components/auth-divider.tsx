@@ -1,4 +1,4 @@
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { Separator } from "@workspace/ui/components/separator"
 
 export function AuthDivider() {
   return (

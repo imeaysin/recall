@@ -23,7 +23,7 @@ packages/
   payment/        Payment adapters (bKash / SSLCommerz) — wired in API
   redis/          ioredis client factory
   storage/        File upload providers (local / S3)
-  ui-shadcn/      Shared React UI (shadcn + app shell)
+  ui/      Shared React UI (shadcn + app shell)
 tooling/        eslint-config, typescript-config, vitest-config
 docs/           Human docs (architecture, features, deployment)
 ```

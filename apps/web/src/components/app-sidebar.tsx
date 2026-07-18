@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { AppSidebar as UiAppSidebar } from "@workspace/ui-shadcn/components/app-sidebar"
+import { AppSidebar as UiAppSidebar } from "@workspace/ui/components/app-sidebar"
 import type { ComponentProps } from "react"
 import { CreateOrganizationDialog } from "@/features/shell/components/create-organization-dialog"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"

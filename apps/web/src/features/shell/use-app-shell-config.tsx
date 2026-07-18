@@ -17,7 +17,7 @@ import type {
   AppSidebarProject,
   AppSidebarTeam,
   AppSidebarUserMenuItem,
-} from "@workspace/ui-shadcn/components/app-sidebar"
+} from "@workspace/ui/components/app-sidebar"
 
 type OrganizationSummary = {
   readonly id: string

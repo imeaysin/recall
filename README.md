@@ -11,7 +11,7 @@ Full-stack monorepo template: NestJS API, Vite web app, Next.js marketing site, 
 | Marketing | `apps/marketing` | Next.js 16                         | 3000 |
 | Mobile    | `apps/mobile`    | Expo 56, Expo Router               | 8081 |
 
-Shared packages live in `packages/` (`auth`, `config`, `contracts`, `db`, `email`, `ui-shadcn`, `storage`, `payment`, …). Tooling presets are in `tooling/`.
+Shared packages live in `packages/` (`auth`, `config`, `contracts`, `db`, `email`, `ui`, `storage`, `payment`, …). Tooling presets are in `tooling/`.
 
 ## Quick start
 
@@ -84,16 +84,16 @@ Sign in → **Dashboard → Notes** to list/create/delete notes via the API. Or 
 
 ## Adding UI components
 
-Components live in `packages/ui-shadcn`. Use the shadcn CLI from the repo root:
+Components live in `packages/ui`. Use the shadcn CLI from the repo root:
 
 ```bash
-pnpm dlx shadcn@latest add button -c packages/ui-shadcn
+pnpm dlx shadcn@latest add button -c packages/ui
 ```
 
 Import in any app:
 
 ```tsx
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 ```
 
 ## Adding an API module
@@ -157,12 +157,12 @@ This template follows official patterns for each layer of the stack.
 
 ### React (`apps/web`)
 
-| Pattern                                                                 | Where                       |
-| ----------------------------------------------------------------------- | --------------------------- |
-| Vite SPA for authenticated product (client-side routing)                | `apps/web`                  |
-| `StrictMode`, error boundary, TanStack Query                            | `main.tsx`, `providers.tsx` |
-| Root `.env` via Vite `envDir`                                           | `vite.config.ts`            |
-| Shared UI from `@workspace/ui-shadcn` (source, no duplicate components) | imports                     |
+| Pattern                                                          | Where                       |
+| ---------------------------------------------------------------- | --------------------------- |
+| Vite SPA for authenticated product (client-side routing)         | `apps/web`                  |
+| `StrictMode`, error boundary, TanStack Query                     | `main.tsx`, `providers.tsx` |
+| Root `.env` via Vite `envDir`                                    | `vite.config.ts`            |
+| Shared UI from `@workspace/ui` (source, no duplicate components) | imports                     |
 
 **Why Vite for web and Next for marketing?** The product app is a SPA behind auth (React Router). Marketing is SSR/static-friendly public pages — each framework fits its job.
 
@@ -173,7 +173,7 @@ This template follows official patterns for each layer of the stack.
 | `@workspace/config`        | Single root `.env`, Zod validation, dev URL constants                                             |
 | `@workspace/contracts`     | Zod schemas shared by API + clients                                                               |
 | `@workspace/auth`          | Better Auth config + Nest/web/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
-| `@workspace/ui-shadcn`     | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                |
+| `@workspace/ui`            | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                |
 | `@workspace/db`            | Shared Mongoose connection for API and auth                                                       |
 | `@workspace/cache`         | Cache abstraction (memory / Redis)                                                                |
 | `@workspace/notifications` | Push delivery (console / expo)                                                                    |

@@ -3,8 +3,8 @@
 import { useState, type ComponentProps } from "react"
 import { useAuthPlugin } from "@better-auth-ui/react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Button } from "@workspace/ui/components/button"
+import { cn } from "@workspace/ui/lib/utils"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { PageHeader } from "@/components/page-header"
 import { Organizations } from "@/features/auth/components/organization/organizations"

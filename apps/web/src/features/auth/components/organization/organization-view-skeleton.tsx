@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from "react"
 
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { cn } from "@workspace/ui/lib/utils"
 import {
   OrganizationLogo,
   type OrganizationLogoSize,

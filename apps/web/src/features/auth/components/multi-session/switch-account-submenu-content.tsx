@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuSubContent,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
 

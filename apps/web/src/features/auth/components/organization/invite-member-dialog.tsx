@@ -19,19 +19,19 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Field, FieldError } from "@workspace/ui-shadcn/components/field"
-import { Input } from "@workspace/ui-shadcn/components/input"
-import { Label } from "@workspace/ui-shadcn/components/label"
+} from "@workspace/ui/components/alert-dialog"
+import { Button } from "@workspace/ui/components/button"
+import { Field, FieldError } from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui-shadcn/components/select"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/select"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 /** Props for the `InviteMemberDialog` component. */

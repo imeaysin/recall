@@ -9,7 +9,7 @@ import {
 } from "@better-auth-ui/react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { DeleteOrganizationDialog } from "./delete-organization-dialog"
 import { DeleteOrganizationSkeleton } from "./delete-organization-skeleton"

@@ -11,19 +11,19 @@ import {
 import { Filter, X } from "lucide-react"
 import { type ComponentProps, useMemo, useState } from "react"
 
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { buttonVariants } from "@workspace/ui-shadcn/components/button"
-import { DataTable } from "@workspace/ui-shadcn/components/data-table"
-import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
+import { Badge } from "@workspace/ui/components/badge"
+import { buttonVariants } from "@workspace/ui/components/button"
+import { DataTable } from "@workspace/ui/components/data-table"
+import { DataTableSkeleton } from "@workspace/ui/components/data-table-skeleton"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import { SectionHeader } from "@/components/page-header"
 import { InviteMemberDialog } from "@/features/auth/components/organization/invite-member-dialog"
 import {

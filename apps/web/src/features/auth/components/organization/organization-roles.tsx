@@ -12,7 +12,7 @@ import {
   useOrganizationRoles,
   type OrganizationRole,
 } from "@/features/organization/hooks/use-organization-roles"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import { BuiltInRolesSection } from "@/features/auth/components/organization/built-in-roles-section"
 import { CustomRolesSection } from "@/features/auth/components/organization/custom-roles-section"
 import { DeleteOrganizationRoleDialog } from "@/features/auth/components/organization/delete-organization-role-dialog"

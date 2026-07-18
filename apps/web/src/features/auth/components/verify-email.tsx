@@ -4,16 +4,16 @@ import { useAuth, useSendVerificationEmail } from "@better-auth-ui/react"
 import { useEffect, useState, useSyncExternalStore } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
-import { FieldDescription } from "@workspace/ui-shadcn/components/field"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/card"
+import { FieldDescription } from "@workspace/ui/components/field"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { cn } from "@workspace/ui/lib/utils"
 import { OpenEmailButton } from "@/features/auth/components/open-email-button"
 
 export type VerifyEmailProps = {

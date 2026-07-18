@@ -18,7 +18,7 @@
     "@rive-app/canvas": "2.38.5",
     "@rive-app/react-canvas": "^4.18.7",
     "@workspace/config": "workspace:*",
-    "@workspace/ui-shadcn": "workspace:*",
+    "@workspace/ui": "workspace:*",
     "clsx": "^2.1.1",
     "date-fns": "catalog:",
     "framer-motion": "^11.18.2",

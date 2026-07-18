@@ -4,7 +4,7 @@ import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
 import { useState } from "react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 
 import {

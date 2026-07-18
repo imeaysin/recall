@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 
 type PageHeaderProps = {
   title: string

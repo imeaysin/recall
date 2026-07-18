@@ -9,13 +9,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@workspace/ui-shadcn/components/breadcrumb"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+} from "@workspace/ui/components/breadcrumb"
+import { Separator } from "@workspace/ui/components/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@workspace/ui-shadcn/components/sidebar"
+} from "@workspace/ui/components/sidebar"
 import { Link, Outlet, useLocation } from "react-router-dom"
 
 export function AppLayout() {

@@ -3,15 +3,15 @@
 import type { NotificationResponse } from "@workspace/contracts"
 import type { ColumnDef } from "@tanstack/react-table"
 import { dates } from "@/lib/dates"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Badge } from "@workspace/ui-shadcn/components/badge"
-import { DataTable } from "@workspace/ui-shadcn/components/data-table"
-import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
+import { Button } from "@workspace/ui/components/button"
+import { Badge } from "@workspace/ui/components/badge"
+import { DataTable } from "@workspace/ui/components/data-table"
+import { DataTableColumnHeader } from "@workspace/ui/components/data-table-column-header"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@workspace/ui-shadcn/components/tooltip"
+} from "@workspace/ui/components/tooltip"
 import { CheckIcon, ExternalLinkIcon, Trash2Icon } from "lucide-react"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"

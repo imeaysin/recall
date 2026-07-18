@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-} from "@workspace/ui-shadcn/components/dialog"
+} from "@workspace/ui/components/dialog"
 import type React from "react"
 
 interface Props {

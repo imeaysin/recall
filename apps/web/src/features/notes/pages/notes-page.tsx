@@ -4,7 +4,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@workspace/ui-shadcn/components/alert"
+} from "@workspace/ui/components/alert"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,10 +14,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@workspace/ui-shadcn/components/alert-dialog"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { DataTable } from "@workspace/ui-shadcn/components/data-table"
-import { DataTableSkeleton } from "@workspace/ui-shadcn/components/data-table-skeleton"
+} from "@workspace/ui/components/alert-dialog"
+import { Button } from "@workspace/ui/components/button"
+import { DataTable } from "@workspace/ui/components/data-table"
+import { DataTableSkeleton } from "@workspace/ui/components/data-table-skeleton"
 import {
   Empty,
   EmptyContent,
@@ -25,14 +25,14 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
+} from "@workspace/ui/components/empty"
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemTitle,
-} from "@workspace/ui-shadcn/components/item"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/item"
+import { Spinner } from "@workspace/ui/components/spinner"
 import {
   CircleAlertIcon,
   FileTextIcon,

@@ -3,7 +3,7 @@
 import { useAuth } from "@better-auth-ui/react"
 import { useMemo } from "react"
 
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import { ProviderButton } from "./provider-button"
 
 export type ProviderButtonsProps = {

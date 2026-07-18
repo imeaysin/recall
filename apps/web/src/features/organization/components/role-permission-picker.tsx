@@ -7,8 +7,8 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from "@workspace/ui-shadcn/components/field"
-import { Switch } from "@workspace/ui-shadcn/components/switch"
+} from "@workspace/ui/components/field"
+import { Switch } from "@workspace/ui/components/switch"
 import type { PermissionState } from "@/features/organization/lib/permission-state"
 import {
   PERMISSION_RESOURCE_LABELS,

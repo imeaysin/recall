@@ -6,8 +6,8 @@ import Bowser from "bowser"
 import { LogOut, Monitor, Smartphone, X } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Button } from "@workspace/ui/components/button"
+import { Spinner } from "@workspace/ui/components/spinner"
 
 function timeAgo(date: Date) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000)

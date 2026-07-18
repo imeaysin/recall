@@ -27,7 +27,7 @@
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/dates": "workspace:*",
-    "@workspace/ui-shadcn": "workspace:*",
+    "@workspace/ui": "workspace:*",
     "better-auth": "catalog:",
     "bowser": "^2.14.1",
     "date-fns": "catalog:",

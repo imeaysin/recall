@@ -20,7 +20,7 @@ Swap names, claims, and social proof for your brand before shipping.
 - Preserve landing sections, responsive behavior, and content hierarchy — swap
   copy/assets via the config files above.
 - Do not add API routes, authentication, database code, or product backends.
-- Build with `@workspace/ui-shadcn` semantic tokens only (no raw colors).
-- Apply `font-sans` on the document body (do not edit `packages/ui-shadcn` globals).
+- Build with `@workspace/ui` semantic tokens only (no raw colors).
+- Apply `font-sans` on the document body (do not edit `packages/ui` globals).
 - This template does not ship docs, SEO landing farms, browser extensions, or
   video tools — keep those out unless you deliberately add them back.

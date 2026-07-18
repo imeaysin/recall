@@ -5,28 +5,28 @@ import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
+} from "@workspace/ui/components/card"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
-} from "@workspace/ui-shadcn/components/field"
+} from "@workspace/ui/components/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@workspace/ui-shadcn/components/input-group"
-import { Label } from "@workspace/ui-shadcn/components/label"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/input-group"
+import { Label } from "@workspace/ui/components/label"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { cn } from "@workspace/ui/lib/utils"
 
 type PasswordValidationMessages = {
   fieldRequired: string

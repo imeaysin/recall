@@ -27,7 +27,7 @@
 - `@workspace/payment` — payment adapters (bKash / SSLCommerz); Nest module in API
 - `@workspace/redis` — Redis client factory (ioredis) — shared by auth secondary storage and cache
 - `@workspace/storage` — file upload providers (local HMAC-signed downloads / S3)
-- `@workspace/ui-shadcn` — shared React components
+- `@workspace/ui` — shared React components
 
 **API-local (not packages):** BullMQ jobs under `apps/api/src/common/jobs/`; Socket.IO gateway under `apps/api/src/common/realtime/`.
 

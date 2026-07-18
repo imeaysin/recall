@@ -4,9 +4,9 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { useMemo } from "react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { DataTable } from "@workspace/ui-shadcn/components/data-table"
-import { DataTableColumnHeader } from "@workspace/ui-shadcn/components/data-table-column-header"
+import { Button } from "@workspace/ui/components/button"
+import { DataTable } from "@workspace/ui/components/data-table"
+import { DataTableColumnHeader } from "@workspace/ui/components/data-table-column-header"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 import {
   countPermissions,

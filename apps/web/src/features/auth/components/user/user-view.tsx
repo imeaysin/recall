@@ -7,8 +7,8 @@ import {
 } from "@better-auth-ui/react"
 import type { User } from "better-auth"
 
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { cn } from "@workspace/ui/lib/utils"
 import { UserAvatar } from "@/features/auth/components/user/user-avatar"
 
 export type UserViewProps = {

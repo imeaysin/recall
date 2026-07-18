@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@workspace/ui-shadcn/components/dialog"
+import { Dialog, DialogContent } from "@workspace/ui/components/dialog"
 import { RoleFormBody } from "@/features/organization/components/role-form-body"
 import type { OrganizationRole } from "@/features/organization/hooks/use-organization-roles"
 

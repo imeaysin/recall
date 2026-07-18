@@ -6,8 +6,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-shadcn/components/card"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+} from "@workspace/ui/components/card"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
 
 export function SignOutPage() {

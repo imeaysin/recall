@@ -8,10 +8,10 @@ import {
   useSession,
 } from "@better-auth-ui/react"
 
-import { Card, CardContent } from "@workspace/ui-shadcn/components/card"
-import { Separator } from "@workspace/ui-shadcn/components/separator"
+import { Card, CardContent } from "@workspace/ui/components/card"
+import { Separator } from "@workspace/ui/components/separator"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import { ManageAccount } from "@/features/auth/components/multi-session/manage-account"
 
 export type ManageAccountsProps = {

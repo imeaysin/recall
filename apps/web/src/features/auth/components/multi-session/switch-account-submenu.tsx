@@ -6,7 +6,7 @@ import { ArrowLeftRight } from "lucide-react"
 import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
-} from "@workspace/ui-shadcn/components/dropdown-menu"
+} from "@workspace/ui/components/dropdown-menu"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { SwitchAccountSubmenuContent } from "./switch-account-submenu-content"
 

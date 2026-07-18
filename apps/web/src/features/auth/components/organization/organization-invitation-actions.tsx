@@ -10,8 +10,8 @@ import {
 import type { Invitation } from "better-auth/client"
 import { X } from "lucide-react"
 
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Button } from "@workspace/ui/components/button"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 export type OrganizationInvitationActionsProps = {

@@ -2,7 +2,7 @@
 
 import { CircleAlertIcon } from "lucide-react"
 import type * as React from "react"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import {
   Empty,
   EmptyContent,
@@ -10,8 +10,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@workspace/ui-shadcn/components/empty"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/empty"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type PageErrorProps = {
   title?: string

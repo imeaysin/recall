@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Button } from "@workspace/ui-shadcn/components/button"
+import { Button } from "@workspace/ui/components/button"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
 

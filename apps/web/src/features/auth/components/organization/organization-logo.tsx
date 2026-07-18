@@ -8,9 +8,9 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui-shadcn/components/avatar"
-import { Skeleton } from "@workspace/ui-shadcn/components/skeleton"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/avatar"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type OrganizationLogoSize = "sm" | "md" | "lg"
 

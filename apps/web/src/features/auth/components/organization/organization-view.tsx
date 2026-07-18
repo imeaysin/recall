@@ -11,9 +11,9 @@ import {
 import type { Organization } from "better-auth/client"
 import type { ComponentProps } from "react"
 
-import { Badge } from "@workspace/ui-shadcn/components/badge"
+import { Badge } from "@workspace/ui/components/badge"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { cn } from "@workspace/ui/lib/utils"
 import {
   OrganizationLogo,
   type OrganizationLogoSize,

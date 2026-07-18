@@ -4,8 +4,8 @@ import { getEmailProviderLink } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import { SquareArrowOutUpRight } from "lucide-react"
 
-import { buttonVariants } from "@workspace/ui-shadcn/components/button"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+import { buttonVariants } from "@workspace/ui/components/button"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type OpenEmailButtonProps = {
   /** Email address used to detect the provider, e.g. from the verify-email flow. */

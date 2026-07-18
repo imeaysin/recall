@@ -3,9 +3,9 @@ import {
   Empty,
   EmptyDescription,
   EmptyMedia,
-} from "@workspace/ui-shadcn/components/empty"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
-import { cn } from "@workspace/ui-shadcn/lib/utils"
+} from "@workspace/ui/components/empty"
+import { Spinner } from "@workspace/ui/components/spinner"
+import { cn } from "@workspace/ui/lib/utils"
 
 export type PageLoadingProps = {
   message?: string

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { signIn } from "@workspace/auth/client"
-import { Button } from "@workspace/ui-shadcn/components/button"
-import { Spinner } from "@workspace/ui-shadcn/components/spinner"
+import { Button } from "@workspace/ui/components/button"
+import { Spinner } from "@workspace/ui/components/spinner"
 import { buildAuthCallback } from "@/features/auth/lib/auth-callback"
 
 type GoogleSignInButtonProps = {
