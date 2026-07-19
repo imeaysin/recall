@@ -1,5 +1,6 @@
 import "@/app/globals.css"
 import { productConfig } from "@workspace/config/public"
+import { ThemeProvider } from "@workspace/ui/components/theme-provider"
 import type { Metadata } from "next"
 import localFont from "next/font/local"
 import type { PropsWithChildren } from "react"
@@ -56,9 +57,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html className={productFont.variable} lang="en">
+    <html className={productFont.variable} lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <main className="w-full">{children}</main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main className="w-full">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )
