@@ -12,6 +12,7 @@ import {
   FieldLabel,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
+import { PasswordInput } from "@workspace/ui/components/password-input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes, defaultAuthenticatedRoute } from "@/config/routes"
 import { site } from "@/config/site"
@@ -94,6 +95,7 @@ export function SignUpPage() {
               aria-invalid={Boolean(errors.name)}
               autoComplete="name"
               id="name"
+              placeholder="Your name"
               {...form.register("name")}
             />
             <FieldError errors={[errors.name]} />
@@ -104,6 +106,7 @@ export function SignUpPage() {
               aria-invalid={Boolean(errors.email)}
               autoComplete="email"
               id="email"
+              placeholder="name@example.com"
               type="email"
               {...form.register("email")}
             />
@@ -111,22 +114,22 @@ export function SignUpPage() {
           </Field>
           <Field data-invalid={errors.password ? true : undefined}>
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
+            <PasswordInput
               aria-invalid={Boolean(errors.password)}
               autoComplete="new-password"
               id="password"
-              type="password"
+              placeholder="Create a password"
               {...form.register("password")}
             />
             <FieldError errors={[errors.password]} />
           </Field>
           <Field data-invalid={errors.confirmPassword ? true : undefined}>
             <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
-            <Input
+            <PasswordInput
               aria-invalid={Boolean(errors.confirmPassword)}
               autoComplete="new-password"
               id="confirmPassword"
-              type="password"
+              placeholder="Confirm your password"
               {...form.register("confirmPassword")}
             />
             <FieldError errors={[errors.confirmPassword]} />

@@ -14,7 +14,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
+import { PasswordInput } from "@workspace/ui/components/password-input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
 import { AuthPageBody } from "@/features/auth/components/auth-page-body"
@@ -85,22 +85,22 @@ export function ResetPasswordPage() {
         <FieldGroup>
           <Field data-invalid={errors.password ? true : undefined}>
             <FieldLabel htmlFor="password">New password</FieldLabel>
-            <Input
+            <PasswordInput
               aria-invalid={Boolean(errors.password)}
               autoComplete="new-password"
               id="password"
-              type="password"
+              placeholder="Create a new password"
               {...form.register("password")}
             />
             <FieldError errors={[errors.password]} />
           </Field>
           <Field data-invalid={errors.confirmPassword ? true : undefined}>
             <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
-            <Input
+            <PasswordInput
               aria-invalid={Boolean(errors.confirmPassword)}
               autoComplete="new-password"
               id="confirmPassword"
-              type="password"
+              placeholder="Confirm your new password"
               {...form.register("confirmPassword")}
             />
             <FieldError errors={[errors.confirmPassword]} />

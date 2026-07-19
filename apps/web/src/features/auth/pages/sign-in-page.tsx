@@ -12,6 +12,7 @@ import {
   FieldLabel,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
+import { PasswordInput } from "@workspace/ui/components/password-input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes, defaultAuthenticatedRoute } from "@/config/routes"
 import { site } from "@/config/site"
@@ -106,6 +107,7 @@ export function SignInPage() {
               aria-invalid={Boolean(emailError)}
               autoComplete="email"
               id="email"
+              placeholder="name@example.com"
               type="email"
               {...form.register("email", { onChange: clearAuthError })}
             />
@@ -113,11 +115,11 @@ export function SignInPage() {
           </Field>
           <Field data-invalid={passwordError ? true : undefined}>
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
+            <PasswordInput
               aria-invalid={Boolean(passwordError)}
               autoComplete="current-password"
               id="password"
-              type="password"
+              placeholder="Enter your password"
               {...form.register("password", { onChange: clearAuthError })}
             />
             <FieldError errors={[passwordError]} />
