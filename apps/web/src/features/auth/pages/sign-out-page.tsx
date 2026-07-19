@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { signOut } from "@workspace/auth/client"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 
 export function SignOutPage() {
   const navigate = useNavigate()
@@ -34,25 +30,27 @@ export function SignOutPage() {
   }, [navigate])
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Signing out</CardTitle>
-      </CardHeader>
-      <CardContent className="text-sm text-muted-foreground">
-        {error ? (
-          <div className="flex flex-col gap-2">
-            <p className="text-destructive">{error}</p>
-            <Link className="underline" to={routes.signIn}>
-              Continue to sign in
-            </Link>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Spinner />
-            <p>Clearing your session…</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <AuthPageBody
+      footer={
+        error ? (
+          <Link
+            className="text-foreground underline underline-offset-2"
+            to={routes.signIn}
+          >
+            Continue to sign in
+          </Link>
+        ) : null
+      }
+    >
+      <AuthPageHeader title="Signing out" />
+      {error ? (
+        <p className="text-center text-sm text-destructive">{error}</p>
+      ) : (
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <Spinner />
+          <p>Clearing your session…</p>
+        </div>
+      )}
+    </AuthPageBody>
   )
 }

@@ -6,13 +6,6 @@ import { authClient } from "@workspace/auth/client"
 import { TwoFactorSchema, type TwoFactorInput } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -21,6 +14,8 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { defaultAuthenticatedRoute } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 
 export function TwoFactorPage() {
   const navigate = useNavigate()
@@ -48,41 +43,43 @@ export function TwoFactorPage() {
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Two-factor authentication</CardTitle>
-        <CardDescription>
-          Enter the 6-digit code from your authenticator app.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form
-          className="flex flex-col gap-4"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
+    <AuthPageBody>
+      <AuthPageHeader
+        description="Enter the 6-digit code from your authenticator app."
+        title="Two-factor authentication"
+      />
+
+      <form
+        className="flex flex-col gap-4"
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <FieldGroup>
+          <Field data-invalid={codeError ? true : undefined}>
+            <FieldLabel htmlFor="code">Authentication code</FieldLabel>
+            <Input
+              aria-invalid={Boolean(codeError)}
+              autoComplete="one-time-code"
+              id="code"
+              inputMode="numeric"
+              {...form.register("code")}
+            />
+            <FieldError errors={[codeError]} />
+          </Field>
+        </FieldGroup>
+        {formError ? (
+          <p className="text-sm text-destructive">{formError}</p>
+        ) : null}
+        <Button
+          className="w-full"
+          disabled={isSubmitting}
+          size="lg"
+          type="submit"
         >
-          <FieldGroup>
-            <Field data-invalid={codeError ? true : undefined}>
-              <FieldLabel htmlFor="code">Authentication code</FieldLabel>
-              <Input
-                aria-invalid={Boolean(codeError)}
-                autoComplete="one-time-code"
-                id="code"
-                inputMode="numeric"
-                {...form.register("code")}
-              />
-              <FieldError errors={[codeError]} />
-            </Field>
-          </FieldGroup>
-          {formError ? (
-            <p className="text-sm text-destructive">{formError}</p>
-          ) : null}
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-            Verify
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+          Verify
+        </Button>
+      </form>
+    </AuthPageBody>
   )
 }

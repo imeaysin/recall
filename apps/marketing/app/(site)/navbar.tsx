@@ -76,14 +76,16 @@ function PreviewCard({
   return (
     <NavigationMenuLink
       render={<Link href={href} />}
-      className="flex flex-row items-center gap-3 rounded-xl border border-border/80 bg-muted/30 p-3 hover:border-foreground/15 hover:bg-muted/50"
+      className="flex flex-row items-center gap-3.5 rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-foreground/15 hover:bg-muted/50"
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background">
-        <Logo hideLogoName className="size-5 opacity-70" />
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background">
+        <Logo hideLogoName className="size-6 opacity-70" />
       </span>
-      <span className="flex min-w-0 flex-col gap-0.5 text-left">
-        <span className="text-sm font-medium text-foreground">{title}</span>
-        <span className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+      <span className="flex min-w-0 flex-col gap-1 text-left">
+        <span className="text-[0.9375rem] font-medium text-foreground">
+          {title}
+        </span>
+        <span className="line-clamp-2 text-sm leading-snug text-muted-foreground">
           {description}
         </span>
       </span>

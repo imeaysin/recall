@@ -2,27 +2,21 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { useState } from "react"
 import { authClient, useSession } from "@workspace/auth/client"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import { Spinner } from "@workspace/ui/components/spinner"
 import {
   acceptInvitationPath,
   defaultAuthenticatedRoute,
   routes,
 } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 import { withAuthRedirectQuery } from "@/routing/safe-redirect"
 
 const INVITATION_ERROR = "Unable to accept invitation"
 
 export function AcceptInvitationPage() {
   const { invitationId } = useParams()
-  if (!invitationId) return <InvalidInvitationCard />
+  if (!invitationId) return <InvalidInvitation />
   return <AcceptInvitationBody invitationId={invitationId} />
 }
 
@@ -32,8 +26,8 @@ function AcceptInvitationBody({
   readonly invitationId: string
 }) {
   const { data: session, isPending } = useSession()
-  if (isPending) return <PendingSessionCard />
-  if (!session) return <SignInRequiredCard invitationId={invitationId} />
+  if (isPending) return <PendingSession />
+  if (!session) return <SignInRequired invitationId={invitationId} />
   return <AcceptInvitationActions invitationId={invitationId} />
 }
 
@@ -61,41 +55,40 @@ function AcceptInvitationActions({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Accept invitation</CardTitle>
-        <CardDescription>
-          Join the organization using the invitation sent to your email.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        {statusMessage ? (
-          <p className="text-sm text-destructive">{statusMessage}</p>
-        ) : null}
-        <Button disabled={isAccepting} onClick={() => void acceptInvitation()}>
-          {isAccepting ? <Spinner data-icon="inline-start" /> : null}
-          {isAccepting ? "Accepting…" : "Accept invitation"}
-        </Button>
-      </CardContent>
-    </Card>
+    <AuthPageBody>
+      <AuthPageHeader
+        description="Join the organization using the invitation sent to your email."
+        title="Accept invitation"
+      />
+      {statusMessage ? (
+        <p className="text-center text-sm text-destructive">{statusMessage}</p>
+      ) : null}
+      <Button
+        className="w-full"
+        disabled={isAccepting}
+        size="lg"
+        onClick={() => void acceptInvitation()}
+      >
+        {isAccepting ? <Spinner data-icon="inline-start" /> : null}
+        {isAccepting ? "Accepting…" : "Accept invitation"}
+      </Button>
+    </AuthPageBody>
   )
 }
 
-function SignInRequiredCard({
-  invitationId,
-}: {
-  readonly invitationId: string
-}) {
+function SignInRequired({ invitationId }: { readonly invitationId: string }) {
   const redirectTarget = acceptInvitationPath(invitationId)
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Accept invitation</CardTitle>
-        <CardDescription>Sign in to join this organization.</CardDescription>
-      </CardHeader>
-      <CardFooter className="flex flex-col items-stretch gap-2">
+    <AuthPageBody>
+      <AuthPageHeader
+        description="Sign in to join this organization."
+        title="Accept invitation"
+      />
+      <div className="flex flex-col gap-2">
         <Button
+          className="w-full"
           nativeButton={false}
+          size="lg"
           render={
             <Link
               to={withAuthRedirectQuery(routes.signIn, {
@@ -108,7 +101,9 @@ function SignInRequiredCard({
           Sign in
         </Button>
         <Button
+          className="w-full"
           nativeButton={false}
+          size="lg"
           render={
             <Link
               to={withAuthRedirectQuery(routes.signUp, {
@@ -121,28 +116,29 @@ function SignInRequiredCard({
         >
           Create account
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </AuthPageBody>
   )
 }
 
-function PendingSessionCard() {
+function PendingSession() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Checking session…</CardTitle>
-      </CardHeader>
-    </Card>
+    <AuthPageBody>
+      <AuthPageHeader title="Checking session…" />
+      <div className="flex justify-center">
+        <Spinner />
+      </div>
+    </AuthPageBody>
   )
 }
 
-function InvalidInvitationCard() {
+function InvalidInvitation() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Invalid invitation</CardTitle>
-        <CardDescription>This invitation link is incomplete.</CardDescription>
-      </CardHeader>
-    </Card>
+    <AuthPageBody>
+      <AuthPageHeader
+        description="This invitation link is incomplete."
+        title="Invalid invitation"
+      />
+    </AuthPageBody>
   )
 }

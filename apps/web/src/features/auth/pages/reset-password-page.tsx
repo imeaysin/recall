@@ -9,14 +9,6 @@ import {
 } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -25,6 +17,8 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 
 export function ResetPasswordPage() {
   const navigate = useNavigate()
@@ -38,19 +32,21 @@ export function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Invalid reset link</CardTitle>
-          <CardDescription>
-            Request a new password reset email to continue.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Link className="text-sm underline" to={routes.forgotPassword}>
+      <AuthPageBody
+        footer={
+          <Link
+            className="text-foreground underline underline-offset-2"
+            to={routes.forgotPassword}
+          >
             Forgot password
           </Link>
-        </CardFooter>
-      </Card>
+        }
+      >
+        <AuthPageHeader
+          description="Request a new password reset email to continue."
+          title="Invalid reset link"
+        />
+      </AuthPageBody>
     )
   }
 
@@ -75,54 +71,54 @@ export function ResetPasswordPage() {
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Reset password</CardTitle>
-        <CardDescription>
-          Choose a new password for your account.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form
-          className="flex flex-col gap-4"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
+    <AuthPageBody>
+      <AuthPageHeader
+        description="Choose a new password for your account."
+        title="Reset password"
+      />
+
+      <form
+        className="flex flex-col gap-4"
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <FieldGroup>
+          <Field data-invalid={errors.password ? true : undefined}>
+            <FieldLabel htmlFor="password">New password</FieldLabel>
+            <Input
+              aria-invalid={Boolean(errors.password)}
+              autoComplete="new-password"
+              id="password"
+              type="password"
+              {...form.register("password")}
+            />
+            <FieldError errors={[errors.password]} />
+          </Field>
+          <Field data-invalid={errors.confirmPassword ? true : undefined}>
+            <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+            <Input
+              aria-invalid={Boolean(errors.confirmPassword)}
+              autoComplete="new-password"
+              id="confirmPassword"
+              type="password"
+              {...form.register("confirmPassword")}
+            />
+            <FieldError errors={[errors.confirmPassword]} />
+          </Field>
+        </FieldGroup>
+        {formError ? (
+          <p className="text-sm text-destructive">{formError}</p>
+        ) : null}
+        <Button
+          className="w-full"
+          disabled={isSubmitting}
+          size="lg"
+          type="submit"
         >
-          <FieldGroup>
-            <Field data-invalid={errors.password ? true : undefined}>
-              <FieldLabel htmlFor="password">New password</FieldLabel>
-              <Input
-                aria-invalid={Boolean(errors.password)}
-                autoComplete="new-password"
-                id="password"
-                type="password"
-                {...form.register("password")}
-              />
-              <FieldError errors={[errors.password]} />
-            </Field>
-            <Field data-invalid={errors.confirmPassword ? true : undefined}>
-              <FieldLabel htmlFor="confirmPassword">
-                Confirm password
-              </FieldLabel>
-              <Input
-                aria-invalid={Boolean(errors.confirmPassword)}
-                autoComplete="new-password"
-                id="confirmPassword"
-                type="password"
-                {...form.register("confirmPassword")}
-              />
-              <FieldError errors={[errors.confirmPassword]} />
-            </Field>
-          </FieldGroup>
-          {formError ? (
-            <p className="text-sm text-destructive">{formError}</p>
-          ) : null}
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-            Update password
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+          Update password
+        </Button>
+      </form>
+    </AuthPageBody>
   )
 }

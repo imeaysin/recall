@@ -9,14 +9,6 @@ import {
 } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -25,6 +17,8 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 
 export function ForgotPasswordPage() {
   const [sent, setSent] = useState(false)
@@ -53,52 +47,58 @@ export function ForgotPasswordPage() {
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Forgot password</CardTitle>
-        <CardDescription>
-          We will email you a reset link if the account exists.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {sent ? (
-          <p className="text-sm text-muted-foreground">
-            Check your inbox for a password reset link.
-          </p>
-        ) : (
-          <form
-            className="flex flex-col gap-4"
-            noValidate
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FieldGroup>
-              <Field data-invalid={emailError ? true : undefined}>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  aria-invalid={Boolean(emailError)}
-                  autoComplete="email"
-                  id="email"
-                  type="email"
-                  {...form.register("email")}
-                />
-                <FieldError errors={[emailError]} />
-              </Field>
-            </FieldGroup>
-            {formError ? (
-              <p className="text-sm text-destructive">{formError}</p>
-            ) : null}
-            <Button disabled={isSubmitting} type="submit">
-              {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-              Send reset link
-            </Button>
-          </form>
-        )}
-      </CardContent>
-      <CardFooter className="text-sm">
-        <Link className="underline" to={routes.signIn}>
+    <AuthPageBody
+      footer={
+        <Link
+          className="text-foreground underline underline-offset-2 transition-colors hover:text-foreground/80"
+          to={routes.signIn}
+        >
           Back to sign in
         </Link>
-      </CardFooter>
-    </Card>
+      }
+    >
+      <AuthPageHeader
+        description="We will email you a reset link if the account exists."
+        title="Forgot password"
+      />
+
+      {sent ? (
+        <p className="text-center text-sm text-muted-foreground">
+          Check your inbox for a password reset link.
+        </p>
+      ) : (
+        <form
+          className="flex flex-col gap-4"
+          noValidate
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FieldGroup>
+            <Field data-invalid={emailError ? true : undefined}>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                aria-invalid={Boolean(emailError)}
+                autoComplete="email"
+                id="email"
+                type="email"
+                {...form.register("email")}
+              />
+              <FieldError errors={[emailError]} />
+            </Field>
+          </FieldGroup>
+          {formError ? (
+            <p className="text-sm text-destructive">{formError}</p>
+          ) : null}
+          <Button
+            className="w-full"
+            disabled={isSubmitting}
+            size="lg"
+            type="submit"
+          >
+            {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+            Send reset link
+          </Button>
+        </form>
+      )}
+    </AuthPageBody>
   )
 }

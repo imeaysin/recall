@@ -6,14 +6,6 @@ import { signIn } from "@workspace/auth/client"
 import { SignInSchema, type SignInInput } from "@workspace/contracts"
 import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -22,11 +14,14 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes, defaultAuthenticatedRoute } from "@/config/routes"
-import { getSafeRedirectPath } from "@/routing/safe-redirect"
+import { site } from "@/config/site"
 import { AuthDivider } from "@/features/auth/components/auth-divider"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 import { GoogleSignInButton } from "@/features/auth/components/google-sign-in-button"
 import { buildAuthCallback } from "@/features/auth/lib/auth-callback"
 import { resolveSignInFeedback } from "@/features/auth/lib/sign-in-feedback"
+import { getSafeRedirectPath } from "@/routing/safe-redirect"
 
 export function SignInPage() {
   const navigate = useNavigate()
@@ -73,71 +68,82 @@ export function SignInPage() {
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>
-          Use Google or your email and password. Email accounts must be verified
-          before the first sign-in.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <GoogleSignInButton callbackPath={redirectPath} />
-        <AuthDivider />
-        <form
-          className="flex flex-col gap-4"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FieldGroup>
-            <Field data-invalid={emailError ? true : undefined}>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                aria-invalid={Boolean(emailError)}
-                autoComplete="email"
-                id="email"
-                type="email"
-                {...form.register("email")}
-              />
-              <FieldError errors={[emailError]} />
-            </Field>
-            <Field data-invalid={passwordError ? true : undefined}>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input
-                aria-invalid={Boolean(passwordError)}
-                autoComplete="current-password"
-                id="password"
-                type="password"
-                {...form.register("password")}
-              />
-              <FieldError errors={[passwordError]} />
-            </Field>
-          </FieldGroup>
-          {formError ? (
-            <p className="text-sm text-destructive">{formError}</p>
-          ) : null}
-          {verifyEmailHref ? (
-            <Link className="text-sm underline" to={verifyEmailHref}>
-              Resend or open verification instructions
-            </Link>
-          ) : null}
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
-            {isSubmitting ? "Signing in…" : "Sign in"}
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter className="flex flex-col items-start gap-2 text-sm">
-        <Link className="underline" to={routes.forgotPassword}>
-          Forgot password?
-        </Link>
+    <AuthPageBody
+      footer={
         <p>
-          No account?{" "}
-          <Link className="underline" to={routes.signUp}>
+          Don&apos;t have an account?{" "}
+          <Link
+            className="text-foreground underline underline-offset-2 transition-colors hover:text-foreground/80"
+            to={routes.signUp}
+          >
             Sign up
           </Link>
         </p>
-      </CardFooter>
-    </Card>
+      }
+    >
+      <AuthPageHeader
+        description="Sign in or create an account"
+        title={`Welcome to ${site.name}`}
+      />
+
+      <GoogleSignInButton callbackPath={redirectPath} />
+      <AuthDivider />
+
+      <form
+        className="flex flex-col gap-4"
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <FieldGroup>
+          <Field data-invalid={emailError ? true : undefined}>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              aria-invalid={Boolean(emailError)}
+              autoComplete="email"
+              id="email"
+              type="email"
+              {...form.register("email")}
+            />
+            <FieldError errors={[emailError]} />
+          </Field>
+          <Field data-invalid={passwordError ? true : undefined}>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              aria-invalid={Boolean(passwordError)}
+              autoComplete="current-password"
+              id="password"
+              type="password"
+              {...form.register("password")}
+            />
+            <FieldError errors={[passwordError]} />
+          </Field>
+        </FieldGroup>
+        <div className="flex justify-end">
+          <Link
+            className="text-sm text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
+            to={routes.forgotPassword}
+          >
+            Forgot password?
+          </Link>
+        </div>
+        {formError ? (
+          <p className="text-sm text-destructive">{formError}</p>
+        ) : null}
+        {verifyEmailHref ? (
+          <Link className="text-sm underline" to={verifyEmailHref}>
+            Resend or open verification instructions
+          </Link>
+        ) : null}
+        <Button
+          className="w-full"
+          disabled={isSubmitting}
+          size="lg"
+          type="submit"
+        >
+          {isSubmitting ? <Spinner data-icon="inline-start" /> : null}
+          {isSubmitting ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
+    </AuthPageBody>
   )
 }

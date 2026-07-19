@@ -1,16 +1,10 @@
 import { useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import { Spinner } from "@workspace/ui/components/spinner"
 import { routes } from "@/config/routes"
+import { AuthPageBody } from "@/features/auth/components/auth-page-body"
+import { AuthPageHeader } from "@/features/auth/components/auth-page-header"
 import { resendVerificationEmail } from "@/features/auth/lib/resend-verification-email"
 
 export function VerifyEmailPage() {
@@ -33,33 +27,43 @@ export function VerifyEmailPage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Verify your email</CardTitle>
-        <CardDescription>
-          {email
+    <AuthPageBody
+      footer={
+        <Link
+          className="text-foreground underline underline-offset-2 transition-colors hover:text-foreground/80"
+          to={routes.signIn}
+        >
+          Back to sign in
+        </Link>
+      }
+    >
+      <AuthPageHeader
+        description={
+          email
             ? `We sent a verification link to ${email}.`
-            : "Check your inbox for a verification link."}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+            : "Check your inbox for a verification link."
+        }
+        title="Verify your email"
+      />
+
+      <div className="space-y-4 text-sm text-muted-foreground">
         <p>
           Email/password sign-in stays blocked until verification completes.
           Google sign-in does not require this step.
         </p>
         {statusMessage ? <p>{statusMessage}</p> : null}
         {email ? (
-          <Button disabled={isSending} onClick={() => void handleResend()}>
+          <Button
+            className="w-full"
+            disabled={isSending}
+            size="lg"
+            onClick={() => void handleResend()}
+          >
             {isSending ? <Spinner data-icon="inline-start" /> : null}
             {isSending ? "Sending…" : "Resend verification email"}
           </Button>
         ) : null}
-      </CardContent>
-      <CardFooter>
-        <Link className="text-sm underline" to={routes.signIn}>
-          Back to sign in
-        </Link>
-      </CardFooter>
-    </Card>
+      </div>
+    </AuthPageBody>
   )
 }
