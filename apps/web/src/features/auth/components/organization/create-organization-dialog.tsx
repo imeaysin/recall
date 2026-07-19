@@ -6,21 +6,19 @@ import {
   useAuthPlugin,
   useCreateOrganization,
 } from "@better-auth-ui/react"
-import { Briefcase } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError } from "@workspace/ui/components/field"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Spinner } from "@workspace/ui/components/spinner"
@@ -72,29 +70,23 @@ export function CreateOrganizationDialog({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={handleOpenChange}>
-      <AlertDialogContent>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              <Briefcase />
-            </AlertDialogMedia>
-
-            <AlertDialogTitle>
+          <DialogHeader>
+            <DialogTitle>
               {organizationLocalization.createOrganization}
-            </AlertDialogTitle>
-
-            <AlertDialogDescription>
+            </DialogTitle>
+            <DialogDescription>
               {organizationLocalization.organizationsDescription}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
 
-          <div className="flex flex-col gap-4">
+          <FieldGroup>
             <Field data-invalid={!!nameError}>
               <Label htmlFor="create-organization-name">
                 {organizationLocalization.name}
               </Label>
-
               <Input
                 id="create-organization-name"
                 name="name"
@@ -113,7 +105,6 @@ export function CreateOrganizationDialog({
                 aria-invalid={!!nameError}
                 disabled={isCreating}
               />
-
               <FieldError>{nameError}</FieldError>
             </Field>
 
@@ -126,21 +117,22 @@ export function CreateOrganizationDialog({
               }}
               disabled={isCreating}
             />
-          </div>
+          </FieldGroup>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isCreating}>
+          <DialogFooter>
+            <DialogClose
+              render={<Button variant="outline" />}
+              disabled={isCreating}
+            >
               {localization.settings.cancel}
-            </AlertDialogCancel>
-
+            </DialogClose>
             <Button type="submit" disabled={isCreating}>
               {isCreating && <Spinner />}
-
               {organizationLocalization.createOrganization}
             </Button>
-          </AlertDialogFooter>
+          </DialogFooter>
         </form>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   )
 }

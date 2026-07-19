@@ -6,21 +6,19 @@ import {
   useAuth,
   useAuthPlugin,
 } from "@better-auth-ui/react"
-import { Fingerprint } from "lucide-react"
 import type { SyntheticEvent } from "react"
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError } from "@workspace/ui/components/field"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Spinner } from "@workspace/ui/components/spinner"
@@ -54,50 +52,44 @@ export function AddPasskeyDialog({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              <Fingerprint />
-            </AlertDialogMedia>
-
-            <AlertDialogTitle>
-              {passkeyLocalization.addPasskey}
-            </AlertDialogTitle>
-
-            <AlertDialogDescription>
+          <DialogHeader>
+            <DialogTitle>{passkeyLocalization.addPasskey}</DialogTitle>
+            <DialogDescription>
               {passkeyLocalization.passkeysDescription}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
 
-          <Field>
-            <Label htmlFor="passkey-name">{passkeyLocalization.name}</Label>
+          <FieldGroup>
+            <Field>
+              <Label htmlFor="passkey-name">{passkeyLocalization.name}</Label>
+              <Input
+                id="passkey-name"
+                name="name"
+                autoFocus
+                placeholder={localization.settings.optional}
+                disabled={isAdding}
+              />
+              <FieldError />
+            </Field>
+          </FieldGroup>
 
-            <Input
-              id="passkey-name"
-              name="name"
-              autoFocus
-              placeholder={localization.settings.optional}
+          <DialogFooter>
+            <DialogClose
+              render={<Button variant="outline" />}
               disabled={isAdding}
-            />
-
-            <FieldError />
-          </Field>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isAdding}>
+            >
               {localization.settings.cancel}
-            </AlertDialogCancel>
-
+            </DialogClose>
             <Button type="submit" disabled={isAdding}>
               {isAdding && <Spinner />}
-
               {passkeyLocalization.addPasskey}
             </Button>
-          </AlertDialogFooter>
+          </DialogFooter>
         </form>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   )
 }

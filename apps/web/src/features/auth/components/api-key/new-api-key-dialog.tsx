@@ -1,20 +1,20 @@
 "use client"
 
 import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
-import { Check, Copy, Key } from "lucide-react"
+import { Check, Copy } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
+import { Button } from "@workspace/ui/components/button"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
 import {
   InputGroup,
   InputGroupButton,
@@ -54,25 +54,19 @@ export function NewApiKeyDialog({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogMedia>
-            <Key />
-          </AlertDialogMedia>
-
-          <AlertDialogTitle>{apiKeyLocalization.newApiKey}</AlertDialogTitle>
-
-          <AlertDialogDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{apiKeyLocalization.newApiKey}</DialogTitle>
+          <DialogDescription>
             {apiKeyLocalization.newApiKeyWarning}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="new-api-key-secret">
             {name || apiKeyLocalization.apiKey}
           </Label>
-
           <InputGroup>
             <InputGroupInput
               id="new-api-key-secret"
@@ -80,7 +74,6 @@ export function NewApiKeyDialog({
               readOnly
               className="font-mono text-xs"
             />
-
             <InputGroupButton
               size="icon-xs"
               aria-label={localization.settings.copyToClipboard}
@@ -91,12 +84,12 @@ export function NewApiKeyDialog({
           </InputGroup>
         </div>
 
-        <AlertDialogFooter>
-          <AlertDialogAction>
+        <DialogFooter>
+          <DialogClose render={<Button />}>
             {apiKeyLocalization.dismissNewKey}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

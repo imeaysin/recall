@@ -6,21 +6,19 @@ import {
   useAuthPlugin,
   useCreateApiKey,
 } from "@better-auth-ui/react"
-import { Key } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError } from "@workspace/ui/components/field"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Spinner } from "@workspace/ui/components/spinner"
@@ -87,51 +85,45 @@ export function CreateApiKeyDialog({
 
   return (
     <>
-      <AlertDialog open={open} onOpenChange={handleOpenChange}>
-        <AlertDialogContent>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <AlertDialogHeader>
-              <AlertDialogMedia>
-                <Key />
-              </AlertDialogMedia>
-
-              <AlertDialogTitle>
-                {apiKeyLocalization.createApiKey}
-              </AlertDialogTitle>
-
-              <AlertDialogDescription>
+            <DialogHeader>
+              <DialogTitle>{apiKeyLocalization.createApiKey}</DialogTitle>
+              <DialogDescription>
                 {apiKeyLocalization.apiKeysDescription}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
+              </DialogDescription>
+            </DialogHeader>
 
-            <Field>
-              <Label htmlFor="api-key-name">{apiKeyLocalization.name}</Label>
+            <FieldGroup>
+              <Field>
+                <Label htmlFor="api-key-name">{apiKeyLocalization.name}</Label>
+                <Input
+                  id="api-key-name"
+                  name="name"
+                  autoFocus
+                  placeholder={localization.settings.optional}
+                  disabled={isCreating}
+                />
+                <FieldError />
+              </Field>
+            </FieldGroup>
 
-              <Input
-                id="api-key-name"
-                name="name"
-                autoFocus
-                placeholder={localization.settings.optional}
+            <DialogFooter>
+              <DialogClose
+                render={<Button variant="outline" />}
                 disabled={isCreating}
-              />
-
-              <FieldError />
-            </Field>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={isCreating}>
+              >
                 {localization.settings.cancel}
-              </AlertDialogCancel>
-
+              </DialogClose>
               <Button type="submit" disabled={isCreating}>
                 {isCreating && <Spinner />}
-
                 {apiKeyLocalization.createApiKey}
               </Button>
-            </AlertDialogFooter>
+            </DialogFooter>
           </form>
-        </AlertDialogContent>
-      </AlertDialog>
+        </DialogContent>
+      </Dialog>
 
       <NewApiKeyDialog
         open={isNewKeyDialogOpen}

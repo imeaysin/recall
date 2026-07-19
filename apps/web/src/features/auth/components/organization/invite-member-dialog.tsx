@@ -6,27 +6,26 @@ import {
   useAuthPlugin,
   useInviteMember,
 } from "@better-auth-ui/react"
-import { UserPlus } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
-import { Field, FieldError } from "@workspace/ui/components/field"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
+import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -94,29 +93,21 @@ export function InviteMemberDialog({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={handleOpenChange}>
-      <AlertDialogContent>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              <UserPlus />
-            </AlertDialogMedia>
-
-            <AlertDialogTitle>
-              {organizationLocalization.inviteMember}
-            </AlertDialogTitle>
-
-            <AlertDialogDescription>
+          <DialogHeader>
+            <DialogTitle>{organizationLocalization.inviteMember}</DialogTitle>
+            <DialogDescription>
               {organizationLocalization.inviteMemberDescription}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+            </DialogDescription>
+          </DialogHeader>
 
-          <div className="flex flex-col gap-4">
+          <FieldGroup>
             <Field data-invalid={!!emailError}>
               <Label htmlFor="invite-member-email">
                 {localization.auth.email}
               </Label>
-
               <Input
                 id="invite-member-email"
                 name="email"
@@ -136,7 +127,6 @@ export function InviteMemberDialog({
                 }}
                 aria-invalid={!!emailError}
               />
-
               <FieldError>{emailError}</FieldError>
             </Field>
 
@@ -144,7 +134,6 @@ export function InviteMemberDialog({
               <Label htmlFor="invite-member-role">
                 {organizationLocalization.role}
               </Label>
-
               <Select
                 value={effectiveRole}
                 onValueChange={(value) => setRole(value ?? "")}
@@ -153,33 +142,34 @@ export function InviteMemberDialog({
                 <SelectTrigger id="invite-member-role" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
-
                 <SelectContent>
-                  {Object.entries(roles).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  <SelectGroup>
+                    {Object.entries(roles).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
-
               <FieldError />
             </Field>
-          </div>
+          </FieldGroup>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isInviting}>
+          <DialogFooter>
+            <DialogClose
+              render={<Button variant="outline" />}
+              disabled={isInviting}
+            >
               {localization.settings.cancel}
-            </AlertDialogCancel>
-
+            </DialogClose>
             <Button type="submit" disabled={isInviting || !isRoleValid}>
               {isInviting && <Spinner />}
-
               {organizationLocalization.inviteMember}
             </Button>
-          </AlertDialogFooter>
+          </DialogFooter>
         </form>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   )
 }
