@@ -3,7 +3,7 @@ import { proPricing } from "../lib/pricing"
 
 /** Homepage + pricing copy for the landing template. Edit here first. */
 export const homeContent = {
-  header: {
+  hero: {
     announcement: {
       text: "Early adopter pricing — lock in your discount",
       href: "/pricing",

@@ -20,14 +20,14 @@ import Link from "next/link"
 import { useState } from "react"
 import VideoModal from "./video-modal"
 
-export default function Header() {
+export default function Hero() {
   const [videoOpen, setVideoOpen] = useState(false)
   const { platform, isIntel } = useDetectPlatform()
   const displayPlatform = platform ?? "macos"
   const downloadUrl =
     platform === "windows" ? "/download" : getDownloadUrl(platform, isIntel)
 
-  const { header } = homeContent
+  const { hero } = homeContent
 
   return (
     <section className="relative overflow-x-clip">
@@ -44,19 +44,19 @@ export default function Header() {
           className="mx-auto flex max-w-3xl flex-col items-center text-center"
         >
           <Link
-            href={header.announcement.href}
+            href={hero.announcement.href}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/20 hover:text-foreground"
           >
-            {header.announcement.text}
+            {hero.announcement.text}
             <ArrowRight className="size-3.5" aria-hidden />
           </Link>
 
           <h1 className="text-4xl font-medium tracking-tight text-balance text-foreground sm:text-5xl md:text-6xl md:leading-[1.08]">
-            {header.title}
+            {hero.title}
           </h1>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            {header.description}
+            {hero.description}
           </p>
 
           <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-center">
@@ -67,7 +67,7 @@ export default function Header() {
               className="justify-center font-medium"
               onClick={() =>
                 trackEvent("download_cta_clicked", {
-                  source_page: "home_header",
+                  source_page: "home_hero",
                   target_url: downloadUrl,
                   detected_platform: platform ?? "unknown",
                 })
@@ -83,24 +83,24 @@ export default function Header() {
               className="justify-center font-medium"
               onClick={() =>
                 trackEvent("pricing_cta_clicked", {
-                  source_page: "home_header",
+                  source_page: "home_hero",
                   target_url: "/pricing",
                 })
               }
             >
-              {header.cta.primary}
+              {hero.cta.primary}
             </Button>
           </div>
 
           <p className="mt-4 text-sm text-muted-foreground">
-            {header.cta.freeNote}
+            {hero.cta.freeNote}
           </p>
 
           <Link
-            href={header.migrate.href}
+            href={hero.migrate.href}
             className="mt-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            {header.migrate.label}
+            {hero.migrate.label}
             <span className="underline underline-offset-4">Migrate</span>
             <ArrowRight className="size-3.5" aria-hidden />
           </Link>
@@ -140,7 +140,7 @@ export default function Header() {
 
         <div className="mx-auto mt-14 max-w-3xl md:mt-16">
           <p className="mb-5 text-center text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-            {header.trustedBy}
+            {hero.trustedBy}
           </p>
           <LogoMarquee />
         </div>

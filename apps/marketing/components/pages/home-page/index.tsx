@@ -4,7 +4,7 @@ import { TextReveal } from "@/components/ui/text-reveal"
 import { homeContent } from "@/content/home"
 import Faq from "./faq"
 import Features from "./features"
-import Header from "./header"
+import Hero from "./hero"
 import { HomePageSchema } from "./home-page-schema"
 import HomeTestimonials from "./testimonials"
 
@@ -12,7 +12,7 @@ export function HomePage() {
   return (
     <>
       <HomePageSchema />
-      <Header />
+      <Hero />
       <div className="flex flex-col gap-20 sm:gap-28 lg:gap-40">
         <Features />
         <HomeTestimonials />
