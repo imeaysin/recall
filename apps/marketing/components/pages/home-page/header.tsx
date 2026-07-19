@@ -1,8 +1,9 @@
 "use client"
 
-import { Button, Logo } from "@/components/product-ui"
+import { Button } from "@/components/product-ui"
 import { LogoMarquee } from "@/components/ui/logo-marquee"
 import { homeContent } from "@/content/home"
+import { trackEvent } from "@/lib/analytics"
 import {
   getDownloadButtonText,
   getDownloadUrl,
@@ -11,46 +12,22 @@ import {
 import { productConfig } from "@workspace/config/public"
 import { faPlay } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useDetectPlatform } from "hooks/use-detect-platform"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { AnimatePresence } from "framer-motion"
 import VideoModal from "./video-modal"
 
-const trackHomepageEvent = (
-  eventName: string,
-  properties?: Record<string, unknown>
-) => {
-  void import("@/lib/analytics").then(({ trackEvent }) => {
-    trackEvent(eventName, properties)
-  })
-}
-
-interface HeaderProps {
-  serverHomepageCopyVariant?: string
-}
-
-const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
-  const [videoToggled, setVideoToggled] = useState(false)
+export default function Header() {
+  const [videoOpen, setVideoOpen] = useState(false)
   const { platform, isIntel } = useDetectPlatform()
   const displayPlatform = platform ?? "macos"
-  const primaryDownloadUrl =
+  const downloadUrl =
     platform === "windows" ? "/download" : getDownloadUrl(platform, isIntel)
 
-  const getHeaderContent = () => {
-    const variant =
-      serverHomepageCopyVariant as keyof typeof homeContent.header.variants
-    return (
-      homeContent.header.variants[variant] ||
-      homeContent.header.variants.default
-    )
-  }
-
-  const headerContent = getHeaderContent()
-  const announcement = homeContent.header.announcement
+  const { header } = homeContent
 
   return (
     <section className="relative overflow-x-clip">
@@ -66,39 +43,33 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto flex max-w-3xl flex-col items-center text-center"
         >
-          <Logo className="mb-8 h-10" />
-
-          {announcement ? (
-            <Link
-              href={announcement.href}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/20 hover:text-foreground"
-            >
-              {announcement.text}
-              <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
-          ) : null}
+          <Link
+            href={header.announcement.href}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/20 hover:text-foreground"
+          >
+            {header.announcement.text}
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
 
           <h1 className="text-4xl font-medium tracking-tight text-balance text-foreground sm:text-5xl md:text-6xl md:leading-[1.08]">
-            {headerContent.title}
+            {header.title}
           </h1>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            {headerContent.description}
+            {header.description}
           </p>
 
           <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-center">
             <Button
               variant="dark"
-              href={primaryDownloadUrl}
+              href={downloadUrl}
               size="lg"
               className="justify-center font-medium"
               onClick={() =>
-                trackHomepageEvent("download_cta_clicked", {
+                trackEvent("download_cta_clicked", {
                   source_page: "home_header",
-                  cta_location: "primary",
-                  target_url: primaryDownloadUrl,
+                  target_url: downloadUrl,
                   detected_platform: platform ?? "unknown",
-                  is_intel: Boolean(isIntel),
                 })
               }
             >
@@ -111,26 +82,25 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
               size="lg"
               className="justify-center font-medium"
               onClick={() =>
-                trackHomepageEvent("pricing_cta_clicked", {
+                trackEvent("pricing_cta_clicked", {
                   source_page: "home_header",
-                  cta_location: "secondary",
                   target_url: "/pricing",
                 })
               }
             >
-              {homeContent.header.cta.primaryButton}
+              {header.cta.primary}
             </Button>
           </div>
 
           <p className="mt-4 text-sm text-muted-foreground">
-            {homeContent.header.cta.freeVersionText}
+            {header.cta.freeNote}
           </p>
 
           <Link
-            href="/migrate"
+            href={header.migrate.href}
             className="mt-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            Coming from another tool?
+            {header.migrate.label}
             <span className="underline underline-offset-4">Migrate</span>
             <ArrowRight className="size-3.5" aria-hidden />
           </Link>
@@ -147,7 +117,7 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
             <button
               type="button"
               aria-label={`Play ${productConfig.name} product demo`}
-              onClick={() => setVideoToggled(true)}
+              onClick={() => setVideoOpen(true)}
               className="absolute top-1/2 left-1/2 z-10 flex size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-lg backdrop-blur-md transition-transform hover:scale-105 active:scale-95 sm:size-16 md:size-20"
             >
               <FontAwesomeIcon
@@ -170,17 +140,15 @@ const Header = ({ serverHomepageCopyVariant = "" }: HeaderProps) => {
 
         <div className="mx-auto mt-14 max-w-3xl md:mt-16">
           <p className="mb-5 text-center text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-            {homeContent.pricing.lovedBy}
+            {header.trustedBy}
           </p>
           <LogoMarquee />
         </div>
       </div>
 
       <AnimatePresence>
-        {videoToggled ? <VideoModal setVideoToggled={setVideoToggled} /> : null}
+        {videoOpen ? <VideoModal onClose={() => setVideoOpen(false)} /> : null}
       </AnimatePresence>
     </section>
   )
 }
-
-export default Header

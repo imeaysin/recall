@@ -5,37 +5,33 @@ import {
   DialogContent,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import type React from "react"
+import { productConfig } from "@workspace/config/public"
 
-interface Props {
-  setVideoToggled: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const VideoModal = ({ setVideoToggled }: Props) => {
+export default function VideoModal({ onClose }: { onClose: () => void }) {
   return (
     <Dialog
       defaultOpen
       onOpenChange={(open) => {
-        if (!open) setVideoToggled(false)
+        if (!open) onClose()
       }}
     >
       <DialogContent
         className="max-w-5xl overflow-hidden p-0 sm:max-w-5xl"
         showCloseButton
       >
-        <DialogTitle className="sr-only">Theo demo video</DialogTitle>
+        <DialogTitle className="sr-only">
+          {productConfig.name} demo video
+        </DialogTitle>
         <div className="relative aspect-video w-full">
           <iframe
             src="https://www.rend.so/embed/10512af0-b922-4efa-8974-f8f14fc1886a?autoplay=1&muted=0&accent=3e63dd"
             className="absolute inset-0 size-full border-0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
-            title="Theo demo video"
+            title={`${productConfig.name} demo video`}
           />
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-
-export default VideoModal

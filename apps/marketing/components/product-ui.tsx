@@ -4,8 +4,6 @@ import {
   Button as SharedButton,
   buttonVariants,
 } from "@workspace/ui/components/button"
-import { Kbd } from "@workspace/ui/components/kbd"
-import { Spinner } from "@workspace/ui/components/spinner"
 import { cn } from "@workspace/ui/lib/utils"
 import { productConfig } from "@workspace/config/public"
 import { Webhook } from "lucide-react"
@@ -24,9 +22,6 @@ type ProductButtonVariant =
   | "ghost"
   | "gray"
   | "dark"
-  | "solid"
-  | "accent"
-  | "transparent"
 
 type ProductButtonSize = "xs" | "sm" | "md" | "lg" | "icon"
 
@@ -39,8 +34,6 @@ export interface ButtonProps extends Omit<
   href?: string
   target?: string
   icon?: ReactNode
-  spinner?: boolean
-  kbd?: string
 }
 
 const variantMap = {
@@ -52,9 +45,6 @@ const variantMap = {
   ghost: "ghost",
   gray: "secondary",
   dark: "default",
-  solid: "default",
-  accent: "default",
-  transparent: "ghost",
 } as const
 
 const sizeMap = {
@@ -83,16 +73,13 @@ export function Button({
   href,
   target,
   icon,
-  spinner,
-  kbd,
   children,
   disabled,
   ...props
 }: ButtonProps) {
-  const sharedVariant = variantMap[variant]
   const classes = cn(
     buttonVariants({
-      variant: sharedVariant,
+      variant: variantMap[variant],
       size: sizeMap[size],
     }),
     productVariantClass[variant],
@@ -102,10 +89,8 @@ export function Button({
 
   const content = (
     <>
-      {spinner ? <Spinner data-icon="inline-start" /> : null}
       {icon}
       {children}
-      {kbd ? <Kbd>{kbd}</Kbd> : null}
     </>
   )
 
@@ -126,7 +111,7 @@ export function Button({
   return (
     <SharedButton
       className={classes}
-      variant={sharedVariant}
+      variant={variantMap[variant]}
       size={sizeMap[size]}
       disabled={disabled}
       {...props}
@@ -147,8 +132,6 @@ export function Logo({
   style,
 }: {
   className?: string
-  showVersion?: boolean
-  showBeta?: boolean
   white?: boolean
   hideLogoName?: boolean
   style?: CSSProperties

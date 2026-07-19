@@ -1,15 +1,14 @@
 "use client"
 
 import { Button } from "@/components/product-ui"
+import { homeContent } from "@/content/home"
 import { useDetectPlatform } from "hooks/use-detect-platform"
 import Link from "next/link"
 import { getPlatformIcon } from "@/utils/platform"
-import { homeContent } from "@/content/home"
-import UpgradeToPro from "./upgrade-to-pro"
 
 export function ReadyToGetStarted() {
   const { platform } = useDetectPlatform()
-  const loading = platform === null
+  const { title, download, pro } = homeContent.readyToGetStarted
 
   return (
     <div className="mx-auto my-24 w-full max-w-4xl px-5 md:my-32">
@@ -20,7 +19,7 @@ export function ReadyToGetStarted() {
         />
         <div className="relative z-10 mx-auto max-w-lg">
           <h2 className="text-3xl font-medium tracking-tight text-balance text-foreground md:text-4xl">
-            {homeContent.readyToGetStarted.title}
+            {title}
           </h2>
           <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <Button
@@ -29,12 +28,17 @@ export function ReadyToGetStarted() {
               size="lg"
               className="justify-center font-medium"
             >
-              {!loading && getPlatformIcon(platform)}
-              {homeContent.readyToGetStarted.buttons.secondary}
+              {platform ? getPlatformIcon(platform) : null}
+              {download}
             </Button>
-            <UpgradeToPro
-              text={homeContent.readyToGetStarted.buttons.primary}
-            />
+            <Button
+              variant="outline"
+              href="/pricing"
+              size="lg"
+              className="justify-center font-medium"
+            >
+              {pro}
+            </Button>
           </div>
           <p className="mt-5 text-sm text-muted-foreground">
             or{" "}
