@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useActiveOrganizationId } from "@/lib/session"
 import {
   BulkDeleteNotesSchema,
@@ -16,8 +21,19 @@ import { toast } from "sonner"
 import { apiRoutes } from "@/config/api-routes"
 import { apiFetch } from "@/lib/api"
 
-export const notesQueryKey = (organizationId?: string | null) =>
-  ["notes", organizationId ?? null] as const
+const NOTE_SEARCH_PARAM = "search" as const
+
+export function notesQueryKey(organizationId?: string | null) {
+  return ["notes", organizationId ?? null] as const
+}
+
+function notesListPath(search: string): string {
+  const trimmed = search.trim()
+  if (!trimmed) return apiRoutes.notes
+
+  const params = new URLSearchParams({ [NOTE_SEARCH_PARAM]: trimmed })
+  return `${apiRoutes.notes}?${params.toString()}`
+}
 
 type PatchNotesListOptions = {
   queryClient: ReturnType<typeof useQueryClient>
@@ -30,8 +46,8 @@ function patchNotesList({
   organizationId,
   updater,
 }: PatchNotesListOptions) {
-  queryClient.setQueryData<NotesListResponse>(
-    notesQueryKey(organizationId),
+  queryClient.setQueriesData<NotesListResponse>(
+    { queryKey: notesQueryKey(organizationId) },
     (current) => {
       if (!current) return current
       return { items: updater(current.items) }
@@ -39,16 +55,20 @@ function patchNotesList({
   )
 }
 
-export function useNotesQuery() {
+export function useNotesQuery(search = "") {
   const organizationId = useActiveOrganizationId()
+  const normalizedSearch = search.trim()
 
   return useQuery({
-    queryKey: notesQueryKey(organizationId),
+    queryKey: [...notesQueryKey(organizationId), normalizedSearch],
     queryFn: async () => {
-      const data = await apiFetch<unknown>(apiRoutes.notes)
+      const data = await apiFetch<NotesListResponse>(
+        notesListPath(normalizedSearch)
+      )
       return NotesListResponseSchema.parse(data)
     },
     enabled: !!organizationId,
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -65,7 +85,7 @@ export function useCreateNoteMutation() {
       }
       const promise = (async () => {
         const body = CreateNoteSchema.parse(input)
-        const data = await apiFetch<unknown>(apiRoutes.notes, {
+        const data = await apiFetch<NoteResponse>(apiRoutes.notes, {
           method: "POST",
           body: JSON.stringify(body),
         })
@@ -100,7 +120,7 @@ export function useUpdateNoteMutation() {
     }) => {
       const promise = (async () => {
         const body = UpdateNoteSchema.parse(input)
-        const data = await apiFetch<unknown>(apiRoutes.note(noteId), {
+        const data = await apiFetch<NoteResponse>(apiRoutes.note(noteId), {
           method: "PATCH",
           body: JSON.stringify(body),
         })
@@ -135,7 +155,7 @@ export function useDeleteNoteMutation() {
 
   return useMutation({
     mutationFn: async (noteId: string) => {
-      const promise = apiFetch<void>(apiRoutes.note(noteId), {
+      const promise = apiFetch(apiRoutes.note(noteId), {
         method: "DELETE",
       })
       toast.promise(promise, {

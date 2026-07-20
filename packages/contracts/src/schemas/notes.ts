@@ -1,6 +1,8 @@
 import { z } from "zod"
 import { apiSuccessResponse } from "../api/envelopes"
 
+export const NOTE_SEARCH_MAX_LENGTH = 200 as const
+
 export const NoteResponseSchema = z
   .object({
     id: z.string().describe("Unique note identifier"),
@@ -15,6 +17,25 @@ export const NoteResponseSchema = z
     id: "NoteResponseDto",
     title: "Note",
     description: "A note scoped to a workspace and owned by a user.",
+  })
+
+export const NotesListQuerySchema = z
+  .object({
+    search: z
+      .string()
+      .trim()
+      .max(NOTE_SEARCH_MAX_LENGTH)
+      .optional()
+      .meta({
+        description: "Case-insensitive filter matched against title and body",
+        examples: ["dashboard"],
+      }),
+  })
+  .strict()
+  .meta({
+    id: "NotesListQueryDto",
+    title: "Notes list query",
+    description: "Optional filters when listing notes.",
   })
 
 export const CreateNoteSchema = z
@@ -123,6 +144,7 @@ export const NotesListResponseSchema = z
   })
 
 export type NoteResponse = z.infer<typeof NoteResponseSchema>
+export type NotesListQuery = z.infer<typeof NotesListQuerySchema>
 export type CreateNoteInput = z.infer<typeof CreateNoteSchema>
 export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>
 export type BulkDeleteNotesInput = z.infer<typeof BulkDeleteNotesSchema>

@@ -6,6 +6,7 @@ import type {
   NoteResponse,
   NotesListResponse,
   BulkDeleteNotesResponse,
+  NotesListQuery,
 } from "@workspace/contracts"
 import { jobsEnv } from "@workspace/config/jobs"
 import { NoteQueryRepository, NoteCommandRepository } from "./repository"
@@ -62,8 +63,11 @@ export class NotesService {
     return toNoteResponse(note)
   }
 
-  async listNotes(scope: NoteActorScope): Promise<NotesListResponse> {
-    const notes = await this.queryRepo.findMany(scope)
+  async listNotes(
+    scope: NoteActorScope,
+    query: NotesListQuery = {}
+  ): Promise<NotesListResponse> {
+    const notes = await this.queryRepo.findMany(scope, query)
     return {
       items: notes.map(toNoteResponse),
     }

@@ -44,12 +44,12 @@ import { authClient } from "@workspace/auth/client"
 import { PageHeader } from "@/components/page-header"
 import { NoteFormDialog } from "@/features/notes/components/note-form-dialog"
 import { getNotesColumns } from "@/features/notes/components/notes-columns"
-import { matchesNoteSearch } from "@/features/notes/lib/matches-note-search"
 import {
   useBulkDeleteNotesMutation,
   useDeleteNoteMutation,
   useNotesQuery,
 } from "@/features/notes/hooks/use-notes"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useHasOrgPermission } from "@/hooks/use-org-permission"
 
 export function NotesPage() {
@@ -66,7 +66,9 @@ export function NotesPage() {
     { project: ["delete"] },
     organization?.id
   )
-  const { data, isLoading, isError, error } = useNotesQuery()
+  const [search, setSearch] = useState("")
+  const debouncedSearch = useDebouncedValue(search)
+  const { data, isLoading, isError, error } = useNotesQuery(debouncedSearch)
   const deleteNote = useDeleteNoteMutation()
   const bulkDeleteNotes = useBulkDeleteNotesMutation()
 
@@ -82,6 +84,7 @@ export function NotesPage() {
   >(null)
 
   const notes = data?.items ?? []
+  const hasActiveSearch = debouncedSearch.trim().length > 0
   const selectedIds = useMemo(
     () => Object.keys(rowSelection).filter((id) => rowSelection[id]),
     [rowSelection]
@@ -135,7 +138,9 @@ export function NotesPage() {
   }
 
   const hasNotes = notes.length > 0
-  const showEmptyInitial = !isLoading && !isError && !hasNotes
+  const showEmptyInitial =
+    !isLoading && !isError && !hasNotes && !hasActiveSearch
+  const showTable = !isLoading && !isError && (hasNotes || hasActiveSearch)
 
   const deleteDialogDescription = (() => {
     if (deleteTarget?.type === "bulk") {
@@ -234,14 +239,16 @@ export function NotesPage() {
           </Empty>
         ) : null}
 
-        {!isLoading && !isError && hasNotes ? (
+        {showTable ? (
           <DataTable
             columns={columns}
             data={notes}
-            filterFn={matchesNoteSearch}
             filterPlaceholder="Filter notes..."
+            filterValue={search}
             getRowId={(note) => note.id}
             initialSorting={[{ id: "updatedAt", desc: true }]}
+            manualFiltering
+            onFilterValueChange={setSearch}
             onRowSelectionChange={setRowSelection}
             rowSelection={rowSelection}
           />

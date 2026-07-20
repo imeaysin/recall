@@ -18,6 +18,10 @@ export type NoteActorScope = {
   userId: string
 }
 
+export type NoteListFilter = {
+  readonly search?: string
+}
+
 export type NoteMutationScope = NoteActorScope & {
   noteId: string
 }

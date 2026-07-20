@@ -8,6 +8,7 @@ import {
   type OnChangeFn,
   type RowSelectionState,
   type SortingState,
+  type Updater,
   type VisibilityState,
   flexRender,
   getCoreRowModel,
@@ -41,6 +42,17 @@ type DataTableProps<TData, TValue> = {
    */
   filterFn?: (row: TData, query: string) => boolean
   filterPlaceholder?: string
+  /**
+   * Controlled filter input. Pair with `onFilterValueChange`.
+   * Use with `manualFiltering` when rows are filtered outside the table.
+   */
+  filterValue?: string
+  onFilterValueChange?: (value: string) => void
+  /**
+   * When true, skip client-side filtering — `data` is already filtered
+   * (TanStack Table `manualFiltering`).
+   */
+  manualFiltering?: boolean
   /** Extra controls rendered beside the filter (e.g. faceted filters). */
   toolbar?: React.ReactNode
   className?: string
@@ -51,12 +63,36 @@ type DataTableProps<TData, TValue> = {
   enableRowSelection?: boolean | ((row: { original: TData }) => boolean)
 }
 
+function resolveStringUpdater(
+  updater: Updater<string>,
+  previous: string
+): string {
+  if (typeof updater === "function") {
+    return updater(previous)
+  }
+  return updater
+}
+
+function resolveFilterInputValue(options: {
+  readonly useGlobalFilter: boolean
+  readonly globalFilter: string
+  readonly filterColumn?: string
+  readonly readColumnFilterValue?: () => string
+}): string {
+  if (options.useGlobalFilter) return options.globalFilter
+  if (!options.filterColumn || !options.readColumnFilterValue) return ""
+  return options.readColumnFilterValue()
+}
+
 function DataTable<TData, TValue>({
   columns,
   data,
   filterColumn,
   filterFn,
   filterPlaceholder = "Filter...",
+  filterValue: filterValueProp,
+  onFilterValueChange,
+  manualFiltering = false,
   toolbar,
   className,
   getRowId,
@@ -69,24 +105,38 @@ function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [globalFilter, setGlobalFilter] = React.useState("")
+  const [uncontrolledGlobalFilter, setUncontrolledGlobalFilter] =
+    React.useState("")
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [uncontrolledRowSelection, setUncontrolledRowSelection] =
     React.useState<RowSelectionState>({})
 
+  const isFilterControlled = filterValueProp !== undefined
+  const globalFilter = isFilterControlled
+    ? filterValueProp
+    : uncontrolledGlobalFilter
+
   const rowSelection = rowSelectionProp ?? uncontrolledRowSelection
   const handleRowSelectionChange =
     onRowSelectionChange ?? setUncontrolledRowSelection
 
+  function setGlobalFilter(updater: Updater<string>) {
+    const next = resolveStringUpdater(updater, globalFilter)
+    onFilterValueChange?.(next)
+    if (!isFilterControlled) {
+      setUncontrolledGlobalFilter(next)
+    }
+  }
+
   const globalFilterFn = React.useMemo(() => {
-    if (!filterFn) return undefined
+    if (!filterFn || manualFiltering) return undefined
 
     const matches: FilterFn<TData> = (...args) =>
       filterFn(args[0].original, String(args[2] ?? ""))
 
     return matches
-  }, [filterFn])
+  }, [filterFn, manualFiltering])
 
   // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table
   const table = useReactTable({
@@ -94,13 +144,14 @@ function DataTable<TData, TValue>({
     columns,
     getRowId,
     enableRowSelection,
+    manualFiltering,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getFilteredRowModel: manualFiltering ? undefined : getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: handleRowSelectionChange,
     globalFilterFn,
@@ -113,15 +164,25 @@ function DataTable<TData, TValue>({
     },
   })
 
-  const showFilter = Boolean(filterFn || filterColumn)
-  const filterValue = filterFn
-    ? globalFilter
-    : filterColumn
-      ? ((table.getColumn(filterColumn)?.getFilterValue() as string) ?? "")
-      : ""
+  const useGlobalFilter = Boolean(
+    filterFn || isFilterControlled || onFilterValueChange
+  )
+  const showFilter = Boolean(useGlobalFilter || filterColumn)
+  const filterValue = resolveFilterInputValue({
+    useGlobalFilter,
+    globalFilter,
+    filterColumn,
+    readColumnFilterValue: filterColumn
+      ? () => {
+          const value = table.getColumn(filterColumn)?.getFilterValue()
+          if (typeof value === "string") return value
+          return ""
+        }
+      : undefined,
+  })
 
   function handleFilterChange(value: string) {
-    if (filterFn) {
+    if (useGlobalFilter) {
       setGlobalFilter(value)
       return
     }

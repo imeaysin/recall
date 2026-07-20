@@ -1,5 +1,6 @@
 export * from "./bulk-delete-notes.dto"
 export * from "./create-note.dto"
+export * from "./notes-list-query.dto"
 export * from "./note-response.mapper"
 export * from "./note-responses.dto"
 export * from "./update-note.dto"

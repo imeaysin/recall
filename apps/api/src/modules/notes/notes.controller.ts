@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common"
 import {
   ApiCreatedResponse,
@@ -31,6 +32,7 @@ import {
   CreateNoteDto,
   NoteApiResponseDto,
   NotesListApiResponseDto,
+  NotesListQueryDto,
   UpdateNoteDto,
 } from "./dto"
 
@@ -44,11 +46,17 @@ export class NotesController {
   @MemberHasPermission({ permissions: { project: ["read"] } })
   @ApiOperation({ summary: "List notes" })
   @ApiOkResponse({ type: NotesListApiResponseDto })
-  async list(@Session() session: UserSession) {
-    return this.notesService.listNotes({
-      organizationId: requireActiveOrganizationId(session),
-      userId: session.user.id,
-    })
+  async list(
+    @Session() session: UserSession,
+    @Query() query: NotesListQueryDto
+  ) {
+    return this.notesService.listNotes(
+      {
+        organizationId: requireActiveOrganizationId(session),
+        userId: session.user.id,
+      },
+      query
+    )
   }
 
   @Post()
