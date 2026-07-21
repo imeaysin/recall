@@ -12,9 +12,10 @@ import {
   MessageScrollerProvider,
   MessageScrollerViewport,
 } from "@workspace/ui/components/message-scroller"
+import { cn } from "@workspace/ui/lib/utils"
 
 const CHAT_THREAD_CONTENT_CLASS =
-  "mx-auto w-full max-w-3xl gap-4 px-4 py-4 md:px-6"
+  "mx-auto w-full max-w-3xl gap-6 px-4 py-6 md:px-6"
 
 type MessageOptions =
   | Omit<ChatMessageProps, keyof Message>
@@ -25,14 +26,18 @@ interface ChatThreadProps {
   readonly isTyping: boolean
   readonly showTimeStamps?: boolean
   readonly messageOptions?: MessageOptions
+  readonly contentClassName?: string
+  readonly jumpButtonClassName?: string
 }
 
 export function ChatThread(props: ChatThreadProps) {
   return (
     <MessageScrollerProvider autoScroll>
-      <MessageScroller className="min-h-0 flex-1">
+      <MessageScroller className="size-full min-h-0">
         <MessageScrollerViewport>
-          <MessageScrollerContent className={CHAT_THREAD_CONTENT_CLASS}>
+          <MessageScrollerContent
+            className={cn(CHAT_THREAD_CONTENT_CLASS, props.contentClassName)}
+          >
             {props.messages.map((message) => (
               <ThreadMessage
                 key={message.id}
@@ -48,7 +53,7 @@ export function ChatThread(props: ChatThreadProps) {
             ) : null}
           </MessageScrollerContent>
         </MessageScrollerViewport>
-        <MessageScrollerButton />
+        <MessageScrollerButton className={props.jumpButtonClassName} />
       </MessageScroller>
     </MessageScrollerProvider>
   )

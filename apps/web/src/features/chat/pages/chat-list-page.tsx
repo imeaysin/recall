@@ -1,9 +1,9 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { Alert, AlertDescription } from "@workspace/ui/components/alert"
 import { Chat } from "@workspace/ui/components/ai/chat"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { routes } from "@/config/routes"
-import { PageShell } from "@/features/shell/components/page-shell"
 import {
   CHAT_CREATE_ERROR,
   CHAT_CREATE_TITLE_MAX_LENGTH,
@@ -44,14 +44,24 @@ export function ChatListPage() {
   }
 
   return (
-    <PageShell className={CHAT_PAGE_SHELL_CLASS}>
+    <div className={CHAT_PAGE_SHELL_CLASS}>
+      <header className="absolute inset-x-0 top-0 z-20 flex h-12 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md md:px-4">
+        <SidebarTrigger className="-ml-0.5 shrink-0" />
+        <h1 className="truncate text-sm font-medium tracking-tight">
+          New chat
+        </h1>
+      </header>
+
       {error ? (
-        <Alert variant="destructive" className="mx-auto w-full max-w-3xl">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="absolute inset-x-0 top-12 z-20 px-4 pt-2 md:px-6">
+          <Alert variant="destructive" className="mx-auto w-full max-w-3xl">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        </div>
       ) : null}
+
       <Chat
-        className="min-h-0 flex-1"
+        className="size-full min-h-0"
         messages={[]}
         input={input}
         handleInputChange={(event) => setInput(event.target.value)}
@@ -64,6 +74,6 @@ export function ChatListPage() {
         suggestions={[...CHAT_PROMPT_SUGGESTIONS]}
         placeholder={CHAT_INPUT_PLACEHOLDER}
       />
-    </PageShell>
+    </div>
   )
 }

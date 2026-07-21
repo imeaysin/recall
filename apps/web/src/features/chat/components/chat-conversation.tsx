@@ -24,7 +24,7 @@ export function ChatConversation(props: ChatConversationProps) {
   }
 
   const chatProps = {
-    className: "h-full min-h-0 w-full flex-1",
+    className: "size-full min-h-0",
     messages: [...props.messages],
     input: props.input,
     handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -52,9 +52,10 @@ export function ChatConversation(props: ChatConversationProps) {
 
 function ChatMessagesSkeleton() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-3 px-4">
-      <Skeleton className="h-16 w-3/4 rounded-lg" />
-      <Skeleton className="ml-auto h-12 w-1/3 rounded-2xl" />
+    <div className="mx-auto flex size-full w-full max-w-3xl flex-col gap-4 px-4 pt-16 md:px-6">
+      <Skeleton className="h-20 w-4/5 rounded-2xl" />
+      <Skeleton className="ml-auto h-12 w-2/5 rounded-2xl" />
+      <Skeleton className="h-28 w-3/4 rounded-2xl" />
     </div>
   )
 }

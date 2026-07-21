@@ -10,6 +10,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
+import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import {
   CHAT_DELETE_CONFIRM,
   CHAT_FALLBACK_TITLE,
@@ -22,6 +23,7 @@ interface ChatDetailHeaderProps {
   readonly renameTitle: string
   readonly actionPending: boolean
   readonly updatePending: boolean
+  readonly showSidebarTrigger?: boolean
   readonly onRenameTitleChange: (value: string) => void
   readonly onStartRename: () => void
   readonly onCancelRename: () => void
@@ -31,8 +33,11 @@ interface ChatDetailHeaderProps {
 
 export function ChatDetailHeader(props: ChatDetailHeaderProps) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl shrink-0 items-center justify-between gap-3 px-4 pt-4 md:px-6 md:pt-6">
-      <div className="min-w-0">
+    <header className="absolute inset-x-0 top-0 z-20 flex h-12 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md md:px-4">
+      {props.showSidebarTrigger ? (
+        <SidebarTrigger className="-ml-0.5 shrink-0" />
+      ) : null}
+      <div className="min-w-0 flex-1">
         {props.renaming ? (
           <RenameTitleFields
             renameTitle={props.renameTitle}
@@ -42,7 +47,7 @@ export function ChatDetailHeader(props: ChatDetailHeaderProps) {
             onCancelRename={props.onCancelRename}
           />
         ) : (
-          <h1 className="truncate text-xl font-semibold tracking-tight text-muted-foreground">
+          <h1 className="truncate text-sm font-medium tracking-tight">
             {props.title ?? CHAT_FALLBACK_TITLE}
           </h1>
         )}
@@ -54,7 +59,7 @@ export function ChatDetailHeader(props: ChatDetailHeaderProps) {
           onDelete={props.onDelete}
         />
       ) : null}
-    </div>
+    </header>
   )
 }
 
@@ -66,29 +71,30 @@ function RenameTitleFields(props: {
   readonly onCancelRename: () => void
 }) {
   return (
-    <FieldGroup className="max-w-md">
-      <Field>
-        <FieldLabel htmlFor="chat-title">Title</FieldLabel>
+    <FieldGroup className="flex-row items-center gap-2">
+      <Field className="min-w-0 flex-1 gap-0">
+        <FieldLabel htmlFor="chat-title" className="sr-only">
+          Title
+        </FieldLabel>
         <Input
           id="chat-title"
           value={props.renameTitle}
           onChange={(event) => props.onRenameTitleChange(event.target.value)}
           maxLength={CHAT_TITLE_MAX_LENGTH}
+          className="h-8"
           autoFocus
         />
       </Field>
-      <div className="flex gap-2">
-        <Button
-          size="sm"
-          disabled={props.updatePending}
-          onClick={props.onSaveRename}
-        >
-          Save
-        </Button>
-        <Button size="sm" variant="outline" onClick={props.onCancelRename}>
-          Cancel
-        </Button>
-      </div>
+      <Button
+        size="sm"
+        disabled={props.updatePending}
+        onClick={props.onSaveRename}
+      >
+        Save
+      </Button>
+      <Button size="sm" variant="ghost" onClick={props.onCancelRename}>
+        Cancel
+      </Button>
     </FieldGroup>
   )
 }

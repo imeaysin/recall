@@ -23,7 +23,7 @@ export const CHAT_QUERY_LIST = "list"
 export const CHAT_QUERY_MESSAGES = "messages"
 
 export const CHAT_PAGE_SHELL_CLASS =
-  "flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden p-0"
+  "relative h-full min-h-0 flex-1 gap-0 overflow-hidden p-0"
 
 export enum ChatMessageRole {
   User = "user",

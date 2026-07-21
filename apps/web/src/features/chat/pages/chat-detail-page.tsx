@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { routes } from "@/config/routes"
-import { PageShell } from "@/features/shell/components/page-shell"
 import {
   CHAT_MISSING_ID_MESSAGE,
   CHAT_PAGE_SHELL_CLASS,
@@ -16,7 +15,9 @@ export function ChatDetailPage() {
 
   if (!chatId) {
     return (
-      <p className="text-sm text-muted-foreground">{CHAT_MISSING_ID_MESSAGE}</p>
+      <p className="p-4 text-sm text-muted-foreground">
+        {CHAT_MISSING_ID_MESSAGE}
+      </p>
     )
   }
 
@@ -36,13 +37,14 @@ function ChatDetailView(props: {
   const detail = useChatDetail(props.chatId)
 
   return (
-    <PageShell className={CHAT_PAGE_SHELL_CLASS}>
+    <div className={CHAT_PAGE_SHELL_CLASS}>
       <ChatDetailHeader
         title={detail.chat?.title}
         renaming={detail.renaming}
         renameTitle={detail.renameTitle}
         actionPending={detail.actionPending}
         updatePending={detail.update.isPending}
+        showSidebarTrigger
         onRenameTitleChange={detail.setRenameTitle}
         onStartRename={() => {
           detail.setRenameTitle(detail.chat?.title ?? "")
@@ -63,11 +65,13 @@ function ChatDetailView(props: {
       />
 
       {detail.sendError ? (
-        <ChatSendErrorAlert
-          message={detail.sendError}
-          canRetry={Boolean(detail.displayInflight)}
-          onRetry={detail.retryFailedSend}
-        />
+        <div className="absolute inset-x-0 top-12 z-20 px-4 pt-2 md:px-6">
+          <ChatSendErrorAlert
+            message={detail.sendError}
+            canRetry={Boolean(detail.displayInflight)}
+            onRetry={detail.retryFailedSend}
+          />
+        </div>
       ) : null}
 
       <ChatConversation
@@ -80,6 +84,6 @@ function ChatDetailView(props: {
         onSubmit={() => detail.submitMessage(detail.input)}
         onAppend={(content) => detail.submitMessage(content)}
       />
-    </PageShell>
+    </div>
   )
 }
