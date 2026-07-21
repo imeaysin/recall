@@ -8,7 +8,9 @@ export const AI_PROVIDER: {
   GEMINI_EMBEDDING: "GEMINI_EMBEDDING",
 }
 
-export const DEFAULT_EMBEDDING_MODEL = "text-embedding-004"
+export const DEFAULT_EMBEDDING_MODEL = "gemini-embedding-2"
+/** Keep RAG vectors at 768 dims (Google-recommended truncation for gemini-embedding-2). */
+export const EMBEDDING_OUTPUT_DIMENSIONS = 768
 export const CHUNK_TARGET_TOKENS = 500
 export const CHUNK_OVERLAP_TOKENS = 50
 export const CHARS_PER_TOKEN_ESTIMATE = 4

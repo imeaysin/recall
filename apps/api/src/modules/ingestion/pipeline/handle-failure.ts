@@ -115,6 +115,8 @@ function isPermanentAiConfigError(error: Error): boolean {
   if (text.includes("api key not valid")) return true
   if (text.includes("invalid api key")) return true
   if (text.includes("api_key_invalid")) return true
+  if (text.includes("no longer available")) return true
+  if (text.includes("not found") && text.includes("models/")) return true
   return false
 }
 

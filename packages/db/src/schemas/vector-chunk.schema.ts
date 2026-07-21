@@ -22,7 +22,7 @@ export const VectorChunkSchema = new Schema<IVectorChunk>({
   embeddingModel: {
     type: String,
     required: true,
-    default: "text-embedding-004",
+    default: "gemini-embedding-2",
   },
   createdAt: { type: Date, required: true, default: Date.now },
 })

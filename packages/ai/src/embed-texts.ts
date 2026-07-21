@@ -1,6 +1,11 @@
 import { embedMany } from "ai"
 import { assertWithinDailyQuota } from "./quota-gate"
-import { AI_PROVIDER, AiProviderError, type EmbeddingResult } from "./types"
+import {
+  AI_PROVIDER,
+  AiProviderError,
+  EMBEDDING_OUTPUT_DIMENSIONS,
+  type EmbeddingResult,
+} from "./types"
 import type { GeminiRuntime } from "./runtime"
 import { rethrowAiFailure } from "./errors"
 
@@ -24,10 +29,15 @@ export async function embedTexts(
 
   try {
     const { embeddings, usage } = await embedMany({
-      model: runtime.google.textEmbeddingModel(runtime.embeddingModel),
+      model: runtime.google.embedding(runtime.embeddingModel),
       values: [...texts],
+      providerOptions: {
+        google: {
+          outputDimensionality: EMBEDDING_OUTPUT_DIMENSIONS,
+        },
+      },
     })
-    const tokensUsed = usage?.tokens ?? 0
+    const tokensUsed = finiteTokenCount(usage?.tokens)
     await recordTokenUsage(runtime, tokensUsed)
     return {
       embeddings,
@@ -40,6 +50,11 @@ export async function embedTexts(
     }
     rethrowAiFailure(error, "Embedding generation failed")
   }
+}
+
+function finiteTokenCount(value: number | undefined): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return 0
+  return value
 }
 
 async function recordTokenUsage(

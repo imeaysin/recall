@@ -22,9 +22,11 @@ All apps read the **root** `.env` via `@workspace/config`. Copy from [`.env.exam
 
 ## Required for content ingestion (AI)
 
-| Variable         | Where to get it                                                    |
-| ---------------- | ------------------------------------------------------------------ |
-| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) (free tier) |
+| Variable                 | Where to get it / notes                                                                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`         | [Google AI Studio](https://aistudio.google.com/apikey) (free tier)                                                     |
+| `GEMINI_FLASH_MODEL`     | Default `gemini-3.6-flash` — current stable Flash ([deprecations](https://ai.google.dev/gemini-api/docs/deprecations)) |
+| `GEMINI_EMBEDDING_MODEL` | Default `gemini-embedding-2` — current stable embeddings ([docs](https://ai.google.dev/gemini-api/docs/embeddings))    |
 
 ## Admin bootstrap
 

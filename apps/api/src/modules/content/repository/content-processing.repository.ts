@@ -29,27 +29,31 @@ export class ContentProcessingRepository {
   ): Promise<ContentEntity | null> {
     if (!isValidObjectId(input.contentId)) return null
 
+    const current = await ContentModel.findOne({
+      _id: input.contentId,
+      isDeleted: false,
+    }).select({
+      titleEditedByUser: 1,
+      summaryEditedByUser: 1,
+    })
+
+    if (!current) return null
+
     const doc = await ContentModel.findOneAndUpdate(
       { _id: input.contentId, isDeleted: false },
-      [
-        {
-          $set: {
-            status: "GRAPH",
-            processingStep: "GRAPH",
-            ...(input.language ? { language: input.language } : {}),
-            title: {
-              $cond: ["$titleEditedByUser", "$title", input.title ?? "$title"],
-            },
-            summary: {
-              $cond: [
-                "$summaryEditedByUser",
-                "$summary",
-                input.summary ?? "$summary",
-              ],
-            },
-          },
+      {
+        $set: {
+          status: "GRAPH",
+          processingStep: "GRAPH",
+          ...(input.language ? { language: input.language } : {}),
+          ...(!current.titleEditedByUser && input.title
+            ? { title: input.title }
+            : {}),
+          ...(!current.summaryEditedByUser && input.summary
+            ? { summary: input.summary }
+            : {}),
         },
-      ],
+      },
       { returnDocument: "after" }
     )
     return doc ? mapContentDoc(doc) : null

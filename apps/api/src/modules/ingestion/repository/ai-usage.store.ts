@@ -20,8 +20,8 @@ export class MongoAiUsageStore implements AiUsageStore {
       { date, provider },
       {
         $inc: {
-          requestCount: input.requests ?? 0,
-          tokenCount: input.tokens ?? 0,
+          requestCount: Number.isFinite(input.requests) ? input.requests : 0,
+          tokenCount: Number.isFinite(input.tokens) ? input.tokens : 0,
         },
         $setOnInsert: { quotaExceededCount: 0 },
       },

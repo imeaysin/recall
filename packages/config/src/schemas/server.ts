@@ -57,8 +57,8 @@ const storageSchema = z.object({
 
 const aiSchema = z.object({
   GEMINI_API_KEY: z.string().default(""),
-  GEMINI_FLASH_MODEL: z.string().default("gemini-2.5-flash"),
-  GEMINI_EMBEDDING_MODEL: z.string().default("text-embedding-004"),
+  GEMINI_FLASH_MODEL: z.string().default("gemini-3.6-flash"),
+  GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-2"),
   AI_FLASH_DAILY_REQUEST_CAP: z.coerce.number().int().positive().default(1400),
   AI_EMBEDDING_DAILY_REQUEST_CAP: z.coerce
     .number()
@@ -133,8 +133,8 @@ export const serverDefaults = {
   STORAGE_S3_SECRET_ACCESS_KEY: "",
   STORAGE_S3_BASE_URL: "",
   GEMINI_API_KEY: "",
-  GEMINI_FLASH_MODEL: "gemini-2.5-flash",
-  GEMINI_EMBEDDING_MODEL: "text-embedding-004",
+  GEMINI_FLASH_MODEL: "gemini-3.6-flash",
+  GEMINI_EMBEDDING_MODEL: "gemini-embedding-2",
   AI_FLASH_DAILY_REQUEST_CAP: 1400,
   AI_EMBEDDING_DAILY_REQUEST_CAP: 1400,
   DAILY_INGESTION_CAP: 50,
