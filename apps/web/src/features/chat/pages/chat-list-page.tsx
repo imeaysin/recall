@@ -1,4 +1,3 @@
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { Alert, AlertDescription } from "@workspace/ui/components/alert"
 import { Chat } from "@workspace/ui/components/ai/chat"
 import { useState } from "react"
@@ -45,15 +44,8 @@ export function ChatListPage() {
 
   return (
     <div className={CHAT_PAGE_SHELL_CLASS}>
-      <header className="absolute inset-x-0 top-0 z-20 flex h-12 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md md:px-4">
-        <SidebarTrigger className="-ml-0.5 shrink-0" />
-        <h1 className="truncate text-sm font-medium tracking-tight">
-          New chat
-        </h1>
-      </header>
-
       {error ? (
-        <div className="absolute inset-x-0 top-12 z-20 px-4 pt-2 md:px-6">
+        <div className="absolute inset-x-0 top-0 z-20 px-4 pt-3 md:px-6">
           <Alert variant="destructive" className="mx-auto w-full max-w-3xl">
             <AlertDescription>{error}</AlertDescription>
           </Alert>

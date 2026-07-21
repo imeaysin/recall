@@ -44,7 +44,6 @@ function ChatDetailView(props: {
         renameTitle={detail.renameTitle}
         actionPending={detail.actionPending}
         updatePending={detail.update.isPending}
-        showSidebarTrigger
         onRenameTitleChange={detail.setRenameTitle}
         onStartRename={() => {
           detail.setRenameTitle(detail.chat?.title ?? "")

@@ -378,7 +378,7 @@ export function AppSidebar({
         collapsible="none"
         className="hidden h-full min-h-0 flex-1 overflow-hidden md:flex"
       >
-        <SidebarHeader className="flex shrink-0 flex-row items-center justify-between gap-1 border-b px-2 py-2">
+        <SidebarHeader className="flex shrink-0 flex-row items-center justify-between gap-1 px-2 py-2">
           <SecondaryAddButton
             action={secondaryAction}
             LinkComponent={LinkComponent}

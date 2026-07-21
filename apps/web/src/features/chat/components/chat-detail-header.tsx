@@ -10,7 +10,6 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import {
   CHAT_DELETE_CONFIRM,
   CHAT_FALLBACK_TITLE,
@@ -23,7 +22,6 @@ interface ChatDetailHeaderProps {
   readonly renameTitle: string
   readonly actionPending: boolean
   readonly updatePending: boolean
-  readonly showSidebarTrigger?: boolean
   readonly onRenameTitleChange: (value: string) => void
   readonly onStartRename: () => void
   readonly onCancelRename: () => void
@@ -33,10 +31,7 @@ interface ChatDetailHeaderProps {
 
 export function ChatDetailHeader(props: ChatDetailHeaderProps) {
   return (
-    <header className="absolute inset-x-0 top-0 z-20 flex h-12 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md md:px-4">
-      {props.showSidebarTrigger ? (
-        <SidebarTrigger className="-ml-0.5 shrink-0" />
-      ) : null}
+    <header className="absolute inset-x-0 top-0 z-20 flex h-12 items-center gap-2 bg-background/80 px-4 backdrop-blur-md md:px-6">
       <div className="min-w-0 flex-1">
         {props.renaming ? (
           <RenameTitleFields
