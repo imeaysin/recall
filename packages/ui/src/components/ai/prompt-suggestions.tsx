@@ -8,7 +8,7 @@ interface PromptSuggestionsProps {
 
 export function PromptSuggestions(props: PromptSuggestionsProps) {
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-8">
       <div className="flex flex-col items-center gap-3 text-center">
         <div className="flex size-11 items-center justify-center rounded-2xl border bg-muted/40 text-foreground/80">
           <SparklesIcon className="size-5" aria-hidden />

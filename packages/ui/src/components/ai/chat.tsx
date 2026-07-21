@@ -13,10 +13,10 @@ import { MessageInput } from "@workspace/ui/components/ai/message-input"
 import { PromptSuggestions } from "@workspace/ui/components/ai/prompt-suggestions"
 
 const COMPOSER_SHELL_CLASS =
-  "pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-background from-50% via-background/95 to-transparent pt-12 pb-4 md:pb-6"
+  "pointer-events-none absolute inset-x-0 bottom-0 z-10 pt-4 pb-4 md:pb-6"
 
 const COMPOSER_INNER_CLASS =
-  "pointer-events-auto mx-auto w-full max-w-3xl px-4 md:px-6"
+  "pointer-events-auto mx-auto w-full max-w-4xl px-4 md:px-6"
 
 const THREAD_PAD_CLASS = "pt-16 pb-36 md:pb-40"
 const JUMP_BUTTON_CLASS =

@@ -11,7 +11,7 @@ export function ChatSendErrorAlert(props: ChatSendErrorAlertProps) {
   return (
     <Alert
       variant="destructive"
-      className="mx-auto w-full max-w-3xl shrink-0 px-4 md:px-6"
+      className="mx-auto w-full max-w-4xl shrink-0 px-4 md:px-6"
     >
       <AlertDescription className="flex flex-wrap items-center gap-2">
         <span>{props.message}</span>

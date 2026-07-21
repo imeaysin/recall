@@ -23,6 +23,7 @@ export function AppLayout() {
   const location = useLocation()
   const searchInputRef = useRef<HTMLInputElement>(null)
   const query = new URLSearchParams(location.search).get("q") ?? ""
+  const isChatRoute = location.pathname.startsWith(routes.chat)
   const isLibraryRoute = location.pathname.startsWith(routes.library)
 
   const focusSearch = useEffectEvent(() => {
@@ -60,45 +61,47 @@ export function AppLayout() {
     <SidebarProvider style={{ "--sidebar-width": "280px" } as CSSProperties}>
       <AppSidebar />
       <SidebarInset>
-        <header className="z-10 flex shrink-0 items-center gap-3 bg-background px-4 py-3 md:px-6">
-          <SidebarTrigger className="-ml-1 shrink-0" />
-          <InputGroup className="h-10 max-w-2xl flex-1 rounded-full">
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-            <InputGroupInput
-              ref={searchInputRef}
-              key={`${location.pathname}:${query}`}
-              defaultValue={query}
-              placeholder="Search your knowledge base"
-              aria-label="Search your knowledge base"
-              onKeyDown={(event) => {
-                if (event.key !== "Enter") return
-                submitSearch(event.currentTarget.value)
-              }}
-            />
-            <InputGroupAddon align="inline-end" className="gap-1.5 pr-1.5">
-              <Kbd className="hidden sm:inline-flex">Ctrl</Kbd>
-              <Kbd className="hidden sm:inline-flex">/</Kbd>
-              <InputGroupButton
-                nativeButton={false}
-                render={<Link to={routes.chat} />}
-                className="rounded-full"
-              >
-                <SparklesIcon data-icon="inline-start" />
-                Ask Chat
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
-          <Button
-            className="ml-auto shrink-0 rounded-full"
-            nativeButton={false}
-            render={<Link to={`${routes.library}?add=url`} />}
-          >
-            <PlusIcon data-icon="inline-start" />
-            Add
-          </Button>
-        </header>
+        {!isChatRoute ? (
+          <header className="z-10 flex shrink-0 items-center gap-3 bg-background px-4 py-3 md:px-6">
+            <SidebarTrigger className="-ml-1 shrink-0" />
+            <InputGroup className="h-10 max-w-2xl flex-1 rounded-full">
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                ref={searchInputRef}
+                key={`${location.pathname}:${query}`}
+                defaultValue={query}
+                placeholder="Search your knowledge base"
+                aria-label="Search your knowledge base"
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") return
+                  submitSearch(event.currentTarget.value)
+                }}
+              />
+              <InputGroupAddon align="inline-end" className="gap-1.5 pr-1.5">
+                <Kbd className="hidden sm:inline-flex">Ctrl</Kbd>
+                <Kbd className="hidden sm:inline-flex">/</Kbd>
+                <InputGroupButton
+                  nativeButton={false}
+                  render={<Link to={routes.chat} />}
+                  className="rounded-full"
+                >
+                  <SparklesIcon data-icon="inline-start" />
+                  Ask Chat
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+            <Button
+              className="ml-auto shrink-0 rounded-full"
+              nativeButton={false}
+              render={<Link to={`${routes.library}?add=url`} />}
+            >
+              <PlusIcon data-icon="inline-start" />
+              Add
+            </Button>
+          </header>
+        ) : null}
         <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>

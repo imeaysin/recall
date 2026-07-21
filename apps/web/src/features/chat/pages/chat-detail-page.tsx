@@ -39,7 +39,6 @@ function ChatDetailView(props: {
   return (
     <div className={CHAT_PAGE_SHELL_CLASS}>
       <ChatDetailHeader
-        title={detail.chat?.title}
         renaming={detail.renaming}
         renameTitle={detail.renameTitle}
         actionPending={detail.actionPending}

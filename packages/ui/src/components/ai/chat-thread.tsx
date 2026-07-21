@@ -15,7 +15,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 
 const CHAT_THREAD_CONTENT_CLASS =
-  "mx-auto w-full max-w-3xl gap-6 px-4 py-6 md:px-6"
+  "mx-auto w-full max-w-4xl gap-6 px-4 py-6 md:px-6"
 
 type MessageOptions =
   | Omit<ChatMessageProps, keyof Message>

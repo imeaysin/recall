@@ -52,7 +52,7 @@ export function ChatConversation(props: ChatConversationProps) {
 
 function ChatMessagesSkeleton() {
   return (
-    <div className="mx-auto flex size-full w-full max-w-3xl flex-col gap-4 px-4 pt-16 md:px-6">
+    <div className="mx-auto flex size-full w-full max-w-4xl flex-col gap-4 px-4 pt-16 md:px-6">
       <Skeleton className="h-20 w-4/5 rounded-2xl" />
       <Skeleton className="ml-auto h-12 w-2/5 rounded-2xl" />
       <Skeleton className="h-28 w-3/4 rounded-2xl" />

@@ -28,6 +28,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuBadge,
@@ -36,6 +37,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarTrigger,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
 import { cn } from "@workspace/ui/lib/utils"
@@ -47,6 +49,7 @@ export type AppSidebarSecondaryItem = {
   isActive?: boolean
   count?: number | string
   emphasis?: "default" | "muted"
+  groupLabel?: string
   items?: AppSidebarSecondaryItem[]
 }
 
@@ -96,6 +99,7 @@ export type AppSidebarSecondaryAction = {
   href?: string
   onClick?: () => void
   disabled?: boolean
+  appearance?: "icon" | "labeled"
 }
 
 export type AppSidebarProps = ComponentProps<typeof Sidebar> & {
@@ -140,6 +144,25 @@ function prepareSecondaryItems(
   }
   sorted.sort((a, b) => Number(b.count ?? 0) - Number(a.count ?? 0))
   return sorted
+}
+
+function SecondaryNavEntry({
+  item,
+  LinkComponent,
+}: {
+  item: AppSidebarSecondaryItem
+  LinkComponent: ElementType
+}) {
+  return (
+    <>
+      {item.groupLabel ? (
+        <SidebarGroupLabel className="mt-3 mb-1 px-2 text-[11px] font-medium tracking-wide text-muted-foreground uppercase first:mt-1">
+          {item.groupLabel}
+        </SidebarGroupLabel>
+      ) : null}
+      <SecondaryNavItem item={item} LinkComponent={LinkComponent} />
+    </>
+  )
 }
 
 function SecondaryNavItem({
@@ -250,18 +273,23 @@ function SecondaryAddButton({
   action?: AppSidebarSecondaryAction
   LinkComponent: ElementType
 }) {
+  const isLabeled = action?.appearance === "labeled"
+  const buttonClassName = isLabeled ? "h-8 gap-1.5 px-2.5" : undefined
+
   if (action?.href) {
     return (
       <Button
         type="button"
-        size="icon-sm"
+        size={isLabeled ? "sm" : "icon-sm"}
         variant="ghost"
         aria-label={action.label}
         disabled={action.disabled}
+        className={buttonClassName}
         nativeButton={false}
         render={<LinkComponent href={action.href} />}
       >
         <PlusIcon />
+        {isLabeled ? <span>{action.label}</span> : null}
       </Button>
     )
   }
@@ -269,13 +297,15 @@ function SecondaryAddButton({
   return (
     <Button
       type="button"
-      size="icon-sm"
+      size={isLabeled ? "sm" : "icon-sm"}
       variant="ghost"
       aria-label={action?.label ?? "Add"}
       disabled={!action || action.disabled}
+      className={buttonClassName}
       onClick={action?.onClick}
     >
       <PlusIcon />
+      {isLabeled ? <span>{action?.label}</span> : null}
     </Button>
   )
 }
@@ -303,20 +333,21 @@ export function AppSidebar({
   const brandPlan = brand?.plan ?? activeTeam?.plan ?? ""
   const brandLogo = brand?.logo ?? activeTeam?.logo ?? <CommandIcon />
   const activeItem = navMain.find((item) => item.isActive) ?? navMain[0] ?? null
+  const isChatMode = activeItem?.title === "Chat"
   const secondaryItems = prepareSecondaryItems(activeItem?.items ?? [], {
-    hideEmpty,
-    sort,
+    hideEmpty: isChatMode ? false : hideEmpty,
+    sort: isChatMode ? "default" : sort,
   })
 
   return (
     <Sidebar
       collapsible="icon"
-      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row"
+      className="overflow-hidden border-r-0 *:data-[sidebar=sidebar]:flex-row"
       {...props}
     >
       <Sidebar
         collapsible="none"
-        className="h-full w-[calc(var(--sidebar-width-icon)+1px)]! border-r"
+        className="h-full w-[calc(var(--sidebar-width-icon)+1px)]!"
       >
         <SidebarHeader>
           <SidebarMenu>
@@ -383,31 +414,35 @@ export function AppSidebar({
             action={secondaryAction}
             LinkComponent={LinkComponent}
           />
-          <div className="flex items-center gap-0.5">
-            <Button
-              type="button"
-              size="icon-sm"
-              variant={hideEmpty ? "secondary" : "ghost"}
-              aria-label={
-                hideEmpty ? "Show empty folders" : "Hide empty folders"
-              }
-              aria-pressed={hideEmpty}
-              onClick={() => setHideEmpty((value) => !value)}
-            >
-              <ListFilterIcon />
-            </Button>
-            <Button
-              type="button"
-              size="icon-sm"
-              variant={sort === "default" ? "ghost" : "secondary"}
-              aria-label={`Sort: ${sort}`}
-              onClick={() => setSort(nextSort)}
-            >
-              <ArrowUpDownIcon />
-            </Button>
-          </div>
+          {isChatMode ? (
+            <SidebarTrigger className="size-7" />
+          ) : (
+            <div className="flex items-center gap-0.5">
+              <Button
+                type="button"
+                size="icon-sm"
+                variant={hideEmpty ? "secondary" : "ghost"}
+                aria-label={
+                  hideEmpty ? "Show empty folders" : "Hide empty folders"
+                }
+                aria-pressed={hideEmpty}
+                onClick={() => setHideEmpty((value) => !value)}
+              >
+                <ListFilterIcon />
+              </Button>
+              <Button
+                type="button"
+                size="icon-sm"
+                variant={sort === "default" ? "ghost" : "secondary"}
+                aria-label={`Sort: ${sort}`}
+                onClick={() => setSort(nextSort)}
+              >
+                <ArrowUpDownIcon />
+              </Button>
+            </div>
+          )}
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="min-h-0 gap-0 overflow-y-auto">
           {secondaryItems.length === 0 ? (
             <Empty className="border-0">
               <EmptyHeader>
@@ -418,12 +453,12 @@ export function AppSidebar({
               </EmptyHeader>
             </Empty>
           ) : (
-            <SidebarGroup className="px-2 py-2">
+            <SidebarGroup className="px-1.5 py-1">
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="gap-0.5">
                   {secondaryItems.map((item) => (
-                    <SecondaryNavItem
-                      key={`${item.url}-${item.title}`}
+                    <SecondaryNavEntry
+                      key={`${item.url}-${item.title}-${item.groupLabel ?? ""}`}
                       item={item}
                       LinkComponent={LinkComponent}
                     />

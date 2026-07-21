@@ -12,45 +12,42 @@ import {
 import { FilePreview } from "@workspace/ui/components/ai/file-preview"
 import { MarkdownRenderer } from "@workspace/ui/components/ai/markdown-renderer"
 
-const chatBubbleVariants = cva(
-  "group/message relative text-sm break-words sm:max-w-[70%]",
-  {
-    variants: {
-      isUser: {
-        true: "rounded-2xl bg-primary px-3 py-2 text-primary-foreground",
-        false: "rounded-lg px-1 py-1 text-foreground",
-      },
-      animation: {
-        none: "",
-        slide: "animate-in duration-300 fade-in-0",
-        scale: "animate-in duration-300 fade-in-0 zoom-in-75",
-        fade: "animate-in duration-500 fade-in-0",
-      },
+const chatBubbleVariants = cva("group/message relative text-sm break-words", {
+  variants: {
+    isUser: {
+      true: "max-w-[85%] rounded-2xl bg-primary px-3 py-2 text-primary-foreground sm:max-w-[70%]",
+      false: "w-full max-w-none rounded-lg px-1 py-1 text-foreground",
     },
-    compoundVariants: [
-      {
-        isUser: true,
-        animation: "slide",
-        class: "slide-in-from-right",
-      },
-      {
-        isUser: false,
-        animation: "slide",
-        class: "slide-in-from-left",
-      },
-      {
-        isUser: true,
-        animation: "scale",
-        class: "origin-bottom-right",
-      },
-      {
-        isUser: false,
-        animation: "scale",
-        class: "origin-bottom-left",
-      },
-    ],
-  }
-)
+    animation: {
+      none: "",
+      slide: "animate-in duration-300 fade-in-0",
+      scale: "animate-in duration-300 fade-in-0 zoom-in-75",
+      fade: "animate-in duration-500 fade-in-0",
+    },
+  },
+  compoundVariants: [
+    {
+      isUser: true,
+      animation: "slide",
+      class: "slide-in-from-right",
+    },
+    {
+      isUser: false,
+      animation: "slide",
+      class: "slide-in-from-left",
+    },
+    {
+      isUser: true,
+      animation: "scale",
+      class: "origin-bottom-right",
+    },
+    {
+      isUser: false,
+      animation: "scale",
+      class: "origin-bottom-left",
+    },
+  ],
+})
 
 type Animation = VariantProps<typeof chatBubbleVariants>["animation"]
 
@@ -283,7 +280,7 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="mb-2 flex flex-col items-start sm:max-w-[70%]">
+    <div className="mb-2 flex w-full max-w-none flex-col items-start">
       <Collapsible
         open={isOpen}
         onOpenChange={setIsOpen}

@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from "@workspace/ui/components/alert"
 import { Chat } from "@workspace/ui/components/ai/chat"
+import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { routes } from "@/config/routes"
@@ -44,9 +45,13 @@ export function ChatListPage() {
 
   return (
     <div className={CHAT_PAGE_SHELL_CLASS}>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex p-3 md:p-4">
+        <SidebarTrigger className="pointer-events-auto md:hidden" />
+      </div>
+
       {error ? (
-        <div className="absolute inset-x-0 top-0 z-20 px-4 pt-3 md:px-6">
-          <Alert variant="destructive" className="mx-auto w-full max-w-3xl">
+        <div className="absolute inset-x-0 top-12 z-20 px-4 pt-2 md:px-6">
+          <Alert variant="destructive" className="mx-auto w-full max-w-4xl">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         </div>

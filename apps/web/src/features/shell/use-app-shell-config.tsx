@@ -21,6 +21,7 @@ import {
 } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
+import { chatDayGroupLabel } from "@/features/chat/lib/chat-day-group"
 import { useChatList, useCreateChat } from "@/features/chat/hooks/use-chat"
 import {
   useContentList,
@@ -116,14 +117,23 @@ function buildLibrarySecondary(input: {
 
 function buildChatSecondary(input: {
   pathname: string
-  chats: readonly { id: string; title: string }[]
+  chats: readonly { id: string; title: string; lastMessageAt: string }[]
 }): AppSidebarSecondaryItem[] {
-  return input.chats.map((chat) => ({
-    title: chat.title,
-    url: routes.chatDetail(chat.id),
-    icon: <MessageSquareIcon />,
-    isActive: input.pathname === routes.chatDetail(chat.id),
-  }))
+  let previousGroup = ""
+
+  return input.chats.map((chat) => {
+    const groupLabel = chatDayGroupLabel(chat.lastMessageAt)
+    const showGroup = groupLabel !== previousGroup
+    if (showGroup) previousGroup = groupLabel
+
+    return {
+      title: chat.title,
+      url: routes.chatDetail(chat.id),
+      icon: <MessageSquareIcon />,
+      isActive: input.pathname === routes.chatDetail(chat.id),
+      groupLabel: showGroup ? groupLabel : undefined,
+    }
+  })
 }
 
 function buildTopicsSecondary(input: {
@@ -259,6 +269,7 @@ export function useAppShellConfig() {
     if (activeMode?.title === "Chat") {
       return {
         label: "New chat",
+        appearance: "labeled",
         disabled: createChat.isPending,
         onClick: () => {
           createChat.mutate(undefined, {
