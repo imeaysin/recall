@@ -1,8 +1,8 @@
 import { YoutubeTranscript } from "youtube-transcript"
-import type { ContentExtractor, ExtractInput, ExtractResult } from "./types"
-import { ExtractionError } from "./types"
-import { detectYoutubeVideoId, wordCount } from "./normalize-url"
-import { detectLanguageHint } from "./detect-language"
+import type { ContentExtractor, ExtractInput, ExtractResult } from "../types"
+import { ExtractionError } from "../types"
+import { detectYoutubeVideoId, wordCount } from "../lib/normalize-url"
+import { detectLanguageHint } from "../lib/detect-language"
 
 export const youtubeExtractor: ContentExtractor = {
   sourceType: "YOUTUBE",

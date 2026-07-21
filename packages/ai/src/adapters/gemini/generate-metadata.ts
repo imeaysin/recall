@@ -1,14 +1,14 @@
 import { generateObject } from "ai"
-import { assertWithinDailyQuota } from "./quota-gate"
+import { assertWithinDailyQuota } from "../../quota-gate"
 import { contentMetadataSchema } from "./metadata.schema"
 import {
   AI_PROVIDER,
   AiProviderError,
   METADATA_TEXT_CHAR_LIMIT,
   type ContentMetadata,
-} from "./types"
+} from "../../types"
 import type { GeminiRuntime } from "./runtime"
-import { rethrowAiFailure } from "./errors"
+import { rethrowAiFailure } from "../../errors"
 
 export async function generateMetadata(
   runtime: GeminiRuntime,

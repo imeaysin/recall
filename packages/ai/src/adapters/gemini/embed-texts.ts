@@ -1,13 +1,13 @@
 import { embedMany } from "ai"
-import { assertWithinDailyQuota } from "./quota-gate"
+import { assertWithinDailyQuota } from "../../quota-gate"
 import {
   AI_PROVIDER,
   AiProviderError,
   EMBEDDING_OUTPUT_DIMENSIONS,
   type EmbeddingResult,
-} from "./types"
+} from "../../types"
 import type { GeminiRuntime } from "./runtime"
-import { rethrowAiFailure } from "./errors"
+import { rethrowAiFailure } from "../../errors"
 
 export async function embedTexts(
   runtime: GeminiRuntime,

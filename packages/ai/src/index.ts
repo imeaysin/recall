@@ -3,4 +3,4 @@ export * from "./chunk"
 export {
   createGeminiAiClient,
   type CreateGeminiAiClientOptions,
-} from "./gemini.provider"
+} from "./factory"

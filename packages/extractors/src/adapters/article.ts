@@ -1,9 +1,9 @@
 import { JSDOM } from "jsdom"
 import { Readability } from "@mozilla/readability"
-import type { ContentExtractor, ExtractInput, ExtractResult } from "./types"
-import { ExtractionError } from "./types"
-import { wordCount } from "./normalize-url"
-import { detectLanguageHint } from "./detect-language"
+import type { ContentExtractor, ExtractInput, ExtractResult } from "../types"
+import { ExtractionError } from "../types"
+import { wordCount } from "../lib/normalize-url"
+import { detectLanguageHint } from "../lib/detect-language"
 
 export const articleExtractor: ContentExtractor = {
   sourceType: "ARTICLE",

@@ -1,7 +1,7 @@
 import pdfParse from "pdf-parse"
-import type { ContentExtractor, ExtractInput, ExtractResult } from "./types"
-import { ExtractionError } from "./types"
-import { wordCount } from "./normalize-url"
+import type { ContentExtractor, ExtractInput, ExtractResult } from "../types"
+import { ExtractionError } from "../types"
+import { wordCount } from "../lib/normalize-url"
 
 export const pdfExtractor: ContentExtractor = {
   sourceType: "PDF",

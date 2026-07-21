@@ -1,6 +1,6 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { aiEnv } from "@workspace/config/ai"
-import { AiProviderError, type AiUsageStore } from "./types"
+import { AiProviderError, type AiUsageStore } from "../../types"
 
 type GoogleProvider = ReturnType<typeof createGoogleGenerativeAI>
 

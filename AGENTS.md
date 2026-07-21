@@ -10,13 +10,13 @@ apps/
   web/          Vite + React Router — Vitest in test/
   marketing/    Next.js 16 landing — see apps/marketing/AGENTS.md
 packages/
-  ai/             Gemini LLM + embeddings
+  ai/             AiClient + Gemini adapter (see packages/ai/README.md)
   auth/           Better Auth server + Nest guards + React hooks
   config/         Root .env validation (Zod)
   contracts/      Shared Zod schemas (API + clients)
   db/             MongoDB connection layer (Mongoose)
   email/          Transactional email (Resend + React Email)
-  extractors/     URL/PDF/YouTube text extraction
+  extractors/     Per-source extractors (see packages/extractors/README.md)
   logger/         Structured logging (pino)
   storage/        File upload providers (local / S3)
   ui/             Shared React UI (shadcn + app shell)

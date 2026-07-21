@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { detectLanguageHint } from "../src/detect-language"
+import { detectLanguageHint } from "../src/lib/detect-language"
 
 describe("detectLanguageHint", () => {
   it("returns en for latin-heavy text", () => {

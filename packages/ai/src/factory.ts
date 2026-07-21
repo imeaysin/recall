@@ -1,8 +1,11 @@
 import type { AiClient } from "./types"
-import { createGeminiRuntime, type CreateGeminiRuntimeOptions } from "./runtime"
-import { generateMetadata } from "./generate-metadata"
-import { embedTexts } from "./embed-texts"
-import { answerWithContext } from "./answer-with-context"
+import {
+  createGeminiRuntime,
+  type CreateGeminiRuntimeOptions,
+} from "./adapters/gemini/runtime"
+import { generateMetadata } from "./adapters/gemini/generate-metadata"
+import { embedTexts } from "./adapters/gemini/embed-texts"
+import { answerWithContext } from "./adapters/gemini/answer-with-context"
 
 export type CreateGeminiAiClientOptions = CreateGeminiRuntimeOptions
 

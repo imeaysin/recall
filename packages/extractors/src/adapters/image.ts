@@ -1,11 +1,7 @@
-import type { ContentExtractor, ExtractInput, ExtractResult } from "./types"
-import { ExtractionError } from "./types"
+import type { ContentExtractor, ExtractInput, ExtractResult } from "../types"
+import { ExtractionError } from "../types"
 
-/**
- * Image OCR — MVP stub.
- * Production should wire an OCR provider (e.g. Tesseract / Gemini vision).
- * Until then, fail with a structured code so the UI can show a clear error.
- */
+/** Image OCR is not enabled yet — fails with a structured code for the UI. */
 export const imageExtractor: ContentExtractor = {
   sourceType: "IMAGE",
 

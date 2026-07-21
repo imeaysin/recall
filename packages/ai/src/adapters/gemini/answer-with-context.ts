@@ -1,14 +1,14 @@
 import { generateText } from "ai"
-import { assertWithinDailyQuota } from "./quota-gate"
+import { assertWithinDailyQuota } from "../../quota-gate"
 import {
   AI_PROVIDER,
   AiProviderError,
   type AnswerWithContextInput,
   type RagAnswer,
   type RagCitation,
-} from "./types"
+} from "../../types"
 import type { GeminiRuntime } from "./runtime"
-import { rethrowAiFailure } from "./errors"
+import { rethrowAiFailure } from "../../errors"
 
 export async function answerWithContext(
   runtime: GeminiRuntime,
@@ -33,7 +33,7 @@ export async function answerWithContext(
     return {
       text,
       citations: selectCitedChunks(text, input.contextChunks),
-      tokensUsed: usage?.totalTokens ?? 0,
+      tokensUsed: finiteTokenCount(usage?.totalTokens),
     }
   } catch (error) {
     if (!(error instanceof Error)) {
@@ -41,6 +41,11 @@ export async function answerWithContext(
     }
     rethrowAiFailure(error, "RAG completion failed")
   }
+}
+
+function finiteTokenCount(value: number | undefined): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return 0
+  return value
 }
 
 function buildRagSystemPrompt(chunks: readonly RagCitation[]): string {

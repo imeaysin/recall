@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { normalizeUrl, detectYoutubeVideoId } from "../src/normalize-url"
+import { normalizeUrl, detectYoutubeVideoId } from "../src/lib/normalize-url"
 
 describe("normalizeUrl", () => {
   it("strips tracking params and trailing slash", () => {
