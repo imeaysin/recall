@@ -60,7 +60,7 @@ export function AppLayout() {
     <SidebarProvider style={{ "--sidebar-width": "280px" } as CSSProperties}>
       <AppSidebar />
       <SidebarInset>
-        <header className="z-10 flex shrink-0 items-center gap-3 border-b bg-background px-4 py-3 md:px-6">
+        <header className="z-10 flex shrink-0 items-center gap-3 bg-background px-4 py-3 md:px-6">
           <SidebarTrigger className="-ml-1 shrink-0" />
           <InputGroup className="h-10 max-w-2xl flex-1 rounded-full">
             <InputGroupAddon>
