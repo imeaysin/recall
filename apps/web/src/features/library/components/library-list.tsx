@@ -53,7 +53,7 @@ function LibraryListItem(props: {
             {stepLabel}
           </p>
         </div>
-        {item.status === "FAILED" ? (
+        {item.status === "FAILED" || item.errorCode ? (
           <Button
             size="sm"
             variant="outline"

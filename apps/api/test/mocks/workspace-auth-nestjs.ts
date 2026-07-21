@@ -31,7 +31,7 @@ interface PermissionCheckOptions {
 
 /** Header that unlocks authenticated e2e routes with a fixed test session. */
 export const E2E_SESSION_HEADER = "x-e2e-session"
-export const E2E_TEST_USER_ID = "e2e-test-user"
+export const E2E_TEST_USER_ID = "aaaaaaaaaaaaaaaaaaaaaaaa"
 
 export const AllowAnonymous = () => SetMetadata(AUTH_METADATA.PUBLIC, true)
 export const OptionalAuth = () => SetMetadata(AUTH_METADATA.OPTIONAL, true)

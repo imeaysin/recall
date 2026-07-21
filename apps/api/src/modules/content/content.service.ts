@@ -48,7 +48,14 @@ export class ContentService {
     if (existing) return toContentResponse(existing)
 
     const reserved = await this.quotaRepo.tryReserveIngestionSlot(scope.userId)
-    if (!reserved.ok) throw new DailyIngestionLimitException()
+    if (!reserved.ok) {
+      if (reserved.reason === "at_cap") {
+        throw new DailyIngestionLimitException()
+      }
+      throw new InvalidContentUpdateException(
+        "Unable to reserve ingestion slot"
+      )
+    }
 
     const sourceType = detectYoutubeVideoId(input.url) ? "YOUTUBE" : "ARTICLE"
     const { entity, created } = await this.commandRepo.insertUrlOrGetExisting({

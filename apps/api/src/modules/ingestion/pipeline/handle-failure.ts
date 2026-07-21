@@ -9,6 +9,7 @@ import type { ContentCommandRepository } from "@/modules/content/repository"
 import {
   ContentDeletedDuringIngestionError,
   isExtractionErrorCode,
+  isNonRetryableErrorCode,
 } from "../domain"
 import { logIngestionAttempt } from "../repository"
 
@@ -54,7 +55,10 @@ export async function handleIngestionFailure(
 
   const mapped = mapFailure(input.error)
   const nextRetry = input.retryCount + 1
-  const terminal = nextRetry >= ingestionEnv.INGESTION_MAX_RETRIES
+  const terminal =
+    isNonRetryableErrorCode(mapped.errorCode) ||
+    isPermanentAiConfigError(input.error) ||
+    nextRetry >= ingestionEnv.INGESTION_MAX_RETRIES
   const status: ContentStatus = terminal ? "FAILED" : "PENDING"
 
   await input.commandRepo.updateIfActive(input.contentId, {
@@ -90,9 +94,36 @@ function mapFailure(error: Error): MappedFailure {
     return { errorCode: error.code, message: error.message }
   }
 
+  if (isPermanentAiConfigError(error)) {
+    return {
+      errorCode: "AI_ERROR",
+      message:
+        "Gemini API key is missing or invalid. Set a valid GEMINI_API_KEY in .env and restart the API.",
+    }
+  }
+
   if (error instanceof AiProviderError) {
     return { errorCode: "AI_ERROR", message: error.message }
   }
 
   return { errorCode: "AI_ERROR", message: error.message }
+}
+
+function isPermanentAiConfigError(error: Error): boolean {
+  const text = collectErrorText(error).toLowerCase()
+  if (text.includes("gemini_api_key is not configured")) return true
+  if (text.includes("api key not valid")) return true
+  if (text.includes("invalid api key")) return true
+  if (text.includes("api_key_invalid")) return true
+  return false
+}
+
+function collectErrorText(error: Error): string {
+  const parts = [error.message]
+  let current: Error | undefined = error
+  while (current?.cause instanceof Error) {
+    parts.push(current.cause.message)
+    current = current.cause
+  }
+  return parts.join(" ")
 }

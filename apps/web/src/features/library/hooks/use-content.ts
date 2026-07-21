@@ -14,6 +14,21 @@ const contentKeys = {
   detail: (id: string) => [...contentKeys.all, "detail", id] as const,
 }
 
+const ACTIVELY_PROCESSING = new Set([
+  "EXTRACTING",
+  "METADATA",
+  "GRAPH",
+  "EMBEDDING",
+])
+
+/** Poll only while work is running — not while waiting/retrying with an error. */
+function needsIngestionPolling(items: readonly ContentResponse[]): boolean {
+  return items.some((item) => {
+    if (ACTIVELY_PROCESSING.has(item.status)) return true
+    return item.status === "PENDING" && !item.errorCode
+  })
+}
+
 export function useContentList(libraryStatus?: "QUEUE" | "ARCHIVE") {
   const params = libraryStatus ? `?libraryStatus=${libraryStatus}` : undefined
   return useQuery({
@@ -22,10 +37,7 @@ export function useContentList(libraryStatus?: "QUEUE" | "ARCHIVE") {
       apiFetch<ContentListResponse>(`${apiRoutes.content}${params ?? ""}`),
     refetchInterval: (query) => {
       const items = query.state.data?.items ?? []
-      const processing = items.some(
-        (item) => item.status !== "COMPLETED" && item.status !== "FAILED"
-      )
-      return processing ? 2000 : false
+      return needsIngestionPolling(items) ? 2000 : false
     },
   })
 }

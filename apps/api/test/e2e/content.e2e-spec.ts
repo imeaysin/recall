@@ -1,6 +1,7 @@
 import { type INestApplication } from "@nestjs/common"
 import request from "supertest"
 import { type App } from "supertest/types"
+import { Types } from "mongoose"
 import { ContentResponseSchema } from "@workspace/contracts"
 import { ContentModel, getDb } from "@workspace/db"
 import { IngestionService } from "@/modules/ingestion/ingestion.service"
@@ -9,6 +10,8 @@ import {
   E2E_TEST_USER_ID,
 } from "../mocks/workspace-auth-nestjs"
 import { createE2eApp } from "./support/create-e2e-app"
+
+const e2eUserFilter = { _id: new Types.ObjectId(E2E_TEST_USER_ID) }
 
 describe("ContentController (e2e)", () => {
   let app: INestApplication<App>
@@ -20,10 +23,9 @@ describe("ContentController (e2e)", () => {
     await getDb()
       .collection("user")
       .updateOne(
-        { id: E2E_TEST_USER_ID },
+        e2eUserFilter,
         {
           $set: {
-            id: E2E_TEST_USER_ID,
             email: "e2e@example.com",
             name: "E2E User",
             emailVerified: true,
@@ -42,7 +44,7 @@ describe("ContentController (e2e)", () => {
 
   afterAll(async () => {
     await ContentModel.deleteMany({ userId: E2E_TEST_USER_ID })
-    await getDb().collection("user").deleteOne({ id: E2E_TEST_USER_ID })
+    await getDb().collection("user").deleteOne(e2eUserFilter)
     await app?.close()
   })
 
@@ -50,10 +52,9 @@ describe("ContentController (e2e)", () => {
     await ContentModel.deleteMany({ userId: E2E_TEST_USER_ID })
     await getDb()
       .collection("user")
-      .updateOne(
-        { id: E2E_TEST_USER_ID },
-        { $set: { dailyIngestionCount: 0, contentCount: 0 } }
-      )
+      .updateOne(e2eUserFilter, {
+        $set: { dailyIngestionCount: 0, contentCount: 0 },
+      })
   })
 
   it("returns 401 without e2e session header", async () => {
