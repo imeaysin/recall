@@ -4,13 +4,10 @@ import { PageNotFound } from "@/components/page-not-found"
 import { AppLayout } from "@/components/layouts/app-layout"
 import { AuthLayout } from "@/components/layouts/auth-layout"
 import { RootLayout } from "@/components/layouts/root-layout"
-import { AcceptInvitationPage } from "@/features/auth/pages/accept-invitation-page"
 import { BetterAuthUiProvider } from "@/features/auth/providers/better-auth-ui-provider"
 import { authRoutes } from "@/features/auth/routes"
 import { dashboardRoutes } from "@/features/dashboard/routes"
-import { notesRoutes } from "@/features/notes/routes"
-import { notificationRoutes } from "@/features/notifications/routes"
-import { organizationRoutes } from "@/features/organization/routes"
+import { libraryRoutes } from "@/features/library/routes"
 import { uploadsRoutes } from "@/features/uploads/routes"
 import { settingsRoutes } from "@/features/settings/routes"
 import { homeRoutes } from "@/features/home/routes"
@@ -39,33 +36,22 @@ export const router = createBrowserRouter([
         children: authRoutes,
       },
       {
-        element: <AuthLayout />,
-        children: [
-          {
-            path: `${routeSegments.acceptInvitation.root}/${routeSegments.acceptInvitation.invitationId}`,
-            element: <AcceptInvitationPage />,
-          },
-        ],
-      },
-      {
         element: <ProtectedRoute />,
         children: [
           {
             element: <AppLayout />,
             children: [
-              ...organizationRoutes,
               {
                 path: routeSegments.app.root,
                 children: [
                   {
                     index: true,
                     element: (
-                      <Navigate replace to={routeSegments.app.dashboard} />
+                      <Navigate replace to={routeSegments.app.library} />
                     ),
                   },
                   ...dashboardRoutes,
-                  ...notesRoutes,
-                  ...notificationRoutes,
+                  ...libraryRoutes,
                   ...uploadsRoutes,
                   ...settingsRoutes,
                 ],

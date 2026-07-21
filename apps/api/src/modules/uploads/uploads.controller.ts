@@ -15,13 +15,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger"
 import { UPLOAD_MAX_BYTES } from "@workspace/contracts"
-import {
-  MemberHasPermission,
-  Session,
-  type UserSession,
-} from "@/common/decorators"
+import { Session, type UserSession } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
-import { requireActiveOrganizationId } from "@/common/session-context"
 import { UploadsService } from "./uploads.service"
 import { UploadBadRequestException } from "./domain/exceptions"
 import { UploadApiResponseDto, type FileMetadata } from "./dto"
@@ -33,7 +28,6 @@ export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
 
   @Post()
-  @MemberHasPermission({ permissions: { project: ["create"] } })
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Upload a file" })
   @ApiConsumes("multipart/form-data")
@@ -62,7 +56,6 @@ export class UploadsController {
       throw new UploadBadRequestException("File is required")
     }
     return this.uploadsService.uploadFile({
-      organizationId: requireActiveOrganizationId(session),
       userId: session.user.id,
       file,
     })

@@ -191,28 +191,19 @@ if [ "$VERIFIED" = true ]; then
       curl -sf -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/set-active" \
         -H 'Content-Type: application/json' -H "Origin: $ORIGIN" \
         -d "{\"organizationId\":\"$ORG_ID\"}" >/dev/null
-      NOTE=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" -X POST "$BASE/v1/notes" \
+      CONTENT=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" -X POST "$BASE/v1/content/url" \
         -H 'Content-Type: application/json' \
-        -d '{"title":"Edge note","body":"workspace A"}')
-      NOTE_ID=$(echo "$NOTE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
-      check "create note in workspace A" "echo '$NOTE' | grep -q '\"title\":\"Edge note\"'"
+        -d '{"url":"https://example.com/edge-article"}')
+      CONTENT_ID=$(echo "$CONTENT" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+      check "create content via URL" "echo '$CONTENT' | grep -qE '\"(id|status)\"'"
 
-      curl -sf -b "$COOKIE" -c "$COOKIE" -X POST "$BASE/api/auth/organization/set-active" \
-        -H 'Content-Type: application/json' -H "Origin: $ORIGIN" \
-        -d "{\"organizationId\":\"$ORG_B_ID\"}" >/dev/null
-      LIST_B=$(curl -s -b "$COOKIE" -H "Origin: $ORIGIN" "$BASE/v1/notes")
-      check "notes list empty in workspace B" "echo '$LIST_B' | grep -q '\"items\":\\[\\]'"
-      if [ -n "$NOTE_ID" ]; then
-        check "cross-workspace note update blocked" "curl -s -o /dev/null -w '%{http_code}' -b '$COOKIE' -H 'Origin: $ORIGIN' -X PATCH '$BASE/v1/notes/$NOTE_ID' -H 'Content-Type: application/json' -d '{\"title\":\"Hacked\"}' | grep -q '404'"
-      else
-        skip_test "cross-workspace note update blocked"
+      check "content without session rejected" "curl -s -o /dev/null -w '%{http_code}' '$BASE/v1/content' | grep -q '401'"
+      if [ -z "$CONTENT_ID" ]; then
+        skip_test "create content via URL (no id returned)"
       fi
-      check "notes without session rejected" "curl -s -o /dev/null -w '%{http_code}' '$BASE/v1/notes' | grep -q '401'"
     else
-      skip_test "create note in workspace A"
-      skip_test "notes list empty in workspace B"
-      skip_test "cross-workspace note update blocked"
-      skip_test "notes without session rejected"
+      skip_test "create content via URL"
+      skip_test "content without session rejected"
     fi
   else
     skip_test "create organization (no session)"

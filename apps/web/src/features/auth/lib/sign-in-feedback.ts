@@ -1,49 +1,24 @@
 import { routes } from "@/config/routes"
 
-const EMAIL_NOT_VERIFIED_CODE = "EMAIL_NOT_VERIFIED"
-
-export type AuthClientError = {
-  readonly code?: string
-  readonly message?: string
-}
-
 export type SignInFeedback = {
   readonly message: string
-  readonly verifyEmailHref?: string
 }
 
-function isAuthClientError(
-  error: AuthClientError | null
-): error is AuthClientError {
-  return error !== null
-}
-
-function buildVerifyEmailHref(email: string): string {
-  return `${routes.verifyEmail}?email=${encodeURIComponent(email)}`
-}
-
-export function resolveSignInFeedback(
-  error: AuthClientError | null,
-  email: string
-): SignInFeedback {
-  if (!isAuthClientError(error)) {
+export function resolveSignInFeedback(error: {
+  readonly code?: string
+  readonly message?: string
+}): SignInFeedback {
+  if (error.code === "EMAIL_NOT_VERIFIED") {
     return {
-      message: "Unable to sign in.",
-      verifyEmailHref: buildVerifyEmailHref(email),
-    }
-  }
-
-  if (error.code === EMAIL_NOT_VERIFIED_CODE) {
-    return {
-      message: "Verify your email before signing in.",
-      verifyEmailHref: buildVerifyEmailHref(email),
+      message: "Complete OAuth sign-in to verify your account.",
     }
   }
 
   return {
-    message:
-      error.message ??
-      "Unable to sign in. Check your email and password, or verify your account first.",
-    verifyEmailHref: buildVerifyEmailHref(email),
+    message: error.message ?? "Sign-in failed. Try again.",
   }
+}
+
+export function buildVerifyEmailHref(_email: string): string {
+  return routes.signIn
 }

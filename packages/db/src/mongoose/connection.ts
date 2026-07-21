@@ -53,3 +53,20 @@ export async function disconnectDb() {
 export function isDbConnected(): boolean {
   return isConnectionReady()
 }
+
+/** Native Db handle from the shared Mongoose connection. */
+export function getDb() {
+  const db = mongoose.connection.db
+  if (!db) {
+    throw new Error("MongoDB is not connected — call connectDb() first")
+  }
+  return db
+}
+
+export function getMongoClient() {
+  const client = mongoose.connection.getClient()
+  if (!client) {
+    throw new Error("MongoDB is not connected — call connectDb() first")
+  }
+  return client
+}

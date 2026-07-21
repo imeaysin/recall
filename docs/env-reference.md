@@ -1,56 +1,50 @@
-# Environment reference
+# Environment reference (CogniVault)
 
 All apps read the **root** `.env` via `@workspace/config`. Copy from [`.env.example`](../.env.example).
 
-## Required
+## Required to run locally
 
-| Variable             | Description                                 |
-| -------------------- | ------------------------------------------- |
-| `BETTER_AUTH_SECRET` | Min 32 chars — `openssl rand -base64 32`    |
-| `BETTER_AUTH_URL`    | API base URL (e.g. `http://localhost:4000`) |
-| `MONGODB_URI`        | MongoDB connection string                   |
-| `ALLOWED_ORIGINS`    | Comma-separated CORS origins                |
-| `CLIENT_URL`         | Web app URL (emails, redirects)             |
+| Variable             | Where to get it                                                                                       |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `MONGODB_URI`        | Local: `pnpm db:up`. Cloud: [MongoDB Atlas](https://cloud.mongodb.com) → free M0 → Connect → copy URI |
+| `BETTER_AUTH_SECRET` | `openssl rand -base64 32` (min 32 chars)                                                              |
+| `BETTER_AUTH_URL`    | API base URL, e.g. `http://localhost:4000`                                                            |
+| `CLIENT_URL`         | Web app URL, e.g. `http://localhost:5173`                                                             |
+| `MARKETING_URL`      | Marketing site URL, e.g. `http://localhost:3000`                                                      |
+| `ALLOWED_ORIGINS`    | Comma-separated CORS origins (web + marketing)                                                        |
 
-## Client (build-time)
+## Required for sign-in (at least one OAuth pair)
 
-| Variable                        | App       |
-| ------------------------------- | --------- |
-| `VITE_API_URL`, `VITE_AUTH_URL` | Web       |
-| `NEXT_PUBLIC_*`                 | Marketing |
-| `EXPO_PUBLIC_*`                 | Mobile    |
+| Variable                                    | Where to get it                                                                                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → OAuth client (Web). Redirect: `{BETTER_AUTH_URL}/api/auth/callback/google` |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | [GitHub Developer Settings](https://github.com/settings/developers) → New OAuth App. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`            |
 
-## Optional OAuth
+## Required for content ingestion (AI)
 
-`GOOGLE_*`, `GITHUB_*`, `APPLE_*`, `MICROSOFT_*`, `DISCORD_*` — leave blank to disable.
+| Variable         | Where to get it                                                    |
+| ---------------- | ------------------------------------------------------------------ |
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) (free tier) |
 
-## Storage
+## Admin bootstrap
 
-| Variable                 | Default                         | Notes                                         |
-| ------------------------ | ------------------------------- | --------------------------------------------- |
-| `STORAGE_PROVIDER`       | `local`                         | `local` or `s3`                               |
-| `STORAGE_LOCAL_PATH`     | `./uploads`                     | Local filesystem root                         |
-| `STORAGE_LOCAL_URL`      | `http://localhost:4000/uploads` | URL prefix for signed local downloads         |
-| `STORAGE_SIGNING_SECRET` | _(empty → BETTER_AUTH_SECRET)_  | HMAC secret for local `/uploads?exp&sig` URLs |
+| Variable         | Notes                                                                                                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMIN_USER_IDS` | Comma-separated Better Auth user IDs granted platform admin via the admin plugin. Sign in once, copy your user id from the DB/`/v1/me`, then set this and restart the API. |
 
-## Email
+## Client build-time
 
-| Variable         | Required | Notes                                                                    |
-| ---------------- | -------- | ------------------------------------------------------------------------ |
-| `RESEND_API_KEY` | No       | Leave empty in dev — links are logged to the API console (`[email:dev]`) |
-| `EMAIL_FROM`     | No       | Defaults to `APP_NAME <no-reply@BETTER_AUTH_HOST>`                       |
+| Variable                                                                | App                          |
+| ----------------------------------------------------------------------- | ---------------------------- |
+| `VITE_*`                                                                | Web (`apps/web`)             |
+| `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_AUTH_URL` / `NEXT_PUBLIC_APP_NAME` | Marketing (`apps/marketing`) |
 
-Set `RESEND_API_KEY` in production for real email delivery.
+## Optional
 
-## Observability (optional)
+| Variable                                           | Notes                                                                         |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `RESEND_API_KEY` / `EMAIL_PROVIDER` / `EMAIL_FROM` | Org invitation email. Empty key → mock provider logs links to the API console |
+| `STORAGE_*`                                        | Local uploads by default; S3 only if you switch `STORAGE_PROVIDER=s3`         |
+| `SENTRY_DSN` / `OTEL_*` / `VITE_SENTRY_DSN`        | Production observability only                                                 |
 
-Disabled by default. Active only when the variable is set **and** `NODE_ENV=production`.
-
-| Variable                      | App | Description                                    |
-| ----------------------------- | --- | ---------------------------------------------- |
-| `SENTRY_DSN`                  | API | Sentry error + performance monitoring          |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | API | OpenTelemetry trace export URL (OTLP/HTTP)     |
-| `OTEL_SERVICE_NAME`           | API | Service name in traces (default: `api`)        |
-| `VITE_SENTRY_DSN`             | Web | Sentry DSN for client-side errors (build-time) |
-
-See `.env.example` for the full list.
+See `.env.example` for the full active list.

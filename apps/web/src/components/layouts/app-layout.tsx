@@ -1,7 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { useEventStream } from "@/features/notifications/hooks/use-event-stream"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
-import { useEnsureActiveOrganization } from "@/features/shell/use-ensure-active-organization"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,8 +19,6 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 export function AppLayout() {
   const { navMain, brandLabel } = useAppShellConfig()
   const { pathname } = useLocation()
-  useEnsureActiveOrganization()
-  useEventStream()
 
   const currentNav = navMain.find(
     (n) =>

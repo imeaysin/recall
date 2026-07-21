@@ -1,14 +1,7 @@
-import { useCallback, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
-import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  SettingsIcon,
-  type LucideIcon,
-} from "lucide-react"
-import { useSession, signOut, authClient } from "@workspace/auth/client"
-import { toast } from "sonner"
+import { Command, SettingsIcon, type LucideIcon } from "lucide-react"
+import { useSession, signOut } from "@workspace/auth/client"
 import { appNavigation } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
@@ -19,30 +12,7 @@ import type {
   AppSidebarUserMenuItem,
 } from "@workspace/ui/components/app-sidebar"
 
-type OrganizationSummary = {
-  readonly id: string
-  readonly name: string
-}
-
-const TEAM_LOGOS = [GalleryVerticalEnd, AudioWaveform, Command] as const
-
-function toShellTeams(
-  organizations: readonly OrganizationSummary[] | null | undefined
-): AppSidebarTeam[] {
-  if (!organizations || organizations.length === 0) {
-    return []
-  }
-
-  return organizations.map((org, index) => {
-    const Logo = TEAM_LOGOS[index % TEAM_LOGOS.length] ?? GalleryVerticalEnd
-    return {
-      id: org.id,
-      name: org.name,
-      logo: <Logo />,
-      plan: "Organization",
-    }
-  })
-}
+const emptyTeams: readonly AppSidebarTeam[] = []
 
 function toNavIcon(icon?: LucideIcon) {
   if (!icon) return undefined
@@ -54,9 +24,6 @@ export function useAppShellConfig() {
   const location = useLocation()
   const pathname = location.pathname
   const { data: session } = useSession()
-  const { data: activeOrganization } = authClient.useActiveOrganization()
-  const { data: organizations } = authClient.useListOrganizations()
-  const [createOrganizationOpen, setCreateOrganizationOpen] = useState(false)
 
   const navMain = useMemo<AppSidebarNavItem[]>(() => {
     return appNavigation.navMain.map((item) => {
@@ -93,8 +60,6 @@ export function useAppShellConfig() {
     }))
   }, [pathname])
 
-  const teams = useMemo(() => toShellTeams(organizations), [organizations])
-
   const userMenuItems = useMemo<AppSidebarUserMenuItem[]>(
     () => [
       {
@@ -106,19 +71,6 @@ export function useAppShellConfig() {
     []
   )
 
-  const onTeamChange = useCallback(async (team: AppSidebarTeam) => {
-    const result = await authClient.organization.setActive({
-      organizationId: team.id,
-    })
-    if (result.error) {
-      toast.error(result.error.message ?? "Could not switch organization")
-    }
-  }, [])
-
-  const onAddTeam = useCallback(() => {
-    setCreateOrganizationOpen(true)
-  }, [])
-
   return {
     brandLabel: site.name,
     navMain,
@@ -128,14 +80,8 @@ export function useAppShellConfig() {
       email: session?.user.email ?? "",
       avatar: session?.user.image ?? "",
     },
-    teams,
-    activeTeamId:
-      activeOrganization?.id ?? session?.session.activeOrganizationId ?? null,
+    teams: [...emptyTeams],
     userMenuItems,
-    onTeamChange,
-    onAddTeam,
-    createOrganizationOpen,
-    setCreateOrganizationOpen,
     onSignOut: () => {
       void signOut()
     },

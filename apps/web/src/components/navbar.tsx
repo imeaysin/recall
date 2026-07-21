@@ -13,7 +13,7 @@ export function Navbar() {
       <>
         <Button
           nativeButton={false}
-          render={<Link to={routes.dashboard} />}
+          render={<Link to={routes.library} />}
           size="sm"
           variant="ghost"
         >
@@ -32,23 +32,13 @@ export function Navbar() {
     )
   } else if (!isPending) {
     authActions = (
-      <>
-        <Button
-          nativeButton={false}
-          render={<Link to={routes.signIn} />}
-          size="sm"
-          variant="ghost"
-        >
-          Sign in
-        </Button>
-        <Button
-          nativeButton={false}
-          render={<Link to={routes.signUp} />}
-          size="sm"
-        >
-          Sign up
-        </Button>
-      </>
+      <Button
+        nativeButton={false}
+        render={<Link to={routes.signIn} />}
+        size="sm"
+      >
+        Sign in
+      </Button>
     )
   }
 

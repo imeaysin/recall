@@ -54,7 +54,6 @@ Set `BETTER_AUTH_SECRET` to the output. OAuth providers are optional — leave b
 | `pnpm dev:api`           | API only                                    |
 | `pnpm dev:web`           | Web app only                                |
 | `pnpm dev:marketing`     | Marketing site only                         |
-| `pnpm dev:mobile`        | Expo mobile only                            |
 | `pnpm db:up`             | Start MongoDB via Docker Compose            |
 | `pnpm db:down`           | Stop MongoDB                                |
 | `pnpm build`             | Production build (all workspaces)           |
@@ -63,7 +62,7 @@ Set `BETTER_AUTH_SECRET` to the output. OAuth providers are optional — leave b
 | `pnpm test`              | Tests                                       |
 | `pnpm test:e2e`          | API e2e tests (requires MongoDB)            |
 | `pnpm setup`             | Copy `.env.example`, install, start MongoDB |
-| `pnpm --filter api seed` | Demo notes for first user (after sign-up)   |
+| `pnpm --filter api seed` | Placeholder (library is user-driven)        |
 
 ## Documentation
 
@@ -168,23 +167,20 @@ This template follows official patterns for each layer of the stack.
 
 ### Shared packages
 
-| Package                    | Role                                                                                              |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| `@workspace/config`        | Single root `.env`, Zod validation, dev URL constants                                             |
-| `@workspace/contracts`     | Zod schemas shared by API + clients                                                               |
-| `@workspace/auth`          | Better Auth config + Nest/web/Expo adapters — **[authorization docs](./packages/auth/README.md)** |
-| `@workspace/ui`            | Components consumed as source (`transpilePackages` in Next, direct import in Vite)                |
-| `@workspace/db`            | Shared Mongoose connection for API and auth                                                       |
-| `@workspace/cache`         | Cache abstraction (memory / Redis)                                                                |
-| `@workspace/notifications` | Push delivery (console / expo)                                                                    |
-| `@workspace/payment`       | Payment adapters (bKash / SSLCommerz)                                                             |
-| `@workspace/redis`         | ioredis client factory                                                                            |
-| `@workspace/email`         | Resend + React Email templates for auth emails                                                    |
-| `@workspace/storage`       | File upload providers (local HMAC-signed downloads / S3)                                          |
-| `@workspace/logger`        | Structured logging (pino)                                                                         |
-| `@workspace/dates`         | Shared date formatting helpers                                                                    |
+| Package                 | Role                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| `@workspace/config`     | Single root `.env`, Zod validation, dev URL constants                                 |
+| `@workspace/contracts`  | Zod schemas shared by API + clients                                                   |
+| `@workspace/auth`       | Better Auth + Nest/web adapters — **[authorization docs](./packages/auth/README.md)** |
+| `@workspace/ui`         | Components consumed as source (`transpilePackages` in Next, direct import in Vite)    |
+| `@workspace/db`         | Shared Mongoose connection for API and auth                                           |
+| `@workspace/ai`         | Gemini LLM + embeddings                                                               |
+| `@workspace/extractors` | Content text extraction (article / YouTube / PDF)                                     |
+| `@workspace/email`      | Resend + React Email templates for auth emails                                        |
+| `@workspace/storage`    | File upload providers (local HMAC-signed downloads / S3)                              |
+| `@workspace/logger`     | Structured logging (pino)                                                             |
 
-Jobs (BullMQ) and realtime (Socket.IO) live in `apps/api/src/common/`, not as shared packages.
+Background jobs use Nest ScheduleModule + Mongo claim (no Redis/BullMQ).
 
 ## CI
 

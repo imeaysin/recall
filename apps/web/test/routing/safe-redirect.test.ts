@@ -3,10 +3,7 @@ import {
   getSafeRedirectPath,
   withAuthRedirectQuery,
 } from "@/routing/safe-redirect"
-import {
-  acceptInvitationPath,
-  defaultAuthenticatedRoute,
-} from "@/config/routes"
+import { defaultAuthenticatedRoute, routes } from "@/config/routes"
 
 describe("getSafeRedirectPath", () => {
   it("returns the fallback when redirect is missing", () => {
@@ -16,14 +13,11 @@ describe("getSafeRedirectPath", () => {
   })
 
   it("allows same-app relative paths", () => {
-    expect(
-      getSafeRedirectPath(
-        acceptInvitationPath("abc"),
-        defaultAuthenticatedRoute
-      )
-    ).toBe(acceptInvitationPath("abc"))
-    expect(getSafeRedirectPath("/app/notes", defaultAuthenticatedRoute)).toBe(
-      "/app/notes"
+    expect(getSafeRedirectPath(routes.library, defaultAuthenticatedRoute)).toBe(
+      routes.library
+    )
+    expect(getSafeRedirectPath("/app/library", defaultAuthenticatedRoute)).toBe(
+      "/app/library"
     )
   })
 
@@ -39,9 +33,9 @@ describe("getSafeRedirectPath", () => {
   it("adds redirect query for auth cross-links", () => {
     expect(
       withAuthRedirectQuery("/auth/sign-in", {
-        redirect: acceptInvitationPath("abc"),
+        redirect: routes.library,
         fallback: defaultAuthenticatedRoute,
       })
-    ).toBe("/auth/sign-in?redirect=%2Faccept-invitation%2Fabc")
+    ).toBe("/auth/sign-in?redirect=%2Fapp%2Flibrary")
   })
 })

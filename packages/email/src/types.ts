@@ -12,24 +12,11 @@ export type SendOtpEmailInput = {
   readonly expirationMinutes?: number
 }
 
-export type OrganizationInvitationEmailInput = {
-  readonly to: string
-  readonly url: string
-  readonly organizationName: string
-  readonly inviterName: string
-  readonly inviterEmail?: string
-  readonly role?: string
-  readonly expirationHours?: number
-}
-
 export type EmailProvider = {
   sendVerificationEmail(input: SendLinkEmailInput): Promise<void>
   sendResetPasswordEmail(input: SendLinkEmailInput): Promise<void>
   sendMagicLinkEmail(input: SendLinkEmailInput): Promise<void>
   sendOtpEmail(input: SendOtpEmailInput): Promise<void>
-  sendOrganizationInvitationEmail(
-    input: OrganizationInvitationEmailInput
-  ): Promise<void>
 }
 
 export type MockEmailConfig = {

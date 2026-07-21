@@ -3,13 +3,11 @@ import { Resend } from "resend"
 import {
   EmailVerificationEmail,
   MagicLinkEmail,
-  OrganizationInvitationEmail,
   OtpEmail,
   ResetPasswordEmail,
 } from "../templates"
 import type {
   EmailProvider,
-  OrganizationInvitationEmailInput,
   ResendEmailConfig,
   SendLinkEmailInput,
   SendOtpEmailInput,
@@ -28,7 +26,11 @@ export class ResendEmailAdapter implements EmailProvider {
     return this.config.appName
   }
 
-  private async send(to: string, subject: string, react: React.ReactElement) {
+  private async send(
+    to: string,
+    subject: string,
+    react: React.ReactElement
+  ): Promise<void> {
     await this.client.emails.send({
       from: this.config.fromAddress,
       to,
@@ -66,7 +68,7 @@ export class ResendEmailAdapter implements EmailProvider {
   async sendMagicLinkEmail(input: SendLinkEmailInput): Promise<void> {
     await this.send(
       input.to,
-      `Sign in to ${this.appName}`,
+      "Your sign-in link",
       <MagicLinkEmail
         url={input.url}
         email={input.to}
@@ -77,35 +79,14 @@ export class ResendEmailAdapter implements EmailProvider {
   }
 
   async sendOtpEmail(input: SendOtpEmailInput): Promise<void> {
-    const subject =
-      input.type === "sign-in" ? "Your sign-in code" : "Verify your email"
     await this.send(
       input.to,
-      subject,
+      input.type === "sign-in" ? "Your sign-in code" : "Verify your email",
       <OtpEmail
         verificationCode={input.otp}
         email={input.to}
         appName={this.appName}
         expirationMinutes={input.expirationMinutes}
-      />
-    )
-  }
-
-  async sendOrganizationInvitationEmail(
-    input: OrganizationInvitationEmailInput
-  ): Promise<void> {
-    await this.send(
-      input.to,
-      `Join ${input.organizationName}`,
-      <OrganizationInvitationEmail
-        url={input.url}
-        email={input.to}
-        appName={this.appName}
-        organizationName={input.organizationName}
-        inviterName={input.inviterName}
-        inviterEmail={input.inviterEmail}
-        role={input.role}
-        expirationHours={input.expirationHours}
       />
     )
   }

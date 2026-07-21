@@ -56,30 +56,6 @@ export async function signInEmail(
   )
 }
 
-export async function createOrganization(
-  agent: Agent,
-  input: { name: string; slug: string }
-): Promise<Response> {
-  return withAuthOrigin(
-    agent
-      .post("/api/auth/organization/create")
-      .set("Content-Type", "application/json")
-      .send(input)
-  )
-}
-
-export async function setActiveOrganization(
-  agent: Agent,
-  organizationId: string
-): Promise<Response> {
-  return withAuthOrigin(
-    agent
-      .post("/api/auth/organization/set-active")
-      .set("Content-Type", "application/json")
-      .send({ organizationId })
-  )
-}
-
 export async function registerVerifiedUser(
   server: Parameters<typeof request.agent>[0],
   input: { email: string; password: string; name: string }
@@ -92,18 +68,4 @@ export async function registerVerifiedUser(
     password: input.password,
   })
   return { agent }
-}
-
-export async function onboardOrganization(
-  agent: Agent,
-  input: { name: string; slug: string }
-) {
-  const createRes = await createOrganization(agent, input)
-  const organizationId = createRes.body?.id
-  if (typeof organizationId !== "string") {
-    throw new Error("Failed to create organization")
-  }
-
-  await setActiveOrganization(agent, organizationId)
-  return { organizationId }
 }

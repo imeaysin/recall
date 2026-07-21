@@ -12,9 +12,12 @@ module.exports = {
     "^.+\\.(t|j)s$": "ts-jest",
   },
   moduleNameMapper: {
-    "^expo-server-sdk$": "<rootDir>/mocks/expo-server-sdk.ts",
     "^@/(.*)$": "<rootDir>/../src/$1",
     "^@workspace/auth/nestjs$": "<rootDir>/mocks/workspace-auth-nestjs.ts",
+    "^@workspace/auth/server/lifecycle$":
+      "<rootDir>/mocks/workspace-auth-lifecycle.ts",
+    "^@workspace/extractors$": "<rootDir>/mocks/workspace-extractors.ts",
+    "^@workspace/ai$": "<rootDir>/mocks/workspace-ai.ts",
   },
   transformIgnorePatterns: [
     "/node_modules/(?!(@nestjs|rxjs|uuid|@workspace)/)",

@@ -9,16 +9,6 @@ export const MeResponseSchema = z
     email: z.string().describe("Email address"),
     role: roleNameSchema,
     name: z.string().describe("Display name"),
-    activeOrganizationId: z
-      .string()
-      .nullable()
-      .optional()
-      .describe("Active organization id, when set"),
-    organizationRole: z
-      .string()
-      .nullable()
-      .optional()
-      .describe("Member role in the active organization"),
   })
   .meta({
     id: "MeResponseDto",

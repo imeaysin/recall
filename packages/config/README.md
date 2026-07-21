@@ -24,18 +24,19 @@ src/
 
 ## Who imports what
 
-| Consumer                 | Import                       | Variables validated                                           |
-| ------------------------ | ---------------------------- | ------------------------------------------------------------- |
-| `apps/api`               | `@workspace/config`          | Full server env                                               |
-| `@workspace/auth`        | `@workspace/config`          | Full server env                                               |
-| `@workspace/db`          | `@workspace/config/database` | `MONGODB_URI`                                                 |
-| `@workspace/email`       | `@workspace/config/email`    | `RESEND_API_KEY`, `APP_NAME`, `BETTER_AUTH_URL`, `EMAIL_FROM` |
-| `@workspace/storage`     | `@workspace/config/storage`  | `STORAGE_*`                                                   |
-| `apps/web`               | `@workspace/config/client`   | `parseWebEnv(import.meta.env)`                                |
-| `apps/marketing`         | `@workspace/config/client`   | `parseMarketingEnv(process.env)`                              |
-| `apps/mobile`            | `@workspace/config/client`   | `parseMobileEnv(process.env)`                                 |
-| `@workspace/auth/client` | `@workspace/config/client`   | `parseClientPublicEnv()` (shared)                             |
-| Product UI               | `@workspace/config/public`   | Static product identity; no environment access                |
+| Consumer                 | Import                        | Variables validated                                |
+| ------------------------ | ----------------------------- | -------------------------------------------------- |
+| `apps/api`               | `@workspace/config`           | Full server env                                    |
+| `@workspace/auth`        | `@workspace/config`           | Full server env                                    |
+| `@workspace/db`          | `@workspace/config/database`  | `MONGODB_URI`                                      |
+| `@workspace/auth` email  | `@workspace/config/email`     | `RESEND_API_KEY`, `EMAIL_PROVIDER`, `APP_NAME`, …  |
+| `@workspace/ai`          | `@workspace/config/ai`        | `GEMINI_*`, daily request caps                     |
+| API content/ingestion    | `@workspace/config/ingestion` | Daily cap, stale/retry/trash retention             |
+| `apps/api` storage       | `@workspace/config/storage`   | `STORAGE_*`                                        |
+| `apps/web`               | `@workspace/config/client`    | `parseWebEnv(import.meta.env)` (`VITE_*`)          |
+| `apps/marketing`         | `@workspace/config/client`    | `parseMarketingEnv(process.env)` (`NEXT_PUBLIC_*`) |
+| `@workspace/auth/client` | `@workspace/config/client`    | `parseClientPublicEnv()` (shared)                  |
+| Marketing / product UI   | `@workspace/config/public`    | Static product identity; no environment access     |
 
 ## Usage
 

@@ -1,6 +1,5 @@
-import { Controller, Get, Req } from "@nestjs/common"
+import { Controller, Get } from "@nestjs/common"
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger"
-import type { Request } from "express"
 import { Session, type UserSession } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { UsersService } from "./users.service"
@@ -15,26 +14,7 @@ export class UsersController {
   @Get("me")
   @ApiOperation({ summary: "Current user context" })
   @ApiOkResponse({ type: MeApiResponseDto })
-  getMe(@Session() session: UserSession, @Req() request: Request) {
-    return this.usersService.getCurrentUserContext({
-      session,
-      headers: toWebHeaders(request),
-    })
+  getMe(@Session() session: UserSession) {
+    return this.usersService.getCurrentUserContext({ session })
   }
-}
-
-function toWebHeaders(request: Request): Headers {
-  const headers = new Headers()
-  for (const [key, value] of Object.entries(request.headers)) {
-    if (typeof value === "string") {
-      headers.set(key, value)
-      continue
-    }
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        headers.append(key, item)
-      }
-    }
-  }
-  return headers
 }

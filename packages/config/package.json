@@ -32,30 +32,15 @@
       "import": "./dist/server/storage.js",
       "require": "./dist/server/storage.cjs"
     },
-    "./jobs": {
-      "types": "./dist/server/jobs.d.ts",
-      "import": "./dist/server/jobs.js",
-      "require": "./dist/server/jobs.cjs"
+    "./ai": {
+      "types": "./dist/server/ai.d.ts",
+      "import": "./dist/server/ai.js",
+      "require": "./dist/server/ai.cjs"
     },
-    "./push": {
-      "types": "./dist/server/push.d.ts",
-      "import": "./dist/server/push.js",
-      "require": "./dist/server/push.cjs"
-    },
-    "./realtime": {
-      "types": "./dist/server/realtime.d.ts",
-      "import": "./dist/server/realtime.js",
-      "require": "./dist/server/realtime.cjs"
-    },
-    "./cache": {
-      "types": "./dist/server/cache.d.ts",
-      "import": "./dist/server/cache.js",
-      "require": "./dist/server/cache.cjs"
-    },
-    "./payment": {
-      "types": "./dist/server/payment.d.ts",
-      "import": "./dist/server/payment.js",
-      "require": "./dist/server/payment.cjs"
+    "./ingestion": {
+      "types": "./dist/server/ingestion.d.ts",
+      "import": "./dist/server/ingestion.js",
+      "require": "./dist/server/ingestion.cjs"
     },
     "./client": {
       "types": "./dist/client/index.d.ts",

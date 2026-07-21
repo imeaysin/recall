@@ -1,4 +1,5 @@
 import {
+  createParamDecorator,
   Global,
   Injectable,
   Module,
@@ -28,15 +29,76 @@ interface PermissionCheckOptions {
   readonly permissions?: Readonly<Record<string, readonly string[]>>
 }
 
+/** Header that unlocks authenticated e2e routes with a fixed test session. */
+export const E2E_SESSION_HEADER = "x-e2e-session"
+export const E2E_TEST_USER_ID = "e2e-test-user"
+
 export const AllowAnonymous = () => SetMetadata(AUTH_METADATA.PUBLIC, true)
 export const OptionalAuth = () => SetMetadata(AUTH_METADATA.OPTIONAL, true)
-export const Session = () => () => undefined
 export const RequireRoles = (_roles?: readonly string[]) => () => undefined
-export const OrgRoles = (_roles?: readonly string[]) => () => undefined
 export const UserHasPermission = (_options?: PermissionCheckOptions) => () =>
   undefined
-export const MemberHasPermission = (_options?: PermissionCheckOptions) => () =>
-  undefined
+
+export interface UserSession {
+  readonly user: {
+    readonly id: string
+    readonly email: string
+    readonly emailVerified: boolean
+    readonly name: string
+    readonly role?: string | string[] | null
+    readonly createdAt: Date
+    readonly updatedAt: Date
+  }
+  readonly session: {
+    readonly id: string
+    readonly userId: string
+    readonly expiresAt: Date
+    readonly token: string
+    readonly createdAt: Date
+    readonly updatedAt: Date
+  }
+}
+
+function buildE2eSession(): UserSession {
+  const now = new Date()
+  return {
+    user: {
+      id: E2E_TEST_USER_ID,
+      email: "e2e@example.com",
+      emailVerified: true,
+      name: "E2E User",
+      role: "user",
+      createdAt: now,
+      updatedAt: now,
+    },
+    session: {
+      id: "e2e-session",
+      userId: E2E_TEST_USER_ID,
+      expiresAt: new Date(now.getTime() + 86_400_000),
+      token: "e2e-token",
+      createdAt: now,
+      updatedAt: now,
+    },
+  }
+}
+
+export const Session = createParamDecorator(
+  (_data: undefined, _ctx: ExecutionContext): UserSession => buildE2eSession()
+)
+
+type RequestWithHeaders = {
+  readonly headers: Readonly<Record<string, string | string[] | undefined>>
+}
+
+function headerValue(
+  headers: RequestWithHeaders["headers"],
+  name: string
+): string | undefined {
+  const value = headers[name]
+  if (typeof value === "string") return value
+  if (Array.isArray(value)) return value[0]
+  return undefined
+}
 
 @Injectable()
 class MockAuthGuard implements CanActivate {
@@ -56,6 +118,11 @@ class MockAuthGuard implements CanActivate {
       return true
     }
 
+    const request = context.switchToHttp().getRequest<RequestWithHeaders>()
+    if (headerValue(request.headers, E2E_SESSION_HEADER) === "1") {
+      return true
+    }
+
     throw new UnauthorizedException()
   }
 
@@ -68,13 +135,11 @@ class MockAuthGuard implements CanActivate {
 }
 
 interface AuthServiceApi {
-  readonly getActiveMemberRole: () => Promise<{ role: string | null }>
   readonly getSession: () => Promise<null>
 }
 
 export class AuthService {
   readonly api: AuthServiceApi = {
-    getActiveMemberRole: async () => ({ role: null }),
     getSession: async () => null,
   }
 }
@@ -85,24 +150,3 @@ export class AuthService {
   exports: [AuthService],
 })
 export class WorkspaceAuthModule {}
-
-export interface UserSession {
-  readonly user: {
-    readonly id: string
-    readonly email: string
-    readonly emailVerified: boolean
-    readonly name: string
-    readonly role?: string | string[] | null
-    readonly createdAt: Date
-    readonly updatedAt: Date
-  }
-  readonly session: {
-    readonly id: string
-    readonly userId: string
-    readonly expiresAt: Date
-    readonly token: string
-    readonly createdAt: Date
-    readonly updatedAt: Date
-    readonly activeOrganizationId?: string | null
-  }
-}

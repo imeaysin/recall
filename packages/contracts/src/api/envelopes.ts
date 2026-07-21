@@ -38,7 +38,7 @@ export const ApiErrorResponseSchema = z
     path: z
       .string()
       .describe("Request path")
-      .meta({ examples: ["/v1/notes"] }),
+      .meta({ examples: ["/v1/content"] }),
     requestId: z
       .string()
       .optional()

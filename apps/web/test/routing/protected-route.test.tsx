@@ -20,13 +20,7 @@ function SignInProbe() {
 }
 
 function RedirectProbe({ label }: { label: string }) {
-  const location = useLocation()
-  return (
-    <div>
-      {label}
-      {location.search ? ` ${location.search}` : ""}
-    </div>
-  )
+  return <div>{label}</div>
 }
 
 function renderProtectedRoute(initialPath = "/app/dashboard") {
@@ -40,10 +34,6 @@ function renderProtectedRoute(initialPath = "/app/dashboard") {
         <Route
           path={routes.signOut}
           element={<RedirectProbe label="Sign out" />}
-        />
-        <Route
-          path={routes.verifyEmail}
-          element={<RedirectProbe label="Verify email" />}
         />
       </Routes>
     </MemoryRouter>
@@ -85,29 +75,7 @@ describe("ProtectedRoute", () => {
     expect(screen.getByText("Sign out")).toBeInTheDocument()
   })
 
-  it("redirects unverified users to verify email", () => {
-    useSession.mockReturnValue({
-      data: {
-        user: {
-          id: "u1",
-          email: "user@example.com",
-          emailVerified: false,
-        },
-        session: { id: "s1" },
-      },
-      isPending: false,
-    })
-
-    renderProtectedRoute()
-
-    expect(
-      screen.getByText(
-        `Verify email ?email=${encodeURIComponent("user@example.com")}`
-      )
-    ).toBeInTheDocument()
-  })
-
-  it("renders protected content for authenticated users", () => {
+  it("renders protected content for authenticated OAuth users", () => {
     useSession.mockReturnValue({
       data: {
         user: { id: "u1", emailVerified: true },

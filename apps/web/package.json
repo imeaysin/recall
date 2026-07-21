@@ -13,7 +13,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@ai-sdk/react": "catalog:",
     "@better-auth-ui/core": "^1.6.27",
     "@better-auth-ui/react": "^1.6.27",
     "@fontsource-variable/geist-mono": "catalog:",
@@ -26,7 +25,6 @@
     "@workspace/auth": "workspace:*",
     "@workspace/config": "workspace:*",
     "@workspace/contracts": "workspace:*",
-    "@workspace/dates": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "catalog:",
     "bowser": "^2.14.1",

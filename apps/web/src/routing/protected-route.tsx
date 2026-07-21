@@ -21,13 +21,5 @@ export function ProtectedRoute() {
     return <Navigate replace to={routes.signOut} />
   }
 
-  if (session.user.emailVerified === false) {
-    const email = session.user.email
-    const verifyPath = email
-      ? `${routes.verifyEmail}?email=${encodeURIComponent(email)}`
-      : routes.verifyEmail
-    return <Navigate replace to={verifyPath} />
-  }
-
   return <Outlet />
 }

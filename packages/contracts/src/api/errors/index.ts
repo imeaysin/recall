@@ -1,21 +1,17 @@
 import { HttpErrorCode } from "./http.errors"
-import { NoteErrorCode } from "./note.errors"
 import { FileErrorCode } from "./file.errors"
-import { NotificationErrorCode } from "./notification.errors"
+import { ContentErrorCode } from "./content.errors"
 export * from "./http.errors"
-export * from "./note.errors"
 export * from "./file.errors"
-export * from "./notification.errors"
-export type DomainErrorCode =
-  NoteErrorCode | FileErrorCode | NotificationErrorCode
+export * from "./content.errors"
+export type DomainErrorCode = FileErrorCode | ContentErrorCode
 
 export type ApiErrorCode = HttpErrorCode | DomainErrorCode
 
 const API_ERROR_CODES = new Set<string>([
   ...Object.values(HttpErrorCode),
-  ...Object.values(NoteErrorCode),
   ...Object.values(FileErrorCode),
-  ...Object.values(NotificationErrorCode),
+  ...Object.values(ContentErrorCode),
 ])
 
 export function isApiErrorCode(value: string): value is ApiErrorCode {

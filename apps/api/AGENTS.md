@@ -37,27 +37,18 @@ modules/<feature>/
 ## Auth
 
 `WorkspaceAuthModule` from `@workspace/auth/nestjs` registers Better Auth
-(`@thallesp/nestjs-better-auth`) with cookie sessions and org RBAC.
+(`@thallesp/nestjs-better-auth`) with cookie sessions. Content and uploads are
+scoped by `userId` (no organization plugin).
 
-| Decorator / guard           | Purpose                                 |
-| --------------------------- | --------------------------------------- |
-| Global `AuthGuard`          | Session required by default             |
-| `@AllowAnonymous()`         | Public route                            |
-| `@Session()`                | Inject Better Auth session              |
-| `@MemberHasPermission(...)` | Org RBAC via Better Auth access control |
+| Decorator / guard   | Purpose                     |
+| ------------------- | --------------------------- |
+| Global `AuthGuard`  | Session required by default |
+| `@AllowAnonymous()` | Public route                |
+| `@Session()`        | Inject Better Auth session  |
+| `@RequireRoles()`   | Platform role gate (admin)  |
 
-Org-scoped routes must use `session.session.activeOrganizationId` (via
-`requireActiveOrganizationId`) — never accept `organizationId` from query/body.
-
-Notes are **per-member within an organization** (scoped by `organizationId` +
-`userId`). `@MemberHasPermission` gates which roles can call the endpoint;
-the repository still only returns/mutates that member’s notes.
-
-For static vs **custom** org roles and how the web app should mirror these
-guards, see [docs/org-roles-and-ui.md](../../docs/org-roles-and-ui.md).
-
-CASL (`AccessGuard`, `@UseAbility`) is available from `@workspace/auth/nestjs`
-for attribute-based checks when needed — not used on controllers yet.
+Platform admins are managed via Better Auth’s **admin** plugin (`ADMIN_USER_IDS`
+and/or the `role` field). See [packages/auth/README.md](../../packages/auth/README.md).
 
 `NestFactory.create(AppModule, { bodyParser: false })` is required for Better Auth.
 

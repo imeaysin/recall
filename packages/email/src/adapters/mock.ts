@@ -1,6 +1,5 @@
 import type {
   EmailProvider,
-  OrganizationInvitationEmailInput,
   SendLinkEmailInput,
   SendOtpEmailInput,
 } from "../types"
@@ -50,20 +49,6 @@ export class MockEmailAdapter implements EmailProvider {
       to: input.to,
       subject,
       lines: [`OTP (${input.type}): ${input.otp}`],
-    })
-  }
-
-  async sendOrganizationInvitationEmail(
-    input: OrganizationInvitationEmailInput
-  ): Promise<void> {
-    this.log({
-      to: input.to,
-      subject: `Join ${input.organizationName}`,
-      lines: [
-        `Inviter: ${input.inviterName}`,
-        `Accept: ${input.url}`,
-        input.role ? `Role: ${input.role}` : "",
-      ].filter(Boolean),
     })
   }
 }

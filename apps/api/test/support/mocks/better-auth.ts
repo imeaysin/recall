@@ -25,16 +25,7 @@ jest.mock(
   () => ({
     defaultStatements: {},
     adminAc: mockAccessControl(),
-  }),
-  { virtual: true }
-)
-
-jest.mock(
-  "better-auth/plugins/organization/access",
-  () => ({
-    ownerAc: mockAccessControl(),
-    adminAc: mockAccessControl(),
-    memberAc: mockAccessControl(),
+    userAc: mockAccessControl(),
   }),
   { virtual: true }
 )

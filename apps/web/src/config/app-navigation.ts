@@ -1,4 +1,4 @@
-import { Building2, SquareTerminal } from "lucide-react"
+import { Library, Settings } from "lucide-react"
 import { routes } from "@/config/routes"
 import type { LucideIcon } from "lucide-react"
 
@@ -21,25 +21,19 @@ const emptyProjects: readonly NavProject[] = []
 export const appNavigation = {
   navMain: [
     {
-      title: "Playground",
-      url: routes.dashboard,
-      icon: SquareTerminal,
+      title: "CogniVault",
+      url: routes.library,
+      icon: Library,
       isActive: true,
-      items: [
-        { title: "Dashboard", url: routes.dashboard },
-        { title: "Notes", url: routes.notes },
-        { title: "Uploads", url: routes.uploads },
-        { title: "Notifications", url: routes.notifications },
-      ],
+      items: [{ title: "Library", url: routes.library }],
     },
     {
-      title: "Organization",
-      url: routes.organizationSettings,
-      icon: Building2,
+      title: "Settings",
+      url: routes.settings,
+      icon: Settings,
       items: [
-        { title: "Settings", url: routes.organizationSettings },
-        { title: "People", url: routes.organizationPeople },
-        { title: "Roles", url: routes.organizationRoles },
+        { title: "Account", url: routes.settingsAccount },
+        { title: "Security", url: routes.settingsSecurity },
       ],
     },
   ] satisfies readonly NavItem[],

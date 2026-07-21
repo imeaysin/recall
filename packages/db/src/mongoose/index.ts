@@ -1,3 +1,9 @@
-export { connectDb, disconnectDb, isDbConnected } from "./connection"
+export {
+  connectDb,
+  disconnectDb,
+  isDbConnected,
+  getDb,
+  getMongoClient,
+} from "./connection"
 
 export { default as mongooseInstance } from "mongoose"

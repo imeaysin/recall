@@ -1,32 +1,32 @@
 import { betterAuth } from "better-auth"
 import { mongodbAdapter } from "better-auth/adapters/mongodb"
 import { admin } from "better-auth/plugins/admin"
-import { organization } from "better-auth/plugins/organization"
-import { twoFactor } from "better-auth/plugins/two-factor"
-import { apiKey } from "@better-auth/api-key"
 import { env } from "@workspace/config"
 import {
-  ac,
-  adminRole,
-  memberRole,
-  ownerRole,
-  viewerRole,
-  MAXIMUM_ROLES_PER_ORGANIZATION,
-  MAXIMUM_TEAMS_PER_ORGANIZATION,
   SESSION_EXPIRES_IN_SECONDS,
   SESSION_UPDATE_AGE_SECONDS,
 } from "../access"
 import { buildSocialProviders, buildTrustedOrigins } from "./auth-options"
 import { getAuthDb, getAuthMongoClient } from "./db"
-import {
-  sendOrganizationInvitationEmail,
-  sendResetPasswordEmail,
-  sendTwoFactorOtp,
-  sendVerificationEmail,
-} from "./email-handlers"
-import { createAuthSecondaryStorage } from "./secondary-storage"
+import { authLifecycleHooks } from "./auth-lifecycle"
 
+function parseAdminUserIds(value: string): readonly string[] {
+  return value
+    .split(",")
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0)
+}
+
+/**
+ * CogniVault auth (Better Auth recommended surface):
+ * - OAuth Google/GitHub only (FR-1.1)
+ * - Cookie sessions in Mongo (no Redis)
+ * - Admin plugin for platform user management (`ADMIN_USER_IDS` + role)
+ * - No organization/teams plugin — personal libraries are userId-scoped
+ */
 export function createAuth() {
+  const adminUserIds = parseAdminUserIds(env.ADMIN_USER_IDS)
+
   return betterAuth({
     appName: env.APP_NAME,
     baseURL: env.BETTER_AUTH_URL,
@@ -35,20 +35,13 @@ export function createAuth() {
     database: mongodbAdapter(getAuthDb(), {
       client: getAuthMongoClient(),
     }),
-    secondaryStorage: createAuthSecondaryStorage(),
     rateLimit: {
       enabled: true,
-      storage: "secondary-storage",
+      storage: "database",
       window: 60,
       max: 100,
       customRules: {
-        "/sign-in/email": { window: 60, max: 5 },
-        "/sign-up/email": { window: 60, max: 3 },
-        "/two-factor/verify-totp": { window: 60, max: 5 },
-        "/two-factor/verify-otp": { window: 60, max: 5 },
-        "/two-factor/send-otp": { window: 60, max: 3 },
-        "/request-password-reset": { window: 60, max: 3 },
-        "/forget-password": { window: 60, max: 3 },
+        "/sign-in/social": { window: 60, max: 20 },
       },
     },
     session: {
@@ -57,80 +50,60 @@ export function createAuth() {
       storeSessionInDatabase: true,
     },
     emailAndPassword: {
-      enabled: true,
-      requireEmailVerification: true,
-      sendResetPassword: async ({ user, url }) => {
-        await sendResetPasswordEmail({ to: user.email, url })
-      },
+      enabled: false,
     },
-    emailVerification: {
-      sendVerificationEmail: async ({ user, url }) => {
-        await sendVerificationEmail({ to: user.email, url })
+    account: {
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ["google", "github"],
       },
-      sendOnSignUp: true,
     },
     user: {
-      changeEmail: {
-        enabled: true,
-      },
       deleteUser: {
         enabled: true,
+      },
+      additionalFields: {
+        contentCount: {
+          type: "number",
+          required: false,
+          defaultValue: 0,
+          input: false,
+        },
+        dailyIngestionCount: {
+          type: "number",
+          required: false,
+          defaultValue: 0,
+          input: false,
+        },
+        dailyIngestionResetAt: {
+          type: "date",
+          required: false,
+          defaultValue: () => new Date(),
+          input: false,
+        },
+        plan: {
+          type: "string",
+          required: false,
+          defaultValue: "FREE",
+          input: false,
+        },
+      },
+    },
+    databaseHooks: {
+      user: {
+        delete: {
+          before: async (user) => {
+            const handler = authLifecycleHooks.onUserDeleted
+            if (handler) await handler(user.id)
+          },
+        },
       },
     },
     socialProviders: buildSocialProviders(),
     plugins: [
       admin({
-        ac,
-        roles: {
-          admin: adminRole,
-          user: memberRole,
-        },
+        ...(adminUserIds.length > 0 ? { adminUserIds: [...adminUserIds] } : {}),
       }),
-      organization({
-        ac,
-        roles: {
-          owner: ownerRole,
-          admin: adminRole,
-          member: memberRole,
-          viewer: viewerRole,
-        },
-        dynamicAccessControl: {
-          enabled: true,
-          maximumRolesPerOrganization: MAXIMUM_ROLES_PER_ORGANIZATION,
-        },
-        allowUserToCreateOrganization: true,
-        sendInvitationEmail: async (data) => {
-          await sendOrganizationInvitationEmail({
-            to: data.email,
-            organizationName: data.organization.name,
-            inviterName: data.inviter.user.name,
-            inviterEmail: data.inviter.user.email,
-            role: Array.isArray(data.role)
-              ? data.role.join(", ")
-              : String(data.role ?? "member"),
-            invitationId: data.invitation.id,
-          })
-        },
-        teams: {
-          enabled: true,
-          maximumTeams: MAXIMUM_TEAMS_PER_ORGANIZATION,
-        },
-      }),
-      twoFactor({
-        issuer: env.AUTH_TOTP_ISSUER,
-        otpOptions: {
-          sendOTP: async ({ user, otp }) => {
-            await sendTwoFactorOtp({ to: user.email, otp })
-          },
-        },
-      }),
-      apiKey([
-        {
-          configId: "org-keys",
-          defaultPrefix: "org_",
-          references: "organization",
-        },
-      ]),
     ],
   })
 }

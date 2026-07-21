@@ -5,7 +5,6 @@ export type {
   ResendEmailConfig,
   SendLinkEmailInput,
   SendOtpEmailInput,
-  OrganizationInvitationEmailInput,
 } from "./types"
 export { createEmailProvider } from "./factory"
 
@@ -14,7 +13,6 @@ export {
   EmailVerificationEmail,
   MagicLinkEmail,
   NewDeviceEmail,
-  OrganizationInvitationEmail,
   OtpEmail,
   PasswordChangedEmail,
   ResetPasswordEmail,

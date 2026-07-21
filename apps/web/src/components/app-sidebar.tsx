@@ -3,7 +3,6 @@
 import * as React from "react"
 import { AppSidebar as UiAppSidebar } from "@workspace/ui/components/app-sidebar"
 import type { ComponentProps } from "react"
-import { CreateOrganizationDialog } from "@/features/shell/components/create-organization-dialog"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 import { Link } from "react-router-dom"
 
@@ -31,39 +30,19 @@ type AppSidebarProps = Omit<
 >
 
 export function AppSidebar(props: AppSidebarProps) {
-  const {
-    navMain,
-    projects,
-    user,
-    teams,
-    activeTeamId,
-    onSignOut,
-    onTeamChange,
-    onAddTeam,
-    userMenuItems,
-    createOrganizationOpen,
-    setCreateOrganizationOpen,
-  } = useAppShellConfig()
+  const { navMain, projects, user, teams, onSignOut, userMenuItems } =
+    useAppShellConfig()
 
   return (
-    <>
-      <UiAppSidebar
-        activeTeamId={activeTeamId}
-        linkComponent={RouterLink}
-        navMain={navMain}
-        onAddTeam={onAddTeam}
-        onSignOut={onSignOut}
-        onTeamChange={onTeamChange}
-        projects={projects}
-        teams={teams}
-        user={user}
-        userMenuItems={userMenuItems}
-        {...props}
-      />
-      <CreateOrganizationDialog
-        onOpenChange={setCreateOrganizationOpen}
-        open={createOrganizationOpen}
-      />
-    </>
+    <UiAppSidebar
+      linkComponent={RouterLink}
+      navMain={navMain}
+      onSignOut={onSignOut}
+      projects={projects}
+      teams={teams}
+      user={user}
+      userMenuItems={userMenuItems}
+      {...props}
+    />
   )
 }

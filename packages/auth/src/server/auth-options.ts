@@ -8,8 +8,6 @@ type SocialProviderConfig = {
 type SocialProviders = {
   readonly google?: SocialProviderConfig
   readonly github?: SocialProviderConfig
-  readonly microsoft?: SocialProviderConfig
-  readonly discord?: SocialProviderConfig
 }
 
 function optionalProvider(
@@ -20,15 +18,11 @@ function optionalProvider(
   return { clientId, clientSecret }
 }
 
+/** Product OAuth surface: Google + GitHub only (FR-1.1). */
 export function buildSocialProviders(): SocialProviders {
   return {
     google: optionalProvider(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
     github: optionalProvider(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET),
-    microsoft: optionalProvider(
-      env.MICROSOFT_CLIENT_ID,
-      env.MICROSOFT_CLIENT_SECRET
-    ),
-    discord: optionalProvider(env.DISCORD_CLIENT_ID, env.DISCORD_CLIENT_SECRET),
   }
 }
 

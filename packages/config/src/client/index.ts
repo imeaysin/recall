@@ -19,12 +19,6 @@ const marketingClientSchema = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().min(1).optional(),
 })
 
-const mobileClientSchema = z.object({
-  EXPO_PUBLIC_API_URL: z.string().url().optional(),
-  EXPO_PUBLIC_AUTH_URL: z.string().url().optional(),
-  EXPO_PUBLIC_APP_NAME: z.string().min(1).optional(),
-})
-
 const defaultApiUrl = clientDefaults.apiUrl
 const defaultAppName = clientDefaults.appName
 const defaultMarketingUrl = clientDefaults.marketingUrl
@@ -33,9 +27,6 @@ const PROCESS_ENV_KEYS = [
   "NEXT_PUBLIC_API_URL",
   "NEXT_PUBLIC_AUTH_URL",
   "NEXT_PUBLIC_APP_NAME",
-  "EXPO_PUBLIC_API_URL",
-  "EXPO_PUBLIC_AUTH_URL",
-  "EXPO_PUBLIC_APP_NAME",
 ] as const
 
 export type ClientPublicEnv = {
@@ -49,25 +40,16 @@ function resolveClientUrls(
   source: Record<string, string | undefined>
 ): ClientPublicEnv {
   const useProxy = shouldUseViteDevProxy()
-  const configuredApi =
-    source.VITE_API_URL ??
-    source.NEXT_PUBLIC_API_URL ??
-    source.EXPO_PUBLIC_API_URL
+  const configuredApi = source.VITE_API_URL ?? source.NEXT_PUBLIC_API_URL
 
   const apiUrl = useProxy ? "" : (configuredApi ?? defaultApiUrl)
 
-  const configuredAuth =
-    source.VITE_AUTH_URL ??
-    source.NEXT_PUBLIC_AUTH_URL ??
-    source.EXPO_PUBLIC_AUTH_URL
+  const configuredAuth = source.VITE_AUTH_URL ?? source.NEXT_PUBLIC_AUTH_URL
 
   const authUrl = useProxy ? "" : (configuredAuth ?? apiUrl)
 
   const appName =
-    source.VITE_APP_NAME ??
-    source.NEXT_PUBLIC_APP_NAME ??
-    source.EXPO_PUBLIC_APP_NAME ??
-    defaultAppName
+    source.VITE_APP_NAME ?? source.NEXT_PUBLIC_APP_NAME ?? defaultAppName
 
   const marketingUrl = source.VITE_MARKETING_URL ?? defaultMarketingUrl
 
@@ -116,13 +98,6 @@ export function parseWebEnv(
   return resolveClientUrls(source)
 }
 
-export {
-  clientDefaults,
-  DEFAULT_APP_NAME,
-  DEV_URLS,
-  DEV_ALLOWED_ORIGINS,
-} from "../constants"
-
 /** `apps/marketing` (Next.js) — pass `process.env` from the app. */
 export function parseMarketingEnv(
   source: Record<string, string | undefined>
@@ -131,13 +106,12 @@ export function parseMarketingEnv(
   return resolveClientUrls(source)
 }
 
-/** `apps/mobile` (Expo) — pass `process.env` from the app. */
-export function parseMobileEnv(
-  source: Record<string, string | undefined>
-): ClientPublicEnv {
-  mobileClientSchema.parse(source)
-  return resolveClientUrls(source)
-}
+export {
+  clientDefaults,
+  DEFAULT_APP_NAME,
+  DEV_URLS,
+  DEV_ALLOWED_ORIGINS,
+} from "../constants"
 
 /**
  * Generic client env parser — used by shared packages (`@workspace/auth/client`).
@@ -150,7 +124,7 @@ export function parseClientPublicEnv(
 }
 
 /**
- * Collect public env vars from the current runtime (Vite, Next.js, Expo).
+ * Collect public env vars from the current runtime (Vite / Next.js).
  * Never touches the bare `process` identifier (unsafe in Vite browser bundles).
  */
 export function getClientPublicEnvSource(): Record<string, string | undefined> {

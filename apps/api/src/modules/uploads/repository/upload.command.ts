@@ -5,7 +5,6 @@ import { STORAGE } from "@/common/storage/storage.module"
 import type { FileMetadata } from "../dto/upload-responses.dto"
 
 export type UploadUserFileInput = {
-  organizationId: string
   userId: string
   file: FileMetadata
 }
@@ -15,9 +14,9 @@ export class UploadCommandRepository {
   constructor(@Inject(STORAGE) private readonly storage: StorageProvider) {}
 
   uploadUserFile(input: UploadUserFileInput): Promise<StorageUploadResult> {
-    const { organizationId, userId, file } = input
+    const { userId, file } = input
     const safeName = file.originalname.replace(/[^\w.-]+/g, "_").slice(0, 120)
-    const path = `${organizationId}/${userId}/${randomUUID()}-${safeName}`
+    const path = `${userId}/${randomUUID()}-${safeName}`
 
     return this.storage.upload({
       path,

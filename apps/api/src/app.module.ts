@@ -7,13 +7,9 @@ import { WorkspaceAuthModule } from "@workspace/auth/nestjs"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
 import { isSentryEnabled } from "./observability/enabled"
-import { CacheModule } from "./common/cache/cache.module"
 import { DatabaseModule } from "./common/database/database.module"
 import { JobsModule } from "./common/jobs/jobs.module"
-import { PushModule } from "./common/push/push.module"
-import { RealtimeModule } from "./common/realtime/realtime.module"
 import { StorageModule } from "./common/storage/storage.module"
-import { PaymentModule } from "./common/payment/payment.module"
 import { GlobalExceptionsFilter } from "./common/filters/global-exceptions.filter"
 import { HttpExceptionFilter } from "./common/filters/http-exception.filter"
 import { DomainExceptionFilter } from "./common/filters/domain-exception.filter"
@@ -23,9 +19,9 @@ import { LoggingInterceptor } from "./common/interceptors/logging.interceptor"
 import { TransformResponseInterceptor } from "./common/interceptors/transform-response.interceptor"
 import { HealthModule } from "./modules/health/health.module"
 import { UsersModule } from "./modules/users/users.module"
-import { NotesModule } from "./modules/notes/notes.module"
-import { NotificationsModule } from "./modules/notifications/notifications.module"
 import { UploadsModule } from "./modules/uploads/uploads.module"
+import { ContentModule } from "./modules/content/content.module"
+import { IngestionModule } from "./modules/ingestion/ingestion.module"
 
 @Module({
   imports: [
@@ -33,17 +29,13 @@ import { UploadsModule } from "./modules/uploads/uploads.module"
     EventEmitterModule.forRoot(),
     DatabaseModule,
     WorkspaceAuthModule,
-    CacheModule,
     JobsModule,
-    PushModule,
-    RealtimeModule,
     StorageModule,
-    PaymentModule,
     HealthModule,
     UsersModule,
-    NotesModule,
-    NotificationsModule,
     UploadsModule,
+    ContentModule,
+    IngestionModule,
   ],
   controllers: [AppController],
   providers: [

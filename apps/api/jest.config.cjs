@@ -13,8 +13,11 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/test/jest-setup.ts"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
-    "^expo-server-sdk$": "<rootDir>/test/mocks/expo-server-sdk.ts",
     "^@workspace/auth/nestjs$": "<rootDir>/test/mocks/workspace-auth-nestjs.ts",
+    "^@workspace/auth/server/lifecycle$":
+      "<rootDir>/test/mocks/workspace-auth-lifecycle.ts",
+    "^@workspace/extractors$": "<rootDir>/test/mocks/workspace-extractors.ts",
+    "^@workspace/ai$": "<rootDir>/test/mocks/workspace-ai.ts",
   },
   transformIgnorePatterns: [
     "/node_modules/(?!(@nestjs|rxjs|uuid|@workspace)/)",
