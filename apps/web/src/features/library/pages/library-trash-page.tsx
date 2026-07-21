@@ -17,6 +17,7 @@ import {
 } from "@workspace/ui/components/item"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { PageHeader } from "@/features/shell/components/page-header"
+import { PageShell } from "@/features/shell/components/page-shell"
 import {
   useContentTrashList,
   usePermanentDeleteContent,
@@ -30,74 +31,107 @@ export function LibraryTrashPage() {
   const items = trash.data?.items ?? []
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+    <PageShell>
       <PageHeader
         title="Trash"
         description="Soft-deleted library items. Restore or permanently delete."
       />
+      <TrashBody
+        isLoading={trash.isLoading}
+        items={items}
+        isRestoring={restore.isPending}
+        isDeleting={permanentDelete.isPending}
+        onRestore={(id) => restore.mutate(id)}
+        onPermanentDelete={(contentId) => permanentDelete.mutate(contentId)}
+      />
+    </PageShell>
+  )
+}
 
-      {trash.isLoading ? (
-        <div className="flex flex-col gap-3">
-          <Skeleton className="h-16 w-full rounded-lg" />
-          <Skeleton className="h-16 w-full rounded-lg" />
-        </div>
-      ) : items.length === 0 ? (
-        <Empty className="border border-dashed">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Trash2Icon />
-            </EmptyMedia>
-            <EmptyTitle>Trash is empty</EmptyTitle>
-            <EmptyDescription>
-              Deleted library items will appear here until they are purged.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
-        <ItemGroup>
-          {items.map((item) => {
-            const heading = item.title ?? item.sourceType ?? "Untitled"
-            const pending = restore.isPending || permanentDelete.isPending
-            return (
-              <Item key={item.id} variant="outline">
-                <ItemContent>
-                  <ItemTitle>{heading}</ItemTitle>
-                  <ItemDescription>
-                    Deleted {new Date(item.deletedAt).toLocaleString()} · Purge{" "}
-                    {new Date(item.purgeAt).toLocaleDateString()}
-                  </ItemDescription>
-                </ItemContent>
-                <ItemActions>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={pending}
-                    onClick={() => restore.mutate(item.id)}
-                  >
-                    Restore
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    disabled={pending}
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Permanently delete this item and its vectors? This cannot be undone."
-                        )
-                      ) {
-                        permanentDelete.mutate(item.originalContentId)
-                      }
-                    }}
-                  >
-                    Delete forever
-                  </Button>
-                </ItemActions>
-              </Item>
-            )
-          })}
-        </ItemGroup>
-      )}
-    </div>
+function TrashBody(props: {
+  readonly isLoading: boolean
+  readonly items: readonly {
+    id: string
+    title?: string
+    sourceType?: string
+    deletedAt: string
+    purgeAt: string
+    originalContentId: string
+  }[]
+  readonly isRestoring: boolean
+  readonly isDeleting: boolean
+  readonly onRestore: (id: string) => void
+  readonly onPermanentDelete: (contentId: string) => void
+}) {
+  if (props.isLoading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-16 w-full rounded-lg" />
+        <Skeleton className="h-16 w-full rounded-lg" />
+      </div>
+    )
+  }
+
+  if (props.items.length === 0) {
+    return (
+      <Empty className="border border-dashed">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Trash2Icon />
+          </EmptyMedia>
+          <EmptyTitle>Trash is empty</EmptyTitle>
+          <EmptyDescription>
+            Deleted library items will appear here until they are purged.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    )
+  }
+
+  const pending = props.isRestoring || props.isDeleting
+
+  return (
+    <ItemGroup>
+      {props.items.map((item) => {
+        const heading = item.title ?? item.sourceType ?? "Untitled"
+        return (
+          <Item key={item.id} variant="outline">
+            <ItemContent>
+              <ItemTitle>{heading}</ItemTitle>
+              <ItemDescription>
+                Deleted {new Date(item.deletedAt).toLocaleString()} · Purge{" "}
+                {new Date(item.purgeAt).toLocaleDateString()}
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={pending}
+                onClick={() => props.onRestore(item.id)}
+              >
+                Restore
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={pending}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Permanently delete this item and its vectors? This cannot be undone."
+                    )
+                  ) {
+                    props.onPermanentDelete(item.originalContentId)
+                  }
+                }}
+              >
+                Delete forever
+              </Button>
+            </ItemActions>
+          </Item>
+        )
+      })}
+    </ItemGroup>
   )
 }

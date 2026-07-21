@@ -1,6 +1,7 @@
 import { viewPaths } from "@better-auth-ui/core"
 import { Navigate, useParams } from "react-router-dom"
 import { Settings } from "@/features/auth/components/settings/settings"
+import { PageShell } from "@/features/shell/components/page-shell"
 
 const validSettingsPaths = new Set(Object.values(viewPaths.settings))
 
@@ -15,5 +16,9 @@ export function SettingsPage() {
     return <Navigate replace to="account" />
   }
 
-  return <Settings path={path} />
+  return (
+    <PageShell>
+      <Settings path={path} />
+    </PageShell>
+  )
 }

@@ -31,6 +31,7 @@ import {
 } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { useTopicList } from "@/features/topics/hooks/use-topics"
+import { PageShell } from "@/features/shell/components/page-shell"
 import {
   filterLibraryItems,
   LibraryCardSkeletonGrid,
@@ -211,7 +212,7 @@ export function LibraryPage() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <PageShell>
       <LibraryToolbar
         activeTopicName={topicLabel}
         topics={topics}
@@ -314,7 +315,7 @@ export function LibraryPage() {
           onAskChat={() => navigate(routes.chat)}
         />
       ) : null}
-    </div>
+    </PageShell>
   )
 }
 

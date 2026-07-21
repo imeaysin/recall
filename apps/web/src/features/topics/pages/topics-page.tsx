@@ -36,6 +36,7 @@ import {
 } from "@workspace/ui/components/select"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { PageHeader } from "@/features/shell/components/page-header"
+import { PageShell } from "@/features/shell/components/page-shell"
 import {
   useCreateTopic,
   useDeleteTopic,
@@ -63,135 +64,137 @@ export function TopicsPage() {
     create.isPending || update.isPending || remove.isPending || merge.isPending
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+    <PageShell>
       <PageHeader
         title="Topics"
         description="Manage knowledge-graph topics. Merge duplicates or rename user-created topics."
       />
 
-      <Card size="sm">
-        <CardHeader>
-          <CardTitle>Create topic</CardTitle>
-          <CardDescription>
-            Add a new topic to organize content.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              const name = newName.trim()
-              if (!name) return
-              create.mutate(
-                { name },
-                {
-                  onSuccess: () => setNewName(""),
-                }
-              )
-            }}
-          >
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="new-topic">Name</FieldLabel>
-                <Input
-                  id="new-topic"
-                  value={newName}
-                  onChange={(event) => setNewName(event.target.value)}
-                  placeholder="New topic name"
-                  maxLength={80}
-                />
-              </Field>
-              <Button type="submit" disabled={create.isPending}>
-                Create
-              </Button>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card size="sm">
-        <CardHeader>
-          <CardTitle>Merge topics</CardTitle>
-          <CardDescription>
-            Move all content from the source topic into the target topic.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FieldGroup>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field>
-                <FieldLabel>Source</FieldLabel>
-                <Select
-                  value={mergeSourceId || null}
-                  onValueChange={(value) => setMergeSourceId(value ?? "")}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Source topic…" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {mergeable
-                        .filter((topic) => topic.id !== mergeTargetId)
-                        .map((topic) => (
-                          <SelectItem key={topic.id} value={topic.id}>
-                            {topic.name}
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel>Target</FieldLabel>
-                <Select
-                  value={mergeTargetId || null}
-                  onValueChange={(value) => setMergeTargetId(value ?? "")}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Target topic…" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {mergeable
-                        .filter((topic) => topic.id !== mergeSourceId)
-                        .map((topic) => (
-                          <SelectItem key={topic.id} value={topic.id}>
-                            {topic.name}
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={!mergeSourceId || !mergeTargetId || pending}
-              onClick={() => {
-                if (
-                  !window.confirm(
-                    "Merge these topics? This cannot be undone easily."
-                  )
-                ) {
-                  return
-                }
-                merge.mutate(
-                  { id: mergeSourceId, body: { intoTopicId: mergeTargetId } },
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Create topic</CardTitle>
+            <CardDescription>
+              Add a new topic to organize content.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault()
+                const name = newName.trim()
+                if (!name) return
+                create.mutate(
+                  { name },
                   {
-                    onSuccess: () => {
-                      setMergeSourceId("")
-                      setMergeTargetId("")
-                    },
+                    onSuccess: () => setNewName(""),
                   }
                 )
               }}
             >
-              Merge
-            </Button>
-          </FieldGroup>
-        </CardContent>
-      </Card>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="new-topic">Name</FieldLabel>
+                  <Input
+                    id="new-topic"
+                    value={newName}
+                    onChange={(event) => setNewName(event.target.value)}
+                    placeholder="New topic name"
+                    maxLength={80}
+                  />
+                </Field>
+                <Button type="submit" disabled={create.isPending}>
+                  Create
+                </Button>
+              </FieldGroup>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Merge topics</CardTitle>
+            <CardDescription>
+              Move all content from the source topic into the target topic.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel>Source</FieldLabel>
+                  <Select
+                    value={mergeSourceId || null}
+                    onValueChange={(value) => setMergeSourceId(value ?? "")}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Source topic…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {mergeable
+                          .filter((topic) => topic.id !== mergeTargetId)
+                          .map((topic) => (
+                            <SelectItem key={topic.id} value={topic.id}>
+                              {topic.name}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Field>
+                  <FieldLabel>Target</FieldLabel>
+                  <Select
+                    value={mergeTargetId || null}
+                    onValueChange={(value) => setMergeTargetId(value ?? "")}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Target topic…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {mergeable
+                          .filter((topic) => topic.id !== mergeSourceId)
+                          .map((topic) => (
+                            <SelectItem key={topic.id} value={topic.id}>
+                              {topic.name}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!mergeSourceId || !mergeTargetId || pending}
+                onClick={() => {
+                  if (
+                    !window.confirm(
+                      "Merge these topics? This cannot be undone easily."
+                    )
+                  ) {
+                    return
+                  }
+                  merge.mutate(
+                    { id: mergeSourceId, body: { intoTopicId: mergeTargetId } },
+                    {
+                      onSuccess: () => {
+                        setMergeSourceId("")
+                        setMergeTargetId("")
+                      },
+                    }
+                  )
+                }}
+              >
+                Merge
+              </Button>
+            </FieldGroup>
+          </CardContent>
+        </Card>
+      </div>
 
       <TopicsList
         isLoading={topics.isLoading}
@@ -224,7 +227,7 @@ export function TopicsPage() {
         }}
         renamePending={update.isPending}
       />
-    </div>
+    </PageShell>
   )
 }
 

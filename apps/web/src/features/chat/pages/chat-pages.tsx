@@ -41,6 +41,7 @@ import {
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { routes } from "@/config/routes"
 import { PageHeader } from "@/features/shell/components/page-header"
+import { PageShell } from "@/features/shell/components/page-shell"
 import type { ChatCitation, ChatMessageResponse } from "@workspace/contracts"
 import {
   useChatList,
@@ -58,7 +59,7 @@ export function ChatListPage() {
   const count = chats.data?.items.length ?? 0
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+    <PageShell>
       <PageHeader
         title="Chat"
         description="Ask questions over your library with citations. Pick a conversation from the sidebar, or start a new one."
@@ -92,7 +93,7 @@ export function ChatListPage() {
           </Button>
         </EmptyContent>
       </Empty>
-    </div>
+    </PageShell>
   )
 }
 
@@ -127,7 +128,7 @@ function ChatDetailView(props: {
   const actionPending = update.isPending || remove.isPending
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-8rem)] min-h-112 w-full max-w-3xl flex-col gap-4">
+    <PageShell className="min-h-[calc(100vh-8rem)] flex-1 gap-4">
       <PageHeader
         title={renaming ? "Rename chat" : (chat?.title ?? "Chat")}
         description={
@@ -250,7 +251,7 @@ function ChatDetailView(props: {
           </Alert>
         ) : null}
       </form>
-    </div>
+    </PageShell>
   )
 }
 
