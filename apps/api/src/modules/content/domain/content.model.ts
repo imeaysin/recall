@@ -44,6 +44,13 @@ export type NewUrlContent = {
   readonly normalizedUrl: string
 }
 
+export type NewPdfContent = {
+  readonly userId: string
+  readonly originalName: string
+  readonly mimeType: string
+  readonly sizeBytes: number
+}
+
 export type ContentActorScope = {
   readonly userId: string
 }

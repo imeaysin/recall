@@ -1,4 +1,4 @@
-import { Library, Settings } from "lucide-react"
+import { Library, MessageSquare, Settings, Tags } from "lucide-react"
 import { routes } from "@/config/routes"
 import type { LucideIcon } from "lucide-react"
 
@@ -25,7 +25,22 @@ export const appNavigation = {
       url: routes.library,
       icon: Library,
       isActive: true,
-      items: [{ title: "Library", url: routes.library }],
+      items: [
+        { title: "Library", url: routes.library },
+        { title: "Trash", url: routes.libraryTrash },
+      ],
+    },
+    {
+      title: "Chat",
+      url: routes.chat,
+      icon: MessageSquare,
+      items: [{ title: "Conversations", url: routes.chat }],
+    },
+    {
+      title: "Topics",
+      url: routes.topics,
+      icon: Tags,
+      items: [{ title: "All topics", url: routes.topics }],
     },
     {
       title: "Settings",

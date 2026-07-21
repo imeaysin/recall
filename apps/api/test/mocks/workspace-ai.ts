@@ -19,8 +19,30 @@ export type AiClient = {
     readonly topics: readonly string[]
   }>
   readonly embed: (texts: readonly string[]) => Promise<{
-    readonly embeddings: readonly number[][]
+    readonly embeddings: readonly (readonly number[])[]
     readonly embeddingModel: string
+    readonly tokensUsed: number
+  }>
+  readonly answerWithContext: (input: {
+    readonly messages: readonly {
+      readonly role: "user" | "assistant" | "system"
+      readonly content: string
+    }[]
+    readonly contextChunks: readonly {
+      readonly contentId: string
+      readonly title: string
+      readonly sourceUrl?: string
+      readonly chunkText: string
+    }[]
+  }) => Promise<{
+    readonly text: string
+    readonly citations: readonly {
+      readonly contentId: string
+      readonly title: string
+      readonly sourceUrl?: string
+      readonly chunkText: string
+    }[]
+    readonly tokensUsed: number
   }>
 }
 
@@ -36,7 +58,27 @@ export function createGeminiAiClient(_options: {
     embed: async (texts) => ({
       embeddings: texts.map(() => [0.1, 0.2, 0.3]),
       embeddingModel: "mock-embed",
+      tokensUsed: texts.length,
     }),
+    answerWithContext: async (input) => {
+      const firstChunk = input.contextChunks[0]
+      return {
+        text: firstChunk
+          ? `Answer citing [1] from library.`
+          : "No relevant content found in your library.",
+        citations: firstChunk
+          ? [
+              {
+                contentId: firstChunk.contentId,
+                title: firstChunk.title,
+                sourceUrl: firstChunk.sourceUrl,
+                chunkText: firstChunk.chunkText,
+              },
+            ]
+          : [],
+        tokensUsed: 12,
+      }
+    },
   }
 }
 

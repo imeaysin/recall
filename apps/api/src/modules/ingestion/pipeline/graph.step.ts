@@ -1,5 +1,6 @@
 import { ContentDeletedDuringIngestionError } from "../domain"
-import { upsertTopicsForContent, logIngestionAttempt } from "../repository"
+import { logIngestionAttempt } from "../repository"
+import { computeIsOrphanFromNormalizedNames } from "@/modules/topics/domain/is-orphan"
 import {
   assertStillActive,
   type PipelineState,
@@ -19,11 +20,24 @@ export async function runGraphStep(
     throw new ContentDeletedDuringIngestionError(state.claimed.id)
   }
 
-  const linked = await upsertTopicsForContent({
+  let linked = await deps.topicIngestionRepo.upsertTopicsForContent({
     userId: state.claimed.userId,
     contentId: state.claimed.id,
     topicNames: state.topics,
   })
+
+  const isOrphan = computeIsOrphanFromNormalizedNames(
+    linked.map((topic) => topic.normalizedName)
+  )
+
+  if (linked.length === 0) {
+    const root = await deps.topicRootRepo.ensureRootTopic(state.claimed.userId)
+    const rootLink = await deps.topicRootRepo.linkContentToTopic({
+      topic: root,
+      contentId: state.claimed.id,
+    })
+    linked = [rootLink]
+  }
 
   const stillActive = await deps.queryRepo.findByIdForUser(
     state.claimed.userId,
@@ -41,7 +55,7 @@ export async function runGraphStep(
       topicId: topic.topicId,
       name: topic.name,
     })),
-    isOrphan: linked.length === 0,
+    isOrphan,
   })
 
   await logIngestionAttempt({

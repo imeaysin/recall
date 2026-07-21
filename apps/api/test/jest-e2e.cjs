@@ -6,6 +6,7 @@ module.exports = {
   rootDir: ".",
   testEnvironment: "node",
   testTimeout: 60000,
+  maxWorkers: 1,
   testMatch: ["<rootDir>/e2e/**/*.e2e-spec.ts"],
   setupFilesAfterEnv: ["<rootDir>/e2e/jest-e2e.setup.ts"],
   transform: {

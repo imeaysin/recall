@@ -136,8 +136,56 @@ export const ContentListApiResponseSchema = apiSuccessResponse(
   }
 )
 
+export const ContentTrashItemSchema = z
+  .object({
+    id: z.string(),
+    originalContentId: z.string(),
+    title: z.string().optional(),
+    sourceType: ContentSourceTypeSchema.optional(),
+    deletedAt: z.string(),
+    purgeAt: z.string(),
+  })
+  .meta({
+    id: "ContentTrashItemDto",
+    title: "Content trash item",
+  })
+
+export const ContentTrashListResponseSchema = z
+  .object({
+    items: z.array(ContentTrashItemSchema),
+  })
+  .meta({ id: "ContentTrashListResponseDto" })
+
+export const ContentTrashListApiResponseSchema = apiSuccessResponse(
+  ContentTrashListResponseSchema,
+  {
+    id: "ContentTrashListApiResponseDto",
+    title: "Content trash list response",
+  }
+)
+
+export const RegenerateContentSchema = z
+  .object({
+    force: z.literal(true).optional(),
+  })
+  .strict()
+  .meta({
+    id: "RegenerateContentDto",
+    title: "Regenerate AI metadata",
+    description:
+      "Re-queue ingestion and allow AI to overwrite previously user-edited title/summary.",
+  })
+
+/** Soft cap for PDF library uploads (FR-2.3). Separate from generic /uploads. */
+export const CONTENT_UPLOAD_MAX_BYTES = 15_000_000
+
 export type ContentResponse = z.infer<typeof ContentResponseSchema>
 export type ContentListQuery = z.infer<typeof ContentListQuerySchema>
 export type SaveUrlContent = z.infer<typeof SaveUrlContentSchema>
 export type UpdateContent = z.infer<typeof UpdateContentSchema>
 export type ContentListResponse = z.infer<typeof ContentListResponseSchema>
+export type ContentTrashItem = z.infer<typeof ContentTrashItemSchema>
+export type ContentTrashListResponse = z.infer<
+  typeof ContentTrashListResponseSchema
+>
+export type RegenerateContent = z.infer<typeof RegenerateContentSchema>

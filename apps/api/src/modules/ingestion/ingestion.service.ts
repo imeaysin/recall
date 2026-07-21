@@ -13,7 +13,12 @@ import {
   ContentCommandRepository,
   ContentProcessingRepository,
   ContentQueryRepository,
+  ContentTempFileStore,
 } from "@/modules/content/repository"
+import {
+  TopicIngestionRepository,
+  TopicRootRepository,
+} from "@/modules/topics/repository"
 import { MongoAiUsageStore } from "./repository"
 import {
   INGESTION_ACTIVE_STATUSES,
@@ -33,6 +38,9 @@ export class IngestionService {
     private readonly queryRepo: ContentQueryRepository,
     private readonly commandRepo: ContentCommandRepository,
     private readonly processingRepo: ContentProcessingRepository,
+    private readonly topicRootRepo: TopicRootRepository,
+    private readonly topicIngestionRepo: TopicIngestionRepository,
+    private readonly tempFileStore: ContentTempFileStore,
     private readonly usageStore: MongoAiUsageStore
   ) {}
 
@@ -68,6 +76,9 @@ export class IngestionService {
           queryRepo: this.queryRepo,
           commandRepo: this.commandRepo,
           processingRepo: this.processingRepo,
+          topicRootRepo: this.topicRootRepo,
+          topicIngestionRepo: this.topicIngestionRepo,
+          tempFileStore: this.tempFileStore,
         },
         claimed
       )

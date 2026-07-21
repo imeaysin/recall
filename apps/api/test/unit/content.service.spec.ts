@@ -12,6 +12,7 @@ import {
   ContentLifecycleRepository,
   ContentProcessingRepository,
   ContentQueryRepository,
+  ContentTempFileStore,
   UserIngestionQuotaRepository,
 } from "@/modules/content/repository"
 
@@ -23,14 +24,19 @@ describe("ContentService", () => {
   }
   const commandRepo = {
     insertUrlOrGetExisting: jest.fn(),
+    insertPdf: jest.fn(),
     updateIfActiveForUser: jest.fn(),
   }
   const processingRepo = {
     resetFailedForRetry: jest.fn(),
+    resetForRegenerate: jest.fn(),
     replaceTopicLinks: jest.fn(),
   }
   const lifecycleRepo = {
     softDelete: jest.fn(),
+    listTrash: jest.fn(),
+    restoreFromTrash: jest.fn(),
+    permanentDelete: jest.fn(),
     purgeAllForUser: jest.fn(),
     purgeExpiredSoftDeleted: jest.fn(),
   }
@@ -38,6 +44,12 @@ describe("ContentService", () => {
     tryReserveIngestionSlot: jest.fn(),
     releaseIngestionSlot: jest.fn(),
     decrementContentCount: jest.fn(),
+    incrementContentCount: jest.fn(),
+  }
+  const tempFileStore = {
+    savePdf: jest.fn(),
+    takePdf: jest.fn(),
+    discard: jest.fn(),
   }
   const eventEmitter = {
     emit: jest.fn(),
@@ -75,6 +87,7 @@ describe("ContentService", () => {
         { provide: ContentCommandRepository, useValue: commandRepo },
         { provide: ContentProcessingRepository, useValue: processingRepo },
         { provide: ContentLifecycleRepository, useValue: lifecycleRepo },
+        { provide: ContentTempFileStore, useValue: tempFileStore },
         { provide: UserIngestionQuotaRepository, useValue: quotaRepo },
         { provide: EventEmitter2, useValue: eventEmitter },
       ],

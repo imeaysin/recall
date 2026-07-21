@@ -6,6 +6,7 @@ import {
   VectorChunkModel,
   type ITopic,
 } from "@workspace/db"
+import { computeIsOrphanFromNormalizedNames } from "@/modules/topics/domain/is-orphan"
 import type { ContentEntity } from "../domain"
 import { mapContentDoc } from "./content.mapper"
 
@@ -127,7 +128,42 @@ export class ContentProcessingRepository {
             topicId: topic._id,
             name: topic.name,
           })),
-          isOrphan: topics.length === 0,
+          isOrphan: computeIsOrphanFromNormalizedNames(
+            topics.map((topic) => topic.normalizedName)
+          ),
+        },
+      },
+      { returnDocument: "after" }
+    )
+    return doc ? mapContentDoc(doc) : null
+  }
+
+  async resetForRegenerate(input: {
+    readonly userId: string
+    readonly contentId: string
+  }): Promise<ContentEntity | null> {
+    if (!isValidObjectId(input.contentId)) return null
+
+    const doc = await ContentModel.findOneAndUpdate(
+      {
+        _id: input.contentId,
+        userId: input.userId,
+        isDeleted: false,
+        status: { $in: ["COMPLETED", "FAILED", "DEFERRED"] },
+      },
+      {
+        $set: {
+          status: "PENDING",
+          retryCount: 0,
+          titleEditedByUser: false,
+          summaryEditedByUser: false,
+        },
+        $unset: {
+          errorMessage: "",
+          errorCode: "",
+          lockedAt: "",
+          lockedBy: "",
+          processingStep: "",
         },
       },
       { returnDocument: "after" }

@@ -8,6 +8,8 @@ import { BetterAuthUiProvider } from "@/features/auth/providers/better-auth-ui-p
 import { authRoutes } from "@/features/auth/routes"
 import { dashboardRoutes } from "@/features/dashboard/routes"
 import { libraryRoutes } from "@/features/library/routes"
+import { chatRoutes } from "@/features/chat/routes"
+import { topicsRoutes } from "@/features/topics/routes"
 import { uploadsRoutes } from "@/features/uploads/routes"
 import { settingsRoutes } from "@/features/settings/routes"
 import { homeRoutes } from "@/features/home/routes"
@@ -52,6 +54,8 @@ export const router = createBrowserRouter([
                   },
                   ...dashboardRoutes,
                   ...libraryRoutes,
+                  ...chatRoutes,
+                  ...topicsRoutes,
                   ...uploadsRoutes,
                   ...settingsRoutes,
                 ],

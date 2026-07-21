@@ -9,8 +9,13 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common"
+import { FileInterceptor } from "@nestjs/platform-express"
 import {
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -18,9 +23,16 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger"
+import {
+  CONTENT_UPLOAD_MAX_BYTES,
+  ContentTrashListApiResponseSchema,
+} from "@workspace/contracts"
+import { ingestionEnv } from "@workspace/config/ingestion"
+import { createZodDto } from "nestjs-zod"
 import { Session, type UserSession } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { ContentService } from "./content.service"
+import { InvalidContentUpdateException } from "./domain"
 import {
   ContentApiResponseDto,
   ContentListApiResponseDto,
@@ -28,6 +40,17 @@ import {
   SaveUrlContentDto,
   UpdateContentDto,
 } from "./dto"
+
+class ContentTrashListApiResponseDto extends createZodDto(
+  ContentTrashListApiResponseSchema
+) {}
+
+type UploadedPdf = {
+  readonly buffer: Buffer
+  readonly mimetype: string
+  readonly originalname: string
+  readonly size: number
+}
 
 @ApiTags("content")
 @ApiAuthErrorResponses()
@@ -46,6 +69,63 @@ export class ContentController {
     @Body() body: SaveUrlContentDto
   ) {
     return this.contentService.saveUrl({ userId: session.user.id }, body)
+  }
+
+  @Post("file")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Upload a PDF for async ingestion (max 15MB)" })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: { type: "string", format: "binary" },
+      },
+      required: ["file"],
+    },
+  })
+  @ApiCreatedResponse({ type: ContentApiResponseDto })
+  @UseInterceptors(
+    FileInterceptor("file", {
+      limits: {
+        fileSize: Math.max(
+          CONTENT_UPLOAD_MAX_BYTES,
+          ingestionEnv.CONTENT_UPLOAD_MAX_BYTES
+        ),
+        files: 1,
+      },
+    })
+  )
+  async saveFile(
+    @Session() session: UserSession,
+    @UploadedFile() file?: UploadedPdf
+  ) {
+    if (!file) {
+      throw new InvalidContentUpdateException("File is required")
+    }
+    return this.contentService.savePdf({ userId: session.user.id }, file)
+  }
+
+  @Get("trash")
+  @ApiOperation({ summary: "List soft-deleted content in trash" })
+  @ApiOkResponse({ type: ContentTrashListApiResponseDto })
+  async listTrash(@Session() session: UserSession) {
+    return this.contentService.listTrash({ userId: session.user.id })
+  }
+
+  @Post("trash/:trashId/restore")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Restore content from trash" })
+  @ApiParam({ name: "trashId" })
+  @ApiOkResponse({ type: ContentApiResponseDto })
+  async restoreTrash(
+    @Session() session: UserSession,
+    @Param("trashId") trashId: string
+  ) {
+    return this.contentService.restoreTrash({
+      userId: session.user.id,
+      trashId,
+    })
   }
 
   @Get()
@@ -85,11 +165,41 @@ export class ContentController {
   }
 
   @Post(":id/retry")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Retry failed ingestion from the beginning" })
   @ApiParam({ name: "id" })
   @ApiOkResponse({ type: ContentApiResponseDto })
   async retry(@Session() session: UserSession, @Param("id") id: string) {
     return this.contentService.retry({
+      userId: session.user.id,
+      contentId: id,
+    })
+  }
+
+  @Post(":id/regenerate")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: "Regenerate AI metadata (overrides user-edited title/summary)",
+  })
+  @ApiParam({ name: "id" })
+  @ApiOkResponse({ type: ContentApiResponseDto })
+  async regenerate(@Session() session: UserSession, @Param("id") id: string) {
+    return this.contentService.regenerate({
+      userId: session.user.id,
+      contentId: id,
+    })
+  }
+
+  @Delete(":id/permanent")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Permanently delete content and its vectors" })
+  @ApiParam({ name: "id" })
+  @ApiNoContentResponse()
+  async permanentDelete(
+    @Session() session: UserSession,
+    @Param("id") id: string
+  ) {
+    await this.contentService.permanentDelete({
       userId: session.user.id,
       contentId: id,
     })

@@ -47,6 +47,7 @@ All apps read the **root** `.env` via `@workspace/config`. Copy from [`.env.exam
 | -------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `RESEND_API_KEY` / `EMAIL_PROVIDER` / `EMAIL_FROM` | Org invitation email. Empty key → mock provider logs links to the API console |
 | `STORAGE_*`                                        | Local uploads by default; S3 only if you switch `STORAGE_PROVIDER=s3`         |
+| `CONTENT_UPLOAD_MAX_BYTES`                         | PDF library upload cap (default 15MB)                                         |
 | `SENTRY_DSN` / `OTEL_*` / `VITE_SENTRY_DSN`        | Production observability only                                                 |
 
 See `.env.example` for the full active list.

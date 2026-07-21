@@ -4,7 +4,12 @@ import type {
   ContentCommandRepository,
   ContentProcessingRepository,
   ContentQueryRepository,
+  ContentTempFileStore,
 } from "@/modules/content/repository"
+import type {
+  TopicIngestionRepository,
+  TopicRootRepository,
+} from "@/modules/topics/repository"
 import { ContentDeletedDuringIngestionError } from "../domain"
 
 export type ProcessStepsDeps = {
@@ -12,6 +17,9 @@ export type ProcessStepsDeps = {
   readonly queryRepo: ContentQueryRepository
   readonly commandRepo: ContentCommandRepository
   readonly processingRepo: ContentProcessingRepository
+  readonly topicRootRepo: TopicRootRepository
+  readonly topicIngestionRepo: TopicIngestionRepository
+  readonly tempFileStore: ContentTempFileStore
 }
 
 export type PipelineState = {

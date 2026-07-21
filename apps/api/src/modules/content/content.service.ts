@@ -3,9 +3,11 @@ import { EventEmitter2 } from "@nestjs/event-emitter"
 import type {
   ContentListQuery,
   ContentResponse,
+  ContentTrashItem,
   SaveUrlContent,
   UpdateContent,
 } from "@workspace/contracts"
+import { ingestionEnv } from "@workspace/config/ingestion"
 import { detectYoutubeVideoId, normalizeUrl } from "@workspace/extractors"
 import { AppEvents } from "@/common/events"
 import {
@@ -13,10 +15,14 @@ import {
   ContentLifecycleRepository,
   ContentProcessingRepository,
   ContentQueryRepository,
+  ContentTempFileStore,
   UserIngestionQuotaRepository,
 } from "./repository"
 import {
+  ContentFileTooLargeException,
   ContentNotFoundException,
+  ContentTrashNotFoundException,
+  ContentUnsupportedFormatException,
   DailyIngestionLimitException,
   InvalidContentUpdateException,
   type ContentActorScope,
@@ -24,6 +30,13 @@ import {
 } from "./domain"
 import { buildContentUpdatePatch, toContentResponse } from "./dto"
 import { ContentIngestionRequestedEvent } from "./events"
+
+type PdfUploadFile = {
+  readonly buffer: Buffer
+  readonly mimetype: string
+  readonly originalname: string
+  readonly size: number
+}
 
 @Injectable()
 export class ContentService {
@@ -33,6 +46,7 @@ export class ContentService {
     private readonly processingRepo: ContentProcessingRepository,
     private readonly lifecycleRepo: ContentLifecycleRepository,
     private readonly quotaRepo: UserIngestionQuotaRepository,
+    private readonly tempFileStore: ContentTempFileStore,
     private readonly eventEmitter: EventEmitter2
   ) {}
 
@@ -70,10 +84,42 @@ export class ContentService {
       return toContentResponse(entity)
     }
 
-    this.eventEmitter.emit(
-      AppEvents.CONTENT_INGESTION_REQUESTED,
-      new ContentIngestionRequestedEvent(entity.id, scope.userId)
-    )
+    this.emitIngestion(entity.id, scope.userId)
+    return toContentResponse(entity)
+  }
+
+  async savePdf(
+    scope: ContentActorScope,
+    file: PdfUploadFile
+  ): Promise<ContentResponse> {
+    if (file.mimetype !== "application/pdf") {
+      throw new ContentUnsupportedFormatException()
+    }
+    if (file.size > ingestionEnv.CONTENT_UPLOAD_MAX_BYTES) {
+      throw new ContentFileTooLargeException()
+    }
+
+    const reserved = await this.quotaRepo.tryReserveIngestionSlot(scope.userId)
+    if (!reserved.ok) {
+      if (reserved.reason === "at_cap") {
+        throw new DailyIngestionLimitException()
+      }
+      throw new InvalidContentUpdateException(
+        "Unable to reserve ingestion slot"
+      )
+    }
+
+    const entity = await this.commandRepo.insertPdf({
+      userId: scope.userId,
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      sizeBytes: file.size,
+    })
+    await this.tempFileStore.savePdf({
+      contentId: entity.id,
+      buffer: file.buffer,
+    })
+    this.emitIngestion(entity.id, scope.userId)
     return toContentResponse(entity)
   }
 
@@ -83,6 +129,23 @@ export class ContentService {
   ): Promise<{ items: ContentResponse[] }> {
     const items = await this.queryRepo.listForUser(scope.userId, query)
     return { items: items.map(toContentResponse) }
+  }
+
+  async listTrash(
+    scope: ContentActorScope
+  ): Promise<{ items: ContentTrashItem[] }> {
+    const items = await this.lifecycleRepo.listTrash(scope.userId)
+    return { items: [...items] }
+  }
+
+  async restoreTrash(input: {
+    readonly userId: string
+    readonly trashId: string
+  }): Promise<ContentResponse> {
+    const restored = await this.lifecycleRepo.restoreFromTrash(input)
+    if (!restored) throw new ContentTrashNotFoundException()
+    await this.quotaRepo.incrementContentCount(input.userId)
+    return toContentResponse(restored)
   }
 
   async getById(scope: ContentMutationScope): Promise<ContentResponse> {
@@ -132,10 +195,21 @@ export class ContentService {
       contentId: scope.contentId,
     })
     if (!reset) throw new ContentNotFoundException("Failed content not found")
-    this.eventEmitter.emit(
-      AppEvents.CONTENT_INGESTION_REQUESTED,
-      new ContentIngestionRequestedEvent(reset.id, scope.userId)
-    )
+    this.emitIngestion(reset.id, scope.userId)
+    return toContentResponse(reset)
+  }
+
+  async regenerate(scope: ContentMutationScope): Promise<ContentResponse> {
+    const reset = await this.processingRepo.resetForRegenerate({
+      userId: scope.userId,
+      contentId: scope.contentId,
+    })
+    if (!reset) {
+      throw new ContentNotFoundException(
+        "Content not found or not eligible for regenerate"
+      )
+    }
+    this.emitIngestion(reset.id, scope.userId)
     return toContentResponse(reset)
   }
 
@@ -148,11 +222,27 @@ export class ContentService {
     await this.quotaRepo.decrementContentCount(scope.userId)
   }
 
+  async permanentDelete(scope: ContentMutationScope): Promise<void> {
+    const ok = await this.lifecycleRepo.permanentDelete({
+      userId: scope.userId,
+      contentId: scope.contentId,
+    })
+    if (!ok) throw new ContentNotFoundException()
+    await this.quotaRepo.decrementContentCount(scope.userId)
+  }
+
   async purgeExpiredTrash(): Promise<number> {
     return this.lifecycleRepo.purgeExpiredSoftDeleted()
   }
 
   async purgeAllForUser(userId: string): Promise<void> {
     await this.lifecycleRepo.purgeAllForUser(userId)
+  }
+
+  private emitIngestion(contentId: string, userId: string): void {
+    this.eventEmitter.emit(
+      AppEvents.CONTENT_INGESTION_REQUESTED,
+      new ContentIngestionRequestedEvent(contentId, userId)
+    )
   }
 }

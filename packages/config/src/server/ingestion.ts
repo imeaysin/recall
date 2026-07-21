@@ -13,6 +13,7 @@ export const ingestionEnv = createEnv(
     "INGESTION_STALE_JOB_MS",
     "INGESTION_MAX_RETRIES",
     "CONTENT_TRASH_RETENTION_DAYS",
+    "CONTENT_UPLOAD_MAX_BYTES",
   ])
 )
 

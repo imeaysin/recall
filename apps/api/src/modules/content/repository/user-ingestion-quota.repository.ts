@@ -81,6 +81,12 @@ export class UserIngestionQuotaRepository {
     )
   }
 
+  async incrementContentCount(userId: string): Promise<void> {
+    await this.users().updateOne(authUserFilter(userId), {
+      $inc: { contentCount: 1 },
+    })
+  }
+
   private users() {
     return getDb().collection(AUTH_USER_COLLECTION)
   }

@@ -1,0 +1,6 @@
+export * from "./topic.mapper"
+export * from "./topic.query"
+export * from "./topic.command"
+export * from "./topic-root.repository"
+export * from "./topic-ingestion.repository"
+export * from "./topic-content.repository"

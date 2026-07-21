@@ -9,6 +9,9 @@ export const routeSegments = {
     root: "app",
     dashboard: "dashboard",
     library: "library",
+    libraryTrash: "trash",
+    chat: "chat",
+    topics: "topics",
     uploads: "uploads",
     settings: "settings",
   },
@@ -25,6 +28,15 @@ export const routes = {
   signOut: toPath(routeSegments.auth.root, routeSegments.auth.signOut),
   dashboard: toPath(routeSegments.app.root, routeSegments.app.dashboard),
   library: toPath(routeSegments.app.root, routeSegments.app.library),
+  libraryTrash: toPath(
+    routeSegments.app.root,
+    routeSegments.app.library,
+    routeSegments.app.libraryTrash
+  ),
+  chat: toPath(routeSegments.app.root, routeSegments.app.chat),
+  chatDetail: (chatId: string) =>
+    toPath(routeSegments.app.root, routeSegments.app.chat, chatId),
+  topics: toPath(routeSegments.app.root, routeSegments.app.topics),
   uploads: toPath(routeSegments.app.root, routeSegments.app.uploads),
   settings: toPath(routeSegments.app.root, routeSegments.app.settings),
   settingsAccount: toPath(

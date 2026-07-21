@@ -6,6 +6,7 @@ import { Separator } from "@workspace/ui/components/separator"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { cn } from "@workspace/ui/lib/utils"
 import { ActiveSession } from "@/features/auth/components/settings/security/active-session"
+import { LogoutEverywhere } from "@/features/auth/components/settings/security/logout-everywhere"
 
 export type ActiveSessionsProps = {
   className?: string
@@ -31,9 +32,12 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
 
   return (
     <div>
-      <h2 className="mb-3 text-sm font-semibold">
-        {localization.settings.activeSessions}
-      </h2>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold">
+          {localization.settings.activeSessions}
+        </h2>
+        <LogoutEverywhere />
+      </div>
 
       <Card className={cn("p-0", className)}>
         <CardContent className="p-0">

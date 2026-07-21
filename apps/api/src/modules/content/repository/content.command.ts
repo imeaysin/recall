@@ -5,7 +5,7 @@ import {
   type ContentProcessingStep,
   type ContentStatus,
 } from "@workspace/db"
-import type { ContentEntity, NewUrlContent } from "../domain"
+import type { ContentEntity, NewPdfContent, NewUrlContent } from "../domain"
 import { activeStatusForStep } from "../domain/processing-step"
 import { ContentQueryRepository } from "./content.query"
 import { mapContentDoc } from "./content.mapper"
@@ -83,6 +83,22 @@ export class ContentCommandRepository {
       }
       throw error
     }
+  }
+
+  async insertPdf(data: NewPdfContent): Promise<ContentEntity> {
+    const doc = await ContentModel.create({
+      userId: data.userId,
+      sourceType: "PDF",
+      sourceFileMeta: {
+        originalName: data.originalName,
+        mimeType: data.mimeType,
+        sizeBytes: data.sizeBytes,
+      },
+      status: "PENDING",
+      isOrphan: true,
+      libraryStatus: "QUEUE",
+    })
+    return mapContentDoc(doc)
   }
 
   async claimForProcessing(input: ClaimInput): Promise<ContentEntity | null> {

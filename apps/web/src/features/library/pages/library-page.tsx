@@ -12,7 +12,8 @@ export function LibraryPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Library</h1>
         <p className="text-sm text-muted-foreground">
-          Save articles and YouTube links. Processing runs in the background.
+          Save articles, YouTube links, or PDFs. Processing runs in the
+          background.
         </p>
       </div>
 

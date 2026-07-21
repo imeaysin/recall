@@ -6,6 +6,7 @@ import {
   ContentLifecycleRepository,
   ContentProcessingRepository,
   ContentQueryRepository,
+  ContentTempFileStore,
   UserIngestionQuotaRepository,
 } from "./repository"
 import { UserDeletedListener, ContentMaintenanceListener } from "./listeners"
@@ -18,6 +19,7 @@ import { AuthLifecycleBridge } from "./listeners/auth-lifecycle.bridge"
     ContentCommandRepository,
     ContentProcessingRepository,
     ContentLifecycleRepository,
+    ContentTempFileStore,
     UserIngestionQuotaRepository,
     ContentService,
     UserDeletedListener,
@@ -28,6 +30,7 @@ import { AuthLifecycleBridge } from "./listeners/auth-lifecycle.bridge"
     ContentQueryRepository,
     ContentCommandRepository,
     ContentProcessingRepository,
+    ContentTempFileStore,
     ContentService,
   ],
 })

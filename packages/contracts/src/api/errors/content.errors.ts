@@ -9,6 +9,7 @@ export const ContentErrorCode = {
   FILE_TOO_LARGE: "CONTENT.FILE_TOO_LARGE",
   TIMEOUT: "CONTENT.TIMEOUT",
   DUPLICATE_URL: "CONTENT.DUPLICATE_URL",
+  CONTENT_TRASH_NOT_FOUND: "CONTENT.TRASH_NOT_FOUND",
 } as const
 
 export type ContentErrorCode =

@@ -76,6 +76,11 @@ const ingestionSchema = z.object({
     .default(5 * 60 * 1000),
   INGESTION_MAX_RETRIES: z.coerce.number().int().nonnegative().default(3),
   CONTENT_TRASH_RETENTION_DAYS: z.coerce.number().int().positive().default(30),
+  CONTENT_UPLOAD_MAX_BYTES: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(15_000_000),
 })
 
 const rateLimitSchema = z.object({
@@ -141,6 +146,7 @@ export const serverDefaults = {
   INGESTION_STALE_JOB_MS: 5 * 60 * 1000,
   INGESTION_MAX_RETRIES: 3,
   CONTENT_TRASH_RETENTION_DAYS: 30,
+  CONTENT_UPLOAD_MAX_BYTES: 15_000_000,
   SENTRY_DSN: "",
   OTEL_EXPORTER_OTLP_ENDPOINT: "",
   OTEL_SERVICE_NAME: "api",
@@ -183,6 +189,7 @@ export const ingestionEnvSchema = serverSchema.pick({
   INGESTION_STALE_JOB_MS: true,
   INGESTION_MAX_RETRIES: true,
   CONTENT_TRASH_RETENTION_DAYS: true,
+  CONTENT_UPLOAD_MAX_BYTES: true,
 })
 
 export type ServerEnv = z.infer<typeof serverSchema>

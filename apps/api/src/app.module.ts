@@ -22,6 +22,8 @@ import { UsersModule } from "./modules/users/users.module"
 import { UploadsModule } from "./modules/uploads/uploads.module"
 import { ContentModule } from "./modules/content/content.module"
 import { IngestionModule } from "./modules/ingestion/ingestion.module"
+import { TopicsModule } from "./modules/topics/topics.module"
+import { ChatModule } from "./modules/chat/chat.module"
 
 @Module({
   imports: [
@@ -35,7 +37,9 @@ import { IngestionModule } from "./modules/ingestion/ingestion.module"
     UsersModule,
     UploadsModule,
     ContentModule,
+    TopicsModule,
     IngestionModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
