@@ -14,7 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AppErrorBoundary>
-            <div className="relative min-h-svh">{children}</div>
+            <div className="relative">{children}</div>
           </AppErrorBoundary>
           <Toaster />
         </TooltipProvider>

@@ -24,5 +24,6 @@ export const apiRoutes = {
   chats: apiPath("chats"),
   chatItem: (id: string) => apiPath(`chats/${id}`),
   chatMessages: (id: string) => apiPath(`chats/${id}/messages`),
+  chatMessagesStream: (id: string) => apiPath(`chats/${id}/messages/stream`),
   uploads: apiPath("uploads"),
 } as const

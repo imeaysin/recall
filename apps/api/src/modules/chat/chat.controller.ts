@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from "@nestjs/common"
 import {
   ApiCreatedResponse,
@@ -18,9 +19,11 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger"
+import type { Response } from "express"
 import { Session, type UserSession } from "@/common/decorators"
 import { ApiAuthErrorResponses } from "@/common/decorators/api-error-responses.decorator"
 import { ChatService } from "./chat.service"
+import { beginSseResponse, endSseResponse, writeSseEvent } from "./chat-sse"
 import {
   ChatApiResponseDto,
   ChatListApiResponseDto,
@@ -109,5 +112,37 @@ export class ChatController {
       { userId: session.user.id, chatId: id },
       body
     )
+  }
+
+  @Post(":id/messages/stream")
+  @ApiOperation({ summary: "Send a message and stream the RAG answer" })
+  @ApiParam({ name: "id" })
+  async streamMessage(
+    @Session() session: UserSession,
+    @Param("id") id: string,
+    @Body() body: SendChatMessageDto,
+    @Res() response: Response
+  ) {
+    beginSseResponse(response)
+    try {
+      const result = await this.chatService.sendMessageStreaming({
+        scope: { userId: session.user.id, chatId: id },
+        body,
+        onToken: (chunk) => {
+          writeSseEvent({
+            response,
+            event: "token",
+            data: { text: chunk },
+          })
+        },
+      })
+      writeSseEvent({ response, event: "done", data: result })
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to stream chat reply"
+      writeSseEvent({ response, event: "error", data: { message } })
+    } finally {
+      endSseResponse(response)
+    }
   }
 }

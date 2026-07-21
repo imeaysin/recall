@@ -93,4 +93,15 @@ export class ChatService {
   sendMessage(scope: ChatMutationScope, body: SendChatMessage) {
     return this.sendMessageService.send({ ...scope, body })
   }
+
+  sendMessageStreaming(config: {
+    readonly scope: ChatMutationScope
+    readonly body: SendChatMessage
+    readonly onToken: (chunk: string) => void
+  }) {
+    return this.sendMessageService.sendStreaming({
+      scope: { ...config.scope, body: config.body },
+      onToken: config.onToken,
+    })
+  }
 }

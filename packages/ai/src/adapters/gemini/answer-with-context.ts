@@ -1,4 +1,4 @@
-import { generateText } from "ai"
+import { streamText } from "ai"
 import { assertWithinDailyQuota } from "../../quota-gate"
 import {
   AI_PROVIDER,
@@ -9,11 +9,41 @@ import {
 } from "../../types"
 import type { GeminiRuntime } from "./runtime"
 import { rethrowAiFailure } from "../../errors"
+import { buildRagSystemPrompt, finalizeRagAnswer } from "./rag-prompt"
 
 export async function answerWithContext(
   runtime: GeminiRuntime,
   input: AnswerWithContextInput
 ): Promise<RagAnswer> {
+  return streamAnswerWithContext({
+    runtime,
+    input,
+    onToken: () => undefined,
+  })
+}
+
+export async function streamAnswerWithContext(config: {
+  readonly runtime: GeminiRuntime
+  readonly input: AnswerWithContextInput
+  readonly onToken: (chunk: string) => void
+}): Promise<RagAnswer> {
+  const stream = await startAnswerStream(config.runtime, config.input)
+  let text = ""
+  for await (const chunk of stream.textStream) {
+    text += chunk
+    config.onToken(chunk)
+  }
+  return finalizeRagAnswer({
+    text,
+    contextChunks: config.input.contextChunks,
+    totalTokens: await stream.totalTokens,
+  })
+}
+
+async function startAnswerStream(
+  runtime: GeminiRuntime,
+  input: AnswerWithContextInput
+) {
   await assertWithinDailyQuota({
     store: runtime.usageStore,
     provider: AI_PROVIDER.GEMINI_FLASH,
@@ -21,7 +51,7 @@ export async function answerWithContext(
   })
 
   try {
-    const { text, usage } = await generateText({
+    const result = streamText({
       model: runtime.google(runtime.flashModel),
       system: buildRagSystemPrompt(input.contextChunks),
       messages: input.messages.map((message) => ({
@@ -29,11 +59,9 @@ export async function answerWithContext(
         content: message.content,
       })),
     })
-
     return {
-      text,
-      citations: selectCitedChunks(text, input.contextChunks),
-      tokensUsed: finiteTokenCount(usage?.totalTokens),
+      textStream: result.textStream,
+      totalTokens: result.usage.then((usage) => usage?.totalTokens),
     }
   } catch (error) {
     if (!(error instanceof Error)) {
@@ -41,33 +69,4 @@ export async function answerWithContext(
     }
     rethrowAiFailure(error, "RAG completion failed")
   }
-}
-
-function finiteTokenCount(value: number | undefined): number {
-  if (typeof value !== "number" || !Number.isFinite(value)) return 0
-  return value
-}
-
-function buildRagSystemPrompt(chunks: readonly RagCitation[]): string {
-  const contextBlock =
-    chunks.length === 0
-      ? "(none)"
-      : chunks
-          .map(
-            (chunk, index) =>
-              `[${index + 1}] contentId=${chunk.contentId} title=${chunk.title}\n${chunk.chunkText}`
-          )
-          .join("\n\n")
-
-  return `You answer using ONLY the user's saved library excerpts below. Cite sources as [n] matching the excerpt numbers. If nothing relevant exists, say so clearly — do not fabricate.\n\nLIBRARY EXCERPTS:\n${contextBlock}`
-}
-
-function selectCitedChunks(
-  answerText: string,
-  chunks: readonly RagCitation[]
-): readonly RagCitation[] {
-  const citedIndexes = new Set(
-    [...answerText.matchAll(/\[(\d+)\]/g)].map((match) => Number(match[1]) - 1)
-  )
-  return chunks.filter((_chunk, index) => citedIndexes.has(index))
 }

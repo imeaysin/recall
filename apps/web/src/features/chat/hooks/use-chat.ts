@@ -11,12 +11,21 @@ import type {
 } from "@workspace/contracts"
 import { apiFetch } from "@/lib/api"
 import { apiRoutes } from "@/config/api-routes"
+import {
+  CHAT_QUERY_LIST,
+  CHAT_QUERY_MESSAGES,
+  CHAT_QUERY_ROOT,
+} from "@/features/chat/constants"
 
 const chatKeys = {
-  all: ["chats"] as const,
-  list: ["chats", "list"] as const,
-  messages: (chatId: string, params?: string) =>
-    ["chats", "messages", chatId, params ?? ""] as const,
+  all: [CHAT_QUERY_ROOT],
+  list: [CHAT_QUERY_ROOT, CHAT_QUERY_LIST],
+  messages: (chatId: string, params = "") => [
+    CHAT_QUERY_ROOT,
+    CHAT_QUERY_MESSAGES,
+    chatId,
+    params,
+  ],
 }
 
 export function useChatList() {
@@ -34,15 +43,19 @@ export function useChatMessages(
   if (query?.limit) search.set("limit", String(query.limit))
   if (query?.before) search.set("before", query.before)
   const qs = search.toString()
-  const params = qs ? `?${qs}` : ""
+  const params = qs.length > 0 ? `?${qs}` : ""
 
   return useQuery({
     queryKey: chatKeys.messages(chatId ?? "", params),
     enabled: Boolean(chatId),
-    queryFn: () =>
-      apiFetch<ChatMessagesResponse>(
-        `${apiRoutes.chatMessages(chatId!)}${params}`
-      ),
+    queryFn: () => {
+      if (!chatId) {
+        throw new Error("chatId is required to load messages")
+      }
+      return apiFetch<ChatMessagesResponse>(
+        `${apiRoutes.chatMessages(chatId)}${params}`
+      )
+    },
   })
 }
 
@@ -63,10 +76,10 @@ export function useCreateChat() {
 export function useUpdateChat() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: UpdateChat }) =>
-      apiFetch<ChatResponse>(apiRoutes.chatItem(id), {
+    mutationFn: (config: { readonly id: string; readonly body: UpdateChat }) =>
+      apiFetch<ChatResponse>(apiRoutes.chatItem(config.id), {
         method: "PATCH",
-        body: JSON.stringify(body),
+        body: JSON.stringify(config.body),
       }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: chatKeys.all })
@@ -96,7 +109,7 @@ export function useSendChatMessage(chatId: string) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: chatKeys.all })
       void queryClient.invalidateQueries({
-        queryKey: chatKeys.messages(chatId),
+        queryKey: [CHAT_QUERY_ROOT, CHAT_QUERY_MESSAGES, chatId],
       })
     },
   })

@@ -89,4 +89,8 @@ export type AiClient = {
   generateMetadata(text: string): Promise<ContentMetadata>
   embed(texts: readonly string[]): Promise<EmbeddingResult>
   answerWithContext(input: AnswerWithContextInput): Promise<RagAnswer>
+  streamAnswerWithContext(
+    input: AnswerWithContextInput,
+    onToken: (chunk: string) => void
+  ): Promise<RagAnswer>
 }

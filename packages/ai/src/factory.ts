@@ -5,7 +5,10 @@ import {
 } from "./adapters/gemini/runtime"
 import { generateMetadata } from "./adapters/gemini/generate-metadata"
 import { embedTexts } from "./adapters/gemini/embed-texts"
-import { answerWithContext } from "./adapters/gemini/answer-with-context"
+import {
+  answerWithContext,
+  streamAnswerWithContext,
+} from "./adapters/gemini/answer-with-context"
 
 export type CreateGeminiAiClientOptions = CreateGeminiRuntimeOptions
 
@@ -17,5 +20,7 @@ export function createGeminiAiClient(
     generateMetadata: (text) => generateMetadata(runtime, text),
     embed: (texts) => embedTexts(runtime, texts),
     answerWithContext: (input) => answerWithContext(runtime, input),
+    streamAnswerWithContext: (input, onToken) =>
+      streamAnswerWithContext({ runtime, input, onToken }),
   }
 }

@@ -60,7 +60,7 @@ export function AppLayout() {
     <SidebarProvider style={{ "--sidebar-width": "280px" } as CSSProperties}>
       <AppSidebar />
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex shrink-0 items-center gap-3 border-b bg-background px-4 py-3 md:px-6">
+        <header className="z-10 flex shrink-0 items-center gap-3 border-b bg-background px-4 py-3 md:px-6">
           <SidebarTrigger className="-ml-1 shrink-0" />
           <InputGroup className="h-10 max-w-2xl flex-1 rounded-full">
             <InputGroupAddon>
@@ -99,7 +99,7 @@ export function AppLayout() {
             Add
           </Button>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 md:p-6">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>
       </SidebarInset>

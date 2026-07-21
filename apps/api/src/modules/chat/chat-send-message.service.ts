@@ -42,6 +42,21 @@ export class ChatSendMessageService {
   ) {}
 
   async send(scope: SendMessageScope): Promise<SendChatMessageResponse> {
+    return this.sendWithTokenHandler({ scope, onToken: () => undefined })
+  }
+
+  async sendStreaming(config: {
+    readonly scope: SendMessageScope
+    readonly onToken: (chunk: string) => void
+  }): Promise<SendChatMessageResponse> {
+    return this.sendWithTokenHandler(config)
+  }
+
+  private async sendWithTokenHandler(config: {
+    readonly scope: SendMessageScope
+    readonly onToken: (chunk: string) => void
+  }): Promise<SendChatMessageResponse> {
+    const { scope, onToken } = config
     const chat = await this.chatQuery.findActiveByIdForUser(scope)
     if (!chat) throw new ChatNotFoundException()
 
@@ -60,6 +75,7 @@ export class ChatSendMessageService {
       priorContext,
       userQuestion: scope.body.text,
       contentId: scope.body.contentId,
+      onToken,
     })
 
     const autoTitle = resolveAutoTitle({
@@ -78,7 +94,6 @@ export class ChatSendMessageService {
       userId: scope.userId,
       contentIds: [],
     })
-    const assistantMeta = assistantResult.contentMeta
     return {
       userMessage: toChatMessageResponse({
         message: userMessage,
@@ -86,7 +101,7 @@ export class ChatSendMessageService {
       }),
       assistantMessage: toChatMessageResponse({
         message: assistantResult.message,
-        contentMeta: assistantMeta,
+        contentMeta: assistantResult.contentMeta,
         languageCaveatOverride: assistantResult.languageCaveat,
       }),
     }
@@ -97,6 +112,7 @@ export class ChatSendMessageService {
     readonly priorContext: readonly ChatMessageEntity[]
     readonly userQuestion: string
     readonly contentId?: string
+    readonly onToken: (chunk: string) => void
   }) {
     try {
       const ai = this.aiProvider.getClient()
@@ -127,10 +143,10 @@ export class ChatSendMessageService {
         contentMeta: chunkMeta,
       })
       const messages = toAiMessages(input.priorContext, input.userQuestion)
-      const answer = await ai.answerWithContext({
-        messages,
-        contextChunks: ragCitations,
-      })
+      const answer = await ai.streamAnswerWithContext(
+        { messages, contextChunks: ragCitations },
+        input.onToken
+      )
       const storedCitations = buildStoredCitations({
         ragCitations: answer.citations,
         contentMeta: chunkMeta,

@@ -1,0 +1,60 @@
+import type { ChangeEvent } from "react"
+import { Chat } from "@workspace/ui/components/ai/chat"
+import type { Message } from "@workspace/ui/components/ai/chat-message"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import {
+  CHAT_INPUT_PLACEHOLDER,
+  CHAT_PROMPT_SUGGESTIONS,
+} from "@/features/chat/constants"
+
+interface ChatConversationProps {
+  readonly isLoading: boolean
+  readonly showSuggestions: boolean
+  readonly messages: readonly Message[]
+  readonly input: string
+  readonly isGenerating: boolean
+  readonly onInputChange: (value: string) => void
+  readonly onSubmit: () => void
+  readonly onAppend: (content: string) => void
+}
+
+export function ChatConversation(props: ChatConversationProps) {
+  if (props.isLoading && props.messages.length === 0) {
+    return <ChatMessagesSkeleton />
+  }
+
+  const chatProps = {
+    className: "h-full min-h-0 w-full flex-1",
+    messages: [...props.messages],
+    input: props.input,
+    handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) =>
+      props.onInputChange(event.target.value),
+    isGenerating: props.isGenerating,
+    handleSubmit: (event?: { preventDefault?: () => void }) => {
+      event?.preventDefault?.()
+      props.onSubmit()
+    },
+    placeholder: CHAT_INPUT_PLACEHOLDER,
+  }
+
+  if (props.showSuggestions) {
+    return (
+      <Chat
+        {...chatProps}
+        append={(message) => props.onAppend(message.content)}
+        suggestions={[...CHAT_PROMPT_SUGGESTIONS]}
+      />
+    )
+  }
+
+  return <Chat {...chatProps} />
+}
+
+function ChatMessagesSkeleton() {
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-3 px-4">
+      <Skeleton className="h-16 w-3/4 rounded-lg" />
+      <Skeleton className="ml-auto h-12 w-1/3 rounded-2xl" />
+    </div>
+  )
+}

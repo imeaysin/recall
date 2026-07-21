@@ -23,6 +23,7 @@ export class TransformResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (response.statusCode === 204) return undefined
+        if (response.headersSent || response.writableEnded) return data
 
         return {
           success: true as const,

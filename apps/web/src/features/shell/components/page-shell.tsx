@@ -12,7 +12,12 @@ type PageShellProps = {
  */
 export function PageShell({ children, className }: PageShellProps) {
   return (
-    <div className={cn("flex w-full flex-col gap-6", className)}>
+    <div
+      className={cn(
+        "flex w-full flex-col gap-6 overflow-auto p-4 md:p-6",
+        className
+      )}
+    >
       {children}
     </div>
   )
