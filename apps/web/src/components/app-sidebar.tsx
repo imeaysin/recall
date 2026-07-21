@@ -19,6 +19,7 @@ type AppSidebarProps = Omit<
   ComponentProps<typeof UiAppSidebar>,
   | "user"
   | "teams"
+  | "brand"
   | "navMain"
   | "projects"
   | "userMenuItems"
@@ -30,11 +31,12 @@ type AppSidebarProps = Omit<
 >
 
 export function AppSidebar(props: AppSidebarProps) {
-  const { navMain, projects, user, teams, onSignOut, userMenuItems } =
+  const { navMain, projects, user, teams, brand, onSignOut, userMenuItems } =
     useAppShellConfig()
 
   return (
     <UiAppSidebar
+      brand={brand}
       linkComponent={RouterLink}
       navMain={navMain}
       onSignOut={onSignOut}

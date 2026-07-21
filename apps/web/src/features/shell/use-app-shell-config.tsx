@@ -6,6 +6,7 @@ import { appNavigation } from "@/config/app-navigation"
 import { routes } from "@/config/routes"
 import { site } from "@/config/site"
 import type {
+  AppSidebarBrand,
   AppSidebarNavItem,
   AppSidebarProject,
   AppSidebarTeam,
@@ -71,8 +72,15 @@ export function useAppShellConfig() {
     []
   )
 
+  const brand: AppSidebarBrand = {
+    name: site.name,
+    plan: "Personal",
+    logo: <Command className="size-4" />,
+  }
+
   return {
     brandLabel: site.name,
+    brand,
     navMain,
     projects,
     user: {

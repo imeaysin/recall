@@ -1,3 +1,4 @@
+import type * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { useAppShellConfig } from "@/features/shell/use-app-shell-config"
 import {
@@ -32,40 +33,44 @@ export function AppLayout() {
   )
 
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "350px",
+        } as React.CSSProperties
+      }
+    >
       <AppSidebar />
       <SidebarInset>
-        <header className="group-has-data-[collapsible=icon]:sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              className="mr-2 data-vertical:h-4 data-vertical:self-auto"
-              orientation="vertical"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  {currentNav?.url ? (
-                    <BreadcrumbLink render={<Link to={currentNav.url} />}>
-                      {currentNav.title}
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage>{brandLabel}</BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-                {currentSubNav ? (
-                  <>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{currentSubNav.title}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </>
-                ) : null}
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
+        <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+            orientation="vertical"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                {currentNav?.url ? (
+                  <BreadcrumbLink render={<Link to={currentNav.url} />}>
+                    {currentNav.title}
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage>{brandLabel}</BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {currentSubNav ? (
+                <>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{currentSubNav.title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
+              ) : null}
+            </BreadcrumbList>
+          </Breadcrumb>
         </header>
-        <main className="flex flex-1 flex-col gap-6 p-6 pt-0">
+        <main className="flex flex-1 flex-col gap-4 p-4">
           <Outlet />
         </main>
       </SidebarInset>

@@ -67,7 +67,10 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <SidebarMenuButton className="aria-expanded:bg-muted" size="lg" />
+              <SidebarMenuButton
+                className="aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground md:h-8 md:p-0"
+                size="lg"
+              />
             }
           >
             <Avatar className="size-8 rounded-lg">
@@ -78,7 +81,7 @@ export function NavUser({
               <span className="truncate font-medium">{user.name}</span>
               <span className="truncate text-xs">{user.email}</span>
             </div>
-            <ChevronsUpDownIcon className="ml-auto" />
+            <ChevronsUpDownIcon className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
