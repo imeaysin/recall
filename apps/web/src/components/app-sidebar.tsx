@@ -23,6 +23,7 @@ type AppSidebarProps = Omit<
   | "navMain"
   | "projects"
   | "userMenuItems"
+  | "secondaryAction"
   | "activeTeamId"
   | "onSignOut"
   | "onTeamChange"
@@ -31,8 +32,16 @@ type AppSidebarProps = Omit<
 >
 
 export function AppSidebar(props: AppSidebarProps) {
-  const { navMain, projects, user, teams, brand, onSignOut, userMenuItems } =
-    useAppShellConfig()
+  const {
+    navMain,
+    projects,
+    user,
+    teams,
+    brand,
+    onSignOut,
+    userMenuItems,
+    secondaryAction,
+  } = useAppShellConfig()
 
   return (
     <UiAppSidebar
@@ -41,6 +50,7 @@ export function AppSidebar(props: AppSidebarProps) {
       navMain={navMain}
       onSignOut={onSignOut}
       projects={projects}
+      secondaryAction={secondaryAction}
       teams={teams}
       user={user}
       userMenuItems={userMenuItems}

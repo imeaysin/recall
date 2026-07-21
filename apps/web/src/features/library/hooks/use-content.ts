@@ -37,12 +37,24 @@ function invalidateContent(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: contentKeys.trash })
 }
 
-export function useContentList(libraryStatus?: "QUEUE" | "ARCHIVE") {
-  const params = libraryStatus ? `?libraryStatus=${libraryStatus}` : undefined
+export function useContentList(options?: {
+  libraryStatus?: "QUEUE" | "ARCHIVE"
+  search?: string
+}) {
+  const params = new URLSearchParams()
+  if (options?.libraryStatus) {
+    params.set("libraryStatus", options.libraryStatus)
+  }
+  if (options?.search) {
+    params.set("search", options.search)
+  }
+  const query = params.toString()
+  const suffix = query ? `?${query}` : ""
+
   return useQuery({
-    queryKey: contentKeys.list(params),
+    queryKey: contentKeys.list(suffix),
     queryFn: () =>
-      apiFetch<ContentListResponse>(`${apiRoutes.content}${params ?? ""}`),
+      apiFetch<ContentListResponse>(`${apiRoutes.content}${suffix}`),
     refetchInterval: (query) => {
       const items = query.state.data?.items ?? []
       return needsIngestionPolling(items) ? 2000 : false

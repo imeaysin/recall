@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom"
+import { Trash2Icon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { routes } from "@/config/routes"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@workspace/ui/components/empty"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@workspace/ui/components/item"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { PageHeader } from "@/features/shell/components/page-header"
 import {
   useContentTrashList,
   usePermanentDeleteContent,
@@ -14,44 +30,44 @@ export function LibraryTrashPage() {
   const items = trash.data?.items ?? []
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Trash</h1>
-          <p className="text-sm text-muted-foreground">
-            Soft-deleted library items. Restore or permanently delete.
-          </p>
-        </div>
-        <Button
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-          render={<Link to={routes.library} />}
-        >
-          Back to library
-        </Button>
-      </div>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+      <PageHeader
+        title="Trash"
+        description="Soft-deleted library items. Restore or permanently delete."
+      />
 
       {trash.isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <div className="flex flex-col gap-3">
+          <Skeleton className="h-16 w-full rounded-lg" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+        </div>
+      ) : items.length === 0 ? (
+        <Empty className="border border-dashed">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Trash2Icon />
+            </EmptyMedia>
+            <EmptyTitle>Trash is empty</EmptyTitle>
+            <EmptyDescription>
+              Deleted library items will appear here until they are purged.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
-        <ul className="divide-y divide-border rounded-lg border">
+        <ItemGroup>
           {items.map((item) => {
             const heading = item.title ?? item.sourceType ?? "Untitled"
             const pending = restore.isPending || permanentDelete.isPending
             return (
-              <li
-                key={item.id}
-                className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <p className="font-medium">{heading}</p>
-                  <p className="text-xs text-muted-foreground">
+              <Item key={item.id} variant="outline">
+                <ItemContent>
+                  <ItemTitle>{heading}</ItemTitle>
+                  <ItemDescription>
                     Deleted {new Date(item.deletedAt).toLocaleString()} · Purge{" "}
                     {new Date(item.purgeAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex gap-2">
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
                   <Button
                     size="sm"
                     variant="outline"
@@ -76,16 +92,11 @@ export function LibraryTrashPage() {
                   >
                     Delete forever
                   </Button>
-                </div>
-              </li>
+                </ItemActions>
+              </Item>
             )
           })}
-          {items.length === 0 ? (
-            <li className="p-4 text-sm text-muted-foreground">
-              Trash is empty.
-            </li>
-          ) : null}
-        </ul>
+        </ItemGroup>
       )}
     </div>
   )

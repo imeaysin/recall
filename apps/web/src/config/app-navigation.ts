@@ -21,36 +21,41 @@ const emptyProjects: readonly NavProject[] = []
 export const appNavigation = {
   navMain: [
     {
-      title: "CogniVault",
+      title: "Library",
       url: routes.library,
       icon: Library,
       isActive: true,
-      items: [
-        { title: "Library", url: routes.library },
-        { title: "Trash", url: routes.libraryTrash },
-      ],
     },
     {
       title: "Chat",
       url: routes.chat,
       icon: MessageSquare,
-      items: [{ title: "Conversations", url: routes.chat }],
     },
     {
       title: "Topics",
       url: routes.topics,
       icon: Tags,
-      items: [{ title: "All topics", url: routes.topics }],
     },
     {
       title: "Settings",
       url: routes.settings,
       icon: Settings,
-      items: [
-        { title: "Account", url: routes.settingsAccount },
-        { title: "Security", url: routes.settingsSecurity },
-      ],
     },
   ] satisfies readonly NavItem[],
   projects: emptyProjects,
+}
+
+export const libraryViews = {
+  queue: "QUEUE",
+  archive: "ARCHIVE",
+} as const
+
+export type LibraryView = (typeof libraryViews)[keyof typeof libraryViews]
+
+export function libraryViewUrl(view: LibraryView) {
+  return `${routes.library}?status=${view}`
+}
+
+export function libraryTopicUrl(topicId: string) {
+  return `${routes.library}?topic=${encodeURIComponent(topicId)}`
 }

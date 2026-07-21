@@ -1,6 +1,41 @@
 import { useState } from "react"
+import { TagsIcon } from "lucide-react"
+import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@workspace/ui/components/empty"
+import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@workspace/ui/components/item"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { PageHeader } from "@/features/shell/components/page-header"
 import {
   useCreateTopic,
   useDeleteTopic,
@@ -23,205 +58,298 @@ export function TopicsPage() {
   const [mergeTargetId, setMergeTargetId] = useState("")
 
   const items = topics.data?.items ?? []
+  const mergeable = items.filter((topic) => !topic.isRoot)
   const pending =
     create.isPending || update.isPending || remove.isPending || merge.isPending
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Topics</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage knowledge-graph topics. Merge duplicates or rename user-created
-          topics.
-        </p>
-      </div>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+      <PageHeader
+        title="Topics"
+        description="Manage knowledge-graph topics. Merge duplicates or rename user-created topics."
+      />
 
-      <form
-        className="flex gap-2"
-        onSubmit={(event) => {
-          event.preventDefault()
-          const name = newName.trim()
-          if (!name) return
-          create.mutate(
-            { name },
-            {
-              onSuccess: () => setNewName(""),
-            }
-          )
-        }}
-      >
-        <Input
-          value={newName}
-          onChange={(event) => setNewName(event.target.value)}
-          placeholder="New topic name"
-          maxLength={80}
-        />
-        <Button type="submit" disabled={create.isPending}>
-          Create
-        </Button>
-      </form>
-
-      <div className="rounded-lg border p-4">
-        <h2 className="mb-2 text-sm font-semibold">Merge topics</h2>
-        <p className="mb-3 text-xs text-muted-foreground">
-          Move all content from the source topic into the target topic.
-        </p>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <select
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-            value={mergeSourceId}
-            onChange={(event) => setMergeSourceId(event.target.value)}
-          >
-            <option value="">Source topic…</option>
-            {items
-              .filter((t) => !t.isRoot && t.id !== mergeTargetId)
-              .map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-          </select>
-          <span className="text-sm text-muted-foreground">into</span>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-            value={mergeTargetId}
-            onChange={(event) => setMergeTargetId(event.target.value)}
-          >
-            <option value="">Target topic…</option>
-            {items
-              .filter((t) => !t.isRoot && t.id !== mergeSourceId)
-              .map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-          </select>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={!mergeSourceId || !mergeTargetId || pending}
-            onClick={() => {
-              if (
-                !window.confirm(
-                  "Merge these topics? This cannot be undone easily."
-                )
-              ) {
-                return
-              }
-              merge.mutate(
-                { id: mergeSourceId, body: { intoTopicId: mergeTargetId } },
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle>Create topic</CardTitle>
+          <CardDescription>
+            Add a new topic to organize content.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              const name = newName.trim()
+              if (!name) return
+              create.mutate(
+                { name },
                 {
-                  onSuccess: () => {
-                    setMergeSourceId("")
-                    setMergeTargetId("")
-                  },
+                  onSuccess: () => setNewName(""),
                 }
               )
             }}
           >
-            Merge
-          </Button>
-        </div>
-      </div>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="new-topic">Name</FieldLabel>
+                <Input
+                  id="new-topic"
+                  value={newName}
+                  onChange={(event) => setNewName(event.target.value)}
+                  placeholder="New topic name"
+                  maxLength={80}
+                />
+              </Field>
+              <Button type="submit" disabled={create.isPending}>
+                Create
+              </Button>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
 
-      {topics.isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
-      ) : (
-        <ul className="divide-y divide-border rounded-lg border">
-          {items.map((topic) => (
-            <li
-              key={topic.id}
-              className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
+      <Card size="sm">
+        <CardHeader>
+          <CardTitle>Merge topics</CardTitle>
+          <CardDescription>
+            Move all content from the source topic into the target topic.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <FieldGroup>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field>
+                <FieldLabel>Source</FieldLabel>
+                <Select
+                  value={mergeSourceId || null}
+                  onValueChange={(value) => setMergeSourceId(value ?? "")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Source topic…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {mergeable
+                        .filter((topic) => topic.id !== mergeTargetId)
+                        .map((topic) => (
+                          <SelectItem key={topic.id} value={topic.id}>
+                            {topic.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel>Target</FieldLabel>
+                <Select
+                  value={mergeTargetId || null}
+                  onValueChange={(value) => setMergeTargetId(value ?? "")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Target topic…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {mergeable
+                        .filter((topic) => topic.id !== mergeSourceId)
+                        .map((topic) => (
+                          <SelectItem key={topic.id} value={topic.id}>
+                            {topic.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!mergeSourceId || !mergeTargetId || pending}
+              onClick={() => {
+                if (
+                  !window.confirm(
+                    "Merge these topics? This cannot be undone easily."
+                  )
+                ) {
+                  return
+                }
+                merge.mutate(
+                  { id: mergeSourceId, body: { intoTopicId: mergeTargetId } },
+                  {
+                    onSuccess: () => {
+                      setMergeSourceId("")
+                      setMergeTargetId("")
+                    },
+                  }
+                )
+              }}
             >
-              {renameId === topic.id ? (
-                <div className="flex flex-1 gap-2">
-                  <Input
-                    value={renameValue}
-                    onChange={(event) => setRenameValue(event.target.value)}
-                    maxLength={80}
-                  />
-                  <Button
-                    size="sm"
-                    disabled={update.isPending}
-                    onClick={() => {
-                      const name = renameValue.trim()
-                      if (!name) return
-                      update.mutate(
-                        { id: topic.id, body: { name } },
-                        { onSuccess: () => setRenameId(null) }
-                      )
-                    }}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setRenameId(null)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <p className="font-medium">
-                      {topic.name}
-                      {topic.isRoot ? (
-                        <span className="ml-2 text-xs text-muted-foreground">
-                          (root)
-                        </span>
-                      ) : null}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {topic.contentCount} items
-                      {topic.isUserCreated ? " · user-created" : ""}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    {topic.isUserCreated && !topic.isRoot ? (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={pending}
-                          onClick={() => {
-                            setRenameId(topic.id)
-                            setRenameValue(topic.name)
-                          }}
-                        >
-                          Rename
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          disabled={pending}
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                `Delete topic "${topic.name}"? You must confirm this action.`
-                              )
-                            ) {
-                              remove.mutate(topic.id)
-                            }
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </>
-                    ) : null}
-                  </div>
-                </>
-              )}
-            </li>
-          ))}
-          {items.length === 0 ? (
-            <li className="p-4 text-sm text-muted-foreground">
-              No topics yet.
-            </li>
-          ) : null}
-        </ul>
-      )}
+              Merge
+            </Button>
+          </FieldGroup>
+        </CardContent>
+      </Card>
+
+      <TopicsList
+        isLoading={topics.isLoading}
+        items={items}
+        pending={pending}
+        renameId={renameId}
+        renameValue={renameValue}
+        onRenameChange={setRenameValue}
+        onStartRename={(topic) => {
+          setRenameId(topic.id)
+          setRenameValue(topic.name)
+        }}
+        onCancelRename={() => setRenameId(null)}
+        onSaveRename={(topicId) => {
+          const name = renameValue.trim()
+          if (!name) return
+          update.mutate(
+            { id: topicId, body: { name } },
+            { onSuccess: () => setRenameId(null) }
+          )
+        }}
+        onDelete={(topic) => {
+          if (
+            window.confirm(
+              `Delete topic "${topic.name}"? You must confirm this action.`
+            )
+          ) {
+            remove.mutate(topic.id)
+          }
+        }}
+        renamePending={update.isPending}
+      />
     </div>
+  )
+}
+
+function TopicsList(props: {
+  readonly isLoading: boolean
+  readonly items: readonly {
+    id: string
+    name: string
+    contentCount: number
+    isRoot: boolean
+    isUserCreated: boolean
+  }[]
+  readonly pending: boolean
+  readonly renameId: string | null
+  readonly renameValue: string
+  readonly renamePending: boolean
+  readonly onRenameChange: (value: string) => void
+  readonly onStartRename: (topic: { id: string; name: string }) => void
+  readonly onCancelRename: () => void
+  readonly onSaveRename: (topicId: string) => void
+  readonly onDelete: (topic: { id: string; name: string }) => void
+}) {
+  if (props.isLoading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-16 w-full rounded-lg" />
+        <Skeleton className="h-16 w-full rounded-lg" />
+      </div>
+    )
+  }
+
+  if (props.items.length === 0) {
+    return (
+      <Empty className="border border-dashed">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <TagsIcon />
+          </EmptyMedia>
+          <EmptyTitle>No topics yet</EmptyTitle>
+          <EmptyDescription>
+            Create a topic to start organizing your knowledge graph.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    )
+  }
+
+  return (
+    <ItemGroup>
+      {props.items.map((topic) => {
+        if (props.renameId === topic.id) {
+          return (
+            <Item key={topic.id} variant="outline">
+              <ItemContent>
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor={`rename-${topic.id}`}>
+                      Rename
+                    </FieldLabel>
+                    <Input
+                      id={`rename-${topic.id}`}
+                      value={props.renameValue}
+                      onChange={(event) =>
+                        props.onRenameChange(event.target.value)
+                      }
+                      maxLength={80}
+                    />
+                  </Field>
+                  <ItemActions>
+                    <Button
+                      size="sm"
+                      disabled={props.renamePending}
+                      onClick={() => props.onSaveRename(topic.id)}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={props.onCancelRename}
+                    >
+                      Cancel
+                    </Button>
+                  </ItemActions>
+                </FieldGroup>
+              </ItemContent>
+            </Item>
+          )
+        }
+
+        return (
+          <Item key={topic.id} variant="outline">
+            <ItemContent>
+              <ItemTitle>
+                {topic.name}
+                {topic.isRoot ? <Badge variant="secondary">root</Badge> : null}
+              </ItemTitle>
+              <ItemDescription>
+                {topic.contentCount} items
+                {topic.isUserCreated ? " · user-created" : ""}
+              </ItemDescription>
+            </ItemContent>
+            {topic.isUserCreated && !topic.isRoot ? (
+              <ItemActions>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={props.pending}
+                  onClick={() => props.onStartRename(topic)}
+                >
+                  Rename
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={props.pending}
+                  onClick={() => props.onDelete(topic)}
+                >
+                  Delete
+                </Button>
+              </ItemActions>
+            ) : null}
+          </Item>
+        )
+      })}
+    </ItemGroup>
   )
 }
