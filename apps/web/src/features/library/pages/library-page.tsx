@@ -1,14 +1,6 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { FileTextIcon, Link2Icon } from "lucide-react"
-import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+import { FileTextIcon } from "lucide-react"
 import {
   Empty,
   EmptyDescription,
@@ -16,13 +8,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui/components/empty"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
 import type { ContentResponse } from "@workspace/contracts"
 import {
   libraryTopicUrl,
@@ -32,6 +17,8 @@ import {
 import { routes } from "@/config/routes"
 import { useTopicList } from "@/features/topics/hooks/use-topics"
 import { PageShell } from "@/features/shell/components/page-shell"
+import { AddContentDialog } from "@/features/library/components/add-content-dialog"
+import { AddContentMode } from "@/features/library/components/add-content-constants"
 import {
   filterLibraryItems,
   LibraryCardSkeletonGrid,
@@ -40,12 +27,8 @@ import {
   QuickAddCard,
   type LibraryDateFilter,
   type LibrarySourceFilter,
-} from "../components/library-cards"
-import {
-  useContentList,
-  useSavePdfContent,
-  useSaveUrlContent,
-} from "../hooks/use-content"
+} from "@/features/library/components/library-cards"
+import { useContentList } from "@/features/library/hooks/use-content"
 
 const WIKIPEDIA_URL_PREFIX = "https://en.wikipedia.org/wiki/"
 
@@ -124,22 +107,35 @@ function activeTopicLabel(
   return topics.find((topic) => topic.id === topicId)?.name
 }
 
+interface AddDialogState {
+  readonly open: boolean
+  readonly mode: AddContentMode
+  readonly initialUrl: string
+}
+
+const CLOSED_ADD_DIALOG: AddDialogState = {
+  open: false,
+  mode: AddContentMode.Link,
+  initialUrl: "",
+}
+
 export function LibraryPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const view = readLibraryView(searchParams.get("status"))
   const topicId = searchParams.get("topic")
   const searchQuery = searchParams.get("q")?.trim() ?? ""
-  const isAddingUrl = searchParams.get("add") === "url"
   const isArchive = view === "ARCHIVE"
+  const addFromQuery = searchParams.get("add") === "url"
 
-  const [url, setUrl] = useState("")
   const [dateFilter, setDateFilter] = useState<LibraryDateFilter>("ALL")
   const [sourceFilter, setSourceFilter] = useState<LibrarySourceFilter>("ALL")
-  const pdfInputRef = useRef<HTMLInputElement>(null)
+  const [addDialog, setAddDialog] = useState<AddDialogState>(() =>
+    addFromQuery
+      ? { open: true, mode: AddContentMode.Link, initialUrl: "" }
+      : CLOSED_ADD_DIALOG
+  )
 
-  const saveUrl = useSaveUrlContent()
-  const savePdf = useSavePdfContent()
   const topicsQuery = useTopicList(true)
   const contentQuery = useContentList({
     libraryStatus: isArchive ? "ARCHIVE" : "QUEUE",
@@ -162,30 +158,28 @@ export function LibraryPage() {
     Boolean(topicId) ||
     Boolean(searchQuery)
 
-  const urlError =
-    saveUrl.error instanceof Error
-      ? saveUrl.error.message
-      : "Failed to save URL"
-  const pdfError =
-    savePdf.error instanceof Error
-      ? savePdf.error.message
-      : "Failed to upload PDF"
-
   function updateSearchParams(mutate: (params: URLSearchParams) => void) {
     const next = new URLSearchParams(searchParams)
     mutate(next)
     setSearchParams(next)
   }
 
-  function openUrlForm(initialUrl = "") {
-    setUrl(initialUrl)
+  function openAddDialog(config: {
+    readonly mode: AddContentMode
+    readonly initialUrl?: string
+  }) {
+    setAddDialog({
+      open: true,
+      mode: config.mode,
+      initialUrl: config.initialUrl ?? "",
+    })
     updateSearchParams((params) => {
       params.set("add", "url")
     })
   }
 
-  function closeUrlForm() {
-    setUrl("")
+  function closeAddDialog() {
+    setAddDialog(CLOSED_ADD_DIALOG)
     updateSearchParams((params) => {
       params.delete("add")
     })
@@ -226,78 +220,15 @@ export function LibraryPage() {
         onReset={resetFilters}
       />
 
-      {isAddingUrl ? (
-        <Card size="sm" className="max-w-xl">
-          <CardHeader>
-            <CardTitle>Save URL</CardTitle>
-            <CardDescription>Articles, docs, or YouTube links.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault()
-                const trimmed = url.trim()
-                if (!trimmed) return
-                saveUrl.mutate({ url: trimmed }, { onSuccess: closeUrlForm })
-              }}
-            >
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="library-url">URL</FieldLabel>
-                  <Input
-                    id="library-url"
-                    value={url}
-                    onChange={(event) => setUrl(event.target.value)}
-                    placeholder="https://example.com/article"
-                    type="url"
-                    required
-                    autoFocus
-                  />
-                  {saveUrl.isError ? (
-                    <FieldDescription className="text-destructive">
-                      {urlError}
-                    </FieldDescription>
-                  ) : null}
-                </Field>
-                <div className="flex gap-2">
-                  <Button type="submit" disabled={saveUrl.isPending}>
-                    <Link2Icon data-icon="inline-start" />
-                    {saveUrl.isPending ? "Saving…" : "Save"}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={closeUrlForm}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </FieldGroup>
-            </form>
-          </CardContent>
-        </Card>
-      ) : null}
-
-      <input
-        ref={pdfInputRef}
-        type="file"
-        accept="application/pdf,.pdf"
-        className="hidden"
-        onChange={(event) => {
-          const file = event.target.files?.[0]
-          if (!file) return
-          savePdf.mutate(file, {
-            onSuccess: () => {
-              event.target.value = ""
-            },
-          })
+      <AddContentDialog
+        open={addDialog.open}
+        initialMode={addDialog.mode}
+        initialUrl={addDialog.initialUrl}
+        onOpenChange={(open) => {
+          if (open) return
+          closeAddDialog()
         }}
       />
-      {savePdf.isError ? (
-        <FieldDescription className="text-destructive">
-          {pdfError}
-        </FieldDescription>
-      ) : null}
 
       {contentQuery.isLoading ? <LibraryCardSkeletonGrid /> : null}
 
@@ -308,10 +239,14 @@ export function LibraryPage() {
       {!contentQuery.isLoading && !isArchive ? (
         <LibraryGrid
           dayGroups={dayGroups}
-          isSavingPdf={savePdf.isPending}
-          onAddLink={() => openUrlForm()}
-          onAddWikipedia={() => openUrlForm(WIKIPEDIA_URL_PREFIX)}
-          onAddPdf={() => pdfInputRef.current?.click()}
+          onAddLink={() => openAddDialog({ mode: AddContentMode.Link })}
+          onAddWikipedia={() =>
+            openAddDialog({
+              mode: AddContentMode.Wiki,
+              initialUrl: WIKIPEDIA_URL_PREFIX,
+            })
+          }
+          onAddPdf={() => openAddDialog({ mode: AddContentMode.Pdf })}
           onAskChat={() => navigate(routes.chat)}
         />
       ) : null}
@@ -353,14 +288,12 @@ function ArchiveBody({
 
 function LibraryGrid({
   dayGroups,
-  isSavingPdf,
   onAddLink,
   onAddWikipedia,
   onAddPdf,
   onAskChat,
 }: {
   readonly dayGroups: readonly [string, ContentResponse[]][]
-  readonly isSavingPdf: boolean
   readonly onAddLink: () => void
   readonly onAddWikipedia: () => void
   readonly onAddPdf: () => void
@@ -377,7 +310,7 @@ function LibraryGrid({
         items={todayItems}
         leading={
           <QuickAddCard
-            isSavingPdf={isSavingPdf}
+            isSavingPdf={false}
             onAddLink={onAddLink}
             onAddWikipedia={onAddWikipedia}
             onAddPdf={onAddPdf}
