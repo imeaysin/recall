@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { GlobeIcon } from "lucide-react"
 import { Badge } from "@workspace/ui/components/badge"
 import {
@@ -12,6 +13,7 @@ import {
 import type { ContentResponse } from "@workspace/contracts"
 import { LibraryCardActionsMenu } from "@/features/library/components/library-card-actions-menu"
 import { LibraryCardMedia } from "@/features/library/components/library-card-media"
+import { LibraryDeleteContentDialog } from "@/features/library/components/library-delete-content-dialog"
 import {
   coverImageUrl,
   domainFromUrl,
@@ -35,6 +37,7 @@ export function LibraryContentCard({
   const softDelete = useSoftDeleteContent()
   const regenerate = useRegenerateContent()
   const retry = useRetryContent()
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const title = item.title ?? item.sourceUrl ?? "Untitled"
   const domain = domainFromUrl(item.sourceUrl)
@@ -47,48 +50,61 @@ export function LibraryContentCard({
     retry.isPending
 
   return (
-    <Card size="sm" className={LIBRARY_CARD_CLASS}>
-      <CardContent>
-        <LibraryCardMedia src={coverImageUrl(item)} alt={title} />
-      </CardContent>
-      <CardHeader>
-        <CardTitle className={LIBRARY_CARD_TITLE_CLASS}>{title}</CardTitle>
-        <CardDescription className="flex min-w-0 items-center gap-2 tracking-wide uppercase">
-          <SourceMark domain={domain} />
-          <span className="truncate">
-            {domain?.toUpperCase() ?? item.sourceType}
-          </span>
-        </CardDescription>
-        <CardAction>
-          <LibraryCardActionsMenu
-            isPending={isPending}
-            nextStatus={nextStatus}
-            status={item.status}
-            hasError={Boolean(item.errorCode) || item.status === "FAILED"}
-            onArchiveToggle={() =>
-              update.mutate({
-                id: item.id,
-                body: { libraryStatus: nextStatus },
-              })
-            }
-            onRegenerate={() => regenerate.mutate({ id: item.id })}
-            onRetry={() => retry.mutate(item.id)}
-            onDelete={() => confirmDelete(item.id, softDelete.mutate)}
-          />
-        </CardAction>
-      </CardHeader>
-      <CardFooter className="min-w-0 border-0 bg-transparent">
-        {topicName ? (
-          <Badge variant="secondary" className="max-w-full truncate">
-            {topicName}
-          </Badge>
-        ) : (
-          <span className="truncate text-muted-foreground italic">
-            Untagged
-          </span>
-        )}
-      </CardFooter>
-    </Card>
+    <>
+      <Card size="sm" className={LIBRARY_CARD_CLASS}>
+        <CardContent>
+          <LibraryCardMedia src={coverImageUrl(item)} alt={title} />
+        </CardContent>
+        <CardHeader>
+          <CardTitle className={LIBRARY_CARD_TITLE_CLASS}>{title}</CardTitle>
+          <CardDescription className="flex min-w-0 items-center gap-2 tracking-wide uppercase">
+            <SourceMark domain={domain} />
+            <span className="truncate">
+              {domain?.toUpperCase() ?? item.sourceType}
+            </span>
+          </CardDescription>
+          <CardAction>
+            <LibraryCardActionsMenu
+              isPending={isPending}
+              nextStatus={nextStatus}
+              status={item.status}
+              hasError={Boolean(item.errorCode) || item.status === "FAILED"}
+              onArchiveToggle={() =>
+                update.mutate({
+                  id: item.id,
+                  body: { libraryStatus: nextStatus },
+                })
+              }
+              onRegenerate={() => regenerate.mutate({ id: item.id })}
+              onRetry={() => retry.mutate(item.id)}
+              onDelete={() => setDeleteOpen(true)}
+            />
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="min-w-0 border-0 bg-transparent">
+          {topicName ? (
+            <Badge variant="secondary" className="max-w-full truncate">
+              {topicName}
+            </Badge>
+          ) : (
+            <span className="truncate text-muted-foreground italic">
+              Untagged
+            </span>
+          )}
+        </CardFooter>
+      </Card>
+      <LibraryDeleteContentDialog
+        open={deleteOpen}
+        title={title}
+        isPending={softDelete.isPending}
+        onOpenChange={setDeleteOpen}
+        onConfirm={() => {
+          softDelete.mutate(item.id, {
+            onSuccess: () => setDeleteOpen(false),
+          })
+        }}
+      />
+    </>
   )
 }
 
@@ -106,15 +122,4 @@ function SourceMark(props: { readonly domain?: string }) {
     )
   }
   return <GlobeIcon className="size-4 shrink-0" />
-}
-
-function confirmDelete(id: string, mutate: (contentId: string) => void) {
-  if (
-    !window.confirm(
-      "Move this item to trash? You can restore it within the retention period."
-    )
-  ) {
-    return
-  }
-  mutate(id)
 }
