@@ -69,6 +69,19 @@ export function useContentTrashList() {
   })
 }
 
+export function useContentDetail(id: string) {
+  return useQuery({
+    queryKey: contentKeys.detail(id),
+    queryFn: () => apiFetch<ContentResponse>(apiRoutes.contentItem(id)),
+    enabled: Boolean(id),
+    refetchInterval: (query) => {
+      const item = query.state.data
+      if (!item) return false
+      return needsIngestionPolling([item]) ? 2000 : false
+    },
+  })
+}
+
 export function useSaveUrlContent() {
   const queryClient = useQueryClient()
   return useMutation({

@@ -10,6 +10,7 @@ export const routeSegments = {
     dashboard: "dashboard",
     library: "library",
     libraryTrash: "trash",
+    libraryContent: ":contentId",
     chat: "chat",
     topics: "topics",
     uploads: "uploads",
@@ -33,6 +34,8 @@ export const routes = {
     routeSegments.app.library,
     routeSegments.app.libraryTrash
   ),
+  libraryDetail: (contentId: string) =>
+    toPath(routeSegments.app.root, routeSegments.app.library, contentId),
   chat: toPath(routeSegments.app.root, routeSegments.app.chat),
   chatDetail: (chatId: string) =>
     toPath(routeSegments.app.root, routeSegments.app.chat, chatId),

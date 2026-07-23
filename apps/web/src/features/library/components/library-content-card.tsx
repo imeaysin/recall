@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { GlobeIcon } from "lucide-react"
 import { Badge } from "@workspace/ui/components/badge"
 import {
@@ -10,7 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { cn } from "@workspace/ui/lib/utils"
 import type { ContentResponse } from "@workspace/contracts"
+import { routes } from "@/config/routes"
 import { LibraryCardActionsMenu } from "@/features/library/components/library-card-actions-menu"
 import { LibraryCardMedia } from "@/features/library/components/library-card-media"
 import { LibraryDeleteContentDialog } from "@/features/library/components/library-delete-content-dialog"
@@ -33,6 +36,7 @@ export function LibraryContentCard({
 }: {
   readonly item: ContentResponse
 }) {
+  const navigate = useNavigate()
   const update = useUpdateContent()
   const softDelete = useSoftDeleteContent()
   const regenerate = useRegenerateContent()
@@ -49,9 +53,24 @@ export function LibraryContentCard({
     regenerate.isPending ||
     retry.isPending
 
+  function openDetail() {
+    navigate(routes.libraryDetail(item.id))
+  }
+
   return (
     <>
-      <Card size="sm" className={LIBRARY_CARD_CLASS}>
+      <Card
+        size="sm"
+        role="link"
+        tabIndex={0}
+        className={cn(LIBRARY_CARD_CLASS, "cursor-pointer")}
+        onClick={openDetail}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter" && event.key !== " ") return
+          event.preventDefault()
+          openDetail()
+        }}
+      >
         <CardContent>
           <LibraryCardMedia src={coverImageUrl(item)} alt={title} />
         </CardContent>
@@ -63,7 +82,10 @@ export function LibraryContentCard({
               {domain?.toUpperCase() ?? item.sourceType}
             </span>
           </CardDescription>
-          <CardAction>
+          <CardAction
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+          >
             <LibraryCardActionsMenu
               isPending={isPending}
               nextStatus={nextStatus}
